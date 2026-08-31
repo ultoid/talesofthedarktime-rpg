@@ -1,0 +1,7 @@
+# RPG Maker MV Save Files
+save/
+*.rpgsave
+
+# Temporary & Extracted Directories
+talesofthedarktime-rpg/
+.gemini/

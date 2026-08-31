@@ -1,0 +1,363 @@
+# 📜 MASTER CHEATSHEET: STATUS EFFECTS (STATES)
+Proyek Game: Tales of The Dark Time  
+Engine: RPG Maker MV  
+File Database: data/States.json
+
+================================================================================
+📌 CATATAN PENTING & RENCANA INTEGRASI PLUGIN YANFLY
+================================================================================
+Seluruh state di bawah ini telah dikonfigurasi pada database default RPG Maker MV.
+Namun, untuk beberapa state yang memiliki mekanik kondisi dinamis (misal: peluang 10%
+gagal aksi tiap turn, lepas saat menyerang, kombo reaksi elemen), disediakan
+[YANFLY NOTE TAG] (YEP - Buffs & States Core) di setiap rincian state.
+
+Saat plugin Yanfly diinstal nanti, Anda cukup menyalin kode di bagian [YANFLY NOTE TAG]
+ke dalam kotak Note masing-masing State di database RPG Maker MV agar perilakunya
+100% presisi sesuai desain mekanik Anda!
+
+================================================================================
+TABEL RINGKASAN MEKANIK 19 STATE (0012 - 0031)
+================================================================================
+[0012] Poison       : DoT | 3-5 Turn | HP -1/16 (-6.25%) tiap turn
+[0013] Burn         : DoT + Debuff | 3-5 Turn | HP -1/12 (-8.33%) tiap turn & ATK * 50%
+[0014] Bleed        : DoT + Anti-Heal | 3-5 Turn | HP -1/10 (-10%) tiap turn & Recovery Effect (REC) * 50%
+[0015] Paralyze     : Debuff Speed + Kejang | 3-5 Turn | AGI * 50%, EVA -20%, 10% chance gagal aksi (Yanfly)
+[0016] Sleep        : Hard CC | 1-5 Turn | Cannot Move, EVA 0%, Lepas 100% jika diserang
+[0017] Confuse      : Mental CC | 2-4 Turn | Menyerang kawan/acak, Lepas 50% jika diserang (10% serang diri via Yanfly)
+[0018] Curse        : DoT + All Debuff | 3-5 Turn | HP -1/8 (-12.5%) tiap turn & Semua Stat * 75%
+[0019] Stun         : Hard CC | 1 Turn | Cannot Move, EVA 0%
+[0020] Chill        : Debuff + Sinergi Es | 3-5 Turn | AGI * 75%, State Rate Freeze * 150%, 50% Freeze jika kena Es (Yanfly)
+[0021] Freeze       : Hard CC | 1-5 Turn | Cannot Move, EVA 0%, Lepas 10% jika diserang
+[0022] Shadow State : Buff Evasion | 1 Action | EVA +100%, PDR * 0% (Kebal Fisik), Target Rate * 0%, Lepas saat serang (Yanfly)
+[0023] Blind        : Debuff Akurasi | 3-5 Turn | Hit Rate -75%
+[0024] Fear         : Mental CC | 2-4 Turn | ATK * 75%, AGI * 75%, Target Rate * 50%, 50% batal serang (Yanfly)
+[0025] Silence      : Skill Lock | 3-5 Turn | Seal White Magic (1) & Black Magic (2)
+[0026] Root         : Skill Lock | 2-3 Turn | Seal Normal Attack (1), Seal Skill Fisik (3), EVA -100%
+[0027] Holy Veil    : Buff Defensif | 3 Turn | PDR * 50%, MDR * 50% (Damage Diterima -50%)
+[0028] Vulnerable   : Debuff Defensif | 1-3 Turn | DEF * 50%, MDF * 50%
+[0029] Hunter's Mark: Target Debuff | 2-3 Turn | EVA -100% (Pasti Kena 100%), TGR * 200%, Lepas saat diserang
+[0030] Haste        : Buff Speed | 1 Turn | AGI * 150% (+50% Speed)
+[0031] Taunt        : Provoke | 2-3 Turn | Target Rate * 300%, Terkunci hanya serangan ofensif
+
+================================================================================
+RINCIAN INPUT DATABASE RPG MAKER MV & YANFLY NOTETAG
+================================================================================
+
+[0012] Poison
+- Restriction: None | Priority: 50 | [SV] Motion: Abnormal | [SV] Overlay: Poison
+- Auto-removal Timing: Turn End (3 ~ 5 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Ex-Parameter: HP Regeneration Rate - 6.25%
+- Messages:
+  * Inflicted: terkena Poison!
+  * Persists: menderita efek Poison!
+  * Removed: sembuh dari Poison!
+- [YANFLY NOTE TAG]:
+<Custom Turn End Effect>
+var damage = Math.ceil(user.mhp / 16);
+user.gainHp(-damage);
+user.startDamagePopup();
+user.clearResult();
+if (user.isDead()) user.performCollapse();
+</Custom Turn End Effect>
+
+--------------------------------------------------------------------------------
+
+[0013] Burn
+- Restriction: None | Priority: 50 | [SV] Motion: Abnormal | [SV] Overlay: None
+- Auto-removal Timing: Turn End (3 ~ 5 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Parameter: ATK * 50%
+  2. Param -> Ex-Parameter: HP Regeneration Rate - 8.33%
+- Messages:
+  * Inflicted: terkena Burn!
+  * Persists: terbakar oleh Burn!
+  * Removed: pulih dari Burn!
+- [YANFLY NOTE TAG]:
+<Custom Turn End Effect>
+var damage = Math.ceil(user.mhp / 12);
+user.gainHp(-damage);
+user.startDamagePopup();
+user.clearResult();
+if (user.isDead()) user.performCollapse();
+</Custom Turn End Effect>
+
+--------------------------------------------------------------------------------
+
+[0014] Bleed
+- Restriction: None | Priority: 50 | [SV] Motion: Abnormal | [SV] Overlay: None
+- Auto-removal Timing: Turn End (3 ~ 5 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Ex-Parameter: HP Regeneration Rate - 10%
+  2. Param -> Sp-Parameter: Recovery Effect * 50%
+- Messages:
+  * Inflicted: mengalami Bleed!
+  * Persists: kehilangan darah akibat Bleed!
+  * Removed: pulih dari Bleed!
+
+--------------------------------------------------------------------------------
+
+[0015] Paralyze
+- Restriction: None | Priority: 55 | [SV] Motion: Abnormal | [SV] Overlay: Paralyze
+- Auto-removal Timing: Turn End (3 ~ 5 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Parameter: AGI * 50%
+  2. Param -> Ex-Parameter: Evasion Rate - 20%
+- Messages:
+  * Inflicted: terkena Paralyze!
+  * Persists: lumpuh akibat Paralyze!
+  * Removed: sembuh dari Paralyze!
+- [YANFLY NOTE TAG] (10% Chance Gagal Aksi):
+<Custom Turn Start Effect>
+if (Math.random() < 0.10) {
+  user.addState(19);
+  BattleManager.addText(user.name() + " kejang akibat Paralyze dan tidak bisa bergerak!");
+}
+</Custom Turn Start Effect>
+
+--------------------------------------------------------------------------------
+
+[0016] Sleep
+- Restriction: Cannot Move | Priority: 90 | [SV] Motion: Sleep | [SV] Overlay: Sleep
+- Auto-removal Timing: Turn End (1 ~ 5 Turns)
+- Remove by Damage: Checked (100%) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Ex-Parameter: Evasion Rate - 100%
+- Messages:
+  * Inflicted: terkena Sleep!
+  * Persists: sedang dalam kondisi Sleep...
+  * Removed: terbangun dari Sleep!
+
+--------------------------------------------------------------------------------
+
+[0017] Confuse
+- Restriction: Attack an Ally | Priority: 75 | [SV] Motion: Abnormal | [SV] Overlay: Confusion
+- Auto-removal Timing: Turn End (2 ~ 4 Turns)
+- Remove by Damage: Checked (50%) | Remove at Battle End: Checked
+- Traits (Vanilla): (None)
+- Messages:
+  * Inflicted: terkena Confuse!
+  * Persists: berada dalam kondisi Confuse!
+  * Removed: pulih dari Confuse!
+- [YANFLY NOTE TAG] (10% Chance Serang Diri Sendiri):
+<Custom Action Start Effect>
+if (Math.random() < 0.10) {
+  user.forceAction(1, user.index());
+}
+</Custom Action Start Effect>
+
+--------------------------------------------------------------------------------
+
+[0018] Curse
+- Restriction: None | Priority: 60 | [SV] Motion: Abnormal | [SV] Overlay: Curse
+- Auto-removal Timing: Turn End (3 ~ 5 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Ex-Parameter: HP Regeneration Rate - 12.5%
+  2. Param -> Parameter: Max HP * 75%
+  3. Param -> Parameter: Max MP * 75%
+  4. Param -> Parameter: ATK * 75%
+  5. Param -> Parameter: DEF * 75%
+  6. Param -> Parameter: MAT * 75%
+  7. Param -> Parameter: MDF * 75%
+  8. Param -> Parameter: AGI * 75%
+  9. Param -> Parameter: LUK * 75%
+- Messages:
+  * Inflicted: terkena Curse!
+  * Persists: tersiksa oleh Curse!
+  * Removed: terbebas dari Curse!
+
+--------------------------------------------------------------------------------
+
+[0019] Stun
+- Restriction: Cannot Move | Priority: 85 | [SV] Motion: Abnormal | [SV] Overlay: Paralyze
+- Auto-removal Timing: Turn End (1 ~ 1 Turn) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Ex-Parameter: Evasion Rate - 100%
+- Messages:
+  * Inflicted: terkena Stun!
+  * Persists: tidak dapat bergerak karena Stun!
+  * Removed: pulih dari Stun!
+
+--------------------------------------------------------------------------------
+
+[0020] Chill
+- Restriction: None | Priority: 45 | [SV] Motion: Abnormal | [SV] Overlay: None
+- Auto-removal Timing: Turn End (3 ~ 5 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Parameter: AGI * 75%
+  2. Rate -> State Rate: Freeze (0021) * 150%
+  3. Rate -> Element Rate: Es (0007) * 125%
+- Messages:
+  * Inflicted: terkena Chill!
+  * Persists: menggigil oleh Chill!
+  * Removed: pulih dari Chill!
+- [YANFLY NOTE TAG] (50% Freeze jika terkena serangan Es):
+<Custom React Effect>
+if (this.getItemElements().contains(7) && Math.random() < 0.50) {
+  target.addState(21);
+  target.removeState(20);
+}
+</Custom React Effect>
+
+--------------------------------------------------------------------------------
+
+[0021] Freeze
+- Restriction: Cannot Move | Priority: 85 | [SV] Motion: Abnormal | [SV] Overlay: None
+- Auto-removal Timing: Turn End (1 ~ 5 Turns)
+- Remove by Damage: Checked (10%) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Ex-Parameter: Evasion Rate - 100%
+- Messages:
+  * Inflicted: terkena Freeze!
+  * Persists: membeku dalam kondisi Freeze!
+  * Removed: mencair dan lepas dari Freeze!
+
+--------------------------------------------------------------------------------
+
+[0022] Shadow State
+- Restriction: None | Priority: 50 | [SV] Motion: Normal | [SV] Overlay: None
+- Auto-removal Timing: Action End (1 ~ 1 Turn) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Ex-Parameter: Evasion Rate + 100%
+  2. Param -> Sp-Parameter: Physical Damage Rate * 0%
+  3. Param -> Sp-Parameter: Target Rate * 0%
+- Messages:
+  * Inflicted: memasuki Shadow State!
+  * Persists: bersembunyi dalam Shadow State!
+  * Removed: keluar dari Shadow State!
+- [YANFLY NOTE TAG] (Lepas saat user melakukan serangan):
+<Custom Conclude Effect>
+if (this.isForOpponent()) {
+  user.removeState(22);
+}
+</Custom Conclude Effect>
+
+--------------------------------------------------------------------------------
+
+[0023] Blind
+- Restriction: None | Priority: 60 | [SV] Motion: Abnormal | [SV] Overlay: Blind
+- Auto-removal Timing: Turn End (3 ~ 5 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Ex-Parameter: Hit Rate - 75%
+- Messages:
+  * Inflicted: terkena Blind!
+  * Persists: terganggu oleh Blind!
+  * Removed: sembuh dari Blind!
+
+--------------------------------------------------------------------------------
+
+[0024] Fear
+- Restriction: None | Priority: 65 | [SV] Motion: Abnormal | [SV] Overlay: Fear
+- Auto-removal Timing: Turn End (2 ~ 4 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Parameter: ATK * 75%
+  2. Param -> Parameter: AGI * 75%
+  3. Param -> Sp-Parameter: Target Rate * 50%
+- Messages:
+  * Inflicted: terkena Fear!
+  * Persists: panik akibat Fear!
+  * Removed: terbebas dari Fear!
+- [YANFLY NOTE TAG] (50% Chance Batal Serang karena takut):
+<Custom Action Start Effect>
+if (Math.random() < 0.50) {
+  user.clearActions();
+  BattleManager.addText(user.name() + " terlalu takut untuk menyerang!");
+}
+</Custom Action Start Effect>
+
+--------------------------------------------------------------------------------
+
+[0025] Silence
+- Restriction: None | Priority: 65 | [SV] Motion: Abnormal | [SV] Overlay: Silence
+- Auto-removal Timing: Turn End (3 ~ 5 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Skill -> Seal Skill Type: White Magic (1)
+  2. Skill -> Seal Skill Type: Black Magic (2)
+- Messages:
+  * Inflicted: terkena Silence!
+  * Persists: terkunci oleh Silence!
+  * Removed: bebas dari Silence!
+
+--------------------------------------------------------------------------------
+
+[0026] Root
+- Restriction: None | Priority: 65 | [SV] Motion: Abnormal | [SV] Overlay: None
+- Auto-removal Timing: Turn End (2 ~ 3 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Skill -> Seal Skill: Attack (0001)
+  2. Skill -> Seal Skill Type: Skill (3)
+  3. Param -> Ex-Parameter: Evasion Rate - 100%
+- Messages:
+  * Inflicted: terkena Root!
+  * Persists: terjerat oleh Root!
+  * Removed: bebas dari Root!
+
+--------------------------------------------------------------------------------
+
+[0027] Holy Veil
+- Restriction: None | Priority: 50 | [SV] Motion: Normal | [SV] Overlay: None
+- Auto-removal Timing: Turn End (3 ~ 3 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Sp-Parameter: Physical Damage Rate * 50%
+  2. Param -> Sp-Parameter: Magical Damage Rate * 50%
+- Messages:
+  * Inflicted: menerima perlindungan Holy Veil!
+  * Persists: dilindungi oleh Holy Veil!
+  * Removed: efek Holy Veil telah berakhir!
+
+--------------------------------------------------------------------------------
+
+[0028] Vulnerable
+- Restriction: None | Priority: 50 | [SV] Motion: Abnormal | [SV] Overlay: None
+- Auto-removal Timing: Turn End (1 ~ 3 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Parameter: DEF * 50%
+  2. Param -> Parameter: MDF * 50%
+- Messages:
+  * Inflicted: terkena Vulnerable!
+  * Persists: berada dalam kondisi Vulnerable!
+  * Removed: pulih dari Vulnerable!
+
+--------------------------------------------------------------------------------
+
+[0029] Hunter's Mark
+- Restriction: None | Priority: 50 | [SV] Motion: Normal | [SV] Overlay: None
+- Auto-removal Timing: Turn End (2 ~ 3 Turns)
+- Remove by Damage: Checked (100%) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Ex-Parameter: Evasion Rate - 100%
+  2. Param -> Sp-Parameter: Target Rate * 200%
+- Messages:
+  * Inflicted: ditandai dengan Hunter's Mark!
+  * Persists: menjadi target Hunter's Mark!
+  * Removed: efek Hunter's Mark telah hilang!
+
+--------------------------------------------------------------------------------
+
+[0030] Haste
+- Restriction: None | Priority: 50 | [SV] Motion: Normal | [SV] Overlay: None
+- Auto-removal Timing: Turn End (1 ~ 1 Turn) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Parameter: AGI * 150%
+- Messages:
+  * Inflicted: mendapatkan efek Haste!
+  * Persists: bergerak cepat dengan Haste!
+  * Removed: efek Haste telah berakhir!
+
+--------------------------------------------------------------------------------
+
+[0031] Taunt
+- Restriction: Attack an Enemy | Priority: 70 | [SV] Motion: Abnormal | [SV] Overlay: Rage
+- Auto-removal Timing: Turn End (2 ~ 3 Turns) | Remove at Battle End: Checked
+- Traits (Vanilla):
+  1. Param -> Sp-Parameter: Target Rate * 300%
+  2. Skill -> Seal Skill Type: White Magic (1)
+  3. Skill -> Seal Skill Type: Summon (4)
+  4. Skill -> Seal Skill Type: Ultimate (5)
+- Messages:
+  * Inflicted: terkena Taunt!
+  * Persists: terprovokasi oleh Taunt!
+  * Removed: bebas dari efek Taunt!
+- [YANFLY NOTE TAG]:
+<Physical Taunt>
+<Magical Taunt>
