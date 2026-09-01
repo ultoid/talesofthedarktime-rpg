@@ -30,6 +30,11 @@ Game RPG berbasis **RPG Maker MV** dengan dunia fantasi *Nusvanir*, menyajikan s
 
   * Status: Semua skill untuk **Class Tier 1** telah selesai dan ditambahkan ke `data/Skills.json`.
 
+* **Tier 2 Database:**
+  * Menambahkan file database referensi untuk Tier 2: `Tier 2 Skill.xlsx` (lokasi proyek: root). File ini berisi rancangan skill Tier 2 dan beberapa catatan desain.
+  * Beberapa pembaruan tambahan juga telah diterapkan ke database (`data/Skills.json`, `data/MapInfos.json`, `data/System.json`).
+  * Perubahan telah di-commit dan dipush ke remote.
+
 ---
 
 ## 🎯 Target Berikutnya (Next Target)
