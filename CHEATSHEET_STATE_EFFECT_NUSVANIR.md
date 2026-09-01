@@ -3,6 +3,8 @@
 **Engine:** RPG Maker MV  
 **File Database:** `data/States.json`
 
+> ✅ **Status Verifikasi:** Dokumen ini telah diverifikasi dan disinkronkan dengan `data/States.json` per **1 September 2026**. State ID sesuai urutan database RPG Maker MV (ID 0004 – 0023).
+
 ---
 
 > ### 📌 CATATAN PENTING & RENCANA INTEGRASI PLUGIN YANFLY
@@ -12,30 +14,30 @@
 
 ---
 
-## 📌 TABEL RINGKASAN MEKANIK 19 STATE (0012 – 0031)
+## 📌 TABEL RINGKASAN MEKANIK 19 STATE (0004 – 0023)
 
 | ID | Nama State | Tipe / Kategori | Durasi | Efek Utama (Vanilla + Yanfly) |
 | :---: | :--- | :--- | :---: | :--- |
-| **0012** | **Poison** | DoT (Damage over Time) | 3 ~ 5 Turn | HP berkurang **1/16 (-6.25%)** tiap turn. |
-| **0013** | **Burn** | DoT + Debuff Ofensif | 3 ~ 5 Turn | HP berkurang **1/12 (-8.33%)** tiap turn & **ATK berkurang 50%**. |
-| **0014** | **Bleed** | DoT + Anti-Heal | 3 ~ 5 Turn | HP berkurang **1/10 (-10%)** tiap turn & **Efek Heal/Regen (REC) -50%**. |
-| **0015** | **Paralyze** | Debuff Speed + Kejang | 3 ~ 5 Turn | **Speed (AGI) -50%**, EVA -20%, & **10% peluang gagal bergerak per turn** *(Yanfly Notetag)*. |
-| **0016** | **Sleep** | Hard CC | 1 ~ 5 Turn | **Tidak bisa bergerak (Cannot Move)**, Evasion 0%, **lepas 100% jika terkena damage**. |
-| **0017** | **Confuse** | Mental CC | 2 ~ 4 Turn | **Menyerang rekan/acak**, 50% peluang lepas jika terkena damage. |
-| **0018** | **Curse** | DoT Berat + All Debuff | 3 ~ 5 Turn | HP berkurang **1/8 (-12.5%)** tiap turn & **Semua Stat berkurang 25%** (*MHP, MMP, ATK, DEF, MAT, MDF, AGI, LUK*). |
-| **0019** | **Stun** | Hard CC Singkat | 1 Turn | **Tidak bisa bergerak (Cannot Move)** selama 1 turn. |
-| **0020** | **Chill** | Debuff + Sinergi Es | 3 ~ 5 Turn | **Speed (AGI) -25%**, Kerentanan Freeze **+50%**, **50% langsung Freeze jika dipukul skill Es** *(Yanfly Notetag)*. |
-| **0021** | **Freeze** | Hard CC | 1 ~ 5 Turn | **Tidak bisa bergerak (Cannot Move)**, Evasion 0%, **lepas 10% jika terkena damage**. |
-| **0022** | **Shadow State** | Buff Evasion & Stealth | 1 Action | **Kebal serangan fisik (EVA +100%, PDR 0%)**, Target Rate 0%, **lepas otomatis setelah user melancarkan serangan** *(Yanfly Notetag)*. |
-| **0023** | **Blind** | Debuff Akurasi | 3 ~ 5 Turn | **Akurasi Serangan (Hit Rate) berkurang 75%**. |
-| **0024** | **Fear** | Mental CC | 2 ~ 4 Turn | **ATK -25%, AGI -25%**, Target Rate -50%, & **50% peluang batal menyerang karena panik** *(Yanfly Notetag)*. |
-| **0025** | **Silence** | Skill Lock (Magic) | 3 ~ 5 Turn | **Terkunci dari semua Sihir** (*Seal White Magic & Black Magic*). |
-| **0026** | **Root** | Skill Lock (Fisik) | 2 ~ 3 Turn | **Terkunci dari Serangan Fisik** (*Seal Normal Attack & Skill Fisik*), EVA -100%. |
-| **0027** | **Holy Veil** | Buff Pertahanan Sakral | 3 Turn | **Mengurangi semua damage masuk (Fisik & Magic) sebesar 50%**. |
-| **0028** | **Vulnerable** | Debuff Pertahanan | 1 ~ 3 Turn | **DEF dan MDF berkurang 50%**. |
-| **0029** | **Hunter's Mark** | Debuff Target Prioritas | 2 ~ 3 Turn | **Pasti terkena serangan berikutnya (EVA -100%)**, Target Rate +100%, **lepas setelah terkena damage**. |
-| **0030** | **Haste** | Buff Kecepatan | 1 Turn | **Speed (AGI) meningkat sebesar 50%** (*AGI * 150%*). |
-| **0031** | **Taunt** | Provoke / Enrage | 2 ~ 3 Turn | **Target Rate * 300%**, terkunci hanya bisa mengeluarkan serangan ke musuh. |
+| **0004** | **Poison** | DoT (Damage over Time) | 3 ~ 5 Turn | HP berkurang **1/16 (-6.25%)** tiap turn. |
+| **0005** | **Burn** | DoT + Debuff Ofensif | 3 ~ 5 Turn | HP berkurang **1/12 (-8.33%)** tiap turn & **ATK berkurang 50%**. |
+| **0006** | **Bleed** | DoT + Anti-Heal | 3 ~ 5 Turn | HP berkurang **1/10 (-10%)** tiap turn & **Efek Heal/Regen (REC) -50%**. |
+| **0007** | **Paralyze** | Debuff Speed + Kejang | 3 ~ 5 Turn | **Speed (AGI) -50%**, EVA -20%, & **10% peluang gagal bergerak per turn** *(Yanfly Notetag)*. |
+| **0008** | **Sleep** | Hard CC | 1 ~ 5 Turn | **Tidak bisa bergerak (Cannot Move)**, Evasion 0%, **lepas 100% jika terkena damage**. |
+| **0009** | **Confuse** | Mental CC | 2 ~ 4 Turn | **Menyerang rekan/acak**, 50% peluang lepas jika terkena damage. |
+| **0010** | **Curse** | DoT Berat + All Debuff | 3 ~ 5 Turn | HP berkurang **1/8 (-12.5%)** tiap turn & **Semua Stat berkurang 25%** (*MHP, MMP, ATK, DEF, MAT, MDF, AGI, LUK*). |
+| **0011** | **Stun** | Hard CC Singkat | 1 Turn | **Tidak bisa bergerak (Cannot Move)** selama 1 turn. |
+| **0012** | **Chill** | Debuff + Sinergi Es | 3 ~ 5 Turn | **Speed (AGI) -25%**, Kerentanan Freeze **+50%**, **50% langsung Freeze jika dipukul skill Es** *(Yanfly Notetag)*. |
+| **0013** | **Freeze** | Hard CC | 1 ~ 5 Turn | **Tidak bisa bergerak (Cannot Move)**, Evasion 0%, **lepas 10% jika terkena damage**. |
+| **0014** | **Shadow State** | Buff Evasion & Stealth | 1 Action | **Kebal serangan fisik (EVA +100%, PDR 0%)**, Target Rate 0%, **lepas otomatis setelah user melancarkan serangan** *(Yanfly Notetag)*. |
+| **0015** | **Blind** | Debuff Akurasi | 3 ~ 5 Turn | **Akurasi Serangan (Hit Rate) berkurang 75%**. |
+| **0016** | **Fear** | Mental CC | 2 ~ 4 Turn | **ATK -25%, AGI -25%**, Target Rate -50%, & **50% peluang batal menyerang karena panik** *(Yanfly Notetag)*. |
+| **0017** | **Silence** | Skill Lock (Magic) | 3 ~ 5 Turn | **Terkunci dari semua Sihir** (*Seal White Magic & Black Magic*). |
+| **0018** | **Root** | Skill Lock (Fisik) | 2 ~ 3 Turn | **Terkunci dari Serangan Fisik** (*Seal Normal Attack & Skill Fisik*), EVA -100%. |
+| **0019** | **Holy Veil** | Buff Pertahanan Sakral | 3 Turn | **Mengurangi semua damage masuk (Fisik & Magic) sebesar 50%**. |
+| **0020** | **Vulnerable** | Debuff Pertahanan | 1 ~ 3 Turn | **DEF dan MDF berkurang 50%**. |
+| **0021** | **Hunter's Mark** | Debuff Target Prioritas | 2 ~ 3 Turn | **Pasti terkena serangan berikutnya (EVA -100%)**, Target Rate +100%, **lepas setelah terkena damage**. |
+| **0022** | **Haste** | Buff Kecepatan | 1 Turn | **Speed (AGI) meningkat sebesar 50%** (*AGI * 150%*). |
+| **0023** | **Taunt** | Provoke / Enrage | 2 ~ 3 Turn | **Target Rate * 300%**, terkunci hanya bisa mengeluarkan serangan ke musuh. |
 
 ---
 
@@ -43,7 +45,7 @@
 
 ---
 
-### [0012] Poison
+### [0004] Poison
 * **General Settings:**
   * `Restriction:` None | `Priority:` 50
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` Poison
@@ -68,7 +70,7 @@
 
 ---
 
-### [0013] Burn
+### [0005] Burn
 * **General Settings:**
   * `Restriction:` None | `Priority:` 50
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` None
@@ -94,7 +96,7 @@
 
 ---
 
-### [0014] Bleed
+### [0006] Bleed
 * **General Settings:**
   * `Restriction:` None | `Priority:` 50
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` None
@@ -110,7 +112,7 @@
 
 ---
 
-### [0015] Paralyze
+### [0007] Paralyze
 * **General Settings:**
   * `Restriction:` None | `Priority:` 55
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` Paralyze
@@ -127,7 +129,7 @@
   ```javascript
   <Custom Turn Start Effect>
   if (Math.random() < 0.10) {
-    user.addState(19); // Memicu Stun 1 turn
+    user.addState(11); // Memicu Stun (ID 11) 1 turn
     BattleManager.addText(user.name() + " kejang akibat Paralyze dan tidak bisa bergerak!");
   }
   </Custom Turn Start Effect>
@@ -135,7 +137,7 @@
 
 ---
 
-### [0016] Sleep
+### [0008] Sleep
 * **General Settings:**
   * `Restriction:` Cannot Move | `Priority:` 90
   * `[SV] Motion:` Sleep | `[SV] Overlay:` Sleep
@@ -152,7 +154,7 @@
 
 ---
 
-### [0017] Confuse
+### [0009] Confuse
 * **General Settings:**
   * `Restriction:` Attack an Ally | `Priority:` 75
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` Confusion
@@ -176,7 +178,7 @@
 
 ---
 
-### [0018] Curse
+### [0010] Curse
 * **General Settings:**
   * `Restriction:` None | `Priority:` 60
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` Curse
@@ -199,7 +201,7 @@
 
 ---
 
-### [0019] Stun
+### [0011] Stun
 * **General Settings:**
   * `Restriction:` Cannot Move | `Priority:` 85
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` Paralyze
@@ -214,7 +216,7 @@
 
 ---
 
-### [0020] Chill
+### [0012] Chill
 * **General Settings:**
   * `Restriction:` None | `Priority:` 45
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` None
@@ -222,7 +224,7 @@
   * `Auto-removal Timing:` Turn End (3 ~ 5 Turns) | `Remove at Battle End:` Checked
 * **Traits (Vanilla):**
   1. `Param` $\rightarrow$ **Parameter: AGI * 75%**
-  2. `Rate` $\rightarrow$ **State Rate: Freeze (0021) * 150%**
+  2. `Rate` $\rightarrow$ **State Rate: Freeze (0013) * 150%**
   3. `Rate` $\rightarrow$ **Element Rate: Es (0007) * 125%**
 * **Messages:**
   * *Inflicted:* ` terkena Chill!`
@@ -232,15 +234,15 @@
   ```javascript
   <Custom React Effect>
   if (this.getItemElements().contains(7) && Math.random() < 0.50) {
-    target.addState(21); // Freeze
-    target.removeState(20); // Lepas Chill
+    target.addState(13); // Freeze (ID 13)
+    target.removeState(12); // Lepas Chill (ID 12)
   }
   </Custom React Effect>
   ```
 
 ---
 
-### [0021] Freeze
+### [0013] Freeze
 * **General Settings:**
   * `Restriction:` Cannot Move | `Priority:` 85
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` None
@@ -257,7 +259,7 @@
 
 ---
 
-### [0022] Shadow State
+### [0014] Shadow State
 * **General Settings:**
   * `Restriction:` None | `Priority:` 50
   * `[SV] Motion:` Normal | `[SV] Overlay:` None
@@ -275,14 +277,14 @@
   ```javascript
   <Custom Conclude Effect>
   if (this.isForOpponent()) {
-    user.removeState(22);
+    user.removeState(14); // Shadow State (ID 14)
   }
   </Custom Conclude Effect>
   ```
 
 ---
 
-### [0023] Blind
+### [0015] Blind
 * **General Settings:**
   * `Restriction:` None | `Priority:` 60
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` Blind
@@ -297,7 +299,7 @@
 
 ---
 
-### [0024] Fear
+### [0016] Fear
 * **General Settings:**
   * `Restriction:` None | `Priority:` 65
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` Fear
@@ -323,7 +325,7 @@
 
 ---
 
-### [0025] Silence
+### [0017] Silence
 * **General Settings:**
   * `Restriction:` None | `Priority:` 65
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` Silence
@@ -339,7 +341,7 @@
 
 ---
 
-### [0026] Root
+### [0018] Root
 * **General Settings:**
   * `Restriction:` None | `Priority:` 65
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` None
@@ -356,7 +358,7 @@
 
 ---
 
-### [0027] Holy Veil
+### [0019] Holy Veil
 * **General Settings:**
   * `Restriction:` None | `Priority:` 50
   * `[SV] Motion:` Normal | `[SV] Overlay:` None
@@ -372,7 +374,7 @@
 
 ---
 
-### [0028] Vulnerable
+### [0020] Vulnerable
 * **General Settings:**
   * `Restriction:` None | `Priority:` 50
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` None
@@ -388,7 +390,7 @@
 
 ---
 
-### [0029] Hunter's Mark
+### [0021] Hunter's Mark
 * **General Settings:**
   * `Restriction:` None | `Priority:` 50
   * `[SV] Motion:` Normal | `[SV] Overlay:` None
@@ -406,7 +408,7 @@
 
 ---
 
-### [0030] Haste
+### [0022] Haste
 * **General Settings:**
   * `Restriction:` None | `Priority:` 50
   * `[SV] Motion:` Normal | `[SV] Overlay:` None
@@ -421,7 +423,7 @@
 
 ---
 
-### [0031] Taunt
+### [0023] Taunt
 * **General Settings:**
   * `Restriction:` Attack an Enemy | `Priority:` 70
   * `[SV] Motion:` Abnormal | `[SV] Overlay:` Rage
@@ -441,3 +443,7 @@
   <Physical Taunt>
   <Magical Taunt>
   ```
+
+---
+*Modul disusun untuk proyek game RPG Maker MV: **Tales of The Dark Time**.*
+*Terakhir diverifikasi: **1 September 2026** — disinkronkan dengan `data/States.json`*

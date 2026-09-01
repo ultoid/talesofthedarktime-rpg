@@ -16,10 +16,19 @@ Game RPG berbasis **RPG Maker MV** dengan dunia fantasi *Nusvanir*, menyajikan s
 
 ---
 
+### 🗓️ Update: 1 September 2026
+* **Database Classes (Selesai):**
+  * Telah menyelesaikan konfigurasi database seluruh kelas petualang pada `data/Classes.json` (Tier 1 s/d Tier 5).
+  * Menyelaraskan EXP Curve, rank parameter (MHP, MMP, ATK, DEF, MAT, MDF, AGI, LUK), serta Traits senjata, armor, dan skill untuk setiap kelas.
+* **Sinkronisasi Cheatsheet & Dokumentasi:**
+  * Memperbarui [CHEATSHEET_PARAMETER_CLASS_NUSVANIR.md](CHEATSHEET_PARAMETER_CLASS_NUSVANIR.md) dan [CHEATSHEET_STATE_EFFECT_NUSVANIR.md](CHEATSHEET_STATE_EFFECT_NUSVANIR.md) (beserta versi `.txt`) agar 100% presisi dan sinkron dengan `data/Classes.json` dan `data/States.json`.
+
+---
+
 ## 🎯 Target Berikutnya (Next Target)
-- [ ] **Melengkapi Database Classes:**
-  * Mengonfigurasi seluruh **41 Kelas Petualang Nusvanir** (Tier 1 s/d Tier 5) pada `data/Classes.json` berdasarkan acuan [CHEATSHEET_PARAMETER_CLASS_NUSVANIR.md](CHEATSHEET_PARAMETER_CLASS_NUSVANIR.md).
-  * Mengatur kurva EXP (*EXP Curve*), pertumbuhan parameter (*Parameter Curves*), dan daftar *Traits* senjata/armor/skill tiap kelas.
+- [ ] **Penyusunan Skill untuk Tiap Class:**
+  * Mulai merancang, menyusun, dan mengonfigurasi database Skill (`data/Skills.json`) untuk masing-masing kelas (Tier 1 s/d Tier 5).
+  * Mengatur formula damage, konsumsi MP/TP, efek status/debuff, dan animasi skill sesuai tema dan peran setiap kelas.
 
 ---
 

@@ -1,7 +1,7 @@
 [
 null,
-{"id":1,"battlerName":"","characterIndex":2,"characterName":"actor_custom","classId":40,"equips":[1,1,2,3,0],"faceIndex":0,"faceName":"","traits":[],"initialLevel":50,"maxLevel":99,"name":"Cassian","nickname":"","note":"","profile":""},
-{"id":2,"battlerName":"","characterIndex":7,"characterName":"","classId":26,"equips":[2,1,2,3,0],"faceIndex":7,"faceName":"","traits":[],"initialLevel":1,"maxLevel":99,"name":"Damian","nickname":"","note":"","profile":""},
-{"id":3,"battlerName":"","characterIndex":7,"characterName":"","classId":22,"equips":[3,0,2,3,4],"faceIndex":7,"faceName":"","traits":[],"initialLevel":1,"maxLevel":99,"name":"Jane","nickname":"","note":"","profile":""},
-{"id":4,"battlerName":"","characterIndex":6,"characterName":"","classId":28,"equips":[4,0,2,3,4],"faceIndex":6,"faceName":"","traits":[],"initialLevel":1,"maxLevel":99,"name":"Rama","nickname":"","note":"","profile":""}
+{"id":1,"battlerName":"Cassian_SV","characterIndex":0,"characterName":"actor_custom","classId":29,"equips":[1,1,2,3,0],"faceIndex":1,"faceName":"Cus_Hero","traits":[],"initialLevel":20,"maxLevel":99,"name":"Cassian","nickname":"","note":"","profile":""},
+{"id":2,"battlerName":"Hector_SV","characterIndex":4,"characterName":"actor_custom","classId":26,"equips":[2,1,2,3,0],"faceIndex":2,"faceName":"Cus_Hero","traits":[],"initialLevel":20,"maxLevel":99,"name":"Hector","nickname":"","note":"","profile":""},
+{"id":3,"battlerName":"Jane_SV","characterIndex":5,"characterName":"actor_custom","classId":22,"equips":[3,0,2,3,4],"faceIndex":3,"faceName":"Cus_Hero","traits":[],"initialLevel":15,"maxLevel":99,"name":"Jane","nickname":"","note":"","profile":""},
+{"id":4,"battlerName":"Rama_SV","characterIndex":2,"characterName":"actor_custom","classId":28,"equips":[4,0,2,3,4],"faceIndex":0,"faceName":"Cus_Hero","traits":[],"initialLevel":30,"maxLevel":99,"name":"Rama","nickname":"The Aeromancer","note":"","profile":""}
 ]
