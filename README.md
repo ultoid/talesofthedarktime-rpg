@@ -23,6 +23,13 @@ Game RPG berbasis **RPG Maker MV** dengan dunia fantasi *Nusvanir*, menyajikan s
 * **Sinkronisasi Cheatsheet & Dokumentasi:**
   * Memperbarui [CHEATSHEET_PARAMETER_CLASS_NUSVANIR.md](CHEATSHEET_PARAMETER_CLASS_NUSVANIR.md) dan [CHEATSHEET_STATE_EFFECT_NUSVANIR.md](CHEATSHEET_STATE_EFFECT_NUSVANIR.md) (beserta versi `.txt`) agar 100% presisi dan sinkron dengan `data/Classes.json` dan `data/States.json`.
 
+* **Contoh Skill Pasif (Tier 1):**
+  * Menambahkan contoh skill pasif untuk kelas Tier 1: `Iron Skin` (Skill ID 21) di `data/Skills.json` dengan notetag `<Passive State: 24>`.
+  * Menambahkan State pendukung `Iron Skin (Passive)` (State ID 24) di `data/States.json` yang memberikan MHP +5% dan DEF +10%.
+  * Plugin pendukung untuk mekanik ini: `js/plugins/ultoid_passiveskills.js` — file plugin sudah ditambahkan ke folder `js/plugins/`, namun pastikan mengaktifkannya di Plugin Manager untuk menjalankan fitur pasif otomatis.
+
+  * Status: Semua skill untuk **Class Tier 1** telah selesai dan ditambahkan ke `data/Skills.json`.
+
 ---
 
 ## 🎯 Target Berikutnya (Next Target)
