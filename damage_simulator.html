@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Maker MV Damage Simulator (Official Properties)</title>
+    <style>
+        :root {
+            --bg-color: #12141c;
+            --card-bg: #1a1d29;
+            --card-border: #2a2e43;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: #818cf8;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--card-border);
+            padding-bottom: 8px;
+            color: #c7d2fe;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            background-color: #11131a;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .stats-preview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+            background: #11131a;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px dashed var(--card-border);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .stat-item .val {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .formula-help {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        .formula-help code {
+            background: #11131a;
+            padding: 2px 4px;
+            border-radius: 4px;
+            color: #a5b4fc;
+        }
+
+        .btn-simulate {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-simulate:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .result-box {
+            background: #11131a;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .damage-number {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #f87171;
+            text-shadow: 0 0 10px rgba(248, 113, 113, 0.3);
+        }
+
+        .damage-number.heal {
+            color: var(--success);
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .badge-normal {
+            background-color: var(--success);
+            color: #fff;
+        }
+
+        .log-container {
+            max-height: 220px;
+            overflow-y: auto;
+            background: #11131a;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+
+        .log-item {
+            margin-bottom: 6px;
+            border-bottom: 1px solid #1a1d29;
+            padding-bottom: 4px;
+        }
+
+        .log-item span {
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>RPG Maker MV Damage Simulator</h1>
+        <p>Properti formula disesuaikan 100% dengan dokumentasi resmi RPG Maker MV (<code>atk</code>, <code>mat</code>, <code>mdf</code>, dll).</p>
+    </header>
+
+    <div class="grid-layout">
+        <!-- Panel Konfigurasi -->
+        <div class="panel">
+            <h2>⚙️ Konfigurasi Pertempuran</h2>
+            
+            <div class="form-group">
+                <label>Pilih Kelas Karakter (Actor):</label>
+                <select id="classSelect" onchange="updateActorStats()">
+                    <optgroup label="--Novice (T1)--">
+                        <option value="fighter">0002 Fighter</option>
+                        <option value="apprentice">0003 Apprentice</option>
+                        <option value="scout">0004 Scout</option>
+                    </optgroup>
+                    <optgroup label="--Initiate (T2)--">
+                        <option value="warrior" selected>0006 Warrior</option>
+                        <option value="squire">0007 Squire</option>
+                        <option value="brawler">0008 Brawler</option>
+                        <option value="magician">0009 Magician</option>
+                        <option value="acolyte">0010 Acolyte</option>
+                        <option value="occultist">0011 Occultist</option>
+                        <option value="archer">0012 Archer</option>
+                        <option value="thief">0013 Thief</option>
+                    </optgroup>
+                    <optgroup label="--Adept (T3)--">
+                        <option value="mercenary">0015 Mercenary</option>
+                        <option value="knight">0016 Knight</option>
+                        <option value="martial_artist">0017 Martial Artist</option>
+                        <option value="mage">0018 Mage</option>
+                        <option value="cleric">0019 Cleric</option>
+                        <option value="cultist">0020 Cultist</option>
+                        <option value="ranger">0021 Ranger</option>
+                        <option value="rogue">0022 Rogue</option>
+                    </optgroup>
+                    <optgroup label="--Master (T4)--">
+                        <option value="champion">0024 Champion</option>
+                        <option value="dragoon">0025 Dragoon</option>
+                        <option value="paladin">0026 Paladin</option>
+                        <option value="monk">0027 Monk</option>
+                        <option value="elementalist">0028 Elementalist</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Level Karakter (1 - 99): <span id="levelVal" style="color:var(--accent); font-weight:bold;">15</span></label>
+                <input type="range" id="levelInput" min="1" max="99" value="15" oninput="updateActorStats()">
+            </div>
+
+            <div class="stats-preview" id="actorStatsPreview">
+                <!-- Diisi via JavaScript -->
+            </div>
+
+            <div class="form-group" style="margin-top: 15px;">
+                <label>Pilih Musuh (Target):</label>
+                <select id="enemySelect" onchange="updateEnemyStats()">
+                    <option value="slime">Slime Hijau (Lv. 5) - DEF Rendah</option>
+                    <option value="goblin" selected>Goblin Scout (Lv. 15) - Seimbang</option>
+                    <option value="golem">Iron Golem (Lv. 40) - DEF Tinggi</option>
+                    <option value="dragon">Shadow Dragon (Lv. 90) - Boss End-Game</option>
+                </select>
+            </div>
+
+            <div class="stats-preview" id="enemyStatsPreview">
+                <!-- Diisi via JavaScript -->
+            </div>
+        </div>
+
+        <!-- Panel Formula & Hasil -->
+        <div class="panel">
+            <h2>⚔️ Formula & Simulasi Skill</h2>
+
+            <div class="form-group">
+                <label>Template Formula Cepat (Resmi RPG Maker MV):</label>
+                <select id="templateSelect" onchange="applyTemplate()">
+                    <option value="standard">Fisik Standar (a.atk * 4 - b.def * 2)</option>
+                    <option value="magic">Sihir Standar (a.mat * 3 - b.mdf * 1.5)</option>
+                    <option value="pierce">Serangan Tembus (a.atk * 3 - b.def * 0.5)</option>
+                    <option value="hp_scaling">Skala Max HP (a.mhp * 0.15 + a.atk * 2)</option>
+                    <option value="custom">Kustom (Tulis Sendiri)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Formula Skill:</label>
+                <input type="text" id="formulaInput" value="a.atk * 4 - b.def * 2">
+                <div class="formula-help">
+                    Properti resmi: <code>atk, mat, mdf, agi, luk, mhp, mmp, hp, mp, tp, level</code><br>
+                    Contoh: <code>a.mat * 3 - b.mdf * 1.5</code>
+                </div>
+            </div>
+
+            <button class="btn-simulate" onclick="runSimulation()">JALANKAN SIMULASI DAMAGE</button>
+
+            <div style="margin-top: 20px;">
+                <label>Hasil Kalkulasi Terakhir:</label>
+                <div class="result-box">
+                    <div class="result-header">
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);" id="resultTitle">Base Damage</div>
+                            <div class="damage-number" id="finalDamage">0</div>
+                        </div>
+                        <div>
+                            <span class="badge badge-normal" id="resultBadge">NORMAL</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);" id="damageBreakdown">
+                        Silakan jalankan simulasi terlebih dahulu.
+                    </div>
+                </div>
+
+                <label>Log Pertempuran:</label>
+                <div class="log-container" id="logContainer">
+                    <div class="log-item"><span>[System]</span> Simulator siap dengan properti resmi RPG Maker MV.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Database Kelas (Menggunakan properti resmi: mat, mdf, dll)
+    const classDatabase = {
+        fighter: { name: "Fighter", base: [400, 30, 36, 25, 8, 10, 18, 10], growth: [10, 0.5, 3.5, 2.5, 0.4, 0.8, 1.4, 0.8] },
+        apprentice: { name: "Apprentice", base: [320, 80, 22, 16, 28, 25, 15, 12], growth: [7, 2.0, 1.5, 1.0, 3.0, 2.5, 1.1, 1.0] },
+        scout: { name: "Scout", base: [340, 50, 30, 18, 12, 12, 32, 20], growth: [8, 1.0, 3.0, 1.2, 0.8, 0.8, 3.5, 2.0] },
+        warrior: { name: "Warrior", base: [460, 40, 42, 32, 10, 12, 20, 12], growth: [12, 0.8, 4.0, 3.2, 0.5, 1.0, 1.6, 1.0] },
+        squire: { name: "Squire", base: [500, 50, 35, 42, 10, 20, 15, 14], growth: [14, 0.9, 3.0, 4.0, 0.6, 2.0, 1.0, 1.1] },
+        brawler: { name: "Brawler", base: [480, 25, 45, 22, 8, 8, 28, 10], growth: [15, 0.4, 4.5, 1.8, 0.3, 0.5, 2.5, 0.8] },
+        magician: { name: "Magician", base: [260, 160, 12, 10, 45, 40, 16, 14], growth: [6, 4.5, 0.5, 0.6, 4.8, 4.2, 1.2, 1.1] },
+        acolyte: { name: "Acolyte", base: [280, 180, 14, 15, 35, 45, 15, 18], growth: [7, 4.8, 0.7, 1.0, 3.5, 4.8, 1.1, 1.5] },
+        occultist: { name: "Occultist", base: [290, 170, 15, 14, 42, 38, 20, 22], growth: [7, 4.2, 0.8, 0.9, 4.5, 4.0, 1.5, 1.8] },
+        archer: { name: "Archer", base: [350, 80, 38, 20, 15, 15, 30, 22], growth: [9, 1.5, 3.8, 1.2, 1.0, 1.0, 3.2, 1.8] },
+        thief: { name: "Thief", base: [330, 70, 35, 16, 15, 15, 38, 28], growth: [8, 1.4, 3.5, 1.0, 1.0, 1.0, 4.0, 2.5] },
+        mercenary: { name: "Mercenary", base: [520, 50, 48, 38, 12, 15, 24, 15], growth: [14, 1.0, 4.5, 3.5, 0.8, 1.2, 2.0, 1.2] },
+        knight: { name: "Knight", base: [580, 70, 40, 55, 15, 35, 16, 18], growth: [16, 1.2, 3.5, 5.0, 1.0, 3.2, 1.2, 1.3] },
+        martial_artist: { name: "Martial Artist", base: [550, 40, 52, 28, 10, 12, 35, 15], growth: [16, 0.6, 5.0, 2.2, 0.5, 0.8, 3.0, 1.0] },
+        mage: { name: "Mage", base: [320, 220, 15, 15, 58, 52, 18, 16], growth: [8, 5.5, 0.8, 1.0, 5.8, 5.2, 1.4, 1.3] },
+        cleric: { name: "Cleric", base: [350, 250, 18, 20, 48, 60, 18, 22], growth: [9, 6.0, 1.0, 1.4, 4.8, 6.0, 1.4, 1.8] },
+        cultist: { name: "Cultist", base: [340, 230, 20, 18, 55, 50, 24, 25], growth: [8, 5.8, 1.2, 1.2, 5.5, 5.0, 1.8, 2.0] },
+        ranger: { name: "Ranger", base: [400, 110, 45, 25, 20, 20, 38, 26], growth: [11, 2.0, 4.5, 1.5, 1.2, 1.2, 3.8, 2.2] },
+        rogue: { name: "Rogue", base: [380, 100, 48, 20, 20, 18, 45, 32], growth: [10, 1.8, 4.8, 1.2, 1.2, 1.0, 4.5, 2.8] },
+        champion: { name: "Champion", base: [700, 100, 62, 50, 25, 30, 30, 25], growth: [20, 2.0, 5.5, 4.5, 1.5, 2.0, 2.5, 1.8] },
+        dragoon: { name: "Dragoon", base: [680, 120, 65, 48, 30, 32, 35, 22], growth: [19, 2.2, 5.8, 4.2, 2.0, 2.0, 3.0, 1.6] },
+        paladin: { name: "Paladin", base: [750, 150, 55, 70, 35, 55, 20, 28], growth: [22, 2.5, 4.5, 6.5, 2.2, 4.5, 1.5, 2.0] },
+        monk: { name: "Monk", base: [650, 80, 68, 35, 20, 25, 45, 25], growth: [18, 1.5, 6.2, 2.8, 1.2, 1.5, 4.0, 2.0] },
+        elementalist: { name: "Elementalist", base: [400, 300, 20, 20, 70, 65, 25, 22], growth: [10, 7.0, 1.0, 1.5, 6.8, 6.2, 1.8, 1.6] }
+    };
+
+    const enemyDatabase = {
+        slime: { name: "Slime Hijau", level: 5, mhp: 120, mmp: 20, atk: 18, def: 8, mat: 10, mdf: 8, agi: 10, luk: 5 },
+        goblin: { name: "Goblin Scout", level: 15, mhp: 350, mmp: 50, atk: 45, def: 25, mat: 20, mdf: 22, agi: 32, luk: 15 },
+        golem: { name: "Iron Golem", level: 40, mhp: 2400, mmp: 0, atk: 120, def: 110, mat: 30, mdf: 70, agi: 15, luk: 10 },
+        dragon: { name: "Shadow Dragon", level: 90, mhp: 15000, mmp: 1000, atk: 380, def: 280, mat: 350, mdf: 300, agi: 120, luk: 80 }
+    };
+
+    function calculateStats(baseArr, growthArr, level) {
+        let stats = [];
+        for (let i = 0; i < baseArr.length; i++) {
+            stats.push(Math.floor(baseArr[i] + (growthArr[i] * (level - 1))));
+        }
+        return stats;
+    }
+
+    function updateActorStats() {
+        const classKey = document.getElementById('classSelect').value;
+        const level = parseInt(document.getElementById('levelInput').value);
+        document.getElementById('levelVal').innerText = level;
+
+        const cData = classDatabase[classKey];
+        const rawStats = calculateStats(cData.base, cData.growth, level);
+
+        const previewDiv = document.getElementById('actorStatsPreview');
+        previewDiv.innerHTML = `
+            <div class="stat-item"><div class="label">MHP</div><div class="val">${rawStats[0]}</div></div>
+            <div class="stat-item"><div class="label">MMP</div><div class="val">${rawStats[1]}</div></div>
+            <div class="stat-item"><div class="label">ATK</div><div class="val">${rawStats[2]}</div></div>
+            <div class="stat-item"><div class="label">DEF</div><div class="val">${rawStats[3]}</div></div>
+            <div class="stat-item"><div class="label">MAT</div><div class="val">${rawStats[4]}</div></div>
+            <div class="stat-item"><div class="label">MDF</div><div class="val">${rawStats[5]}</div></div>
+            <div class="stat-item"><div class="label">AGI</div><div class="val">${rawStats[6]}</div></div>
+            <div class="stat-item"><div class="label">LUK</div><div class="val">${rawStats[7]}</div></div>
+        `;
+    }
+
+    function updateEnemyStats() {
+        const enemyKey = document.getElementById('enemySelect').value;
+        const e = enemyDatabase[enemyKey];
+
+        const previewDiv = document.getElementById('enemyStatsPreview');
+        previewDiv.innerHTML = `
+            <div class="stat-item"><div class="label">MHP</div><div class="val">${e.mhp}</div></div>
+            <div class="stat-item"><div class="label">MMP</div><div class="val">${e.mmp}</div></div>
+            <div class="stat-item"><div class="label">ATK</div><div class="val">${e.atk}</div></div>
+            <div class="stat-item"><div class="label">DEF</div><div class="val">${e.def}</div></div>
+            <div class="stat-item"><div class="label">MAT</div><div class="val">${e.mat}</div></div>
+            <div class="stat-item"><div class="label">MDF</div><div class="val">${e.mdf}</div></div>
+            <div class="stat-item"><div class="label">AGI</div><div class="val">${e.agi}</div></div>
+            <div class="stat-item"><div class="label">LUK</div><div class="val">${e.luk}</div></div>
+        `;
+    }
+
+    function applyTemplate() {
+        const template = document.getElementById('templateSelect').value;
+        const formulaInput = document.getElementById('formulaInput');
+
+        if (template === 'standard') formulaInput.value = 'a.atk * 4 - b.def * 2';
+        else if (template === 'magic') formulaInput.value = 'a.mat * 3 - b.mdf * 1.5';
+        else if (template === 'pierce') formulaInput.value = 'a.atk * 3 - b.def * 0.5';
+        else if (template === 'hp_scaling') formulaInput.value = 'a.mhp * 0.15 + a.atk * 2';
+    }
+
+    function runSimulation() {
+        const classKey = document.getElementById('classSelect').value;
+        const level = parseInt(document.getElementById('levelInput').value);
+        const cData = classDatabase[classKey];
+        const aRaw = calculateStats(cData.base, cData.growth, level);
+
+        // Mapping properti persis sesuai dokumen RPG Maker MV (menggunakan mat dan mdf)
+        const a = {
+            mhp: aRaw[0], mmp: aRaw[1], hp: aRaw[0], mp: aRaw[1], tp: 0,
+            atk: aRaw[2], def: aRaw[3], mat: aRaw[4], mdf: aRaw[5],
+            agi: aRaw[6], luk: aRaw[7], level: level
+        };
+
+        const enemyKey = document.getElementById('enemySelect').value;
+        const bData = enemyDatabase[enemyKey];
+        const b = {
+            mhp: bData.mhp, mmp: bData.mmp, hp: bData.mhp, mp: bData.mmp, tp: 0,
+            atk: bData.atk, def: bData.def, mat: bData.mat, mdf: bData.mdf,
+            agi: bData.agi, luk: bData.luk, level: bData.level
+        };
+
+        const formula = document.getElementById('formulaInput').value;
+
+        let rawDamage = 0;
+        try {
+            let evalFunc = new Function('a', 'b', 'return ' + formula + ';');
+            rawDamage = evalFunc(a, b);
+        } catch (error) {
+            alert('Formula Error! Pastikan sintaks properti benar (contoh: a.mat, b.mdf).');
+            return;
+        }
+
+        rawDamage = Math.round(rawDamage);
+        if (isNaN(rawDamage)) rawDamage = 0;
+
+        let variance = Math.floor(rawDamage * 0.05);
+        let finalDmg = rawDamage + Math.floor(Math.random() * (variance * 2 + 1)) - variance;
+        if (finalDmg < 0) finalDmg = 0;
+
+        const dmgEl = document.getElementById('finalDamage');
+        dmgEl.innerText = finalDmg;
+        dmgEl.className = finalDmg >= 0 ? "damage-number" : "damage-number heal";
+
+        document.getElementById('damageBreakdown').innerHTML = `
+            Kalkulasi Dasar: <b>${rawDamage}</b> (dengan variasi ±5% menjadi <b>${finalDmg}</b>)<br>
+            Sisa HP ${bData.name} setelah serangan: <b>${Math.max(0, b.mhp - finalDmg)} / ${b.mhp}</b>
+        `;
+
+        const logContainer = document.getElementById('logContainer');
+        const timeStr = new Date().toLocaleTimeString();
+        logContainer.innerHTML = `
+            <div class="log-item"><span>[${timeStr}]</span> <b>${cData.name} (Lv.${level})</b> menyerang <b>${bData.name}</b> menggunakan formula <code>${formula}</code> dan menghasilkan <b>${finalDmg} DMG</b>!</div>
+        ` + logContainer.innerHTML;
+    }
+
+    window.onload = function() {
+        updateActorStats();
+        updateEnemyStats();
+    };
+</script>
+
+</body>
+</html>
