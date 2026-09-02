@@ -30,17 +30,24 @@ Game RPG berbasis **RPG Maker MV** dengan dunia fantasi *Nusvanir*, menyajikan s
 
   * Status: Semua skill untuk **Class Tier 1** telah selesai dan ditambahkan ke `data/Skills.json`.
 
-* **Tier 2 Database:**
+* **Tier 2 Database & Skill Entry:**
   * Menambahkan file database referensi untuk Tier 2: `Tier 2 Skill.xlsx` (lokasi proyek: root). File ini berisi rancangan skill Tier 2 dan beberapa catatan desain.
   * Beberapa pembaruan tambahan juga telah diterapkan ke database (`data/Skills.json`, `data/MapInfos.json`, `data/System.json`).
-  * Perubahan telah di-commit dan dipush ke remote.
+
+---
+
+### 🗓️ Update: 2 September 2026
+* **Database Skill Tier 2:**
+  * Telah menginput seluruh daftar nama Skill untuk **Class Tier 2** ke dalam `data/Skills.json`.
+  * *Catatan:* Parameter skill (seperti formula damage, konsumsi MP/TP, efek status/debuff, scope, dan detail statistik) belum diisi/dikonfigurasi.
 
 ---
 
 ## 🎯 Target Berikutnya (Next Target)
-- [ ] **Penyusunan Skill untuk Tiap Class:**
-  * Mulai merancang, menyusun, dan mengonfigurasi database Skill (`data/Skills.json`) untuk masing-masing kelas (Tier 1 s/d Tier 5).
-  * Mengatur formula damage, konsumsi MP/TP, efek status/debuff, dan animasi skill sesuai tema dan peran setiap kelas.
+- [ ] **Pengisian Parameter Skill Tier 2:**
+  * Mengatur formula damage, konsumsi MP/TP, efek status/debuff, dan animasi untuk seluruh Skill Class Tier 2 pada `data/Skills.json`.
+- [ ] **Penyusunan Skill Class Tier 3 - Tier 5:**
+  * Merancang, menyusun, dan mengonfigurasi Skill (`data/Skills.json`) untuk kelas Tier 3 hingga Tier 5.
 
 ---
 
