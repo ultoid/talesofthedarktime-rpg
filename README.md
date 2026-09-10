@@ -2,6 +2,8 @@
 
 Game RPG berbasis **RPG Maker MV** dengan dunia fantasi *Nusvanir*, menyajikan sistem pertarungan taktis mendalam, variasi kelas berjenjang, dan mekanik status effect yang kaya.
 
+Database : https://docs.google.com/spreadsheets/d/1qddEfyZwrq9_UNrlxMszt5IorWkt8U61qDKVYP1d8iQ/edit?usp=sharing
+
 ---
 
 ## 📌 Log Pembaruan Terkini (Update Log)
