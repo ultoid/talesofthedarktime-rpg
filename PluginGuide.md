@@ -846,7 +846,7 @@ $gameParty.nusvIsActorRequired(actorId)
 
 ## NUSV_ClassChange
 
-Fungsi: menu ganti class, unlock/lock class, tier class, requirement class.
+Fungsi: menu ganti class, unlock/lock class, tier class, requirement class, level class, dan sinkronisasi skill learnset class.
 
 Class:
 
@@ -871,6 +871,15 @@ Fighter ofensif yang memakai heavy weapon.
 ```
 
 `<Class Max Level: 20>` membatasi level maksimal aktor saat sedang memakai class itu. Batas ini tidak menaikkan limit global/actor dari `YEP_CoreEngine`; plugin memakai batas yang lebih rendah antara max level actor dan max level class.
+
+Learnset bawaan di database Class sekarang diperlakukan sebagai skill aktif class:
+
+- Skill dipasang berdasarkan level class aktif (`actor.nusvClassLevel()`).
+- Saat actor pindah class, skill dari learnset class lama dilepas.
+- Setelah masuk class baru, skill dari learnset class baru dipasang sesuai level class tersebut.
+- Skill ID yang berada di learnset database Class dianggap sebagai skill class aktif, sehingga akan mengikuti class aktif.
+
+Di `js/plugins.js`, parameter `Maintain Level` untuk `NUSV_ClassChange` diset `false`, sehingga setiap class mengingat levelnya masing-masing.
 
 Race bisa dibaca dari:
 
@@ -936,6 +945,8 @@ Skill:
 <Learn Skill Type: 2>
 <Hide If Learned>
 ```
+
+`<Learn Level: 20>` memakai level class aktif jika `NUSV_ClassChange` tersedia. Jika tidak, fallback ke level actor biasa.
 
 Deskripsi:
 

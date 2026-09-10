@@ -65,7 +65,8 @@
  *   Requires and consumes 1 of Armor ID 8.
  *
  * <Learn Level: 20>
- *   Actor must be at least level 20.
+ *   Actor's current class level must be at least 20 if NUSV_ClassChange is
+ *   active. Otherwise, actor level must be at least 20.
  *
  * <Learn Class: 5>
  * <Learn Class: Warrior>
@@ -243,7 +244,10 @@ NUSV.SkillLearn = NUSV.SkillLearn || {};
         var raw;
 
         raw = noteValue(skill, 'Learn Level');
-        if (raw != null && this.level < Number(raw)) return false;
+        if (raw != null) {
+            var learnLevel = this.nusvClassLevel ? this.nusvClassLevel(this._classId) : this.level;
+            if (learnLevel < Number(raw)) return false;
+        }
 
         raw = noteValue(skill, 'Learn Class');
         if (raw != null) {

@@ -43,6 +43,7 @@
  * - lock/unlock classes with requirements
  * - support class progression by Tier
  * - preserve or remember class levels
+ * - refresh class learnset skills when changing class
  * - support event/script based class unlocks
  *
  * Recommended plugin order:
@@ -160,6 +161,11 @@
  *   Each actor remembers a separate level for each class.
  *   When returning to a previous class, its remembered level is restored.
  *
+ * Class database learnings are active class skills:
+ *   - learned from the actor's current class level
+ *   - removed when leaving the class
+ *   - refreshed when entering another class or changing level
+ *
  * ============================================================================
  * NOTES
  * ============================================================================
@@ -257,6 +263,20 @@ NUSV.ClassChange = NUSV.ClassChange || {};
                /<Class Change Requirement>/i.test(cls.note);
     }
 
+    function learningSkillIds(classId, level) {
+        var cls = $dataClasses[Number(classId)];
+        if (!cls || !cls.learnings) return [];
+
+        level = Number(level || 1);
+        var result = [];
+        cls.learnings.forEach(function(learning) {
+            if (learning && Number(learning.level) <= level) {
+                result.push(Number(learning.skillId));
+            }
+        });
+        return result;
+    }
+
     // -------------------------------------------------------------------------
     // Game_System
     // -------------------------------------------------------------------------
@@ -311,6 +331,7 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         this._nusvClassLevels = this._nusvClassLevels || {};
         this._nusvClassLevels[this._classId] = this._level;
         this._nusvBaseLevel = this._nusvBaseLevel || this._level;
+        this.nusvRefreshClassLearnedSkills();
     };
 
     Game_Actor.prototype.nusvClassTier = function() {
@@ -371,6 +392,33 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         return level;
     };
 
+    Game_Actor.prototype.nusvForgetActiveClassLearnedSkills = function() {
+        var activeSkills = this._nusvActiveClassLearningSkills;
+        if (!activeSkills) {
+            var classLevel = this.nusvClassLevel ? this.nusvClassLevel(this._classId) : this.level;
+            activeSkills = learningSkillIds(this._classId, classLevel);
+        }
+
+        activeSkills.forEach(function(skillId) {
+            this.forgetSkill(Number(skillId));
+        }, this);
+        this._nusvActiveClassLearningSkills = [];
+    };
+
+    Game_Actor.prototype.nusvRefreshClassLearnedSkills = function() {
+        this.nusvForgetActiveClassLearnedSkills();
+
+        var classLevel = this.nusvClassLevel ? this.nusvClassLevel(this._classId) : this.level;
+        var skillIds = learningSkillIds(this._classId, classLevel);
+
+        skillIds.forEach(function(skillId) {
+            this.learnSkill(skillId);
+        }, this);
+
+        this._nusvActiveClassLearningSkills = skillIds.slice();
+        this.refresh();
+    };
+
     var _Game_Actor_levelUp = Game_Actor.prototype.levelUp;
     Game_Actor.prototype.levelUp = function() {
         if (_Game_Actor_levelUp) _Game_Actor_levelUp.call(this);
@@ -378,6 +426,7 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         this._nusvClassLevels = this._nusvClassLevels || {};
         this._nusvClassLevels[this._classId] = this._level;
         this._nusvBaseLevel = Math.max(Number(this._nusvBaseLevel || 1), this._level);
+        this.nusvRefreshClassLearnedSkills();
     };
 
     var _Game_Actor_levelDown = Game_Actor.prototype.levelDown;
@@ -385,6 +434,7 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         if (_Game_Actor_levelDown) _Game_Actor_levelDown.call(this);
         this._nusvClassLevels = this._nusvClassLevels || {};
         this._nusvClassLevels[this._classId] = this._level;
+        this.nusvRefreshClassLearnedSkills();
     };
 
     Game_Actor.prototype.nusvCanChangeClass = function(classId) {
@@ -473,6 +523,7 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         if (!this.nusvCanChangeClass(classId) && this._classId !== classId) return false;
 
         this._nusvClassLevels = this._nusvClassLevels || {};
+        this.nusvForgetActiveClassLearnedSkills();
 
         var oldClassId = this._classId;
         this._nusvClassLevels[oldClassId] = this._level;
@@ -493,6 +544,8 @@ NUSV.ClassChange = NUSV.ClassChange || {};
             this._exp[classId] = this.expForLevel(this._level);
             this.refresh();
         }
+
+        this.nusvRefreshClassLearnedSkills();
 
         if (restoreHpMp) {
             this.setHp(this.mhp);
