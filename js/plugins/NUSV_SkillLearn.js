@@ -1,6 +1,6 @@
 /*:
  * @plugindesc v1.0.0 NUSV Skill Learn - clean-room skill learning system for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @author Ultoid
  *
  * @param Menu Command Name
  * @type text
@@ -438,10 +438,13 @@ NUSV.SkillLearn = NUSV.SkillLearn || {};
                 noteValue(skill, 'Learn Race') != null ||
                 noteValue(skill, 'Learn Switch') != null ||
                 noteValue(skill, 'Learn Skill') != null ||
+                noteValue(skill, 'Learn Skill Type') != null ||
                 noteValue(skill, 'Learn Item') != null ||
                 noteValue(skill, 'Learn Weapon') != null ||
                 noteValue(skill, 'Learn Armor') != null ||
-                multiline(skill, 'Learn Requirement')) {
+                multiline(skill, 'Learn Requirement') ||
+                multiline(skill, 'Learn Cost Eval') ||
+                multiline(skill, 'Learn Cost Pay')) {
                 this._data.push(skill);
             }
         }
@@ -522,7 +525,10 @@ NUSV.SkillLearn = NUSV.SkillLearn || {};
         var ww = 300;
         var wh = Graphics.boxHeight - wy;
 
-        this._statusWindow = new Window_MenuStatus(0, wy, ww, wh);
+        this._statusWindow = new Window_MenuStatus(0, wy);
+        this._statusWindow.move(0, wy, ww, wh);
+        this._statusWindow.createContents();
+        this._statusWindow.refresh();
         this._statusWindow.setHandler('ok', this.onActorOk.bind(this));
         this._statusWindow.setHandler('cancel', this.popScene.bind(this));
         this.addWindow(this._statusWindow);

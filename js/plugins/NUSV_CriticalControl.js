@@ -1,6 +1,6 @@
 /*:
  * @plugindesc v1.0.0 NUSV Critical Control - clean-room critical system for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @author Ultoid
  *
  * @param Base Critical Rate Formula
  * @desc Global critical-rate formula. Variables: user, target, item, s, v, rate.

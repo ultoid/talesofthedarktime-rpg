@@ -1,6 +1,6 @@
 /*:
  * @plugindesc v1.0.0 NUSV Special Param Formula - clean-room custom S-Parameter formulas for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @author Ultoid
  *
  * @param TGR Formula
  * @desc Formula for Target Rate.

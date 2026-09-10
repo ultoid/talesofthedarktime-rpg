@@ -1,6 +1,6 @@
 /*:
  * @plugindesc v1.0.0 NUSV Job Points - clean-room JP system for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @author Ultoid
  *
  * @param Default JP Gain
  * @type number

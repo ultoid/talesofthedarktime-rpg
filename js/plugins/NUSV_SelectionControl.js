@@ -1,6 +1,6 @@
 /*:
  * @plugindesc v1.0.0 NUSV Selection Control - clean-room selectable-target restrictions for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @author Ultoid
  *
  * @help
  * ============================================================================

@@ -1,6 +1,6 @@
 /*:
- * @plugindesc v1.0.0 NUSV Socket Core - clean-room equipment socket/augment system for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @plugindesc v1.1.0 NUSV Socket Core - clean-room equipment socket/augment system for RPG Maker MV.
+ * @author Ultoid
  *
  * @param Default Socket Count
  * @type number
@@ -56,6 +56,19 @@
  * <Socket Armor Only>
  *
  * ============================================================================
+ * YEP ITEM CORE / INDEPENDENT EQUIPMENT
+ * ============================================================================
+ *
+ * When YEP_ItemCore uses independent Weapons/Armors, sockets are stored on
+ * the actual independent equipment instance (baseItemId), never on the base
+ * database object. Two copies of the same equipment can therefore have
+ * completely different socket contents, and YEP_ItemCore save/load persists
+ * those fields with the independent item.
+ *
+ * Passing a base database Weapon/Armor to attach()/remove() is rejected while
+ * independent equipment is enabled.
+ *
+ * ============================================================================
  * SCRIPT CALLS
  * ============================================================================
  *
@@ -83,21 +96,44 @@ NUSV.SocketCore = NUSV.SocketCore || {};
     var params = PluginManager.parameters(pluginName);
     var defaultSockets = Number(params['Default Socket Count'] || 0);
 
+    function baseObject(obj) {
+        if (!obj) return null;
+        if (obj.baseItemId) {
+            if (DataManager.isWeapon(obj)) return $dataWeapons[obj.baseItemId] || obj;
+            if (DataManager.isArmor(obj)) return $dataArmors[obj.baseItemId] || obj;
+        }
+        return obj;
+    }
+
     function noteValue(obj, tag) {
-        if (!obj || !obj.note) return null;
+        var source = baseObject(obj);
+        if (!source || !source.note) return null;
         var re = new RegExp('<' + tag + '\\s*:\\s*([^>]+)>', 'i');
-        var m = obj.note.match(re);
+        var m = source.note.match(re);
         return m ? m[1].trim() : null;
     }
 
     function hasTag(obj, tag) {
-        if (!obj || !obj.note) return false;
+        var source = baseObject(obj);
+        if (!source || !source.note) return false;
         var re = new RegExp('<' + tag + '>', 'i');
-        return re.test(obj.note);
+        return re.test(source.note);
+    }
+
+    function usesIndependentEquipment() {
+        return !!(Imported.YEP_ItemCore && window.Yanfly && Yanfly.Param &&
+            (Number(Yanfly.Param.ItemMaxWeapons || 0) > 0 ||
+             Number(Yanfly.Param.ItemMaxArmors || 0) > 0));
+    }
+
+    function isMutableInstance(eq) {
+        if (!eq || !(DataManager.isWeapon(eq) || DataManager.isArmor(eq))) return false;
+        if (!usesIndependentEquipment()) return true;
+        return !!eq.baseItemId;
     }
 
     function ensureSockets(eq) {
-        if (!eq) return;
+        if (!eq || !isMutableInstance(eq)) return;
         if (!Array.isArray(eq._nusvSockets)) eq._nusvSockets = [];
         var max = NUSV.SocketCore.socketCount(eq);
         while (eq._nusvSockets.length < max) eq._nusvSockets.push(0);
@@ -111,9 +147,13 @@ NUSV.SocketCore = NUSV.SocketCore || {};
     };
 
     NUSV.SocketCore.sockets = function(eq) {
+        if (!eq || !isMutableInstance(eq)) return [];
         ensureSockets(eq);
-        return eq ? eq._nusvSockets : [];
+        return eq._nusvSockets;
     };
+
+    NUSV.SocketCore.isMutableInstance = isMutableInstance;
+    NUSV.SocketCore.baseObject = baseObject;
 
     NUSV.SocketCore.isSocketItem = function(item) {
         return !!(item && DataManager.isItem(item) && hasTag(item, 'Socket Item'));
@@ -122,6 +162,7 @@ NUSV.SocketCore = NUSV.SocketCore || {};
     NUSV.SocketCore.canAttach = function(eq, item) {
         if (!eq || !this.isSocketItem(item)) return false;
         if (!(DataManager.isWeapon(eq) || DataManager.isArmor(eq))) return false;
+        if (!isMutableInstance(eq)) return false;
 
         if (hasTag(item, 'Socket Weapon Only') && !DataManager.isWeapon(eq)) return false;
         if (hasTag(item, 'Socket Armor Only') && !DataManager.isArmor(eq)) return false;
@@ -141,9 +182,10 @@ NUSV.SocketCore = NUSV.SocketCore || {};
     };
 
     NUSV.SocketCore.remove = function(eq, index) {
+        if (!eq || !isMutableInstance(eq)) return false;
         ensureSockets(eq);
         index = Number(index);
-        if (!eq || index < 0 || index >= eq._nusvSockets.length) return false;
+        if (index < 0 || index >= eq._nusvSockets.length) return false;
 
         var itemId = eq._nusvSockets[index];
         if (!itemId) return false;
@@ -155,8 +197,8 @@ NUSV.SocketCore = NUSV.SocketCore || {};
     };
 
     NUSV.SocketCore.paramBonus = function(eq, paramId) {
+        if (!eq || !isMutableInstance(eq)) return 0;
         ensureSockets(eq);
-        if (!eq) return 0;
 
         var tags = ['MHP','MMP','ATK','DEF','MAT','MDF','AGI','LUK'];
         var key = tags[paramId];
@@ -180,5 +222,5 @@ NUSV.SocketCore = NUSV.SocketCore || {};
         return value;
     };
 
-    NUSV.SocketCore.version = '1.0.0';
+    NUSV.SocketCore.version = '1.1.0';
 })();

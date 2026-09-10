@@ -1,6 +1,6 @@
 /*:
  * @plugindesc v1.0.0 NUSV Weapon Unleash - clean-room attack replacement/unleash system for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @author Ultoid
  *
  * @param Default Priority
  * @type number

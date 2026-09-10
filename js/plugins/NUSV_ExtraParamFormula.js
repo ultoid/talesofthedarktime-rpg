@@ -1,6 +1,6 @@
 /*:
  * @plugindesc v1.0.0 NUSV Extra Param Formula - clean-room custom X-Parameter formulas for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @author Ultoid
  *
  * @param HIT Formula
  * @desc Formula for Hit Rate. Variables: base, user, a, s, v.

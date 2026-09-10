@@ -1,6 +1,6 @@
 /*:
- * @plugindesc v1.0.0 NUSV Class Change - clean-room class change/progression system for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @plugindesc v1.1.0 NUSV Class Change - clean-room class change/progression system for RPG Maker MV.
+ * @author Ultoid
  *
  * @param Menu Command Name
  * @type text
@@ -60,6 +60,10 @@
  *
  * <Class Tier: 2>
  *   Informational tier value used by Nusvanir progression.
+ *
+ * <Class Max Level: 20>
+ *   Actor cannot level above 20 while using this class.
+ *   This caps the actor's normal max level for the active class.
  *
  * <Class Description>
  * Offensive fighter specializing in heavy weapons.
@@ -143,6 +147,7 @@
  *   actor.nusvCanChangeClass(5);
  *   actor.nusvChangeClass(5);
  *   actor.nusvClassTier();
+ *   actor.nusvClassMaxLevel();
  *
  * ============================================================================
  * CLASS LEVEL MEMORY
@@ -224,6 +229,14 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         return classByName(raw);
     }
 
+    function classMaxLevel(cls) {
+        var raw = noteValue(cls, 'Class Max Level');
+        if (raw == null) return null;
+
+        var value = Math.floor(Number(raw));
+        return isNaN(value) ? null : Math.max(1, value);
+    }
+
     function actorRace(actor) {
         if (!actor) return '';
 
@@ -297,6 +310,7 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         _Game_Actor_setup.call(this, actorId);
         this._nusvClassLevels = this._nusvClassLevels || {};
         this._nusvClassLevels[this._classId] = this._level;
+        this._nusvBaseLevel = this._nusvBaseLevel || this._level;
     };
 
     Game_Actor.prototype.nusvClassTier = function() {
@@ -304,6 +318,73 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         var raw = noteValue(cls, 'Class Tier');
         var value = Number(raw);
         return isNaN(value) ? 0 : value;
+    };
+
+    Game_Actor.prototype.nusvClassMaxLevel = function(classId) {
+        classId = Number(classId || this._classId);
+        var cls = $dataClasses[classId];
+        return classMaxLevel(cls);
+    };
+
+    var _Game_Actor_maxLevel = Game_Actor.prototype.maxLevel;
+    Game_Actor.prototype.maxLevel = function() {
+        var base = _Game_Actor_maxLevel ? _Game_Actor_maxLevel.call(this) : 99;
+        var classMax = this.nusvClassMaxLevel ? this.nusvClassMaxLevel(this._classId) : null;
+        if (classMax == null) return base;
+        return Math.min(base, classMax);
+    };
+
+    Game_Actor.prototype.nusvClampLevelToClassMax = function(classId) {
+        classId = Number(classId || this._classId);
+        var classMax = this.nusvClassMaxLevel(classId);
+        if (classMax == null || this._level <= classMax) return;
+
+        this._level = classMax;
+        this._exp[classId] = this.expForLevel(this._level);
+        this.refresh();
+    };
+
+    Game_Actor.prototype.nusvClassLevel = function(classId) {
+        classId = Number(classId || this._classId);
+        var level;
+        var maxLevel = this.nusvClassMaxLevel ? this.nusvClassMaxLevel(classId) : null;
+
+        if (classId === this._classId || maintainLevel) {
+            level = this.level;
+            return maxLevel == null ? level : Math.min(level, maxLevel);
+        }
+
+        this._nusvClassLevels = this._nusvClassLevels || {};
+        level = Number(this._nusvClassLevels[classId] || 1);
+        return maxLevel == null ? level : Math.min(level, maxLevel);
+    };
+
+    Game_Actor.prototype.nusvBaseLevel = function() {
+        this._nusvClassLevels = this._nusvClassLevels || {};
+
+        var level = Math.max(1, Number(this._nusvBaseLevel || 0), Number(this._level || 1));
+        Object.keys(this._nusvClassLevels).forEach(function(classId) {
+            level = Math.max(level, Number(this._nusvClassLevels[classId] || 1));
+        }, this);
+
+        this._nusvBaseLevel = level;
+        return level;
+    };
+
+    var _Game_Actor_levelUp = Game_Actor.prototype.levelUp;
+    Game_Actor.prototype.levelUp = function() {
+        if (_Game_Actor_levelUp) _Game_Actor_levelUp.call(this);
+        this.nusvClampLevelToClassMax(this._classId);
+        this._nusvClassLevels = this._nusvClassLevels || {};
+        this._nusvClassLevels[this._classId] = this._level;
+        this._nusvBaseLevel = Math.max(Number(this._nusvBaseLevel || 1), this._level);
+    };
+
+    var _Game_Actor_levelDown = Game_Actor.prototype.levelDown;
+    Game_Actor.prototype.levelDown = function() {
+        if (_Game_Actor_levelDown) _Game_Actor_levelDown.call(this);
+        this._nusvClassLevels = this._nusvClassLevels || {};
+        this._nusvClassLevels[this._classId] = this._level;
     };
 
     Game_Actor.prototype.nusvCanChangeClass = function(classId) {
@@ -314,6 +395,9 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         if (!allowSameClass && this._classId === classId) return false;
 
         // Global lock/unlock.
+        if ($gameSystem._nusvLockedClasses && $gameSystem._nusvLockedClasses[classId]) {
+            return false;
+        }
         if (!$gameSystem.nusvIsClassUnlocked(classId) && !hasExplicitRequirements(cls)) {
             return false;
         }
@@ -392,16 +476,19 @@ NUSV.ClassChange = NUSV.ClassChange || {};
 
         var oldClassId = this._classId;
         this._nusvClassLevels[oldClassId] = this._level;
+        this._nusvBaseLevel = Math.max(this.nusvBaseLevel(), this._level);
 
         var oldHpRate = this.mhp > 0 ? this.hp / this.mhp : 1;
         var oldMpRate = this.mmp > 0 ? this.mp / this.mmp : 1;
 
         if (maintainLevel) {
             this.changeClass(classId, true);
+            this.nusvClampLevelToClassMax(classId);
         } else {
             var targetLevel = this._nusvClassLevels[classId] || 1;
             this.changeClass(classId, false);
-            this._level = Math.max(1, targetLevel);
+            var maxLevel = this.nusvClassMaxLevel(classId) || targetLevel;
+            this._level = Math.min(maxLevel, Math.max(1, targetLevel));
             this.initExp();
             this._exp[classId] = this.expForLevel(this._level);
             this.refresh();
@@ -504,13 +591,22 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         var rect = this.itemRectForText(index);
         var enabled = this._actor && this._actor.nusvCanChangeClass(cls.id);
         var tier = Number(noteValue(cls, 'Class Tier') || 0);
+        var isHeader = /^--.*--$/.test(String(cls.name || ''));
+        var classLevel = this._actor && this._actor.nusvClassLevel ?
+            this._actor.nusvClassLevel(cls.id) : 1;
+        var classMax = this._actor && this._actor.nusvClassMaxLevel ?
+            this._actor.nusvClassMaxLevel(cls.id) : null;
+        var rightText = '';
+
+        if (!isHeader) {
+            rightText = 'Lv' + classLevel;
+            if (classMax != null) rightText += '/' + classMax;
+        }
+        if (tier > 0) rightText += (rightText ? '  ' : '') + 'T' + tier;
 
         this.changePaintOpacity(enabled);
-        this.drawText(cls.name, rect.x, rect.y, rect.width - 80, 'left');
-
-        if (tier > 0) {
-            this.drawText('T' + tier, rect.x, rect.y, rect.width, 'right');
-        }
+        this.drawText(cls.name, rect.x, rect.y, rect.width - 140, 'left');
+        this.drawText(rightText, rect.x, rect.y, rect.width, 'right');
 
         this.changePaintOpacity(true);
     };
@@ -531,12 +627,109 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         }
 
         var desc = this._actor.nusvClassDescription(cls.id);
-        if (!this._actor.nusvCanChangeClass(cls.id)) {
+        if (!allowSameClass && this._actor._classId === cls.id) {
+            if (desc) desc += '\n';
+            desc += 'Already in this Class';
+        } else if (!this._actor.nusvCanChangeClass(cls.id)) {
             if (desc) desc += '\n';
             desc += '[Locked / Requirements not met]';
         }
 
         this._helpWindow.setText(desc);
+    };
+
+    function Window_NUSVClassStatus() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_NUSVClassStatus.prototype = Object.create(Window_MenuStatus.prototype);
+    Window_NUSVClassStatus.prototype.constructor = Window_NUSVClassStatus;
+
+    Window_NUSVClassStatus.prototype.numVisibleRows = function() {
+        return Math.min(3, Math.max(1, $gameParty.members().length));
+    };
+
+    Window_NUSVClassStatus.prototype.drawItemImage = function(index) {
+        var actor = $gameParty.members()[index];
+        if (!actor) return;
+
+        var rect = this.itemRect(index);
+        var size = Math.min(104, rect.height - 8);
+        var x = rect.x + 4;
+        var y = rect.y + Math.floor((rect.height - size) / 2);
+
+        this.changePaintOpacity(actor.isBattleMember ? actor.isBattleMember() : true);
+        this.drawActorFace(actor, x, y, size, size);
+        this.changePaintOpacity(true);
+    };
+
+    Window_NUSVClassStatus.prototype.drawItemStatus = function(index) {
+        var actor = $gameParty.members()[index];
+        if (!actor) return;
+
+        var rect = this.itemRect(index);
+        var x = rect.x + 120;
+        var y = rect.y + Math.max(0, Math.floor((rect.height - this.lineHeight() * 2) / 2));
+        var width = rect.width - x - this.textPadding();
+        var cls = actor.currentClass ? actor.currentClass() : null;
+        var className = cls && cls.name ? cls.name : '';
+        var classLevel = actor.nusvClassLevel ? actor.nusvClassLevel() : actor.level;
+        var classLevelText = className + ' Lv. ' + classLevel;
+
+        this.drawActorName(actor, x, y, width);
+        this.changeTextColor(this.systemColor());
+        this.drawText(classLevelText, x, y + this.lineHeight(), width);
+        this.resetTextColor();
+    };
+
+    function Window_NUSVClassConfirm() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_NUSVClassConfirm.prototype = Object.create(Window_Command.prototype);
+    Window_NUSVClassConfirm.prototype.constructor = Window_NUSVClassConfirm;
+
+    Window_NUSVClassConfirm.prototype.initialize = function() {
+        this._className = '';
+        var width = this.windowWidth();
+        var height = this.windowHeight();
+        var x = Math.floor((Graphics.boxWidth - width) / 2);
+        var y = Math.floor((Graphics.boxHeight - height) / 2);
+        Window_Command.prototype.initialize.call(this, x, y);
+        this.hide();
+        this.deactivate();
+    };
+
+    Window_NUSVClassConfirm.prototype.windowWidth = function() {
+        return Math.min(560, Graphics.boxWidth);
+    };
+
+    Window_NUSVClassConfirm.prototype.numVisibleRows = function() {
+        return 3;
+    };
+
+    Window_NUSVClassConfirm.prototype.makeCommandList = function() {
+        this.addCommand('', 'message', false);
+        this.addCommand('Yes', 'yes', true);
+        this.addCommand('No', 'no', true);
+    };
+
+    Window_NUSVClassConfirm.prototype.setClass = function(cls) {
+        this._className = cls && cls.name ? String(cls.name) : '';
+        this.refresh();
+        this.select(1);
+    };
+
+    Window_NUSVClassConfirm.prototype.drawItem = function(index) {
+        if (index === 0) {
+            var rect = this.itemRectForText(index);
+            var text = 'Are you sure you want to change to ' + this._className + '?';
+            this.changePaintOpacity(true);
+            this.drawText(text, rect.x, rect.y, rect.width, 'center');
+            return;
+        }
+
+        Window_Command.prototype.drawItem.call(this, index);
     };
 
     // -------------------------------------------------------------------------
@@ -554,19 +747,28 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         Scene_MenuBase.prototype.initialize.call(this);
     };
 
+    Scene_NUSVClassChange.prototype.createHelpWindow = function() {
+        this._helpWindow = new Window_Help(3);
+        this.addWindow(this._helpWindow);
+    };
+
     Scene_NUSVClassChange.prototype.create = function() {
         Scene_MenuBase.prototype.create.call(this);
         this.createHelpWindow();
         this.createStatusWindow();
         this.createClassWindow();
+        this.createConfirmWindow();
     };
 
     Scene_NUSVClassChange.prototype.createStatusWindow = function() {
         var wy = this._helpWindow.height;
-        var ww = 300;
+        var ww = 320;
         var wh = Graphics.boxHeight - wy;
 
-        this._statusWindow = new Window_MenuStatus(0, wy, ww, wh);
+        this._statusWindow = new Window_NUSVClassStatus(0, wy);
+        this._statusWindow.move(0, wy, ww, wh);
+        this._statusWindow.createContents();
+        this._statusWindow.refresh();
         this._statusWindow.setHandler('ok', this.onActorOk.bind(this));
         this._statusWindow.setHandler('cancel', this.popScene.bind(this));
         this.addWindow(this._statusWindow);
@@ -587,6 +789,15 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         this.addWindow(this._classWindow);
     };
 
+    Scene_NUSVClassChange.prototype.createConfirmWindow = function() {
+        this._confirmWindow = new Window_NUSVClassConfirm();
+        this._confirmWindow.setHandler('yes', this.onConfirmYes.bind(this));
+        this._confirmWindow.setHandler('no', this.onConfirmNo.bind(this));
+        this._confirmWindow.setHandler('cancel', this.onConfirmNo.bind(this));
+        this.addWindow(this._confirmWindow);
+        this._pendingClass = null;
+    };
+
     Scene_NUSVClassChange.prototype.onActorOk = function() {
         var actor = $gameParty.members()[this._statusWindow.index()];
         if (!actor) return;
@@ -602,15 +813,42 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         var actor = $gameParty.menuActor();
         var cls = this._classWindow.item();
 
+        if (!actor || !cls || !actor.nusvCanChangeClass(cls.id)) {
+            SoundManager.playBuzzer();
+            this._classWindow.activate();
+            return;
+        }
+
+        this._pendingClass = cls;
+        this._confirmWindow.setClass(cls);
+        this._confirmWindow.show();
+        this._confirmWindow.activate();
+    };
+
+    Scene_NUSVClassChange.prototype.onConfirmYes = function() {
+        var actor = $gameParty.menuActor();
+        var cls = this._pendingClass;
+
+        this._confirmWindow.hide();
+        this._confirmWindow.deactivate();
+        this._pendingClass = null;
+
         if (actor && cls && actor.nusvChangeClass(cls.id)) {
             SoundManager.playEquip();
             this._statusWindow.refresh();
             this._classWindow.refresh();
-            this._classWindow.activate();
         } else {
             SoundManager.playBuzzer();
-            this._classWindow.activate();
         }
+
+        this._classWindow.activate();
+    };
+
+    Scene_NUSVClassChange.prototype.onConfirmNo = function() {
+        this._pendingClass = null;
+        this._confirmWindow.hide();
+        this._confirmWindow.deactivate();
+        this._classWindow.activate();
     };
 
     Scene_NUSVClassChange.prototype.onClassCancel = function() {
@@ -656,10 +894,13 @@ NUSV.ClassChange = NUSV.ClassChange || {};
 
     window.Scene_NUSVClassChange = Scene_NUSVClassChange;
     window.Window_NUSVClassList = Window_NUSVClassList;
+    window.Window_NUSVClassStatus = Window_NUSVClassStatus;
+    window.Window_NUSVClassConfirm = Window_NUSVClassConfirm;
 
     NUSV.ClassChange.noteValue = noteValue;
     NUSV.ClassChange.multiline = multiline;
     NUSV.ClassChange.actorRace = actorRace;
-    NUSV.ClassChange.version = '1.0.0';
+    NUSV.ClassChange.classMaxLevel = classMaxLevel;
+    NUSV.ClassChange.version = '1.1.0';
 
 })();

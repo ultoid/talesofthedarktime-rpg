@@ -1,6 +1,6 @@
 /*:
  * @plugindesc v1.0.0 NUSV Item Synthesis - clean-room crafting/synthesis system for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @author Ultoid
  *
  * @param Menu Command Name
  * @type text

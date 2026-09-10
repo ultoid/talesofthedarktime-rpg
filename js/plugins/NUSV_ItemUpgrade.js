@@ -1,6 +1,6 @@
 /*:
- * @plugindesc v1.0.0 NUSV Item Upgrade - clean-room equipment upgrade/enhance system for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @plugindesc v1.1.0 NUSV Item Upgrade - clean-room equipment upgrade/enhance system for RPG Maker MV.
+ * @author Ultoid
  *
  * @param Max Upgrade Level
  * @type number
@@ -102,6 +102,18 @@
  * chance is percentage 0..100.
  *
  * ============================================================================
+ * YEP ITEM CORE / INDEPENDENT EQUIPMENT
+ * ============================================================================
+ *
+ * When YEP_ItemCore uses independent Weapons/Armors, upgrades are stored on
+ * the actual independent equipment instance (baseItemId), never on the base
+ * database object. This keeps two copies of the same sword at different
+ * upgrade levels and allows YEP_ItemCore save/load to persist the data.
+ *
+ * Passing a base database Weapon/Armor to attempt() is rejected while
+ * independent equipment is enabled.
+ *
+ * ============================================================================
  * SCRIPT CALLS
  * ============================================================================
  *
@@ -131,18 +143,41 @@ NUSV.ItemUpgrade = NUSV.ItemUpgrade || {};
     var successLoss = Number(params['Upgrade Success Loss Per Level'] || 4);
     var destroyOnFail = String(params['Failure Destroys Item'] || 'false') === 'true';
 
+    function baseObject(obj) {
+        if (!obj) return null;
+        if (obj.baseItemId) {
+            if (DataManager.isWeapon(obj)) return $dataWeapons[obj.baseItemId] || obj;
+            if (DataManager.isArmor(obj)) return $dataArmors[obj.baseItemId] || obj;
+        }
+        return obj;
+    }
+
     function noteValue(obj, tag) {
-        if (!obj || !obj.note) return null;
+        var source = baseObject(obj);
+        if (!source || !source.note) return null;
         var re = new RegExp('<' + tag + '\\s*:\\s*([^>]+)>', 'i');
-        var m = obj.note.match(re);
+        var m = source.note.match(re);
         return m ? m[1].trim() : null;
     }
 
     function multiline(obj, tag) {
-        if (!obj || !obj.note) return null;
+        var source = baseObject(obj);
+        if (!source || !source.note) return null;
         var re = new RegExp('<' + tag + '>([\\s\\S]*?)<\\/' + tag + '>', 'i');
-        var m = obj.note.match(re);
+        var m = source.note.match(re);
         return m ? m[1].trim() : null;
+    }
+
+    function usesIndependentEquipment() {
+        return !!(Imported.YEP_ItemCore && window.Yanfly && Yanfly.Param &&
+            (Number(Yanfly.Param.ItemMaxWeapons || 0) > 0 ||
+             Number(Yanfly.Param.ItemMaxArmors || 0) > 0));
+    }
+
+    function isMutableInstance(obj) {
+        if (!obj || !(DataManager.isWeapon(obj) || DataManager.isArmor(obj))) return false;
+        if (!usesIndependentEquipment()) return true;
+        return !!obj.baseItemId;
     }
 
     function parsePair(raw) {
@@ -160,14 +195,19 @@ NUSV.ItemUpgrade = NUSV.ItemUpgrade || {};
     }
 
     function ensureData(obj) {
-        if (!obj) return;
+        if (!obj || !isMutableInstance(obj)) return;
         if (obj._nusvUpgradeLevel == null) obj._nusvUpgradeLevel = 0;
     }
 
     NUSV.ItemUpgrade.level = function(obj) {
+        if (!obj) return 0;
+        if (!isMutableInstance(obj)) return Number(obj._nusvUpgradeLevel || 0);
         ensureData(obj);
-        return Number(obj && obj._nusvUpgradeLevel || 0);
+        return Number(obj._nusvUpgradeLevel || 0);
     };
+
+    NUSV.ItemUpgrade.isMutableInstance = isMutableInstance;
+    NUSV.ItemUpgrade.baseObject = baseObject;
 
     NUSV.ItemUpgrade.maxLevel = function(obj) {
         var raw = noteValue(obj, 'Upgrade Max');
@@ -224,6 +264,7 @@ NUSV.ItemUpgrade = NUSV.ItemUpgrade || {};
 
     NUSV.ItemUpgrade.canUpgrade = function(obj) {
         if (!obj || !(DataManager.isWeapon(obj) || DataManager.isArmor(obj))) return false;
+        if (!isMutableInstance(obj)) return false;
         if (this.level(obj) >= this.maxLevel(obj)) return false;
         if ($gameParty.gold() < this.goldCost(obj)) return false;
 
@@ -281,5 +322,5 @@ NUSV.ItemUpgrade = NUSV.ItemUpgrade || {};
         return value;
     };
 
-    NUSV.ItemUpgrade.version = '1.0.0';
+    NUSV.ItemUpgrade.version = '1.1.0';
 })();

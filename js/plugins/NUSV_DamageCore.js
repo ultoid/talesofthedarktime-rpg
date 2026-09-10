@@ -1,6 +1,6 @@
 /*:
  * @plugindesc v1.0.0 NUSV Damage Core - clean-room damage core for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @author Ultoid
  *
  * @param Default Damage Cap
  * @type number

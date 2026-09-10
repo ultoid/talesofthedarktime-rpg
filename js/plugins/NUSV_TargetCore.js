@@ -1,6 +1,6 @@
 /*:
  * @plugindesc v1.0.0 NUSV Target Core - clean-room expanded targeting for RPG Maker MV.
- * @author OpenAI for Nusvanir
+ * @author Ultoid
  *
  * @help
  * ============================================================================
