@@ -892,7 +892,7 @@ Bitmap.prototype.initialize = function(width, height) {
      * @property outlineWidth
      * @type Number
      */
-    this.outlineWidth = 4;
+    this.outlineWidth = 2;
 };
 
 /**

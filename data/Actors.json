@@ -1,6 +1,6 @@
 [
 null,
-{"id":1,"battlerName":"Cassian_SV","characterIndex":0,"characterName":"actor_custom","classId":32,"equips":[40,1,0,41,0,54,107],"faceIndex":1,"faceName":"Cus_Hero","traits":[],"initialLevel":50,"maxLevel":50,"name":"Cassian","nickname":"","note":"","profile":""},
+{"id":1,"battlerName":"Cassian_SV","characterIndex":1,"characterName":"actor_custom","classId":32,"equips":[40,1,0,41,0,54,107],"faceIndex":1,"faceName":"Cus_Hero","traits":[],"initialLevel":50,"maxLevel":50,"name":"Cassian","nickname":"","note":"","profile":""},
 {"id":2,"battlerName":"Hector_SV","characterIndex":4,"characterName":"actor_custom","classId":10,"equips":[3,49,0,44,0,0,0],"faceIndex":2,"faceName":"Cus_Hero","traits":[],"initialLevel":50,"maxLevel":50,"name":"Hector","nickname":"","note":"","profile":""},
 {"id":3,"battlerName":"Jane_SV","characterIndex":5,"characterName":"actor_custom","classId":43,"equips":[34,0,0,42,0,0],"faceIndex":3,"faceName":"Cus_Hero","traits":[],"initialLevel":50,"maxLevel":50,"name":"Jane","nickname":"","note":"<LockActor>","profile":""},
 {"id":4,"battlerName":"Rama_SV","characterIndex":2,"characterName":"actor_custom","classId":28,"equips":[4,0,2,3,4],"faceIndex":0,"faceName":"Cus_Hero","traits":[],"initialLevel":30,"maxLevel":99,"name":"Rama","nickname":"The Aeromancer","note":"","profile":""},
