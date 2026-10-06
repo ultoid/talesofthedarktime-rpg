@@ -1,15 +1,16 @@
 [
 null,
-{"id":1,"expanded":true,"name":"Avalerion","order":2,"parentId":0,"scrollX":1636.8,"scrollY":949.1999999999999},
-{"id":2,"expanded":false,"name":"Nusvanir","order":1,"parentId":0,"scrollX":2642.4,"scrollY":930},
-{"id":3,"expanded":true,"name":"Avalerion Castle","order":3,"parentId":1,"scrollX":1636.8,"scrollY":949.1999999999999},
-{"id":4,"expanded":true,"name":"Avalerion Castle 1F","order":4,"parentId":3,"scrollX":1216.5,"scrollY":1474.5},
-{"id":5,"expanded":true,"name":"Avalerion Castle 2F - Hall","order":6,"parentId":3,"scrollX":1245.75,"scrollY":690.75},
-{"id":6,"expanded":true,"name":"Avalerion Castle 1F - Throne Stair","order":5,"parentId":3,"scrollX":1228.5,"scrollY":685.5},
-{"id":7,"expanded":true,"name":"Avalerion Castle 3F - Research Chamber","order":9,"parentId":3,"scrollX":1216.5,"scrollY":931.5},
-{"id":8,"expanded":false,"name":"Avalerion Castle 3F - Tower","order":8,"parentId":3,"scrollX":1216.5,"scrollY":1054.5},
-{"id":9,"expanded":false,"name":"Avalerion Castle 2F - Lumina Throne","order":7,"parentId":3,"scrollX":1216.5,"scrollY":1183.5},
-{"id":10,"expanded":false,"name":"Avalerion Castle B1F - Infirmary","order":10,"parentId":3,"scrollX":1228.5,"scrollY":685.5},
-{"id":11,"expanded":false,"name":"Avalerion Castle B2F - Prison","order":11,"parentId":3,"scrollX":1228.5,"scrollY":685.5},
-{"id":12,"expanded":false,"name":"Avalerion Castle B3F - Sangrahal's Prison","order":12,"parentId":3,"scrollX":1023,"scrollY":593.25}
+{"id":1,"expanded":true,"name":"Avalerion","order":2,"parentId":0,"scrollX":1161.4285714285713,"scrollY":647.1428571428571},
+{"id":2,"expanded":false,"name":"Nusvanir","order":1,"parentId":0,"scrollX":2642.5714285714284,"scrollY":931.7142857142857},
+{"id":3,"expanded":true,"name":"Avalerion Castle","order":3,"parentId":1,"scrollX":1252.2857142857142,"scrollY":756.8571428571428},
+{"id":4,"expanded":true,"name":"Avalerion Castle 1F","order":4,"parentId":3,"scrollX":1339,"scrollY":755},
+{"id":5,"expanded":true,"name":"Avalerion Castle 2F - Hall","order":6,"parentId":3,"scrollX":2837,"scrollY":741},
+{"id":6,"expanded":true,"name":"Avalerion Castle 1F - Throne Stair","order":5,"parentId":3,"scrollX":1161.4285714285713,"scrollY":647.1428571428571},
+{"id":7,"expanded":true,"name":"Avalerion Castle 3F - Research Chamber","order":9,"parentId":3,"scrollX":1147.7142857142856,"scrollY":739.7142857142857},
+{"id":8,"expanded":true,"name":"Avalerion Castle 3F - Tower","order":8,"parentId":3,"scrollX":2021,"scrollY":739},
+{"id":9,"expanded":false,"name":"Avalerion Castle 2F - Lumina Throne","order":7,"parentId":3,"scrollX":1147.7142857142856,"scrollY":858},
+{"id":10,"expanded":false,"name":"Avalerion Castle B1F - Infirmary","order":11,"parentId":3,"scrollX":1355,"scrollY":755},
+{"id":11,"expanded":false,"name":"Avalerion Castle B2F - Prison","order":12,"parentId":3,"scrollX":1355,"scrollY":755},
+{"id":12,"expanded":false,"name":"Avalerion Castle B3F - Sangrahal's Prison","order":13,"parentId":3,"scrollX":1355,"scrollY":755},
+{"id":13,"expanded":false,"name":"Avalerion Castle 3F - Crystal Chamber","order":10,"parentId":3,"scrollX":1339,"scrollY":755}
 ]
