@@ -1,9 +1,9 @@
 [
 null,
-{"id":1,"expanded":true,"name":"Avalerion","order":2,"parentId":0,"scrollX":2184,"scrollY":1218.6666666666667},
-{"id":2,"expanded":true,"name":"Nusvanir","order":1,"parentId":0,"scrollX":2162.6666666666665,"scrollY":1197.3333333333333},
-{"id":3,"expanded":true,"name":"Avalerion Castle","order":3,"parentId":1,"scrollX":2184,"scrollY":1218.6666666666667},
-{"id":4,"expanded":true,"name":"Avalerion Castle 1F","order":4,"parentId":3,"scrollX":2184,"scrollY":1218.6666666666667},
+{"id":1,"expanded":true,"name":"Avalerion","order":2,"parentId":0,"scrollX":1161.4285714285713,"scrollY":647.1428571428571},
+{"id":2,"expanded":true,"name":"Nusvanir","order":1,"parentId":0,"scrollX":2384.727272727273,"scrollY":1424.7272727272727},
+{"id":3,"expanded":false,"name":"Avalerion Castle","order":3,"parentId":1,"scrollX":1252.2857142857142,"scrollY":1046.5714285714284},
+{"id":4,"expanded":true,"name":"Avalerion Castle 1F","order":4,"parentId":3,"scrollX":1147.7142857142856,"scrollY":1012.2857142857142},
 {"id":5,"expanded":true,"name":"Avalerion Castle 2F - Hall","order":6,"parentId":3,"scrollX":2184,"scrollY":1218.6666666666667},
 {"id":6,"expanded":true,"name":"Avalerion Castle 1F - Throne Stair","order":5,"parentId":3,"scrollX":2184,"scrollY":1218.6666666666667},
 {"id":7,"expanded":true,"name":"Avalerion Castle 3F - Research Chamber","order":9,"parentId":3,"scrollX":1081.3333333333333,"scrollY":738.6666666666666},
@@ -13,9 +13,9 @@ null,
 {"id":11,"expanded":false,"name":"Avalerion Castle B2F - Prison","order":12,"parentId":3,"scrollX":1081.3333333333333,"scrollY":697.3333333333334},
 {"id":12,"expanded":false,"name":"Avalerion Castle B3F - Sangrahal's Prison","order":13,"parentId":3,"scrollX":816,"scrollY":686},
 {"id":13,"expanded":false,"name":"Avalerion Castle 3F - Crystal Chamber","order":10,"parentId":3,"scrollX":1081.3333333333333,"scrollY":754.6666666666666},
-{"id":14,"expanded":false,"name":"Outpost Agni","order":14,"parentId":1,"scrollX":0,"scrollY":0},
+{"id":14,"expanded":false,"name":"Outpost Agni","order":14,"parentId":1,"scrollX":1161.4285714285713,"scrollY":647.1428571428571},
 {"id":15,"expanded":false,"name":"Outpost Bayu","order":15,"parentId":1,"scrollX":0,"scrollY":0},
 {"id":16,"expanded":false,"name":"Outpost Bumi","order":16,"parentId":1,"scrollX":0,"scrollY":0},
 {"id":17,"expanded":false,"name":"Outpost Tirta","order":17,"parentId":1,"scrollX":0,"scrollY":0},
-{"id":18,"expanded":false,"name":"Aqualis","order":18,"parentId":0,"scrollX":2184,"scrollY":1218.6666666666667}
+{"id":18,"expanded":false,"name":"Aqualis","order":18,"parentId":0,"scrollX":1348,"scrollY":960}
 ]
