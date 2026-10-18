@@ -66,5 +66,6 @@ var $plugins =
 {"name":"NUSV_ButtonCommonEvents","status":true,"description":"v1.0.0 NUSV Button Common Events - clean-room keyboard-to-common-event bindings for RPG Maker MV.","parameters":{"Default Bindings":"","Map Only":"true","Forbid Default Bound Keys":"true","Allow During Event":"false","Trigger Mode":"triggered"}},
 {"name":"NUSV_GameFontBaseline","status":true,"description":"v1.1 Fix vertical alignment for Minecraftia and Five Fonts at Freddy's GameFont.","parameters":{"Offset Ratio":"0.75"}},
 {"name":"NUSV_AlwaysCenterPlayer","status":true,"description":"Kamera selalu mengikuti player, termasuk di tepi map (MV).","parameters":{}},
-{"name":"NUSV_AutoTextWrap","status":true,"description":"v1.0 Automatically wrap message and help text inside windows.","parameters":{"Message Windows":"true","Help Windows":"true","Other Windows":"false","Right Margin":"6"}}
+{"name":"NUSV_AutoTextWrap","status":true,"description":"v1.0 Automatically wrap message and help text inside windows.","parameters":{"Message Windows":"true","Help Windows":"true","Other Windows":"false","Right Margin":"6"}},
+{"name":"NUSV_InventoryUI","status":true,"description":"v1.0.0 Grid-based Inventory UI for the main menu Item command.","parameters":{}}
 ];
