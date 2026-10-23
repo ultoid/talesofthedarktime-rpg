@@ -11,7 +11,15 @@
  * Controls:
  * - Move in the item grid with the cursor keys or mouse.
  * - Press Up from the first grid row to select a category.
- * - Confirm a usable consumable to use it as usual.
+ * - Confirm a grid cell to open its action menu:
+ *     - Items: Use, Trash, Cancel.
+ *     - Weapons / Armors: Equip (when unequipped), otherwise Unequip, Move,
+ *       Trash, Cancel.
+ *     - Key Items: no menu.
+ * - Unequip / Move choose which wearer to take the gear from when more than
+ *   one actor has it equipped.
+ * - Move then asks which actor should receive the equipment.
+ * - Trash asks for confirmation before removing a single copy.
  */
 
 var Imported = Imported || {};
@@ -40,17 +48,63 @@ Imported.NUSV_InventoryUI = true;
         return DataManager.isItem(item) && item.itypeId === 2;
     }
 
+    function isKeyItem(item) {
+        return DataManager.isItem(item) && item.itypeId === 2;
+    }
+
+    // Identity is precise for normal and independent items. The fallback also
+    // supports older saves that store database references by id only.
+    function sameEquip(a, b) {
+        if (!a || !b) return false;
+        if (a === b) return true;
+        return a.id === b.id &&
+            DataManager.isWeapon(a) === DataManager.isWeapon(b) &&
+            DataManager.isArmor(a) === DataManager.isArmor(b);
+    }
+
     function equippedBy(item) {
         if (!isEquip(item)) return [];
         return $gameParty.allMembers().filter(function(actor) {
             return actor.equips().some(function(equip) {
-                // Identity is precise for normal and independent items. The
-                // fallback also supports older saves that store database refs.
-                return equip === item || (equip && equip.id === item.id &&
-                    DataManager.isWeapon(equip) === DataManager.isWeapon(item) &&
-                    DataManager.isArmor(equip) === DataManager.isArmor(item));
+                return sameEquip(equip, item);
             });
         });
+    }
+
+    function equippedSlot(actor, item) {
+        var equips = actor.equips();
+        for (var i = 0; i < equips.length; i++) {
+            if (sameEquip(equips[i], item)) return i;
+        }
+        return -1;
+    }
+
+    function unequipActorItem(actor, item) {
+        var slotId = equippedSlot(actor, item);
+        if (slotId >= 0) actor.changeEquip(slotId, null);
+    }
+
+    function unequipEverywhere(item) {
+        $gameParty.allMembers().forEach(function(actor) {
+            unequipActorItem(actor, item);
+        });
+    }
+
+    // Pick a slot the item can legally occupy. Prefer an empty matching slot,
+    // otherwise replace the first matching one.
+    function equipSlotFor(actor, item) {
+        var slots = actor.equipSlots();
+        var equips = actor.equips();
+        var isWeapon = DataManager.isWeapon(item);
+        var fallback = -1;
+        for (var i = 0; i < slots.length; i++) {
+            var typeId = slots[i];
+            var matches = isWeapon ? (typeId === 1 || typeId === 0) : (typeId === item.etypeId);
+            if (!matches) continue;
+            if (!equips[i]) return i;
+            if (fallback < 0) fallback = i;
+        }
+        return fallback;
     }
 
     function drawLargeIcon(window, iconIndex, x, y, size) {
@@ -314,6 +368,220 @@ Imported.NUSV_InventoryUI = true;
         }
     };
 
+    // Compact command popup opened when a grid cell is confirmed. Its command
+    // list depends on the confirmed item.
+    function Window_NUSVInventoryAction() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_NUSVInventoryAction.prototype = Object.create(Window_Command.prototype);
+    Window_NUSVInventoryAction.prototype.constructor = Window_NUSVInventoryAction;
+
+    Window_NUSVInventoryAction.prototype.initialize = function() {
+        this._item = null;
+        this._gridWindow = null;
+        Window_Command.prototype.initialize.call(this, 0, 0);
+        this.hide();
+        this.deactivate();
+    };
+
+    Window_NUSVInventoryAction.prototype.windowWidth = function() {
+        return 220;
+    };
+
+    Window_NUSVInventoryAction.prototype.numVisibleRows = function() {
+        // Unequip, Move, Trash, Cancel is the longest list, so keep a fixed
+        // height and avoid resizing the popup between items.
+        return 4;
+    };
+
+    Window_NUSVInventoryAction.prototype.setItem = function(item, gridWindow) {
+        this._item = item;
+        this._gridWindow = gridWindow || this._gridWindow;
+        this.refresh();
+        this.reposition();
+        this.show();
+        this.select(0);
+    };
+
+    // Anchor the popup just to the right of the confirmed grid cell so it
+    // overlays the surrounding UI. Flip to the left side and clamp on both
+    // axes when there is not enough room.
+    Window_NUSVInventoryAction.prototype.reposition = function() {
+        var grid = this._gridWindow;
+        if (!grid || grid.index() < 0) {
+            this.x = Math.floor((Graphics.boxWidth - this.width) / 2);
+            this.y = Math.floor((Graphics.boxHeight - this.height) / 2);
+            return;
+        }
+        var rect = grid.itemRect(grid.index());
+        var cellLeft = grid.x + grid.padding + rect.x;
+        var cellTop = grid.y + grid.padding + rect.y;
+        var cellRight = cellLeft + rect.width;
+        var cellBottom = cellTop + rect.height;
+        var gap = 12;
+        var x = cellRight + gap;
+        if (x + this.width > Graphics.boxWidth) {
+            x = cellLeft - this.width - gap;
+        }
+        x = x.clamp(0, Graphics.boxWidth - this.width);
+        var y = cellTop;
+        if (y + this.height > Graphics.boxHeight) {
+            y = cellBottom - this.height;
+        }
+        y = y.clamp(0, Graphics.boxHeight - this.height);
+        this.x = Math.floor(x);
+        this.y = Math.floor(y);
+    };
+
+    Window_NUSVInventoryAction.prototype.makeCommandList = function() {
+        var item = this._item;
+        if (!item) return;
+        if (isEquip(item)) {
+            if (equippedBy(item).length) {
+                this.addCommand('Unequip', 'unequip');
+                this.addCommand('Move', 'move');
+            } else {
+                this.addCommand('Equip', 'equip');
+            }
+            this.addCommand('Trash', 'trash');
+        } else if (DataManager.isItem(item)) {
+            this.addCommand('Use', 'use');
+            this.addCommand('Trash', 'trash');
+        }
+        this.addCommand('Cancel', 'cancel');
+    };
+
+    // Generic follow-up popup. It renders a titled list whose entries can carry
+    // an actor (for equip / unequip / move) or a plain confirm value.
+    function Window_NUSVInventoryList() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_NUSVInventoryList.prototype = Object.create(Window_Selectable.prototype);
+    Window_NUSVInventoryList.prototype.constructor = Window_NUSVInventoryList;
+
+    Window_NUSVInventoryList.prototype.initialize = function() {
+        this._title = '';
+        this._entries = [];
+        this._gridWindow = null;
+        Window_Selectable.prototype.initialize.call(this, 0, 0, this.windowWidth(), 160);
+        this.hide();
+        this.deactivate();
+    };
+
+    Window_NUSVInventoryList.prototype.windowWidth = function() {
+        return 320;
+    };
+
+    Window_NUSVInventoryList.prototype.headerHeight = function() {
+        return 40;
+    };
+
+    Window_NUSVInventoryList.prototype.maxCols = function() {
+        return 1;
+    };
+
+    Window_NUSVInventoryList.prototype.itemHeight = function() {
+        return 48;
+    };
+
+    Window_NUSVInventoryList.prototype.numVisibleRows = function() {
+        return Math.max(1, this._entries.length);
+    };
+
+    Window_NUSVInventoryList.prototype.maxItems = function() {
+        return this._entries.length;
+    };
+
+    Window_NUSVInventoryList.prototype.entry = function() {
+        return this._entries[this.index()];
+    };
+
+    Window_NUSVInventoryList.prototype.setList = function(title, entries, gridWindow) {
+        this._title = title || '';
+        this._entries = entries || [];
+        this._gridWindow = gridWindow || this._gridWindow;
+        this.height = this.headerHeight() + this.numVisibleRows() * this.itemHeight() + 44;
+        this.createContents();
+        this.refresh();
+        this.reposition();
+        this.show();
+        this.select(this._entries.length > 0 ? 0 : -1);
+    };
+
+    Window_NUSVInventoryList.prototype.reposition = function() {
+        var grid = this._gridWindow;
+        if (!grid || grid.index() < 0) {
+            this.x = Math.floor((Graphics.boxWidth - this.width) / 2);
+            this.y = Math.floor((Graphics.boxHeight - this.height) / 2);
+            return;
+        }
+        var rect = grid.itemRect(grid.index());
+        var cellLeft = grid.x + grid.padding + rect.x;
+        var cellTop = grid.y + grid.padding + rect.y;
+        var cellRight = cellLeft + rect.width;
+        var cellBottom = cellTop + rect.height;
+        var gap = 12;
+        var x = cellRight + gap;
+        if (x + this.width > Graphics.boxWidth) {
+            x = cellLeft - this.width - gap;
+        }
+        x = x.clamp(0, Graphics.boxWidth - this.width);
+        var y = cellTop;
+        if (y + this.height > Graphics.boxHeight) {
+            y = cellBottom - this.height;
+        }
+        y = y.clamp(0, Graphics.boxHeight - this.height);
+        this.x = Math.floor(x);
+        this.y = Math.floor(y);
+    };
+
+    Window_NUSVInventoryList.prototype.itemRect = function(index) {
+        var rect = Window_Selectable.prototype.itemRect.call(this, index);
+        rect.y += this.headerHeight();
+        return rect;
+    };
+
+    Window_NUSVInventoryList.prototype.refresh = function() {
+        this.contents.clear();
+        this.drawTitle();
+        this.drawAllItems();
+    };
+
+    Window_NUSVInventoryList.prototype.drawTitle = function() {
+        var x = this.textPadding();
+        var width = this.contents.width;
+        this.contents.fillRect(0, 0, width, this.headerHeight() - 6, 'rgba(18, 38, 74, 0.9)');
+        this.changeTextColor(this.systemColor());
+        this.drawText(this._title, x, 0, width - x * 2);
+        this.resetTextColor();
+    };
+
+    Window_NUSVInventoryList.prototype.drawItem = function(index) {
+        var entry = this._entries[index];
+        if (!entry) return;
+        var rect = this.itemRect(index);
+        if (entry.actor) {
+            drawPortrait(this, entry.actor, rect.x + 6, rect.y + 4, 38);
+            this.contents.fontSize = 20;
+            this.drawText(entry.label, rect.x + 52, rect.y, rect.width - 56);
+            this.contents.fontSize = 16;
+            this.changeTextColor(this.systemColor());
+            if (!entry.enabled) this.changePaintOpacity(false);
+            this.drawText(entry.actor.currentClass().name, rect.x + 52, rect.y + 22, rect.width - 56);
+            this.changePaintOpacity(true);
+            this.resetTextColor();
+            this.resetFontSettings();
+        } else {
+            this.contents.fontSize = 22;
+            this.changePaintOpacity(entry.enabled !== false);
+            this.drawText(entry.label, rect.x, rect.y + 6, rect.width, 'center');
+            this.changePaintOpacity(true);
+            this.resetFontSettings();
+        }
+    };
+
     function Scene_NUSVInventory() {
         this.initialize.apply(this, arguments);
     }
@@ -328,6 +596,8 @@ Imported.NUSV_InventoryUI = true;
         this.createGridWindow();
         this.createDetailWindow();
         this.createActorWindow();
+        this.createActionWindow();
+        this.createListWindow();
     };
 
     Scene_NUSVInventory.prototype.start = function() {
@@ -403,15 +673,237 @@ Imported.NUSV_InventoryUI = true;
         return members[0] || $gameParty.members()[0];
     };
 
+    Scene_NUSVInventory.prototype.createActionWindow = function() {
+        this._actionWindow = new Window_NUSVInventoryAction();
+        this._actionWindow.setHandler('ok', this.onActionOk.bind(this));
+        this._actionWindow.setHandler('cancel', this.closeActionWindow.bind(this));
+        this.addWindow(this._actionWindow);
+    };
+
+    Scene_NUSVInventory.prototype.createListWindow = function() {
+        this._listWindow = new Window_NUSVInventoryList();
+        this._listWindow.setHandler('ok', this.onListOk.bind(this));
+        this._listWindow.setHandler('cancel', this.closeListWindow.bind(this));
+        this.addWindow(this._listWindow);
+    };
+
+    // Confirming a grid cell opens the action menu. Key items intentionally
+    // have no menu, so they only give audible feedback.
     Scene_NUSVInventory.prototype.onGridOk = function() {
         var item = this.item();
+        if (!item || isKeyItem(item)) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        this._actionItem = item;
+        this._gridWindow.deactivate();
+        this._actionWindow.setItem(item, this._gridWindow);
+        this._actionWindow.activate();
+    };
+
+    Scene_NUSVInventory.prototype.hideActionWindow = function() {
+        this._actionWindow.hide();
+        this._actionWindow.deactivate();
+    };
+
+    Scene_NUSVInventory.prototype.closeActionWindow = function() {
+        this.hideActionWindow();
+        this._gridWindow.activate();
+    };
+
+    Scene_NUSVInventory.prototype.onActionOk = function() {
+        var symbol = this._actionWindow.currentSymbol();
+        switch (symbol) {
+            case 'use': this.actionUse(); break;
+            case 'equip': this.actionEquip(); break;
+            case 'unequip': this.actionUnequip(); break;
+            case 'move': this.actionMove(); break;
+            case 'trash': this.actionTrash(); break;
+            default: this.closeActionWindow(); break;
+        }
+    };
+
+    Scene_NUSVInventory.prototype.actionUse = function() {
+        var item = this._actionItem;
         if (DataManager.isItem(item) && this.user() && this.user().canUse(item)) {
             $gameParty.setLastItem(item);
+            this.hideActionWindow();
             this.determineItem();
         } else {
             SoundManager.playBuzzer();
-            this._gridWindow.activate();
         }
+    };
+
+    Scene_NUSVInventory.prototype.actionEquip = function() {
+        var item = this._actionItem;
+        var actors = $gameParty.members().filter(function(actor) {
+            return actor.canEquip(item);
+        });
+        if (!actors.length) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        this.openList('Equip to', this.actorEntries(actors), 'equip');
+    };
+
+    Scene_NUSVInventory.prototype.actionUnequip = function() {
+        var item = this._actionItem;
+        var actors = equippedBy(item);
+        if (!actors.length) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        if (actors.length === 1) {
+            this.performUnequip(actors[0]);
+            return;
+        }
+        this.openList('Unequip from', this.actorEntries(actors), 'unequip');
+    };
+
+    Scene_NUSVInventory.prototype.actionMove = function() {
+        var item = this._actionItem;
+        var sources = equippedBy(item);
+        if (!sources.length) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        if (sources.length === 1) {
+            this.startMoveTarget(sources[0]);
+            return;
+        }
+        this.openList('Move from', this.actorEntries(sources), 'move-source');
+    };
+
+    Scene_NUSVInventory.prototype.actionTrash = function() {
+        this.openList('Discard ' + this._actionItem.name + '?', [
+            { label: 'Yes', value: true },
+            { label: 'No', value: false }
+        ], 'trash');
+    };
+
+    Scene_NUSVInventory.prototype.actorEntries = function(actors) {
+        return actors.map(function(actor) {
+            return { label: actor.name(), actor: actor, value: actor };
+        });
+    };
+
+    Scene_NUSVInventory.prototype.openList = function(title, entries, mode) {
+        this._listMode = mode;
+        this.hideActionWindow();
+        this._listWindow.setList(title, entries, this._gridWindow);
+        this._listWindow.activate();
+    };
+
+    Scene_NUSVInventory.prototype.closeListWindow = function() {
+        this._listWindow.hide();
+        this._listWindow.deactivate();
+        // Return to the action menu so another option can be picked.
+        this._actionWindow.show();
+        this._actionWindow.activate();
+    };
+
+    Scene_NUSVInventory.prototype.onListOk = function() {
+        var entry = this._listWindow.entry();
+        if (!entry) {
+            this.closeListWindow();
+            return;
+        }
+        switch (this._listMode) {
+            case 'equip': this.performEquip(entry.value); break;
+            case 'unequip': this.performUnequip(entry.value); break;
+            case 'move-source': this.startMoveTarget(entry.value); break;
+            case 'move-target': this.performMove(entry.value); break;
+            case 'trash':
+                if (entry.value) {
+                    this.performTrash();
+                } else {
+                    this.closeListWindow();
+                }
+                break;
+            default: this.closeListWindow(); break;
+        }
+    };
+
+    Scene_NUSVInventory.prototype.performEquip = function(actor) {
+        var slotId = equipSlotFor(actor, this._actionItem);
+        if (slotId < 0) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        actor.changeEquip(slotId, this._actionItem);
+        SoundManager.playEquip();
+        this.finishAction();
+    };
+
+    Scene_NUSVInventory.prototype.performUnequip = function(actor) {
+        unequipActorItem(actor, this._actionItem);
+        SoundManager.playEquip();
+        this.finishAction();
+    };
+
+    Scene_NUSVInventory.prototype.startMoveTarget = function(source) {
+        var item = this._actionItem;
+        var targets = $gameParty.members().filter(function(actor) {
+            return actor !== source && actor.canEquip(item);
+        });
+        if (!targets.length) {
+            SoundManager.playBuzzer();
+            this.closeListWindow();
+            return;
+        }
+        this._moveSource = source;
+        this.openList('Move to', this.actorEntries(targets), 'move-target');
+    };
+
+    Scene_NUSVInventory.prototype.performMove = function(target) {
+        var item = this._actionItem;
+        var source = this._moveSource;
+        unequipActorItem(source, item);
+        var slotId = equipSlotFor(target, item);
+        if (slotId < 0) {
+            // Restore the source if the target cannot actually take it.
+            unequipActorItem(target, item);
+            var backSlot = equipSlotFor(source, item);
+            if (backSlot >= 0) source.changeEquip(backSlot, item);
+            SoundManager.playBuzzer();
+            return;
+        }
+        target.changeEquip(slotId, item);
+        SoundManager.playEquip();
+        this._moveSource = null;
+        this.finishAction();
+    };
+
+    Scene_NUSVInventory.prototype.performTrash = function() {
+        // Dropping an equipped item should pull it off every wearer first, then
+        // remove a single copy from the party.
+        unequipEverywhere(this._actionItem);
+        $gameParty.gainItem(this._actionItem, -1);
+        SoundManager.playUseItem();
+        this.finishAction();
+    };
+
+    Scene_NUSVInventory.prototype.finishAction = function() {
+        this._listWindow.hide();
+        this._listWindow.deactivate();
+        this.hideActionWindow();
+        this._actionItem = null;
+        this._moveSource = null;
+        this.refreshInventory();
+        this._gridWindow.activate();
+    };
+
+    Scene_NUSVInventory.prototype.refreshInventory = function() {
+        var grid = this._gridWindow;
+        grid.refresh();
+        var max = grid.maxItems();
+        if (max <= 0) {
+            grid.select(-1);
+        } else if (grid.index() >= max || grid.index() < 0) {
+            grid.select(max - 1);
+        }
+        this._lastGridIndex = grid.index();
+        this.refreshDetail();
     };
 
     Scene_NUSVInventory.prototype.playSeForItem = function() {
@@ -420,14 +912,12 @@ Imported.NUSV_InventoryUI = true;
 
     Scene_NUSVInventory.prototype.useItem = function() {
         Scene_ItemBase.prototype.useItem.call(this);
-        this._gridWindow.refresh();
-        this.refreshDetail();
+        this.refreshInventory();
     };
 
     Scene_NUSVInventory.prototype.activateItemWindow = function() {
-        this._gridWindow.refresh();
+        this.refreshInventory();
         this._gridWindow.activate();
-        this.refreshDetail();
     };
 
     window.Scene_NUSVInventory = Scene_NUSVInventory;

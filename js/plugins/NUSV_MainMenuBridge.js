@@ -18,6 +18,10 @@
  * @type text
  * @default Formation
  *
+ * @param Party Menu Command
+ * @type text
+ * @default Party
+ *
  * @param Add Class Command
  * @type boolean
  * @default true
@@ -119,6 +123,7 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
     var TEXT_SKILL = pText('Learn Skills Command', 'Learn Skills');
     var TEXT_SYNTH = pText('Synthesis Command', 'Synthesis');
     var TEXT_PARTY = pText('Party Command', 'Formation');
+    var TEXT_PARTY_MENU = pText('Party Menu Command', 'Party');
 
     var ADD_CLASS = pBool('Add Class Command', true);
     var ADD_SKILL = pBool('Add Learn Skills Command', true);
@@ -190,6 +195,26 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
         ]);
     }
 
+    /*
+     * The standalone Status command becomes a Party command. It is renamed and
+     * promoted above the Inventory command so the menu reads:
+     * Party, Inventory, Skills, ...
+     */
+    function promotePartyMenuCommand(win) {
+        if (!win || !win._list) return;
+        var index = -1;
+        for (var i = 0; i < win._list.length; i++) {
+            if (win._list[i].symbol === 'status') {
+                index = i;
+                break;
+            }
+        }
+        if (index < 0) return;
+        var command = win._list.splice(index, 1)[0];
+        command.name = TEXT_PARTY_MENU;
+        win._list.unshift(command);
+    }
+
     // -------------------------------------------------------------------------
     // Window_MenuCommand
     // -------------------------------------------------------------------------
@@ -233,6 +258,8 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
                 this.addCommand(TEXT_PARTY, 'nusvParty', !!partyScene());
             }
         }
+
+        promotePartyMenuCommand(this);
     };
 
     // -------------------------------------------------------------------------
@@ -278,6 +305,13 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
                 this.nusvBridgeOpenParty.bind(this)
             );
         }
+
+        if (hasCommand(this._commandWindow, 'status')) {
+            this._commandWindow.setHandler(
+                'status',
+                this.nusvBridgeOpenPartyMenu.bind(this)
+            );
+        }
     };
 
     /*
@@ -305,6 +339,7 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
             'cancel',
             this.nusvBridgePersonalCancel.bind(this)
         );
+        this._statusWindow.show();
         this._statusWindow.activate();
         this._statusWindow.select(0);
     };
@@ -328,6 +363,7 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
             'cancel',
             this.nusvBridgePersonalCancel.bind(this)
         );
+        this._statusWindow.show();
         this._statusWindow.activate();
         this._statusWindow.select(0);
     };
@@ -346,11 +382,13 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
             $gameParty.setMenuActor(actor);
         }
 
+        this._statusWindow.hide();
         SceneManager.push(scene);
     };
 
     Scene_Menu.prototype.nusvBridgePersonalCancel = function() {
         this._nusvBridgePersonalScene = null;
+        this._statusWindow.hide();
         this._statusWindow.deselect();
         this._commandWindow.activate();
     };
@@ -379,6 +417,10 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
         }
 
         SceneManager.push(scene);
+    };
+
+    Scene_Menu.prototype.nusvBridgeOpenPartyMenu = function() {
+        SceneManager.push(Scene_NUSVPartyMenu);
     };
 
     // -------------------------------------------------------------------------
@@ -466,6 +508,118 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
     };
 
     // -------------------------------------------------------------------------
+    // Party Menu (full-screen party list)
+    // -------------------------------------------------------------------------
+
+    var PARTY_HEADER_HEIGHT = 72;
+
+    /*
+     * Shown by the Party command. It fills the screen with the same actor
+     * window used by the main menu, placed under a "Party" title. Choosing a
+     * member opens the normal Status screen for that actor.
+     */
+    function Scene_NUSVPartyMenu() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Scene_NUSVPartyMenu.prototype = Object.create(Scene_MenuBase.prototype);
+    Scene_NUSVPartyMenu.prototype.constructor = Scene_NUSVPartyMenu;
+
+    Scene_NUSVPartyMenu.prototype.create = function() {
+        Scene_MenuBase.prototype.create.call(this);
+        this.createPartyHeader();
+        this.createMemberWindow();
+    };
+
+    Scene_NUSVPartyMenu.prototype.createPartyHeader = function() {
+        var header = new Window_Base(0, 0, Graphics.boxWidth, PARTY_HEADER_HEIGHT);
+        header.changeTextColor(header.systemColor());
+        header.contents.fontSize = 28;
+        header.drawText(TEXT_PARTY_MENU, header.textPadding(), 0, header.contents.width);
+        this._headerWindow = header;
+        this.addWindow(header);
+    };
+
+    Scene_NUSVPartyMenu.prototype.createMemberWindow = function() {
+        var y = PARTY_HEADER_HEIGHT;
+        var window = new Window_MenuStatus(0, y);
+        window.move(0, y, Graphics.boxWidth, Graphics.boxHeight - y);
+        window.createContents();
+        window.reserveFaceImages();
+        window.setHandler('ok', this.onMemberOk.bind(this));
+        window.setHandler('cancel', this.popScene.bind(this));
+        this._memberWindow = window;
+        this.addWindow(window);
+    };
+
+    Scene_NUSVPartyMenu.prototype.start = function() {
+        Scene_MenuBase.prototype.start.call(this);
+        this._memberWindow.refresh();
+        this._memberWindow.activate();
+        this._memberWindow.select(this._memberWindow.maxItems() > 0 ? 0 : -1);
+    };
+
+    Scene_NUSVPartyMenu.prototype.onMemberOk = function() {
+        var actor = $gameParty.members()[this._memberWindow.index()];
+        if (actor) {
+            $gameParty.setMenuActor(actor);
+        }
+        SceneManager.push(Scene_Status);
+    };
+
+    // -------------------------------------------------------------------------
+    // Main Menu Layout
+    // -------------------------------------------------------------------------
+    /*
+     * The main menu keeps only the command list visible. The party status
+     * window stays hidden until an actor has to be chosen (Skill / Equip /
+     * Status / Learn Skills / Class), and the gold window is pinned to the
+     * top-right corner.
+     */
+
+    var _Scene_Menu_createStatusWindow =
+        Scene_Menu.prototype.createStatusWindow;
+
+    Scene_Menu.prototype.createStatusWindow = function() {
+        _Scene_Menu_createStatusWindow.call(this);
+
+        if (this._statusWindow) {
+            this._statusWindow.hide();
+        }
+    };
+
+    function nusvHideStatusWindow(scene) {
+        if (scene._statusWindow) scene._statusWindow.hide();
+    }
+
+    var _Scene_Menu_onPersonalOk = Scene_Menu.prototype.onPersonalOk;
+
+    Scene_Menu.prototype.onPersonalOk = function() {
+        _Scene_Menu_onPersonalOk.call(this);
+        nusvHideStatusWindow(this);
+    };
+
+    var _Scene_Menu_onPersonalCancel = Scene_Menu.prototype.onPersonalCancel;
+
+    Scene_Menu.prototype.onPersonalCancel = function() {
+        _Scene_Menu_onPersonalCancel.call(this);
+        nusvHideStatusWindow(this);
+    };
+
+    var _Scene_Menu_repositionWindows = Scene_Menu.prototype.repositionWindows;
+
+    Scene_Menu.prototype.repositionWindows = function() {
+        if (_Scene_Menu_repositionWindows) {
+            _Scene_Menu_repositionWindows.call(this);
+        }
+
+        if (this._goldWindow) {
+            this._goldWindow.x = Graphics.boxWidth - this._goldWindow.width;
+            this._goldWindow.y = 0;
+        }
+    };
+
+    // -------------------------------------------------------------------------
     // Public API
     // -------------------------------------------------------------------------
 
@@ -473,6 +627,7 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
     NUSV.MainMenuBridge.skillLearnScene = skillLearnScene;
     NUSV.MainMenuBridge.synthesisScene = synthesisScene;
     NUSV.MainMenuBridge.partyScene = partyScene;
+    NUSV.MainMenuBridge.partyMenuScene = Scene_NUSVPartyMenu;
     NUSV.MainMenuBridge.version = '1.0.0';
 
 })();
