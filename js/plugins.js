@@ -67,5 +67,6 @@ var $plugins =
 {"name":"NUSV_GameFontBaseline","status":true,"description":"v1.1 Fix vertical alignment for Minecraftia and Five Fonts at Freddy's GameFont.","parameters":{"Offset Ratio":"0.75"}},
 {"name":"NUSV_AlwaysCenterPlayer","status":true,"description":"Kamera selalu mengikuti player, termasuk di tepi map (MV).","parameters":{}},
 {"name":"NUSV_AutoTextWrap","status":true,"description":"v1.0 Automatically wrap message and help text inside windows.","parameters":{"Message Windows":"true","Help Windows":"true","Other Windows":"false","Right Margin":"6"}},
-{"name":"NUSV_InventoryUI","status":true,"description":"v1.0.0 Grid-based Inventory UI for the main menu Item command.","parameters":{}}
+{"name":"NUSV_InventoryUI","status":true,"description":"v1.0.0 Grid-based Inventory UI for the main menu Item command.","parameters":{}},
+{"name":"NUSV_StatusScreen","status":true,"description":"v1.0.0 NUSV Status Screen - Genshin-style character status layout.","parameters":{"Tab: Equipment":"Equipment","Tab: Class":"Class","Tab: Skills":"Skills","Show Parameters":"true","Show Nickname":"true","Use TP As SP":"true","SP Label":"SP","Portrait Note Tag":"Status Image","Default Portrait Prefix":"Hero_"}}
 ];
