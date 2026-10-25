@@ -420,6 +420,7 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
     };
 
     Scene_Menu.prototype.nusvBridgeOpenPartyMenu = function() {
+        partyMenuIndex = 0;
         SceneManager.push(Scene_NUSVPartyMenu);
     };
 
@@ -514,6 +515,14 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
     var PARTY_HEADER_HEIGHT = 72;
 
     /*
+     * The party menu scene is rebuilt from its constructor every time the
+     * scene manager returns to it (SceneManager.pop does new sceneClass()),
+     * so the selected row cannot live on the scene instance. Keep it here, in
+     * the plugin closure, to stay on the member chosen before opening Status.
+     */
+    var partyMenuIndex = 0;
+
+    /*
      * Shown by the Party command. It fills the screen with the same actor
      * window used by the main menu, placed under a "Party" title. Choosing a
      * member opens the normal Status screen for that actor.
@@ -556,14 +565,25 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
         Scene_MenuBase.prototype.start.call(this);
         this._memberWindow.refresh();
         this._memberWindow.activate();
-        this._memberWindow.select(this._memberWindow.maxItems() > 0 ? 0 : -1);
+        var max = this._memberWindow.maxItems();
+        if (max <= 0) {
+            this._memberWindow.select(-1);
+            return;
+        }
+        var index = partyMenuIndex;
+        if (index >= max) {
+            index = max - 1;
+        }
+        this._memberWindow.select(index);
     };
 
     Scene_NUSVPartyMenu.prototype.onMemberOk = function() {
-        var actor = $gameParty.members()[this._memberWindow.index()];
+        var index = this._memberWindow.index();
+        var actor = $gameParty.members()[index];
         if (actor) {
             $gameParty.setMenuActor(actor);
         }
+        partyMenuIndex = index;
         SceneManager.push(Scene_Status);
     };
 

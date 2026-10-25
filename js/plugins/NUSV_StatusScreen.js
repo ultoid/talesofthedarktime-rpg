@@ -53,7 +53,9 @@
  *
  *   [ LEFT ]   Tabs: Equipment / Class / Skills + the selected tab content
  *   [ CENTER ] Full body character portrait, with Name / Class / Level above
- *   [ RIGHT ]  Profile description + Stats (HP / MP / SP / EXP) + Parameters
+ *   [ RIGHT ]  "Status" page: HP / MP / SP / EXP bars, the active status
+ *              effect icons (click one for a tooltip with its details),
+ *              the Attribute list, and the actor Profile at the bottom.
  *
  * The full body portrait is loaded from img/pictures/ using the actor's
  * portrait name. Resolution order:
@@ -75,6 +77,20 @@
  * This plugin redefines Scene_Status and Window_Status. Place it below
  * NUSV_MainMenuBridge (and below NUSV_ClassChange) so the Party menu keeps
  * opening this status screen.
+ *
+ * STATE NOTETAGS (used by the status effect tooltip)
+ *
+ *   <NUSV Type: 1>                   Category of the state. The tooltip shows
+ *                                   its label under the name, colored:
+ *                                   1 = Passive (yellow),
+ *                                   2 = Status Effect (red),
+ *                                   3 = Skill Effect (green).
+ *   <NUSV Desc: ...>                Short description shown in the tooltip.
+ *
+ * The namespaced "NUSV" prefix keeps these tags from colliding with other
+ * plugins. The shorthands <TYPE = ...> / <DESC = ...> are also accepted; they
+ * require a ":" or "=" so unrelated tags without a value are ignored. When
+ * <NUSV Desc> is absent, the state's database Description is used instead.
  * ============================================================================
  */
 
@@ -187,8 +203,64 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     function drawGaugeBar(win, x, y, width, rate, c1, c2) {
         rate = Math.max(0, Math.min(1, rate || 0));
-        win.contents.fillRect(x, y + 12, width, 12, win.gaugeBackColor());
-        win.contents.gradientFillRect(x, y + 12, Math.floor(width * rate), 12, c1, c2);
+        win.contents.fillRect(x, y, width, 12, win.gaugeBackColor());
+        win.contents.gradientFillRect(x, y, Math.floor(width * rate), 12, c1, c2);
+    }
+
+    // Read one <Tag: value> / <Tag = value> field from a state's note.
+    // Keys are tried in order, letting the namespaced form take priority.
+    // The value is allowed to span multiple lines up to the closing ">".
+    function stateNoteField(state, keys) {
+        var note = state && state.note ? String(state.note) : '';
+        if (!note) return '';
+        for (var i = 0; i < keys.length; i++) {
+            var re = new RegExp('<' + keys[i] + '\\s*[:=]\\s*([\\s\\S]*?)>', 'i');
+            var match = note.match(re);
+            if (match) {
+                var value = match[1].replace(/\s+/g, ' ').trim();
+                if (value) return value;
+            }
+        }
+        return '';
+    }
+
+    // Status category code (1 = Passive, 2 = Status Effect, 3 = Skill Effect).
+    // Namespaced <NUSV Type: ...> is preferred; <TYPE = ...> is kept as a
+    // shorthand. Both need a ":" or "=" so other plugins' tags are ignored.
+    function stateTypeName(state) {
+        return stateNoteField(state, ['NUSV\\s*Type', 'State\\s*Type', 'TYPE']);
+    }
+
+    // Label text shown for each type code.
+    //   1 = Passive, 2 = Status Effect, 3 = Skill Effect
+    function stateTypeLabel(type) {
+        switch (String(type).trim()) {
+        case '1': return 'Passive';
+        case '2': return 'Status Effect';
+        case '3': return 'Skill Effect';
+        default:  return '';
+        }
+    }
+
+    // Text color for each type code:
+    //   1 = Passive       -> yellow
+    //   2 = Status Effect -> red
+    //   3 = Skill Effect  -> green
+    function stateTypeColor(win, type) {
+        switch (String(type).trim()) {
+        case '1': return win.textColor(6);   // yellow
+        case '2': return win.textColor(18);  // red
+        case '3': return win.textColor(3);   // green
+        default:  return win.normalColor();
+        }
+    }
+
+    // Description text: the <NUSV Desc: ...> / <DESC = ...> tag, falling back
+    // to the state's database description when the tag is absent.
+    function stateDescriptionText(state) {
+        var tagged = stateNoteField(state, ['NUSV\\s*Desc', 'State\\s*Desc', 'DESC']);
+        if (tagged) return tagged;
+        return state && state.description ? String(state.description) : '';
     }
 
     // -------------------------------------------------------------------------
@@ -477,12 +549,19 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     Window_StatusInfo.prototype.initialize = function(x, y, width, height) {
         Window_Base.prototype.initialize.call(this, x, y, width, height);
         this._actor = null;
+        this._stateIcons = [];
+        this._statePopup = null;
         this.deactivate();
     };
 
     Window_StatusInfo.prototype.setActor = function(actor) {
         this._actor = actor;
+        this.hideStatePopup();
         this.refresh();
+    };
+
+    Window_StatusInfo.prototype.setStatePopup = function(popup) {
+        this._statePopup = popup;
     };
 
     Window_StatusInfo.prototype.refresh = function() {
@@ -495,69 +574,222 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var lh = this.lineHeight();
         var y = 0;
 
-        // --- Profile description ---
+        // --- Title ---
         this.changeTextColor(this.systemColor());
-        this.drawText('Profile', pad, y, width);
-        y += lh;
+        this.drawText('Status', pad, y, width, 'center');
         this.resetTextColor();
+        y += lh + 4;
 
-        var desc = profileText(this._actor);
-        var lines = wrapText(desc, width, this.textWidth.bind(this));
-        var maxDescLines = 4;
-        for (var i = 0; i < lines.length && i < maxDescLines; i++) {
-            this.drawText(lines[i], pad, y, width);
-            y += lh;
-        }
-        y += Math.floor(lh / 2);
-        this.drawHorzLine(pad, y, width);
-        y += Math.floor(lh / 2);
+        // --- HP / MP / SP bars (grouped under the title) ---
+        this.drawStatBar('HP', this._actor.hp + ' / ' + this._actor.mhp,
+            this._actor.hpRate(), this.hpGaugeColor1(), this.hpGaugeColor2(),
+            pad, y, width);
+        y += lh + 14;
 
-        // --- Core stats ---
-        this.drawStatBar('HP', this._actor.hp, this._actor.mhp, this._actor.hpRate(),
-            this.hpGaugeColor1(), this.hpGaugeColor2(), pad, y, width);
-        y += lh + 6;
-        this.drawStatBar('MP', this._actor.mp, this._actor.mmp, this._actor.mpRate(),
-            this.mpGaugeColor1(), this.mpGaugeColor2(), pad, y, width);
-        y += lh + 6;
+        this.drawStatBar('MP', this._actor.mp + ' / ' + this._actor.mmp,
+            this._actor.mpRate(), this.mpGaugeColor1(), this.mpGaugeColor2(),
+            pad, y, width);
+        y += lh + 14;
 
         var sp = this.spValue();
         var msp = this.spMax();
-        this.drawStatBar(SP_LABEL, sp, msp, msp > 0 ? sp / msp : 0,
+        this.drawStatBar(SP_LABEL, sp + ' / ' + msp, msp > 0 ? sp / msp : 0,
             this.tpGaugeColor1(), this.tpGaugeColor2(), pad, y, width);
-        y += lh + 6;
+        y += lh + 14;
 
-        // EXP
-        var expText = this._actor.isMaxLevel()
-            ? '-------'
-            : this._actor.currentExp() + ' / ' + (this._actor.currentExp() + this._actor.nextRequiredExp());
-        this.changeTextColor(this.systemColor());
-        this.drawText('EXP', pad, y, 90);
-        this.resetTextColor();
-        this.drawText(TextManager.levelA + ' ' + this._actor.level, pad, y, width, 'right');
-        y += lh;
-        this.changeTextColor(this.normalColor());
-        this.drawText(expText, pad, y, width, 'right');
-        y += lh + 6;
+        // --- EXP bar (4th bar) ---
+        this.drawStatBar('EXP', this.expValueText(), this.expRate(),
+            this.expGaugeColor1(), this.expGaugeColor2(), pad, y, width);
+        y += lh + 18;
 
-        // --- Parameters ---
+        // --- Status Effects: icons only, click one to see its details ---
+        y = this.drawStateIcons(pad, y, width);
+        y += 6;
+
+        // --- Attribute: single column, 6 rows ---
         if (SHOW_PARAMS) {
-            this.drawHorzLine(pad, y, width);
-            y += Math.floor(lh / 2);
-            var colW = Math.floor(width / 2);
+            this.changeTextColor(this.systemColor());
+            this.drawText('Attribute', pad, y, width);
+            this.resetTextColor();
+            y += lh;
             for (var p = 2; p <= 7; p++) {
-                var idx = p - 2;
-                var col = idx % 2;
-                var row = Math.floor(idx / 2);
-                var px = pad + col * colW;
-                var py = y + row * lh;
-                if (py + lh > this.contents.height) break;
+                if (y + lh > this.contents.height) break;
                 this.changeTextColor(this.systemColor());
-                this.drawText(TextManager.param(p), px, py, colW - 60);
+                this.drawText(TextManager.param(p), pad + 8, y, width - 60);
                 this.resetTextColor();
-                this.drawText(this._actor.param(p), px, py, colW - 12, 'right');
+                this.drawText(this._actor.param(p), pad, y, width, 'right');
+                y += lh;
             }
-            y += lh * 3;
+            y += 6;
         }
+
+        // --- Profile: half-size font, sized to fit the remaining space ---
+        this.drawProfileBlock(pad, y, width);
+    };
+
+    // The states currently applied to the actor (status effects).
+    Window_StatusInfo.prototype.activeStates = function() {
+        var result = [];
+        var states = this._actor ? this._actor.states() : [];
+        for (var i = 0; i < states.length; i++) {
+            if (states[i] && states[i].id > 0) result.push(states[i]);
+        }
+        return result;
+    };
+
+    // Draw one icon per active state and remember each hotspot so a click can
+    // open the matching popup. Returns the y coordinate below the row(s).
+    Window_StatusInfo.prototype.drawStateIcons = function(x, y, width) {
+        this._stateIcons = [];
+        var states = this.activeStates();
+        if (states.length === 0) return y;
+
+        var size = Window_Base._iconWidth;
+        var gap = 6;
+        var perRow = Math.max(1, Math.floor((width + gap) / (size + gap)));
+        var cx = x;
+        var cy = y;
+        var col = 0;
+        for (var i = 0; i < states.length; i++) {
+            if (col >= perRow) {
+                col = 0;
+                cx = x;
+                cy += size + gap;
+            }
+            this.drawStateIcon(states[i], cx, cy, size);
+            this._stateIcons.push({ state: states[i], x: cx, y: cy, size: size });
+            cx += size + gap;
+            col++;
+        }
+        var rows = Math.ceil(states.length / perRow);
+        return y + rows * (size + gap);
+    };
+
+    Window_StatusInfo.prototype.drawStateIcon = function(state, x, y, size) {
+        if (state.iconIndex > 0) {
+            this.drawIcon(state.iconIndex, x, y);
+            return;
+        }
+        // States without a database icon still need a clickable placeholder.
+        this.contents.fillRect(x, y, size, size, this.gaugeBackColor());
+        var lastSize = this.contents.fontSize;
+        this.contents.fontSize = 20;
+        this.changeTextColor(this.normalColor());
+        var letter = (state.name || '?').charAt(0).toUpperCase();
+        this.drawText(letter, x, y + 4, size, 'center');
+        this.contents.fontSize = lastSize;
+        this.resetTextColor();
+    };
+
+    Window_StatusInfo.prototype.update = function() {
+        Window_Base.prototype.update.call(this);
+        this.processStateTouch();
+    };
+
+    // A click on a state icon toggles its popup; a click anywhere else closes it.
+    Window_StatusInfo.prototype.processStateTouch = function() {
+        if (!this._statePopup || !this._actor || !this.visible) return;
+        if (!TouchInput.isTriggered()) return;
+        var sx = TouchInput.x;
+        var sy = TouchInput.y;
+        if (this._statePopup.visible && this._statePopup.isScreenPointInside(sx, sy)) return;
+
+        var hit = this.stateIconAtScreen(sx, sy);
+        if (hit) {
+            var same = this._statePopup.visible && this._statePopup.state() === hit.state;
+            if (same) {
+                this.hideStatePopup();
+            } else {
+                this.showStatePopup(hit);
+            }
+        } else {
+            this.hideStatePopup();
+        }
+    };
+
+    Window_StatusInfo.prototype.stateIconAtScreen = function(sx, sy) {
+        var lx = sx - this.x - this.padding;
+        var ly = sy - this.y - this.padding;
+        for (var i = 0; i < this._stateIcons.length; i++) {
+            var icon = this._stateIcons[i];
+            if (lx >= icon.x && lx < icon.x + icon.size &&
+                ly >= icon.y && ly < icon.y + icon.size) {
+                return {
+                    state: icon.state,
+                    screen: {
+                        x: this.x + this.padding + icon.x,
+                        y: this.y + this.padding + icon.y,
+                        w: icon.size,
+                        h: icon.size
+                    }
+                };
+            }
+        }
+        return null;
+    };
+
+    Window_StatusInfo.prototype.showStatePopup = function(hit) {
+        this._statePopup.showState(hit.state);
+        this._statePopup.reposition(hit.screen);
+    };
+
+    Window_StatusInfo.prototype.hideStatePopup = function() {
+        if (this._statePopup) this._statePopup.hideState();
+    };
+
+    Window_StatusInfo.prototype.expRate = function() {
+        var actor = this._actor;
+        if (actor.isMaxLevel()) return 1;
+        var total = actor.currentExp() + actor.nextRequiredExp();
+        return total > 0 ? actor.currentExp() / total : 0;
+    };
+
+    Window_StatusInfo.prototype.expValueText = function() {
+        var actor = this._actor;
+        if (actor.isMaxLevel()) return '-------';
+        return actor.currentExp() + ' / ' + (actor.currentExp() + actor.nextRequiredExp());
+    };
+
+    Window_StatusInfo.prototype.expGaugeColor1 = function() {
+        return this.textColor(6);
+    };
+
+    Window_StatusInfo.prototype.expGaugeColor2 = function() {
+        return this.textColor(27);
+    };
+
+    Window_StatusInfo.prototype.drawProfileBlock = function(x, y, width) {
+        var desc = profileText(this._actor);
+        var smallFont = Math.max(10, Math.floor(this.standardFontSize() / 2));
+        var smallLine = smallFont + 6;
+
+        // Show up to 5 lines, capped by the space left below Attribute so the
+        // text never runs past the bottom of the window.
+        var remaining = this.contents.height - y;
+        var maxLines = Math.min(5, Math.floor(remaining / smallLine) - 1);
+        if (!desc || maxLines <= 0) {
+            this.resetFontSettings();
+            return;
+        }
+
+        this.contents.fontSize = smallFont;
+
+        var lines = wrapText(desc, width, this.textWidth.bind(this));
+        if (lines.length > maxLines) lines = lines.slice(0, maxLines);
+
+        // Flow linearly right below Attribute.
+        var py = y;
+
+        this.changeTextColor(this.systemColor());
+        this.drawText('Profile', x, py, width);
+        this.resetTextColor();
+        py += smallLine;
+
+        for (var i = 0; i < lines.length; i++) {
+            this.drawText(lines[i], x, py, width);
+            py += smallLine;
+        }
+        this.resetFontSettings();
     };
 
     Window_StatusInfo.prototype.spValue = function() {
@@ -572,19 +804,149 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         return this._actor.maxTp();
     };
 
-    Window_StatusInfo.prototype.drawStatBar = function(label, value, max, rate, c1, c2, x, y, width) {
+    Window_StatusInfo.prototype.drawStatBar = function(label, valueText, rate, c1, c2, x, y, width) {
         this.changeTextColor(this.systemColor());
         this.drawText(label, x, y, 60);
         this.resetTextColor();
-        this.drawText(value + ' / ' + max, x, y, width, 'right');
-        drawGaugeBar(this, x, y, width, rate, c1, c2);
+        this.drawText(valueText, x, y, width, 'right');
+        drawGaugeBar(this, x, y + this.lineHeight(), width, rate, c1, c2);
     };
 
-    Window_StatusInfo.prototype.drawHorzLine = function(x, y, width) {
-        var lineY = y + this.lineHeight() / 2 - 1;
-        this.contents.paintOpacity = 48;
-        this.contents.fillRect(x, lineY, width, 2, this.normalColor());
-        this.contents.paintOpacity = 255;
+    // -------------------------------------------------------------------------
+    // Window_StatePopup (tooltip shown beside a clicked status-effect icon)
+    // -------------------------------------------------------------------------
+
+    function Window_StatePopup() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_StatePopup.prototype = Object.create(Window_Base.prototype);
+    Window_StatePopup.prototype.constructor = Window_StatePopup;
+
+    Window_StatePopup.prototype.initialize = function() {
+        Window_Base.prototype.initialize.call(this, 0, 0, 240, 96);
+        this._state = null;
+        this.deactivate();
+        this.hideState();
+    };
+
+    Window_StatePopup.prototype.state = function() {
+        return this._state;
+    };
+
+    Window_StatePopup.prototype.showState = function(state) {
+        this._state = state;
+        this.refresh();
+        this.visible = true;
+    };
+
+    Window_StatePopup.prototype.hideState = function() {
+        this.visible = false;
+    };
+
+    // Place the popup beside the icon, flipping to the left and clamping on
+    // both axes when there is not enough room.
+    Window_StatePopup.prototype.reposition = function(anchor) {
+        var gap = 8;
+        var x = anchor.x + anchor.w + gap;
+        if (x + this.width > Graphics.boxWidth) {
+            x = anchor.x - this.width - gap;
+        }
+        x = x.clamp(0, Graphics.boxWidth - this.width);
+        var y = anchor.y;
+        if (y + this.height > Graphics.boxHeight) {
+            y = anchor.y + anchor.h - this.height;
+        }
+        y = y.clamp(0, Graphics.boxHeight - this.height);
+        this.x = Math.floor(x);
+        this.y = Math.floor(y);
+    };
+
+    Window_StatePopup.prototype.isScreenPointInside = function(sx, sy) {
+        return sx >= this.x && sx < this.x + this.width &&
+               sy >= this.y && sy < this.y + this.height;
+    };
+
+    Window_StatePopup.prototype.refresh = function() {
+        var state = this._state;
+        if (!state) return;
+
+        var padding = this.standardPadding();
+        var lineHeight = this.lineHeight();
+        var smallFont = Math.max(12, Math.floor(this.standardFontSize() / 2));
+        var smallLine = smallFont + 6;
+        var iconWidth = state.iconIndex > 0 ? Window_Base._iconWidth + 6 : 0;
+
+        var width = Math.max(180, this.textWidth(state.name) + iconWidth + padding * 2);
+        width = Math.min(width, Graphics.boxWidth - 24);
+        this.width = width;
+        var textWidth = width - padding * 2;
+
+        // Line 1: the state name. Line 2: its type label, colored by code.
+        // Then the description, all at half size.
+        var type = stateTypeName(state);
+        var typeLabel = stateTypeLabel(type);
+        var desc = stateDescriptionText(state);
+
+        this.contents.fontSize = smallFont;
+        var typeLines = typeLabel ? wrapText(typeLabel, textWidth, this.textWidth.bind(this)) : [];
+        var descLines = desc ? wrapText(desc, textWidth, this.textWidth.bind(this)) : [];
+        this.contents.fontSize = this.standardFontSize();
+
+        var computeHeight = function() {
+            var h = padding * 2 + lineHeight;
+            if (typeLines.length > 0) h += 4 + typeLines.length * smallLine;
+            if (descLines.length > 0) h += 6 + descLines.length * smallLine;
+            return h;
+        };
+        var height = computeHeight();
+
+        // Keep the popup on screen even when the note is very long.
+        var maxHeight = Graphics.boxHeight - 24;
+        while (height > maxHeight && descLines.length > 0) {
+            descLines.pop();
+            height = computeHeight();
+        }
+        while (height > maxHeight && typeLines.length > 0) {
+            typeLines.pop();
+            height = computeHeight();
+        }
+        this.height = height;
+
+        this.createContents();
+        this.contents.clear();
+        this.resetFontSettings();
+
+        var x = 0;
+        var y = 0;
+        if (state.iconIndex > 0) {
+            this.drawIcon(state.iconIndex, x, y + 2);
+            x += Window_Base._iconWidth + 6;
+        }
+        this.changeTextColor(this.systemColor());
+        this.drawText(state.name, x, y, width - padding * 2 - x);
+        this.resetTextColor();
+        y += lineHeight + 4;
+
+        if (typeLines.length > 0) {
+            this.contents.fontSize = smallFont;
+            this.changeTextColor(stateTypeColor(this, type));
+            for (var t = 0; t < typeLines.length; t++) {
+                this.drawText(typeLines[t], 0, y, textWidth);
+                y += smallLine;
+            }
+            this.resetFontSettings();
+        }
+
+        if (descLines.length > 0) {
+            this.contents.fontSize = smallFont;
+            this.changeTextColor(this.normalColor());
+            for (var i = 0; i < descLines.length; i++) {
+                this.drawText(descLines[i], 0, y, textWidth);
+                y += smallLine;
+            }
+            this.resetFontSettings();
+        }
     };
 
     // -------------------------------------------------------------------------
@@ -623,6 +985,11 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             0, this._tabsWindow.height, leftWidth(), Graphics.boxHeight - this._tabsWindow.height
         );
         this.addWindow(this._detailWindow);
+
+        // Added last so the state tooltip renders above the other windows.
+        this._statePopup = new Window_StatePopup();
+        this.addWindow(this._statePopup);
+        this._infoWindow.setStatePopup(this._statePopup);
 
         this.refreshAll();
     };
@@ -694,6 +1061,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     NUSV.StatusScreen.Window_StatusDetail = Window_StatusDetail;
     NUSV.StatusScreen.Window_StatusPortrait = Window_StatusPortrait;
     NUSV.StatusScreen.Window_StatusInfo = Window_StatusInfo;
+    NUSV.StatusScreen.Window_StatePopup = Window_StatePopup;
     NUSV.StatusScreen.Scene_Status = Scene_Status;
     NUSV.StatusScreen.portraitName = portraitName;
     NUSV.StatusScreen.version = '1.0.0';
