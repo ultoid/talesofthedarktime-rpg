@@ -51,8 +51,9 @@
  *
  * Redesigns the actor Status screen into a three column "character page":
  *
- *   [ LEFT ]   Tabs: Equipment / Class / Skills + the selected tab content
- *   [ CENTER ] Full body character portrait, with Name / Class / Level above
+ *   [ LEFT ]   Party actor selector
+ *   [ CENTER ] Horizontal Status / Equipment / Class / Skills tabs and the
+ *              selected actor's full body portrait
  *   [ RIGHT ]  "Status" page: HP / MP / SP / EXP bars, the active status
  *              effect icons (click one for a tooltip with its details),
  *              the Attribute list, and the actor Profile at the bottom.
@@ -131,10 +132,10 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     // Layout constants (computed at runtime so screen size changes are honored)
     // -------------------------------------------------------------------------
 
-    function leftWidth()  { return Math.floor(Graphics.boxWidth * 0.24); }
+    function partyWidth() { return Math.floor(Graphics.boxWidth * 0.10); }
     function rightWidth() { return Math.floor(Graphics.boxWidth * 0.32); }
     function centerWidth() {
-        return Graphics.boxWidth - leftWidth() - rightWidth();
+        return Graphics.boxWidth - partyWidth() - rightWidth();
     }
 
     // -------------------------------------------------------------------------
@@ -279,21 +280,111 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     Window_StatusTabs.prototype.windowWidth = function() {
-        return leftWidth();
+        return centerWidth();
     };
 
     Window_StatusTabs.prototype.numVisibleRows = function() {
-        return this.maxItems();
+        return 1;
+    };
+
+    Window_StatusTabs.prototype.maxCols = function() {
+        return 4;
     };
 
     Window_StatusTabs.prototype.makeCommandList = function() {
+        this.addCommand(TextManager.status || 'Status', 'status');
         this.addCommand(TAB_EQUIP, 'equip');
         this.addCommand(TAB_CLASS, 'class');
         this.addCommand(TAB_SKILLS, 'skills');
     };
 
     Window_StatusTabs.prototype.itemTextAlign = function() {
-        return 'left';
+        return 'center';
+    };
+
+    // -------------------------------------------------------------------------
+    // Window_StatusParty (selectable actor rail)
+    // -------------------------------------------------------------------------
+
+    function Window_StatusParty() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_StatusParty.prototype = Object.create(Window_Selectable.prototype);
+    Window_StatusParty.prototype.constructor = Window_StatusParty;
+
+    Window_StatusParty.prototype.initialize = function(x, y, width, height) {
+        Window_Selectable.prototype.initialize.call(this, x, y, width, height);
+        this._readyPortraits = {};
+        var actor = $gameParty.menuActor();
+        this.select(actor ? Math.max(0, $gameParty.members().indexOf(actor)) : 0);
+    };
+
+    Window_StatusParty.prototype.maxItems = function() {
+        return $gameParty.members().length;
+    };
+
+    Window_StatusParty.prototype.itemHeight = function() {
+        var rows = Math.max(1, Math.min(this.maxItems(), 4));
+        return Math.min(150, Math.floor((this.height - this.padding * 2) / rows));
+    };
+
+    Window_StatusParty.prototype.drawItem = function(index) {
+        var actor = $gameParty.members()[index];
+        if (!actor) return;
+
+        var rect = this.itemRect(index);
+        if (index === this.index()) {
+            this.contents.fillRect(rect.x, rect.y, rect.width, rect.height,
+                'rgba(255, 255, 255, 0.16)');
+        }
+
+        var imageName = portraitName(actor);
+        var bitmap = ImageManager.loadPicture(imageName);
+        var portraitWidth = Math.max(1, rect.width - 8);
+        var portraitHeight = Math.max(1, rect.height - this.lineHeight() - 14);
+        var imageY = rect.y + 4;
+        if (bitmap && bitmap.isReady() && bitmap.width > 0 && bitmap.height > 0) {
+            var scale = Math.min(portraitWidth / bitmap.width, portraitHeight / bitmap.height);
+            var imageWidth = Math.floor(bitmap.width * scale);
+            var imageHeight = Math.floor(bitmap.height * scale);
+            var imageX = rect.x + Math.floor((rect.width - imageWidth) / 2);
+            imageY += Math.floor((portraitHeight - imageHeight) / 2);
+            this.contents.blt(bitmap, 0, 0, bitmap.width, bitmap.height,
+                imageX, imageY, imageWidth, imageHeight);
+        }
+        this.contents.fontSize = Math.min(18, this.standardFontSize());
+        this.drawText(actor.name(), rect.x, rect.y + rect.height - this.lineHeight() - 4,
+            rect.width, 'center');
+        this.resetFontSettings();
+    };
+
+    Window_StatusParty.prototype.update = function() {
+        Window_Selectable.prototype.update.call(this);
+        this.refreshReadyPortraits();
+        if (!TouchInput.isTriggered() || !this.isTouchedInsideFrame()) return;
+
+        var x = this.canvasToLocalX(TouchInput.x);
+        var y = this.canvasToLocalY(TouchInput.y);
+        var index = this.hitTest(x, y);
+        if (index >= 0) {
+            this.select(index);
+            this.refresh();
+            this.callHandler('actorChange');
+        }
+    };
+
+    Window_StatusParty.prototype.refreshReadyPortraits = function() {
+        var members = $gameParty.members();
+        for (var i = 0; i < members.length; i++) {
+            var imageName = portraitName(members[i]);
+            if (this._readyPortraits[imageName]) continue;
+            var bitmap = ImageManager.loadPicture(imageName);
+            if (bitmap && bitmap.isReady() && bitmap.width > 0 && bitmap.height > 0) {
+                this._readyPortraits[imageName] = true;
+                this.refresh();
+            }
+        }
     };
 
     // -------------------------------------------------------------------------
@@ -967,24 +1058,24 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Scene_Status.prototype.create = function() {
         Scene_MenuBase.prototype.create.call(this);
-        if (this._statusActor) this._actor = this._statusActor;
+        if (this._statusActor) {
+            this._actor = this._statusActor;
+            $gameParty.setMenuActor(this._statusActor);
+        }
 
+        this.createPartyWindow();
         this.createTabsWindow();
 
         this._portraitWindow = new Window_StatusPortrait(
-            leftWidth(), 0, centerWidth(), Graphics.boxHeight
+            partyWidth(), this._tabsWindow.height, centerWidth(),
+            Graphics.boxHeight - this._tabsWindow.height
         );
         this.addWindow(this._portraitWindow);
 
         this._infoWindow = new Window_StatusInfo(
-            leftWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
+            partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
         );
         this.addWindow(this._infoWindow);
-
-        this._detailWindow = new Window_StatusDetail(
-            0, this._tabsWindow.height, leftWidth(), Graphics.boxHeight - this._tabsWindow.height
-        );
-        this.addWindow(this._detailWindow);
 
         // Added last so the state tooltip renders above the other windows.
         this._statePopup = new Window_StatePopup();
@@ -994,8 +1085,17 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.refreshAll();
     };
 
+    Scene_Status.prototype.createPartyWindow = function() {
+        this._partyWindow = new Window_StatusParty(
+            0, 0, partyWidth(), Graphics.boxHeight
+        );
+        this._partyWindow.setHandler('actorChange', this.onPartyActorChange.bind(this));
+        this.addWindow(this._partyWindow);
+    };
+
     Scene_Status.prototype.createTabsWindow = function() {
-        this._tabsWindow = new Window_StatusTabs(0, 0);
+        this._tabsWindow = new Window_StatusTabs(partyWidth(), 0);
+        this._tabsWindow.setHandler('status', this.onTabStatus.bind(this));
         this._tabsWindow.setHandler('equip',  this.onTabEquip.bind(this));
         this._tabsWindow.setHandler('class',  this.onTabClass.bind(this));
         this._tabsWindow.setHandler('skills', this.onTabSkills.bind(this));
@@ -1005,46 +1105,86 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.addWindow(this._tabsWindow);
     };
 
+    Scene_Status.prototype.update = function() {
+        Scene_MenuBase.prototype.update.call(this);
+        if (!this._tabsWindow || !this._tabsWindow.active || !$gameParty.members().length) return;
+        if (Input.isRepeated('up')) {
+            this.changePartyActor(-1);
+        } else if (Input.isRepeated('down')) {
+            this.changePartyActor(1);
+        }
+    };
+
     Scene_Status.prototype.start = function() {
         Scene_MenuBase.prototype.start.call(this);
+        var actor = $gameParty.menuActor();
+        if (actor) this._actor = actor;
         this._tabsWindow.activate();
         this._tabsWindow.select(0);
         this.refreshAll();
     };
 
-    Scene_Status.prototype.onTabEquip = function() {
-        this._detailWindow.setMode('equip');
+    Scene_Status.prototype.onTabStatus = function() {
         this._tabsWindow.activate();
+    };
+
+    Scene_Status.prototype.onTabEquip = function() {
+        this.openActorMenu(Scene_Equip);
     };
 
     Scene_Status.prototype.onTabClass = function() {
-        this._detailWindow.setMode('class');
-        this._tabsWindow.activate();
+        var scene = window.Scene_NUSVClassChange ||
+            window.Scene_NUSV_ClassChange || window.Scene_NUSVClass;
+        this.openActorMenu(scene);
     };
 
     Scene_Status.prototype.onTabSkills = function() {
-        this._detailWindow.setMode('skills');
-        this._tabsWindow.activate();
+        this.openActorMenu(Scene_Skill);
+    };
+
+    Scene_Status.prototype.openActorMenu = function(scene) {
+        if (typeof scene !== 'function') {
+            SoundManager.playBuzzer();
+            this._tabsWindow.activate();
+            return;
+        }
+        var actor = this.actor();
+        if (actor) $gameParty.setMenuActor(actor);
+        SceneManager.push(scene);
+    };
+
+    Scene_Status.prototype.changePartyActor = function(offset) {
+        var members = $gameParty.members();
+        if (members.length < 2) return;
+        var index = (this._partyWindow.index() + offset + members.length) % members.length;
+        this._partyWindow.select(index);
+        this._partyWindow.refresh();
+        this.onPartyActorChange();
+    };
+
+    Scene_Status.prototype.onPartyActorChange = function() {
+        var actor = $gameParty.members()[this._partyWindow.index()];
+        if (!actor) return;
+        $gameParty.setMenuActor(actor);
+        this._actor = actor;
+        this.refreshAll();
     };
 
     Scene_Status.prototype.refreshAll = function() {
         var actor = this.actor();
+        var index = $gameParty.members().indexOf(actor);
+        this._partyWindow.select(Math.max(0, index));
+        this._partyWindow.refresh();
         this._tabsWindow.refresh();
         this._tabsWindow.activate();
         this._portraitWindow.setActor(actor);
         this._infoWindow.setActor(actor);
-        this._detailWindow.setActor(actor);
-        this._detailWindow.setMode(this.currentTabMode());
-    };
-
-    Scene_Status.prototype.currentTabMode = function() {
-        var symbol = this._tabsWindow.currentSymbol();
-        if (symbol === 'class') return 'class';
-        if (symbol === 'skills') return 'skills';
-        return 'equip';
     };
 
     Scene_Status.prototype.onActorChange = function() {
+        var actor = this.actor();
+        var index = $gameParty.members().indexOf(actor);
+        if (index >= 0) this._partyWindow.select(index);
         this.refreshAll();
     };
 
@@ -1058,6 +1198,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     // Expose for debugging / other plugins
     NUSV.StatusScreen.Window_StatusTabs = Window_StatusTabs;
+    NUSV.StatusScreen.Window_StatusParty = Window_StatusParty;
     NUSV.StatusScreen.Window_StatusDetail = Window_StatusDetail;
     NUSV.StatusScreen.Window_StatusPortrait = Window_StatusPortrait;
     NUSV.StatusScreen.Window_StatusInfo = Window_StatusInfo;
