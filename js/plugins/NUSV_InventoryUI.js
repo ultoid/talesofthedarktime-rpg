@@ -602,6 +602,10 @@ Imported.NUSV_InventoryUI = true;
 
     Scene_NUSVInventory.prototype.start = function() {
         Scene_ItemBase.prototype.start.call(this);
+        if (Scene_NUSVInventory._itemOnlyMode) {
+            this._gridWindow.setCategory('item');
+            this._lastCategory = 'item';
+        }
         this._gridWindow.activate();
         this._gridWindow.select(this._gridWindow.maxItems() > 0 ? 0 : -1);
         this.refreshDetail();
@@ -611,7 +615,8 @@ Imported.NUSV_InventoryUI = true;
         this._headerWindow = new Window_Base(0, 0, Graphics.boxWidth, HEADER_HEIGHT);
         this._headerWindow.changeTextColor(this._headerWindow.systemColor());
         this._headerWindow.contents.fontSize = 28;
-        this._headerWindow.drawText('Inventory', this._headerWindow.textPadding(), 0, this._headerWindow.contents.width);
+        var title = Scene_NUSVInventory._itemOnlyMode ? 'Item' : 'Inventory';
+        this._headerWindow.drawText(title, this._headerWindow.textPadding(), 0, this._headerWindow.contents.width);
         this.addWindow(this._headerWindow);
     };
 
@@ -619,16 +624,23 @@ Imported.NUSV_InventoryUI = true;
         this._categoryWindow = new Window_NUSVInventoryCategory(0, HEADER_HEIGHT);
         this._categoryWindow.setHandler('ok', this.onCategoryOk.bind(this));
         this._categoryWindow.setHandler('cancel', this.popScene.bind(this));
+        if (Scene_NUSVInventory._itemOnlyMode) {
+            this._categoryWindow.hide();
+            this._categoryWindow.deactivate();
+        }
         this.addWindow(this._categoryWindow);
     };
 
     Scene_NUSVInventory.prototype.createGridWindow = function() {
-        var y = HEADER_HEIGHT + CATEGORY_HEIGHT;
+        var isItemOnly = !!Scene_NUSVInventory._itemOnlyMode;
+        var y = HEADER_HEIGHT + (isItemOnly ? 0 : CATEGORY_HEIGHT);
         this._gridWindow = new Window_NUSVInventoryGrid(0, y, GRID_WIDTH, Graphics.boxHeight - y);
         this._itemWindow = this._gridWindow;
         this._gridWindow.setHandler('ok', this.onGridOk.bind(this));
         this._gridWindow.setHandler('cancel', this.popScene.bind(this));
-        this._gridWindow.setHandler('category', this.activateCategory.bind(this));
+        if (!isItemOnly) {
+            this._gridWindow.setHandler('category', this.activateCategory.bind(this));
+        }
         this.addWindow(this._gridWindow);
     };
 
@@ -644,7 +656,7 @@ Imported.NUSV_InventoryUI = true;
             this._lastGridIndex = this._gridWindow.index();
             this.refreshDetail();
         }
-        if (this._categoryWindow && this._lastCategory !== this._categoryWindow.currentSymbol()) {
+        if (!Scene_NUSVInventory._itemOnlyMode && this._categoryWindow && this._lastCategory !== this._categoryWindow.currentSymbol()) {
             this._lastCategory = this._categoryWindow.currentSymbol();
             this._gridWindow.setCategory(this._lastCategory);
             this.refreshDetail();
@@ -918,6 +930,16 @@ Imported.NUSV_InventoryUI = true;
     Scene_NUSVInventory.prototype.activateItemWindow = function() {
         this.refreshInventory();
         this._gridWindow.activate();
+    };
+
+    Scene_NUSVInventory.prototype.popScene = function() {
+        Scene_NUSVInventory._itemOnlyMode = false;
+        Scene_ItemBase.prototype.popScene.call(this);
+    };
+
+    Scene_NUSVInventory.prototype.terminate = function() {
+        Scene_NUSVInventory._itemOnlyMode = false;
+        Scene_ItemBase.prototype.terminate.call(this);
     };
 
     window.Scene_NUSVInventory = Scene_NUSVInventory;
