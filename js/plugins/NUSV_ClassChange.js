@@ -263,6 +263,14 @@ NUSV.ClassChange = NUSV.ClassChange || {};
                /<Class Change Requirement>/i.test(cls.note);
     }
 
+    function getClassParentId(cls) {
+        if (!cls) return 0;
+        var raw = noteValue(cls, 'Class Change From');
+        if (raw == null) return 0;
+        var p = resolveClass(raw);
+        return p ? p.id : 0;
+    }
+
     function learningSkillIds(classId, level) {
         var cls = $dataClasses[Number(classId)];
         if (!cls || !cls.learnings) return [];
@@ -331,7 +339,57 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         this._nusvClassLevels = this._nusvClassLevels || {};
         this._nusvClassLevels[this._classId] = this._level;
         this._nusvBaseLevel = this._nusvBaseLevel || this._level;
+        this._nusvUnlockedClasses = this._nusvUnlockedClasses || {};
+        this.nusvUnlockClass(this._classId);
         this.nusvRefreshClassLearnedSkills();
+    };
+
+    Game_Actor.prototype.nusvUnlockedClasses = function() {
+        this._nusvUnlockedClasses = this._nusvUnlockedClasses || {};
+        if (this._classId && !this._nusvUnlockedClasses[this._classId]) {
+            this.nusvUnlockClass(this._classId);
+        }
+        return this._nusvUnlockedClasses;
+    };
+
+    Game_Actor.prototype.nusvUnlockClass = function(classId) {
+        classId = Number(classId);
+        if (!$dataClasses[classId]) return;
+        this._nusvUnlockedClasses = this._nusvUnlockedClasses || {};
+        this._nusvUnlockedClasses[classId] = true;
+
+        var cur = classId;
+        var visited = {};
+        while (cur > 0 && !visited[cur] && $dataClasses[cur]) {
+            visited[cur] = true;
+            this._nusvUnlockedClasses[cur] = true;
+            cur = getClassParentId($dataClasses[cur]);
+        }
+    };
+
+    Game_Actor.prototype.nusvLockClass = function(classId) {
+        classId = Number(classId);
+        this._nusvUnlockedClasses = this._nusvUnlockedClasses || {};
+        delete this._nusvUnlockedClasses[classId];
+    };
+
+    Game_Actor.prototype.nusvIsClassUnlocked = function(classId) {
+        classId = Number(classId);
+        if (!classId) return false;
+        var unlocked = this.nusvUnlockedClasses();
+        if (unlocked[classId]) return true;
+
+        var cur = this._classId;
+        var visited = {};
+        while (cur > 0 && !visited[cur] && $dataClasses[cur]) {
+            if (cur === classId) {
+                this.nusvUnlockClass(classId);
+                return true;
+            }
+            visited[cur] = true;
+            cur = getClassParentId($dataClasses[cur]);
+        }
+        return false;
     };
 
     Game_Actor.prototype.nusvClassTier = function() {
@@ -448,6 +506,14 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         if ($gameSystem._nusvLockedClasses && $gameSystem._nusvLockedClasses[classId]) {
             return false;
         }
+
+        // Already unlocked classes can always be changed to (retains unlocked classes)
+        if (this.nusvIsClassUnlocked(classId)) {
+            var actorRaw = noteValue(cls, 'Class Change Actor');
+            if (actorRaw != null && Number(actorRaw) !== this.actorId()) return false;
+            return true;
+        }
+
         if (!$gameSystem.nusvIsClassUnlocked(classId) && !hasExplicitRequirements(cls)) {
             return false;
         }
@@ -484,7 +550,10 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         raw = noteValue(cls, 'Class Change From');
         if (raw != null) {
             var fromClass = resolveClass(raw);
-            if (!fromClass || fromClass.id !== this._classId) return false;
+            if (!fromClass) return false;
+            if (fromClass.id !== this._classId && !this.nusvIsClassUnlocked(fromClass.id)) {
+                return false;
+            }
         }
 
         raw = noteValue(cls, 'Class Change Race');
@@ -545,6 +614,7 @@ NUSV.ClassChange = NUSV.ClassChange || {};
             this.refresh();
         }
 
+        this.nusvUnlockClass(classId);
         this.nusvRefreshClassLearnedSkills();
 
         if (restoreHpMp) {

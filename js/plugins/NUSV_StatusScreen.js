@@ -98,7 +98,7 @@
 var Imported = Imported || {};
 Imported.NUSV_StatusScreen = true;
 
-var NUSV = NUSV || {};
+var NUSV = window.NUSV = window.NUSV || {};
 NUSV.StatusScreen = NUSV.StatusScreen || {};
 
 (function() {
@@ -1274,7 +1274,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         for (var i = 0; i < defs.length; i++) {
             var def = defs[i];
             var item = this.getEquippedItem(def);
-            var isSelected = (i === this._selectedIndex);
+            var isSelected = this.active && (i === this._selectedIndex);
 
             // Box Background
             var bgColor = isSelected ? 'rgba(50, 110, 200, 0.45)' : 'rgba(10, 20, 42, 0.6)';
@@ -1492,7 +1492,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Window_StatusEquipPreview.prototype.update = function() {
         Window_Selectable.prototype.update.call(this);
-        if (TouchInput.isTriggered() && this.isTouchedInsideFrame()) {
+        if (this.isOpenAndActive() && TouchInput.isTriggered() && this.isTouchedInsideFrame()) {
             var x = this.canvasToLocalX(TouchInput.x);
             var y = this.canvasToLocalY(TouchInput.y);
             var hit = this.hitTestSlot(x, y);
@@ -1577,6 +1577,1570 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     // -------------------------------------------------------------------------
+    // Window_StatusClassTree (Right panel: Job Advancement Tree & Stat Traits)
+    // -------------------------------------------------------------------------
+
+    var DEFAULT_CLASS_PARENT_MAP = {
+        // Fighter Track
+        2: 1, 3: 1, 4: 1,
+        5: 2, 6: 3, 7: 4,
+        8: 5, 9: 6, 10: 6, 11: 7,
+        12: 8, 13: 10, 14: 10, 15: 11, 16: 9,
+
+        // Apprentice Track
+        18: 17, 19: 17, 20: 17,
+        21: 18, 22: 19, 23: 20,
+        24: 21, 25: 21, 26: 21, 27: 21, 28: 21, 29: 21, 30: 21, 31: 21,
+        32: 22, 33: 23,
+        34: 21, 35: 32, 36: 33, 37: 22, 38: 21,
+        49: 34, 50: 36,
+
+        // Scout Track
+        40: 39, 41: 39,
+        42: 40, 43: 41,
+        44: 42, 45: 43,
+        46: 42, 47: 45, 48: 44
+    };
+
+    function getClassParentId(cls) {
+        if (!cls) return 0;
+        if (cls.note) {
+            var m = cls.note.match(/<Class Change From:\s*([^>]+)>/i);
+            if (m) {
+                var raw = m[1].trim();
+                var id = parseInt(raw, 10);
+                if (!isNaN(id) && $dataClasses[id]) return id;
+                for (var i = 1; i < $dataClasses.length; i++) {
+                    if ($dataClasses[i] && $dataClasses[i].name.toLowerCase() === raw.toLowerCase()) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return DEFAULT_CLASS_PARENT_MAP[cls.id] || 0;
+    }
+
+    function getClassIconIndex(cls) {
+        if (!cls) return 0;
+        if (cls.note) {
+            var m = cls.note.match(/<(?:icon|class icon):\s*(\d+)>/i);
+            if (m) return parseInt(m[1], 10);
+        }
+        var cid = cls.id;
+        // Fighter
+        if (cid === 1) return 96;
+        if (cid === 2) return 99;
+        if (cid === 3) return 128;
+        if (cid === 4) return 104;
+        if (cid === 5) return 96;
+        if (cid === 6) return 128;
+        if (cid === 7) return 104;
+        if (cid === 8) return 99;
+        if (cid === 9) return 101;
+        if (cid === 10) return 96;
+        if (cid === 11) return 104;
+        if (cid === 12) return 99;
+        if (cid === 13) return 135;
+        if (cid === 14) return 128;
+        if (cid === 15) return 104;
+        if (cid === 16) return 101;
+        // Apprentice
+        if (cid === 17) return 100;
+        if (cid === 18) return 64;
+        if (cid === 19) return 72;
+        if (cid === 20) return 71;
+        if (cid === 21) return 65;
+        if (cid === 22) return 73;
+        if (cid === 23) return 80;
+        if (cid >= 24 && cid <= 31) return 66;
+        if (cid === 32) return 74;
+        if (cid === 33) return 80;
+        if (cid === 34) return 79;
+        if (cid === 35) return 74;
+        if (cid === 36) return 71;
+        if (cid === 37) return 68;
+        if (cid === 38) return 64;
+        // Scout
+        if (cid === 39) return 102;
+        if (cid === 40) return 102;
+        if (cid === 41) return 97;
+        if (cid === 42) return 102;
+        if (cid === 43) return 97;
+        if (cid === 44) return 102;
+        if (cid === 45) return 97;
+        if (cid === 46) return 110;
+        if (cid === 47) return 97;
+        if (cid === 48) return 102;
+        // Tier 6
+        if (cid === 49) return 144;
+        if (cid === 50) return 80;
+        return 76;
+    }
+
+    function getClassParamTraits(cls) {
+        if (!cls || !cls.traits) return [];
+        var res = [];
+        var traits = cls.traits;
+        var pnames = [
+            TextManager.param(0) || 'Max HP',
+            TextManager.param(1) || 'Max MP',
+            TextManager.param(2) || 'Attack',
+            TextManager.param(3) || 'Defense',
+            TextManager.param(4) || 'M.Attack',
+            TextManager.param(5) || 'M.Defense',
+            TextManager.param(6) || 'Agility',
+            TextManager.param(7) || 'Luck'
+        ];
+        var xnames = [
+            'Hit Rate', 'Evasion Rate', 'Critical Rate', 'Critical Evade',
+            'Magic Evade', 'Magic Reflect', 'Counter Attack',
+            'HP Regen', 'MP Regen', 'TP Regen'
+        ];
+        var snames = [
+            'Target Rate', 'Guard Effect', 'Recovery Effect', 'Pharmacology',
+            'MP Cost', 'TP Charge Rate', 'Phys Dmg Taken',
+            'Mag Dmg Taken', 'Floor Damage', 'EXP Rate'
+        ];
+
+        for (var i = 0; i < traits.length; i++) {
+            var tr = traits[i];
+            if (tr.code === 21) {
+                var pname = pnames[tr.dataId] || ('Param ' + tr.dataId);
+                var prate = Math.round((tr.value - 1) * 100);
+                if (prate !== 0) {
+                    res.push({
+                        name: pname,
+                        text: (prate > 0 ? '+' : '') + prate + '%',
+                        isPositive: prate > 0
+                    });
+                }
+            } else if (tr.code === 22) {
+                var xname = xnames[tr.dataId] || ('XParam ' + tr.dataId);
+                if (tr.dataId === 0) {
+                    var hrate = Math.round(tr.value * 100);
+                    res.push({
+                        name: xname,
+                        text: hrate + '%',
+                        isPositive: hrate >= 95
+                    });
+                } else {
+                    var xval = Math.round(tr.value * 100);
+                    if (xval !== 0) {
+                        res.push({
+                            name: xname,
+                            text: (xval > 0 ? '+' : '') + xval + '%',
+                            isPositive: xval > 0
+                        });
+                    }
+                }
+            } else if (tr.code === 23) {
+                var sname = snames[tr.dataId] || ('SParam ' + tr.dataId);
+                var did = tr.dataId;
+                var srate = Math.round((tr.value - 1) * 100);
+                if (srate !== 0) {
+                    var isPos = (did === 4 || did === 6 || did === 7 || did === 8) ? (srate < 0) : (srate > 0);
+                    res.push({
+                        name: sname,
+                        text: (srate > 0 ? '+' : '') + srate + '%',
+                        isPositive: isPos
+                    });
+                }
+            }
+        }
+        return res;
+    }
+
+    function getClassDescription(cls) {
+        if (!cls || !cls.note) return '';
+        var m = cls.note.match(/<Class Description>([\s\S]*?)<\/Class Description>/i);
+        return m ? m[1].trim() : '';
+    }
+
+    function Window_StatusClassTree() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_StatusClassTree.prototype = Object.create(Window_Selectable.prototype);
+    Window_StatusClassTree.prototype.constructor = Window_StatusClassTree;
+
+    Window_StatusClassTree.prototype.initialize = function(x, y, width, height) {
+        Window_Selectable.prototype.initialize.call(this, x, y, width, height);
+        this._actor = null;
+        this._selectedIndex = 0;
+        this._nodes = [];
+        this.deactivate();
+        this.refresh();
+    };
+
+    Window_StatusClassTree.prototype.standardPadding = function() {
+        return 12;
+    };
+
+    Window_StatusClassTree.prototype.maxItems = function() {
+        return this._nodes ? this._nodes.length : 0;
+    };
+
+    Window_StatusClassTree.prototype.index = function() {
+        return this._selectedIndex;
+    };
+
+    Window_StatusClassTree.prototype.currentNode = function() {
+        if (!this._nodes || this._nodes.length === 0) return null;
+        return this._nodes[this._selectedIndex] || null;
+    };
+
+    Window_StatusClassTree.prototype.isCursorMovable = function() {
+        return this.isOpenAndActive();
+    };
+
+    Window_StatusClassTree.prototype.isCurrentItemEnabled = function() {
+        var node = this.currentNode();
+        if (!node || !node.cls || !this._actor) return false;
+        if (node.classId === this._actor._classId) return false;
+        if (typeof this._actor.nusvCanChangeClass === 'function') {
+            return this._actor.nusvCanChangeClass(node.classId);
+        }
+        if (typeof this._actor.nusvIsClassUnlocked === 'function') {
+            return this._actor.nusvIsClassUnlocked(node.classId);
+        }
+        return false;
+    };
+
+    Window_StatusClassTree.prototype.processOk = function() {
+        if (this.isCurrentItemEnabled()) {
+            this.playOkSound();
+            this.updateInputData();
+            this.callOkHandler();
+        } else {
+            this.playBuzzerSound();
+        }
+    };
+
+    Window_StatusClassTree.prototype.select = function(index) {
+        if (index < 0 || (this._nodes && index >= this._nodes.length)) return;
+        this._index = index;
+        if (this._selectedIndex !== index) {
+            this._selectedIndex = index;
+            this.refresh();
+        }
+    };
+
+    Window_StatusClassTree.prototype.activate = function() {
+        Window_Selectable.prototype.activate.call(this);
+        this.refresh();
+    };
+
+    Window_StatusClassTree.prototype.deactivate = function() {
+        Window_Selectable.prototype.deactivate.call(this);
+        this.refresh();
+    };
+
+    Window_StatusClassTree.prototype.setActor = function(actor, force) {
+        var classChanged = actor && this._lastClassId !== actor._classId;
+        if (this._actor !== actor || classChanged || force) {
+            this._actor = actor;
+            this._lastClassId = actor ? actor._classId : 0;
+            this.buildTree();
+            this.refresh();
+        }
+    };
+
+    Window_StatusClassTree.prototype.updateCursor = function() {
+        this.setCursorRect(0, 0, 0, 0);
+    };
+
+    Window_StatusClassTree.prototype.buildTree = function() {
+        this._nodes = [];
+        if (!this._actor) return;
+
+        var currentClassId = this._actor._classId;
+        var W = this.contents ? this.contents.width : (this.width - this.standardPadding() * 2);
+
+        // Find lineage ancestors of active class
+        var ancestors = [];
+        var p = getClassParentId($dataClasses[currentClassId]);
+        var visited = {};
+        while (p > 0 && !visited[p]) {
+            visited[p] = true;
+            ancestors.push(p);
+            p = getClassParentId($dataClasses[p]);
+        }
+        var rootId = ancestors.length > 0 ? ancestors[ancestors.length - 1] : currentClassId;
+
+        // Coordinates configuration
+        var colX3 = [ Math.floor(W * 0.20), Math.floor(W * 0.50), Math.floor(W * 0.80) ];
+        var colX2 = [ Math.floor(W * 0.32), Math.floor(W * 0.68) ];
+        var tierY = [ 46, 134, 222, 310, 398 ];
+
+        var rawList = [];
+
+        if (rootId === 39) {
+            // Scout Track (2 columns)
+            rawList = [
+                // Tier 1
+                { classId: 39, tier: 1, cx: Math.floor(W * 0.50), cy: tierY[0], parentId: 0 },
+                // Tier 2
+                { classId: 40, tier: 2, cx: colX2[0], cy: tierY[1], parentId: 39 },
+                { classId: 41, tier: 2, cx: colX2[1], cy: tierY[1], parentId: 39 },
+                // Tier 3
+                { classId: 42, tier: 3, cx: colX2[0], cy: tierY[2], parentId: 40 },
+                { classId: 43, tier: 3, cx: colX2[1], cy: tierY[2], parentId: 41 },
+                // Tier 4
+                { classId: 44, tier: 4, cx: colX2[0], cy: tierY[3], parentId: 42 },
+                { classId: 45, tier: 4, cx: colX2[1], cy: tierY[3], parentId: 43 },
+                // Tier 5
+                { classId: (currentClassId === 46 ? 46 : 48), tier: 5, cx: colX2[0], cy: tierY[4], parentId: 44 },
+                { classId: 47, tier: 5, cx: colX2[1], cy: tierY[4], parentId: 45 }
+            ];
+        } else if (rootId === 1) {
+            // Fighter Track (3 columns)
+            var t4Col1 = (currentClassId === 9 || currentClassId === 16) ? 9 : 10;
+            var t5Col1 = (currentClassId === 9 || currentClassId === 16) ? 16 :
+                         (currentClassId === 13 ? 13 : 14);
+
+            rawList = [
+                // Tier 1
+                { classId: 1, tier: 1, cx: colX3[1], cy: tierY[0], parentId: 0 },
+                // Tier 2
+                { classId: 2, tier: 2, cx: colX3[0], cy: tierY[1], parentId: 1 },
+                { classId: 3, tier: 2, cx: colX3[1], cy: tierY[1], parentId: 1 },
+                { classId: 4, tier: 2, cx: colX3[2], cy: tierY[1], parentId: 1 },
+                // Tier 3
+                { classId: 5, tier: 3, cx: colX3[0], cy: tierY[2], parentId: 2 },
+                { classId: 6, tier: 3, cx: colX3[1], cy: tierY[2], parentId: 3 },
+                { classId: 7, tier: 3, cx: colX3[2], cy: tierY[2], parentId: 4 },
+                // Tier 4
+                { classId: 8, tier: 4, cx: colX3[0], cy: tierY[3], parentId: 5 },
+                { classId: t4Col1, tier: 4, cx: colX3[1], cy: tierY[3], parentId: 6 },
+                { classId: 11, tier: 4, cx: colX3[2], cy: tierY[3], parentId: 7 },
+                // Tier 5
+                { classId: 12, tier: 5, cx: colX3[0], cy: tierY[4], parentId: 8 },
+                { classId: t5Col1, tier: 5, cx: colX3[1], cy: tierY[4], parentId: t4Col1 },
+                { classId: 15, tier: 5, cx: colX3[2], cy: tierY[4], parentId: 11 }
+            ];
+        } else {
+            // Apprentice Track (3 columns)
+            var t4Col0 = (currentClassId >= 24 && currentClassId <= 31) ? currentClassId : 24;
+
+            rawList = [
+                // Tier 1
+                { classId: 17, tier: 1, cx: colX3[1], cy: tierY[0], parentId: 0 },
+                // Tier 2
+                { classId: 18, tier: 2, cx: colX3[0], cy: tierY[1], parentId: 17 },
+                { classId: 19, tier: 2, cx: colX3[1], cy: tierY[1], parentId: 17 },
+                { classId: 20, tier: 2, cx: colX3[2], cy: tierY[1], parentId: 17 },
+                // Tier 3
+                { classId: 21, tier: 3, cx: colX3[0], cy: tierY[2], parentId: 18 },
+                { classId: 22, tier: 3, cx: colX3[1], cy: tierY[2], parentId: 19 },
+                { classId: 23, tier: 3, cx: colX3[2], cy: tierY[2], parentId: 20 },
+                // Tier 4
+                { classId: t4Col0, tier: 4, cx: colX3[0], cy: tierY[3], parentId: 21 },
+                { classId: 32, tier: 4, cx: colX3[1], cy: tierY[3], parentId: 22 },
+                { classId: 33, tier: 4, cx: colX3[2], cy: tierY[3], parentId: 23 },
+                // Tier 5
+                { classId: 34, tier: 5, cx: colX3[0], cy: tierY[4], parentId: t4Col0 },
+                { classId: 35, tier: 5, cx: colX3[1], cy: tierY[4], parentId: 32 },
+                { classId: 36, tier: 5, cx: colX3[2], cy: tierY[4], parentId: 33 }
+            ];
+        }
+
+        // Convert to nodes with status and parent references
+        var nodes = [];
+        var curIdx = 0;
+
+        for (var i = 0; i < rawList.length; i++) {
+            var raw = rawList[i];
+            var cls = $dataClasses[raw.classId];
+            if (!cls) continue;
+
+            var isCur = (raw.classId === currentClassId);
+            var isUnlocked = false;
+            if (typeof this._actor.nusvIsClassUnlocked === 'function') {
+                isUnlocked = this._actor.nusvIsClassUnlocked(raw.classId);
+            } else {
+                isUnlocked = (ancestors.indexOf(raw.classId) !== -1);
+            }
+            var canChange = false;
+            if (typeof this._actor.nusvCanChangeClass === 'function') {
+                canChange = this._actor.nusvCanChangeClass(raw.classId);
+            }
+
+            var status = 'locked';
+            var levelText = 'Locked';
+
+            var parentId = (raw.tier > 1 ? (getClassParentId(cls) || raw.parentId) : 0);
+
+            if (isCur) {
+                status = 'current';
+                levelText = 'Lv ' + this._actor.level;
+                curIdx = nodes.length;
+            } else if (isUnlocked) {
+                status = 'mastered';
+                levelText = 'Max Level';
+            } else if (canChange) {
+                status = 'available';
+                levelText = 'Available';
+            } else if (parentId === currentClassId || (typeof this._actor.nusvIsClassUnlocked === 'function' && this._actor.nusvIsClassUnlocked(parentId))) {
+                status = 'next';
+                levelText = 'Next Adv.';
+            }
+
+            nodes.push({
+                index: nodes.length,
+                classId: raw.classId,
+                cls: cls,
+                tier: raw.tier,
+                cx: raw.cx,
+                cy: raw.cy,
+                parentId: parentId,
+                parentIndex: -1,
+                status: status,
+                levelText: levelText
+            });
+        }
+
+        // Link parentIndex
+        for (var n = 0; n < nodes.length; n++) {
+            if (nodes[n].parentId > 0) {
+                for (var m = 0; m < nodes.length; m++) {
+                    if (nodes[m].classId === nodes[n].parentId) {
+                        nodes[n].parentIndex = m;
+                        break;
+                    }
+                }
+            }
+        }
+
+        this._nodes = nodes;
+        this._selectedIndex = curIdx;
+    };
+
+    Window_StatusClassTree.prototype.drawHexagon = function(cx, cy, radius, fillStyle, strokeStyle, lineWidth) {
+        var ctx = this.contents._context;
+        ctx.save();
+        ctx.beginPath();
+        for (var i = 0; i < 6; i++) {
+            var angle = -Math.PI / 2 + (i * Math.PI / 3);
+            var x = cx + radius * Math.cos(angle);
+            var y = cy + radius * Math.sin(angle);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        if (fillStyle) {
+            ctx.fillStyle = fillStyle;
+            ctx.fill();
+        }
+        if (strokeStyle) {
+            ctx.strokeStyle = strokeStyle;
+            ctx.lineWidth = lineWidth || 1;
+            ctx.stroke();
+        }
+        ctx.restore();
+    };
+
+    Window_StatusClassTree.prototype.drawConnectingLines = function() {
+        var ctx = this.contents._context;
+        var r = 21;
+
+        for (var i = 0; i < this._nodes.length; i++) {
+            var node = this._nodes[i];
+            if (node.parentIndex < 0) continue;
+            var parent = this._nodes[node.parentIndex];
+
+            var isLit = (parent.status === 'mastered' || parent.status === 'current') &&
+                        (node.status === 'mastered' || node.status === 'current');
+            var isSemiLit = (parent.status === 'mastered' || parent.status === 'current');
+
+            ctx.save();
+            if (isLit) {
+                ctx.strokeStyle = 'rgba(180, 220, 50, 0.85)';
+                ctx.lineWidth = 2.5;
+            } else if (isSemiLit) {
+                ctx.strokeStyle = 'rgba(80, 160, 240, 0.65)';
+                ctx.lineWidth = 2;
+            } else {
+                ctx.strokeStyle = 'rgba(60, 80, 110, 0.4)';
+                ctx.lineWidth = 1.5;
+            }
+
+            ctx.beginPath();
+            var px = parent.cx;
+            var py = parent.cy + r;
+            var cx = node.cx;
+            var cy = node.cy - r;
+
+            if (px === cx) {
+                ctx.moveTo(px, py);
+                ctx.lineTo(cx, cy);
+            } else {
+                var midY = Math.floor((py + cy) / 2);
+                ctx.moveTo(px, py);
+                ctx.lineTo(px, midY);
+                ctx.lineTo(cx, midY);
+                ctx.lineTo(cx, cy);
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+    };
+
+    Window_StatusClassTree.prototype.drawNodes = function() {
+        var r = 20;
+
+        for (var i = 0; i < this._nodes.length; i++) {
+            var node = this._nodes[i];
+            var isSelected = (i === this._selectedIndex);
+            var isCur = (node.status === 'current');
+            var isMast = (node.status === 'mastered');
+            var isAvail = (node.status === 'available' || node.status === 'next');
+
+            // 1. Outer Hexagon
+            var fillStyle = 'rgba(20, 25, 35, 0.7)';
+            var strokeStyle = 'rgba(80, 100, 130, 0.4)';
+            var lineWidth = 1;
+
+            if (isCur) {
+                fillStyle = 'rgba(20, 60, 100, 0.85)';
+                strokeStyle = 'rgba(60, 200, 255, 0.95)';
+                lineWidth = 2;
+            } else if (isMast) {
+                fillStyle = 'rgba(45, 75, 20, 0.8)';
+                strokeStyle = 'rgba(180, 220, 50, 0.9)';
+                lineWidth = 2;
+            } else if (isAvail) {
+                fillStyle = 'rgba(25, 45, 80, 0.7)';
+                strokeStyle = 'rgba(120, 180, 255, 0.75)';
+                lineWidth = 1.5;
+            }
+
+            // Outer Selection Glow when window active
+            if (isSelected && this.active) {
+                this.drawHexagon(node.cx, node.cy, r + 5, null, 'rgba(255, 170, 30, 0.4)', 4);
+                this.drawHexagon(node.cx, node.cy, r + 3, null, 'rgba(255, 210, 50, 0.95)', 2.5);
+            }
+
+            // Main Hexagon
+            this.drawHexagon(node.cx, node.cy, r, fillStyle, strokeStyle, lineWidth);
+
+            // 2. Icon (centered in 40x40 area around cx, cy)
+            var iconIndex = getClassIconIndex(node.cls);
+            var ix = node.cx - 16;
+            var iy = node.cy - 16;
+            this.contents.paintOpacity = (node.status === 'locked') ? 130 : 255;
+            this.drawIcon(iconIndex, ix, iy);
+            this.contents.paintOpacity = 255;
+
+            // 3. Class Name below node
+            this.contents.fontSize = 11;
+            var nameColor = this.normalColor();
+            if (isCur) nameColor = this.normalColor();
+            else if (isMast) nameColor = this.powerUpColor();
+            else if (isAvail) nameColor = this.systemColor();
+            else nameColor = this.textColor(7);
+
+            this.changeTextColor(nameColor);
+            var rawName = node.cls.name;
+            if (rawName.indexOf(' - ') !== -1) {
+                rawName = rawName.split(' - ')[1];
+            }
+            this.contents.drawText(rawName, node.cx - 44, node.cy + 22, 88, 14, 'center');
+
+            // 4. Class Level / Status below name
+            this.contents.fontSize = 10;
+            var lvlColor = this.textColor(7);
+            if (isCur) lvlColor = this.textColor(14); // Cyan
+            else if (isMast) lvlColor = this.powerUpColor(); // Gold/Green
+            else if (isAvail) lvlColor = this.systemColor();
+
+            this.changeTextColor(lvlColor);
+            this.contents.drawText(node.levelText, node.cx - 44, node.cy + 36, 88, 12, 'center');
+            this.resetFontSettings();
+        }
+        this.contents._setDirty();
+    };
+
+    Window_StatusClassTree.prototype.drawDetailCard = function() {
+        var node = this._nodes[this._selectedIndex];
+        if (!node || !node.cls) return;
+
+        var W = this.contents.width;
+        var cardX = 8;
+        var cardY = 460;
+        var cardW = W - 16;
+        var cardH = this.contents.height - cardY - 6;
+
+        // Container background & border
+        this.contents.fillRect(cardX, cardY, cardW, cardH, 'rgba(10, 20, 42, 0.88)');
+        var ctx = this.contents._context;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(70, 130, 210, 0.45)';
+        ctx.strokeRect(cardX + 0.5, cardY + 0.5, cardW - 1, cardH - 1);
+        ctx.restore();
+
+        // Icon badge on left
+        this.drawHexagon(cardX + 28, cardY + 28, 20, 'rgba(25, 45, 80, 0.8)', 'rgba(80, 160, 240, 0.7)', 1.5);
+        var iconIndex = getClassIconIndex(node.cls);
+        this.drawIcon(iconIndex, cardX + 12, cardY + 12);
+
+        // Right Action Pill
+        var btnW = 120;
+        var btnH = 26;
+        var btnX = cardX + cardW - btnW - 12;
+        var btnY = cardY + 12;
+
+        var canChange = false;
+        if (this._actor) {
+            if (typeof this._actor.nusvCanChangeClass === 'function') {
+                canChange = this._actor.nusvCanChangeClass(node.classId);
+            } else if (typeof this._actor.nusvIsClassUnlocked === 'function') {
+                canChange = this._actor.nusvIsClassUnlocked(node.classId);
+            }
+        }
+
+        if (node.status === 'current') {
+            this.contents.fillRect(btnX, btnY, btnW, btnH, 'rgba(20, 60, 100, 0.7)');
+            ctx.save();
+            ctx.strokeStyle = 'rgba(60, 200, 255, 0.85)';
+            ctx.strokeRect(btnX + 0.5, btnY + 0.5, btnW - 1, btnH - 1);
+            ctx.restore();
+            this.contents.fontSize = 11;
+            this.changeTextColor(this.textColor(14));
+            this.contents.drawText('[ ACTIVE CLASS ]', btnX, btnY + 5, btnW, 16, 'center');
+        } else if (canChange) {
+            var isMastered = (node.status === 'mastered');
+            var btnFill = isMastered ? 'rgba(35, 75, 20, 0.85)' : 'rgba(20, 80, 110, 0.85)';
+            var btnStroke = isMastered ? 'rgba(180, 220, 50, 0.95)' : 'rgba(60, 220, 255, 0.95)';
+            var btnText = isMastered ? 'ENTER: SWITCH' : 'ENTER: ADVANCE';
+
+            this.contents.fillRect(btnX, btnY, btnW, btnH, btnFill);
+            ctx.save();
+            ctx.strokeStyle = btnStroke;
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(btnX + 0.5, btnY + 0.5, btnW - 1, btnH - 1);
+            ctx.restore();
+            this.contents.fontSize = 11;
+            this.changeTextColor(this.normalColor());
+            this.contents.drawText(btnText, btnX, btnY + 5, btnW, 16, 'center');
+        } else {
+            this.contents.fillRect(btnX, btnY, btnW, btnH, 'rgba(30, 35, 45, 0.6)');
+            ctx.save();
+            ctx.strokeStyle = 'rgba(70, 80, 100, 0.4)';
+            ctx.strokeRect(btnX + 0.5, btnY + 0.5, btnW - 1, btnH - 1);
+            ctx.restore();
+            this.contents.fontSize = 11;
+            this.changeTextColor(this.textColor(7));
+            this.contents.drawText('[ LOCKED ]', btnX, btnY + 5, btnW, 16, 'center');
+        }
+
+        // Class Name & Tier
+        this.contents.fontSize = 16;
+        this.changeTextColor(this.normalColor());
+        this.contents.drawText(node.cls.name, cardX + 56, cardY + 8, cardW - 64 - btnW - 10, 20, 'left');
+
+        this.contents.fontSize = 11;
+        this.changeTextColor(this.systemColor());
+        var statusLabel = 'Tier ' + node.tier;
+        if (node.status === 'current') statusLabel += ' • Active Class';
+        else if (node.status === 'mastered') statusLabel += ' • Mastered';
+        else if (node.status === 'available') statusLabel += ' • Available';
+        else if (node.status === 'next') statusLabel += ' • Next Advancement';
+        else statusLabel += ' • Locked';
+        this.contents.drawText(statusLabel, cardX + 56, cardY + 30, cardW - 64 - btnW - 10, 16, 'left');
+
+        // Divider
+        this.contents.fillRect(cardX + 8, cardY + 54, cardW - 16, 1, 'rgba(255, 255, 255, 0.15)');
+
+        // Header: Stat Traits
+        this.contents.fontSize = 12;
+        this.changeTextColor(this.systemColor());
+        this.contents.drawText('PARAMETER TRAIT BONUSES', cardX + 10, cardY + 58, cardW - 20, 16, 'left');
+
+        // Parameter Traits
+        var traits = getClassParamTraits(node.cls);
+        var lineY = cardY + 76;
+
+        if (traits.length === 0) {
+            this.changeTextColor(this.textColor(7));
+            this.contents.fontSize = 11;
+            this.contents.drawText('No parameter bonus traits in this class.', cardX + 10, lineY, cardW - 20, 16, 'left');
+            lineY += 20;
+        } else {
+            this.contents.fontSize = 12;
+            for (var t = 0; t < Math.min(traits.length, 5); t++) {
+                var tr = traits[t];
+                this.changeTextColor(this.systemColor());
+                this.contents.drawText(tr.name, cardX + 12, lineY, cardW - 90, 16, 'left');
+                this.changeTextColor(tr.isPositive ? this.powerUpColor() : this.powerDownColor());
+                this.contents.drawText(tr.text, cardX + 12, lineY, cardW - 24, 16, 'right');
+                lineY += 17;
+            }
+        }
+
+        // Class Description if space permits
+        var desc = getClassDescription(node.cls);
+        if (desc && lineY < cardY + cardH - 32) {
+            this.contents.fillRect(cardX + 8, lineY + 3, cardW - 16, 1, 'rgba(255, 255, 255, 0.10)');
+            lineY += 8;
+            this.contents.fontSize = 11;
+            this.changeTextColor(this.normalColor());
+            var lines = wrapText(desc, cardW - 24, this.textWidth.bind(this));
+            for (var l = 0; l < Math.min(lines.length, 3); l++) {
+                if (lineY + 14 > cardY + cardH) break;
+                this.contents.drawText(lines[l], cardX + 12, lineY, cardW - 24, 14, 'left');
+                lineY += 14;
+            }
+        }
+
+        this.resetFontSettings();
+    };
+
+    Window_StatusClassTree.prototype.refresh = function() {
+        if (!this.contents) return;
+        this.contents.clear();
+        this.resetFontSettings();
+        if (!this._actor) return;
+
+        if (!this._nodes || this._nodes.length === 0) {
+            this.buildTree();
+        }
+
+        var W = this.contents.width;
+
+        // Title
+        this.contents.fontSize = 16;
+        this.changeTextColor(this.systemColor());
+        this.contents.drawText('JOB ADVANCEMENT TREE', 0, 4, W, 18, 'center');
+        this.resetFontSettings();
+
+        // 1. Connecting Lines
+        this.drawConnectingLines();
+
+        // 2. Nodes
+        this.drawNodes();
+
+        // 3. Detail Card
+        this.drawDetailCard();
+    };
+
+    Window_StatusClassTree.prototype.hitTestNode = function(x, y) {
+        if (!this._nodes) return -1;
+        var r = 24;
+        for (var i = 0; i < this._nodes.length; i++) {
+            var n = this._nodes[i];
+            var dx = x - n.cx;
+            var dy = y - n.cy;
+            if (dx * dx + dy * dy <= r * r) {
+                return i;
+            }
+        }
+        return -1;
+    };
+
+    Window_StatusClassTree.prototype.update = function() {
+        Window_Selectable.prototype.update.call(this);
+        if (this.isOpenAndActive() && TouchInput.isTriggered() && this.isTouchedInsideFrame()) {
+            var x = this.canvasToLocalX(TouchInput.x);
+            var y = this.canvasToLocalY(TouchInput.y);
+            var hit = this.hitTestNode(x, y);
+            if (hit >= 0) {
+                if (this._selectedIndex === hit) {
+                    this.processOk();
+                } else {
+                    this.select(hit);
+                    SoundManager.playCursor();
+                }
+            }
+        }
+    };
+
+    Window_StatusClassTree.prototype.cursorDown = function(wrap) {
+        if (!this._nodes || this._nodes.length === 0) return;
+        var cur = this._nodes[this._selectedIndex];
+        if (!cur) return;
+
+        var nextTierNodes = this._nodes.filter(function(n) { return n.tier === cur.tier + 1; });
+        var targetIndex = -1;
+
+        if (nextTierNodes.length > 0) {
+            nextTierNodes.sort(function(a, b) {
+                return Math.abs(a.cx - cur.cx) - Math.abs(b.cx - cur.cx);
+            });
+            targetIndex = nextTierNodes[0].index;
+        } else if (wrap) {
+            targetIndex = 0;
+        }
+
+        if (targetIndex >= 0 && targetIndex !== this._selectedIndex) {
+            this.select(targetIndex);
+            SoundManager.playCursor();
+        }
+    };
+
+    Window_StatusClassTree.prototype.cursorUp = function(wrap) {
+        if (!this._nodes || this._nodes.length === 0) return;
+        var cur = this._nodes[this._selectedIndex];
+        if (!cur) return;
+
+        var prevTierNodes = this._nodes.filter(function(n) { return n.tier === cur.tier - 1; });
+        var targetIndex = -1;
+
+        if (prevTierNodes.length > 0) {
+            prevTierNodes.sort(function(a, b) {
+                return Math.abs(a.cx - cur.cx) - Math.abs(b.cx - cur.cx);
+            });
+            targetIndex = prevTierNodes[0].index;
+        } else if (wrap) {
+            var maxTier = 1;
+            this._nodes.forEach(function(n) { if (n.tier > maxTier) maxTier = n.tier; });
+            var lastTierNodes = this._nodes.filter(function(n) { return n.tier === maxTier; });
+            if (lastTierNodes.length > 0) {
+                lastTierNodes.sort(function(a, b) {
+                    return Math.abs(a.cx - cur.cx) - Math.abs(b.cx - cur.cx);
+                });
+                targetIndex = lastTierNodes[0].index;
+            }
+        }
+
+        if (targetIndex >= 0 && targetIndex !== this._selectedIndex) {
+            this.select(targetIndex);
+            SoundManager.playCursor();
+        }
+    };
+
+    Window_StatusClassTree.prototype.cursorRight = function(wrap) {
+        if (!this._nodes || this._nodes.length === 0) return;
+        var cur = this._nodes[this._selectedIndex];
+        if (!cur) return;
+
+        var sameTier = this._nodes.filter(function(n) { return n.tier === cur.tier; });
+        var rightNodes = sameTier.filter(function(n) { return n.cx > cur.cx + 5; });
+        rightNodes.sort(function(a, b) { return a.cx - b.cx; });
+
+        var targetIndex = -1;
+        if (rightNodes.length > 0) {
+            targetIndex = rightNodes[0].index;
+        } else if (wrap && sameTier.length > 1) {
+            sameTier.sort(function(a, b) { return a.cx - b.cx; });
+            targetIndex = sameTier[0].index;
+        }
+
+        if (targetIndex >= 0 && targetIndex !== this._selectedIndex) {
+            this.select(targetIndex);
+            SoundManager.playCursor();
+        }
+    };
+
+    Window_StatusClassTree.prototype.cursorLeft = function(wrap) {
+        if (!this._nodes || this._nodes.length === 0) return;
+        var cur = this._nodes[this._selectedIndex];
+        if (!cur) return;
+
+        var sameTier = this._nodes.filter(function(n) { return n.tier === cur.tier; });
+        var leftNodes = sameTier.filter(function(n) { return n.cx < cur.cx - 5; });
+        leftNodes.sort(function(a, b) { return b.cx - a.cx; });
+
+        var targetIndex = -1;
+        if (leftNodes.length > 0) {
+            targetIndex = leftNodes[0].index;
+        } else if (wrap && sameTier.length > 1) {
+            sameTier.sort(function(a, b) { return b.cx - a.cx; });
+            targetIndex = sameTier[0].index;
+        }
+
+        if (targetIndex >= 0 && targetIndex !== this._selectedIndex) {
+            this.select(targetIndex);
+            SoundManager.playCursor();
+        }
+    };
+
+    // -------------------------------------------------------------------------
+    // Window_StatusClassConfirm
+    // -------------------------------------------------------------------------
+
+    function Window_StatusClassConfirm() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_StatusClassConfirm.prototype = Object.create(Window_Command.prototype);
+    Window_StatusClassConfirm.prototype.constructor = Window_StatusClassConfirm;
+
+    Window_StatusClassConfirm.prototype.initialize = function() {
+        this._actor = null;
+        this._targetClass = null;
+        this._className = '';
+        var width = this.windowWidth();
+        var height = this.windowHeight();
+        var x = Math.floor((Graphics.boxWidth - width) / 2);
+        var y = Math.floor((Graphics.boxHeight - height) / 2);
+        Window_Command.prototype.initialize.call(this, x, y);
+        this.openness = 0;
+        this.deactivate();
+    };
+
+    Window_StatusClassConfirm.prototype.windowWidth = function() {
+        return 480;
+    };
+
+    Window_StatusClassConfirm.prototype.windowHeight = function() {
+        return 280;
+    };
+
+    Window_StatusClassConfirm.prototype.maxCols = function() {
+        return 2;
+    };
+
+    Window_StatusClassConfirm.prototype.numVisibleRows = function() {
+        return 1;
+    };
+
+    Window_StatusClassConfirm.prototype.itemTextAlign = function() {
+        return 'center';
+    };
+
+    Window_StatusClassConfirm.prototype.makeCommandList = function() {
+        this.addCommand('Ya', 'yes');
+        this.addCommand('Tidak', 'no');
+    };
+
+    Window_StatusClassConfirm.prototype.setup = function(actor, cls) {
+        this._actor = actor;
+        this._targetClass = cls;
+        var name = cls && cls.name ? String(cls.name) : '';
+        if (name.indexOf(' - ') !== -1) {
+            name = name.split(' - ')[1];
+        }
+        this._className = name;
+        this.refresh();
+        this.select(0);
+    };
+
+    Window_StatusClassConfirm.prototype.setTargetClass = function(cls, actor) {
+        this.setup(actor || this._actor, cls);
+    };
+
+    Window_StatusClassConfirm.prototype.itemRect = function(index) {
+        var rect = Window_Command.prototype.itemRect.call(this, index);
+        rect.y += 200;
+        return rect;
+    };
+
+    Window_StatusClassConfirm.prototype.drawHeader = function() {
+        var W = this.contents.width;
+        var iconIndex = getClassIconIndex(this._targetClass);
+        var title = 'Ubah Class: ' + this._className;
+
+        this.contents.fontSize = 16;
+        this.changeTextColor(this.systemColor());
+        var textW = this.textWidth(title);
+        var totalW = 32 + 8 + textW;
+        var startX = Math.max(8, Math.floor((W - totalW) / 2));
+
+        this.drawIcon(iconIndex, startX, 2);
+        this.drawText(title, startX + 38, 5, textW + 10, 'left');
+        this.resetFontSettings();
+
+        // Divider below header
+        this.contents.fillRect(8, 38, W - 16, 1, 'rgba(255, 255, 255, 0.15)');
+        // Divider above buttons
+        this.contents.fillRect(8, 194, W - 16, 1, 'rgba(255, 255, 255, 0.15)');
+    };
+
+    Window_StatusClassConfirm.prototype.drawStatComparisons = function() {
+        if (!this._actor || !this._targetClass) return;
+
+        var W = this.contents.width;
+        var startY = 44;
+        var rowH = 24;
+        var blockW = 380;
+        var startX = Math.max(10, Math.floor((W - blockW) / 2));
+
+        var nameW = 120;
+        var curX = startX + 120;
+        var curW = 55;
+        var arrowX = curX + curW + 5;
+        var arrowW = 30;
+        var nextX = arrowX + arrowW + 5;
+        var nextW = 55;
+        var diffX = nextX + nextW + 8;
+        var diffW = 80;
+
+        for (var p = 2; p <= 7; p++) {
+            var rowY = startY + (p - 2) * rowH;
+
+            // Subtle zebra striping
+            if ((p - 2) % 2 === 0) {
+                this.contents.fillRect(startX - 6, rowY, blockW + 12, rowH, 'rgba(255, 255, 255, 0.04)');
+            }
+
+            var curVal = this._actor.param(p);
+            var oldClassId = this._actor._classId;
+            this._actor._classId = this._targetClass.id;
+            var nextVal = this._actor.param(p);
+            this._actor._classId = oldClassId;
+            var diff = nextVal - curVal;
+
+            this.contents.fontSize = 13;
+
+            // 1. Param Name
+            this.changeTextColor(this.systemColor());
+            this.drawText(TextManager.param(p), startX, rowY + 1, nameW, 'left');
+
+            // 2. Current Param Value
+            this.changeTextColor(this.normalColor());
+            this.drawText(curVal, curX, rowY + 1, curW, 'right');
+
+            // 3. Arrow
+            this.changeTextColor(this.textColor(7));
+            this.drawText('\u2192', arrowX, rowY + 1, arrowW, 'center');
+
+            // 4. New Param Value
+            if (diff > 0) {
+                this.changeTextColor(this.powerUpColor());
+            } else if (diff < 0) {
+                this.changeTextColor(this.powerDownColor());
+            } else {
+                this.changeTextColor(this.normalColor());
+            }
+            this.drawText(nextVal, nextX, rowY + 1, nextW, 'right');
+
+            // 5. Difference (+X) or (-X)
+            if (diff > 0) {
+                this.changeTextColor(this.powerUpColor());
+                this.drawText('(+' + diff + ')', diffX, rowY + 1, diffW, 'right');
+            } else if (diff < 0) {
+                this.changeTextColor(this.powerDownColor());
+                this.drawText('(' + diff + ')', diffX, rowY + 1, diffW, 'right');
+            } else {
+                this.changeTextColor(this.textColor(7));
+                this.drawText('( 0 )', diffX, rowY + 1, diffW, 'right');
+            }
+        }
+        this.resetFontSettings();
+    };
+
+    Window_StatusClassConfirm.prototype.refresh = function() {
+        Window_Command.prototype.refresh.call(this);
+        if (this.contents && this._targetClass && this._actor) {
+            this.drawHeader();
+            this.drawStatComparisons();
+        }
+    };
+
+    // -------------------------------------------------------------------------
+    // Skill Notetag Helpers
+    // -------------------------------------------------------------------------
+
+    function getSkillDescription(skill) {
+        if (!skill) return '';
+        var note = skill.note || '';
+        var m = note.match(/<Skill (?:Description|Desc)>([\s\S]*?)<\/Skill (?:Description|Desc)>/i);
+        if (m) return m[1].trim();
+        m = note.match(/<(?:Skill )?(?:Description|Desc):\s*([^>]+)>/i);
+        if (m) return m[1].trim();
+        return skill.description ? skill.description.trim() : '';
+    }
+
+    function getSkillDamage(skill) {
+        if (!skill) return '';
+        var note = skill.note || '';
+        var m = note.match(/<(?:Skill )?Damage>([\s\S]*?)<\/(?:Skill )?Damage>/i);
+        if (m) return m[1].trim();
+        m = note.match(/<(?:Skill )?Damage:\s*([^>]+)>/i);
+        if (m) return m[1].trim();
+        return '';
+    }
+
+    function getSkillEffect(skill) {
+        if (!skill) return '';
+        var note = skill.note || '';
+        var m = note.match(/<(?:Skill )?Effect>([\s\S]*?)<\/(?:Skill )?Effect>/i);
+        if (m) return m[1].trim();
+        m = note.match(/<(?:Skill )?(?:Effect|Efek):\s*([^>]+)>/i);
+        if (m) return m[1].trim();
+        return '';
+    }
+
+    function getSkillElement(skill) {
+        if (!skill) return '';
+        var note = skill.note || '';
+        var m = note.match(/<(?:Skill )?(?:Element|Elemen):\s*([^>]+)>/i);
+        if (m) return m[1].trim();
+        if (skill.damage) {
+            var elemId = skill.damage.elementId;
+            if (elemId === -1) return 'Weapon';
+            if (elemId > 0 && typeof $dataSystem !== 'undefined' && $dataSystem.elements) {
+                return $dataSystem.elements[elemId] || '';
+            }
+        }
+        return '';
+    }
+
+    function getSkillCost(skill) {
+        if (!skill) return '';
+        var note = skill.note || '';
+        var m = note.match(/<(?:Skill )?(?:Cost|Biaya):\s*([^>]+)>/i);
+        if (m) return m[1].trim();
+
+        var mp = skill.mpCost || 0;
+        var sp = skill.tpCost || 0;
+        var mpName = (typeof TextManager !== 'undefined' && TextManager.mpA) ? TextManager.mpA : 'MP';
+        var spName = (typeof TextManager !== 'undefined' && TextManager.tpA) ? TextManager.tpA : 'SP';
+
+        if (mp > 0 && sp > 0) return mp + ' ' + mpName + ' / ' + sp + ' ' + spName;
+        if (mp > 0) return mp + ' ' + mpName;
+        if (sp > 0) return sp + ' ' + spName;
+        return '0 ' + mpName;
+    }
+
+    function getSkillIconIndex(skill, actor) {
+        if (!skill) return 74;
+        if (skill.note) {
+            var m = skill.note.match(/<(?:Skill )?Icon:\s*(\d+)>/i);
+            if (m) return parseInt(m[1], 10);
+        }
+        if (skill.iconIndex > 0) return skill.iconIndex;
+
+        if (skill.damage && skill.damage.elementId > 0) {
+            var elem = skill.damage.elementId;
+            if (elem === 2) return 64;  // Fire
+            if (elem === 3) return 65;  // Water
+            if (elem === 4) return 66;  // Earth
+            if (elem === 5) return 67;  // Air
+            if (elem === 6) return 68;  // Electric
+            if (elem === 7) return 69;  // Ice
+            if (elem === 10) return 74; // Holy
+            if (elem === 11) return 80; // Dark
+        }
+
+        var cls = actor && actor.currentClass ? actor.currentClass() : null;
+        if (cls) {
+            var cIcon = getClassIconIndex(cls);
+            if (cIcon > 0) return cIcon;
+        }
+        return 74;
+    }
+
+    // -------------------------------------------------------------------------
+    // Window_StatusSkillList (Right panel: Skill Cards with Lock & Unlock details)
+    // -------------------------------------------------------------------------
+
+    function Window_StatusSkillList() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_StatusSkillList.prototype = Object.create(Window_Selectable.prototype);
+    Window_StatusSkillList.prototype.constructor = Window_StatusSkillList;
+
+    Window_StatusSkillList.prototype.initialize = function(x, y, width, height) {
+        Window_Selectable.prototype.initialize.call(this, x, y, width, height);
+        this._actor = null;
+        this._lastClassId = 0;
+        this._data = [];
+        this._parentScene = null;
+        this.deactivate();
+        this.refresh();
+    };
+
+    Window_StatusSkillList.prototype.standardPadding = function() {
+        return 12;
+    };
+
+    Window_StatusSkillList.prototype.maxItems = function() {
+        return this._data ? this._data.length : 0;
+    };
+
+    Window_StatusSkillList.prototype.itemHeight = function() {
+        return 100;
+    };
+
+    Window_StatusSkillList.prototype.isCursorMovable = function() {
+        return this.isOpenAndActive();
+    };
+
+    Window_StatusSkillList.prototype.select = function(index) {
+        Window_Selectable.prototype.select.call(this, index);
+        this.refresh();
+    };
+
+    Window_StatusSkillList.prototype.activate = function() {
+        Window_Selectable.prototype.activate.call(this);
+        if (this.index() < 0 && this.maxItems() > 0) {
+            this.select(0);
+        } else {
+            this.refresh();
+        }
+    };
+
+    Window_StatusSkillList.prototype.deactivate = function() {
+        Window_Selectable.prototype.deactivate.call(this);
+        this.refresh();
+    };
+
+    Window_StatusSkillList.prototype.setActor = function(actor, force) {
+        var classChanged = actor && this._lastClassId !== actor._classId;
+        if (this._actor !== actor || classChanged || force) {
+            this._actor = actor;
+            this._lastClassId = actor ? actor._classId : 0;
+            this.buildSkills();
+            this.refresh();
+            if (this.index() >= this.maxItems()) {
+                this.select(Math.max(0, this.maxItems() - 1));
+            }
+        }
+    };
+
+    Window_StatusSkillList.prototype.updateCursor = function() {
+        if (this.isOpenAndActive() && this.index() >= 0) {
+            var rect = this.itemRect(this.index());
+            this.setCursorRect(rect.x + 2, rect.y + 2, rect.width - 4, rect.height - 4);
+        } else {
+            this.setCursorRect(0, 0, 0, 0);
+        }
+    };
+
+    Window_StatusSkillList.prototype.cursorDown = function(wrap) {
+        var index = this.index();
+        var maxItems = this.maxItems();
+        if (index < 0) {
+            this.select(0);
+            return;
+        }
+        if (index < maxItems - 1 || wrap) {
+            this.select((index + 1) % maxItems);
+        }
+    };
+
+    Window_StatusSkillList.prototype.cursorUp = function(wrap) {
+        var index = this.index();
+        var maxItems = this.maxItems();
+        if (index < 0) {
+            this.select(0);
+            return;
+        }
+        if (index > 0 || wrap) {
+            this.select((index - 1 + maxItems) % maxItems);
+        }
+    };
+
+    Window_StatusSkillList.prototype.cursorPagedown = function() {
+        var index = this.index();
+        var maxItems = this.maxItems();
+        var page = this.maxPageRows();
+        this.select(Math.min(maxItems - 1, (index < 0 ? 0 : index) + page));
+    };
+
+    Window_StatusSkillList.prototype.cursorPageup = function() {
+        var index = this.index();
+        var page = this.maxPageRows();
+        this.select(Math.max(0, (index < 0 ? 0 : index) - page));
+    };
+
+    Window_StatusSkillList.prototype.processWheel = function() {
+        if (this.visible && (this.isOpenAndActive() || this.isTouchedInsideFrame())) {
+            var threshold = 20;
+            if (TouchInput.wheelY >= threshold) {
+                this.scrollDown();
+            }
+            if (TouchInput.wheelY <= -threshold) {
+                this.scrollUp();
+            }
+        }
+    };
+
+    Window_StatusSkillList.prototype.processTouch = function() {
+        if (this.visible && TouchInput.isTriggered() && this.isTouchedInsideFrame()) {
+            if (!this.active) {
+                this.activate();
+                if (this._parentScene && this._parentScene._tabsWindow) {
+                    this._parentScene._tabsWindow.deactivate();
+                }
+            }
+            var x = this.canvasToLocalX(TouchInput.x);
+            var y = this.canvasToLocalY(TouchInput.y);
+            var hitIndex = this.hitTest(x, y);
+            if (hitIndex >= 0) {
+                this.select(hitIndex);
+                SoundManager.playCursor();
+            }
+        } else {
+            Window_Selectable.prototype.processTouch.call(this);
+        }
+    };
+
+    Window_StatusSkillList.prototype.buildSkills = function() {
+        this._data = [];
+        if (!this._actor) return;
+
+        var actor = this._actor;
+        var cls = actor.currentClass ? actor.currentClass() : null;
+        var learnings = (cls && cls.learnings) ? cls.learnings : [];
+
+        var list = [];
+        var seen = {};
+
+        // 1. Process current class learnings
+        learnings.forEach(function(l) {
+            if (!l || !l.skillId) return;
+            var skill = $dataSkills[Number(l.skillId)];
+            if (!skill) return;
+            if (!skill.name || skill.name.trim() === '' || skill.name.indexOf('---') !== -1) return;
+
+            var unlockLevel = Number(l.level || 1);
+            var isLearned = false;
+
+            if (typeof actor.isLearnedSkill === 'function') {
+                isLearned = actor.isLearnedSkill(skill.id);
+            }
+            if (!isLearned && typeof actor.hasSkill === 'function') {
+                isLearned = actor.hasSkill(skill.id);
+            }
+            if (!isLearned && actor.level >= unlockLevel) {
+                isLearned = true;
+            }
+
+            if (!seen[skill.id]) {
+                seen[skill.id] = true;
+                list.push({
+                    skill: skill,
+                    unlockLevel: unlockLevel,
+                    isLearned: isLearned
+                });
+            } else {
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].skill.id === skill.id) {
+                        if (unlockLevel < list[i].unlockLevel) {
+                            list[i].unlockLevel = unlockLevel;
+                        }
+                        if (isLearned) list[i].isLearned = true;
+                        break;
+                    }
+                }
+            }
+        });
+
+        // 2. Include any other skills the actor has
+        if (typeof actor.skills === 'function') {
+            actor.skills().forEach(function(skill) {
+                if (!skill || skill.id <= 2) return;
+                if (!skill.name || skill.name.trim() === '' || skill.name.indexOf('---') !== -1) return;
+
+                if (!seen[skill.id]) {
+                    seen[skill.id] = true;
+                    list.push({
+                        skill: skill,
+                        unlockLevel: 1,
+                        isLearned: true
+                    });
+                }
+            });
+        }
+
+        // 3. Sort skills by unlock level ascending
+        list.sort(function(a, b) {
+            if (a.unlockLevel !== b.unlockLevel) {
+                return a.unlockLevel - b.unlockLevel;
+            }
+            return a.skill.id - b.skill.id;
+        });
+
+        this._data = list;
+    };
+
+    Window_StatusSkillList.prototype.item = function() {
+        var it = this._data ? this._data[this.index()] : null;
+        return it ? it.skill : null;
+    };
+
+    Window_StatusSkillList.prototype.currentSkill = function() {
+        return this.item();
+    };
+
+    Window_StatusSkillList.prototype.isCurrentItemLearned = function() {
+        var it = this._data ? this._data[this.index()] : null;
+        return it ? !!it.isLearned : false;
+    };
+
+    Window_StatusSkillList.prototype.drawItem = function(index) {
+        var item = this._data[index];
+        if (!item || !item.skill) return;
+
+        var skill = item.skill;
+        var isLearned = item.isLearned;
+        var isSelected = (index === this.index());
+        var rect = this.itemRect(index);
+
+        var cardX = rect.x + 2;
+        var cardY = rect.y + 3;
+        var cardW = rect.width - 4;
+        var cardH = rect.height - 6;
+
+        var ctx = this.contents._context;
+
+        // 1. Card Background
+        var fillStyle = isLearned ? 'rgba(15, 25, 45, 0.88)' : 'rgba(20, 22, 28, 0.85)';
+        if (isSelected && this.active) {
+            fillStyle = isLearned ? 'rgba(24, 48, 86, 0.96)' : 'rgba(34, 36, 48, 0.94)';
+        }
+        this.contents.fillRect(cardX, cardY, cardW, cardH, fillStyle);
+
+        // 2. Card Border
+        ctx.save();
+        if (isSelected && this.active) {
+            ctx.strokeStyle = 'rgba(255, 195, 45, 0.95)';
+            ctx.lineWidth = 2;
+        } else if (isLearned) {
+            ctx.strokeStyle = 'rgba(65, 115, 185, 0.45)';
+            ctx.lineWidth = 1;
+        } else {
+            ctx.strokeStyle = 'rgba(75, 75, 85, 0.35)';
+            ctx.lineWidth = 1;
+        }
+        ctx.strokeRect(cardX + 0.5, cardY + 0.5, cardW - 1, cardH - 1);
+        ctx.restore();
+
+        // 3. Left Icon Box (Gambar 2 styling)
+        var boxX = cardX + 6;
+        var boxY = cardY + 6;
+        var boxW = 58;
+        var boxH = cardH - 12;
+
+        ctx.save();
+        ctx.fillStyle = isLearned ? 'rgba(20, 40, 70, 0.9)' : 'rgba(25, 28, 35, 0.85)';
+        ctx.fillRect(boxX, boxY, boxW, boxH);
+        ctx.strokeStyle = isLearned ? 'rgba(70, 140, 220, 0.6)' : 'rgba(70, 75, 85, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(boxX + 0.5, boxY + 0.5, boxW - 1, boxH - 1);
+        ctx.restore();
+
+        // Icon with fallback so it is never blank
+        var iconIdx = getSkillIconIndex(skill, this._actor);
+        var ix = boxX + Math.floor((boxW - 32) / 2);
+        var iy = boxY + 8;
+        this.contents.paintOpacity = isLearned ? 255 : 120;
+        this.drawIcon(iconIdx, ix, iy);
+        this.contents.paintOpacity = 255;
+
+        // Bottom Level Badge in Icon Box
+        var badgeX = boxX + 3;
+        var badgeY = boxY + boxH - 20;
+        var badgeW = boxW - 6;
+        var badgeH = 16;
+
+        ctx.save();
+        if (isLearned) {
+            ctx.fillStyle = 'rgba(25, 55, 95, 0.92)';
+            ctx.fillRect(badgeX, badgeY, badgeW, badgeH);
+            ctx.strokeStyle = 'rgba(80, 160, 255, 0.75)';
+            ctx.strokeRect(badgeX + 0.5, badgeY + 0.5, badgeW - 1, badgeH - 1);
+            ctx.restore();
+            this.contents.fontSize = 11;
+            this.changeTextColor(this.systemColor());
+            this.contents.drawText('Lv ' + item.unlockLevel, badgeX, badgeY - 2, badgeW, 18, 'center');
+        } else {
+            ctx.fillStyle = 'rgba(45, 25, 30, 0.92)';
+            ctx.fillRect(badgeX, badgeY, badgeW, badgeH);
+            ctx.strokeStyle = 'rgba(220, 70, 70, 0.7)';
+            ctx.strokeRect(badgeX + 0.5, badgeY + 0.5, badgeW - 1, badgeH - 1);
+            ctx.restore();
+            this.contents.fontSize = 10;
+            this.changeTextColor(this.textColor(7));
+            this.contents.drawText('LOCK', badgeX, badgeY - 2, badgeW, 18, 'center');
+        }
+
+        // 4. Right Content Area
+        var rightX = boxX + boxW + 10;
+        var rightW = cardW - (boxW + 20);
+
+        // Baris 1: Nama Skill (full width, tidak berdesakan dengan cost)
+        this.contents.fontSize = 15;
+        this.changeTextColor(isLearned ? this.normalColor() : this.textColor(7));
+        this.contents.drawText(skill.name, rightX, cardY + 5, rightW, 20, 'left');
+
+        if (!isLearned) {
+            // Saat skill terkunci: menutupi area cost, elemen & deskripsi
+            var lockBoxX = rightX;
+            var lockBoxY = cardY + 28;
+            var lockBoxW = rightW;
+            var lockBoxH = cardH - 34;
+
+            this.contents.fillRect(lockBoxX, lockBoxY, lockBoxW, lockBoxH, 'rgba(32, 16, 20, 0.92)');
+            ctx.save();
+            ctx.strokeStyle = 'rgba(215, 60, 60, 0.7)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(lockBoxX + 0.5, lockBoxY + 0.5, lockBoxW - 1, lockBoxH - 1);
+            ctx.restore();
+
+            var textY = lockBoxY + Math.floor((lockBoxH - 20) / 2);
+            this.contents.fontSize = 12;
+            this.changeTextColor(this.textColor(14)); // Amber / Gold
+            this.contents.drawText('🔒 Terkunci (Unlock at Level ' + item.unlockLevel + ')', lockBoxX, textY, lockBoxW, 20, 'center');
+        } else {
+            // Baris 2: Cost & Elemen tepat di bawah nama skill (rapi & enak dibaca)
+            var cost = getSkillCost(skill);
+            var elem = getSkillElement(skill);
+            var costPart = cost ? 'Cost: ' + cost.replace(/^Cost:\s*/i, '') : 'Cost: 0 MP';
+            var elemPart = elem ? 'Element: ' + elem : '';
+            var infoTag = costPart;
+            if (elemPart) infoTag += '   •   ' + elemPart;
+
+            this.contents.fontSize = 11;
+            this.changeTextColor(this.systemColor());
+            this.contents.drawText(infoTag, rightX, cardY + 26, rightW, 18, 'left');
+
+            // Baris 3 & 4: Damage / Effect Badges & Deskripsi
+            var damageText = getSkillDamage(skill);
+            var effectText = getSkillEffect(skill);
+            var descText = getSkillDescription(skill);
+
+            var curY = cardY + 45;
+            var hasBadges = false;
+
+            if (damageText || effectText) {
+                var badgeX2 = rightX;
+                if (damageText) {
+                    var cleanDamage = damageText.replace(/^(?:damage|dmg)\s*:\s*/i, '');
+                    var dmgLabel = 'Damage: ' + cleanDamage;
+                    this.contents.fontSize = 10;
+                    var dw = Math.min(120, this.textWidth(dmgLabel) + 12);
+                    this.contents.fillRect(badgeX2, curY, dw, 16, 'rgba(130, 35, 30, 0.8)');
+                    ctx.save();
+                    ctx.strokeStyle = 'rgba(255, 95, 85, 0.85)';
+                    ctx.strokeRect(badgeX2 + 0.5, curY + 0.5, dw - 1, 15);
+                    ctx.restore();
+                    this.changeTextColor(this.powerUpColor());
+                    this.contents.drawText(dmgLabel, badgeX2 + 6, curY - 2, dw - 12, 18, 'left');
+                    badgeX2 += dw + 6;
+                    hasBadges = true;
+                }
+                if (effectText) {
+                    var cleanEffect = effectText.replace(/^(?:effect|efek)\s*:\s*/i, '');
+                    var ew = rightW - (badgeX2 - rightX);
+                    this.contents.fontSize = 10;
+                    this.changeTextColor(this.systemColor());
+                    this.contents.drawText('• ' + cleanEffect, badgeX2, curY - 2, ew, 18, 'left');
+                    hasBadges = true;
+                }
+            }
+
+            // Description lines
+            if (descText) {
+                var descY = hasBadges ? (cardY + 65) : (cardY + 45);
+                this.contents.fontSize = 11;
+                this.changeTextColor(this.normalColor());
+                var lines = wrapText(descText, rightW, this.textWidth.bind(this));
+                var maxLines = hasBadges ? 2 : 3;
+                for (var l = 0; l < Math.min(lines.length, maxLines); l++) {
+                    if (descY + (l * 16) + 14 > cardY + cardH) break;
+                    this.contents.drawText(lines[l], rightX, descY + (l * 16), rightW, 16, 'left');
+                }
+            }
+        }
+
+        this.resetFontSettings();
+    };
+
+    // -------------------------------------------------------------------------
     // Scene_Status
     // -------------------------------------------------------------------------
 
@@ -1621,10 +3185,34 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this._equipPreviewWindow.hide();
         this.addWindow(this._equipPreviewWindow);
 
+        this._classTreeWindow = new Window_StatusClassTree(
+            partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
+        );
+        this._classTreeWindow.setHandler('cancel', this.onClassTreeCancel.bind(this));
+        this._classTreeWindow.setHandler('ok',     this.onClassTreeOk.bind(this));
+        this._classTreeWindow.hide();
+        this.addWindow(this._classTreeWindow);
+
+        this._skillListWindow = new Window_StatusSkillList(
+            partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
+        );
+        this._skillListWindow._parentScene = this;
+        this._skillListWindow.setHandler('cancel', this.onSkillListCancel.bind(this));
+        this._skillListWindow.setHandler('ok',     this.onSkillListOk.bind(this));
+        this._skillListWindow.hide();
+        this.addWindow(this._skillListWindow);
+
         // Added last so the state tooltip renders above the other windows.
         this._statePopup = new Window_StatePopup();
         this.addWindow(this._statePopup);
         this._infoWindow.setStatePopup(this._statePopup);
+
+        this._confirmWindow = new Window_StatusClassConfirm();
+        this._confirmWindow.setHandler('yes',    this.onConfirmChangeYes.bind(this));
+        this._confirmWindow.setHandler('no',     this.onConfirmChangeNo.bind(this));
+        this._confirmWindow.setHandler('cancel', this.onConfirmChangeNo.bind(this));
+        this.addWindow(this._confirmWindow);
+        this._pendingClassNode = null;
 
         this.refreshAll();
     };
@@ -1658,13 +3246,35 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var symbol = (this._tabsWindow && this._tabsWindow.currentSymbol()) || 'status';
         if (symbol === 'equip') {
             if (this._infoWindow) this._infoWindow.hide();
+            if (this._classTreeWindow) this._classTreeWindow.hide();
+            if (this._skillListWindow) this._skillListWindow.hide();
             if (this._statePopup) this._statePopup.hide();
             if (this._equipPreviewWindow) {
                 this._equipPreviewWindow.show();
                 this._equipPreviewWindow.refresh();
             }
+        } else if (symbol === 'class') {
+            if (this._infoWindow) this._infoWindow.hide();
+            if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
+            if (this._skillListWindow) this._skillListWindow.hide();
+            if (this._statePopup) this._statePopup.hide();
+            if (this._classTreeWindow) {
+                this._classTreeWindow.show();
+                this._classTreeWindow.refresh();
+            }
+        } else if (symbol === 'skills') {
+            if (this._infoWindow) this._infoWindow.hide();
+            if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
+            if (this._classTreeWindow) this._classTreeWindow.hide();
+            if (this._statePopup) this._statePopup.hide();
+            if (this._skillListWindow) {
+                this._skillListWindow.show();
+                this._skillListWindow.refresh();
+            }
         } else {
             if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
+            if (this._classTreeWindow) this._classTreeWindow.hide();
+            if (this._skillListWindow) this._skillListWindow.hide();
             if (this._infoWindow) {
                 this._infoWindow.show();
                 this._infoWindow.refresh();
@@ -1679,11 +3289,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             if (Input.isRepeated('up')) {
                 this.changePartyActor(-1);
             } else if (Input.isRepeated('down')) {
-                if (this._tabsWindow.currentSymbol() === 'equip') {
-                    this.onTabEquip();
-                } else {
-                    this.changePartyActor(1);
-                }
+                this.changePartyActor(1);
             }
         }
     };
@@ -1714,13 +3320,105 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     Scene_Status.prototype.onTabClass = function() {
-        var scene = window.Scene_NUSVClassChange ||
-            window.Scene_NUSV_ClassChange || window.Scene_NUSVClass;
-        this.openActorMenu(scene);
+        this._tabsWindow.deactivate();
+        this._classTreeWindow.activate();
+    };
+
+    Scene_Status.prototype.onClassTreeCancel = function() {
+        this._classTreeWindow.deactivate();
+        this._tabsWindow.activate();
+    };
+
+    Scene_Status.prototype.onClassTreeOk = function() {
+        var node = this._classTreeWindow.currentNode();
+        var actor = this.actor();
+        if (!node || !node.cls || !actor) {
+            SoundManager.playBuzzer();
+            this._classTreeWindow.activate();
+            return;
+        }
+
+        if (node.classId === actor._classId) {
+            SoundManager.playBuzzer();
+            this._classTreeWindow.activate();
+            return;
+        }
+
+        var canChange = false;
+        if (typeof actor.nusvCanChangeClass === 'function') {
+            canChange = actor.nusvCanChangeClass(node.classId);
+        } else if (typeof actor.nusvIsClassUnlocked === 'function') {
+            canChange = actor.nusvIsClassUnlocked(node.classId);
+        }
+
+        if (!canChange) {
+            SoundManager.playBuzzer();
+            this._classTreeWindow.activate();
+            return;
+        }
+
+        this._pendingClassNode = node;
+        this._classTreeWindow.deactivate();
+        this._confirmWindow.setup(actor, node.cls);
+        this._confirmWindow.open();
+        this._confirmWindow.activate();
+    };
+
+    Scene_Status.prototype.onConfirmChangeYes = function() {
+        var node = this._pendingClassNode;
+        var actor = this.actor();
+        this._confirmWindow.close();
+        this._confirmWindow.deactivate();
+        this._pendingClassNode = null;
+
+        if (node && actor) {
+            var success = false;
+            if (typeof actor.nusvChangeClass === 'function') {
+                success = actor.nusvChangeClass(node.classId);
+            } else {
+                actor.changeClass(node.classId, true);
+                success = true;
+            }
+
+            if (success) {
+                SoundManager.playEquip();
+                this.refreshAll();
+                this._classTreeWindow.activate();
+                return;
+            }
+        }
+
+        SoundManager.playBuzzer();
+        this._classTreeWindow.activate();
+    };
+
+    Scene_Status.prototype.onConfirmChangeNo = function() {
+        this._pendingClassNode = null;
+        this._confirmWindow.close();
+        this._confirmWindow.deactivate();
+        this._classTreeWindow.activate();
     };
 
     Scene_Status.prototype.onTabSkills = function() {
-        this.openActorMenu(Scene_Skill);
+        this._tabsWindow.deactivate();
+        this._skillListWindow.activate();
+        if (this._skillListWindow.index() < 0) {
+            this._skillListWindow.select(0);
+        }
+        SoundManager.playOk();
+    };
+
+    Scene_Status.prototype.onSkillListCancel = function() {
+        this._skillListWindow.deactivate();
+        this._tabsWindow.activate();
+        SoundManager.playCancel();
+    };
+
+    Scene_Status.prototype.onSkillListOk = function() {
+        // Untuk saat ini skill belum bisa digunakan di luar pertempuran.
+        // Memutar buzzer sebagai feedback audio standar RPG Maker.
+        SoundManager.playBuzzer();
+        this._skillListWindow.activate();
     };
 
     Scene_Status.prototype.openActorMenu = function(scene) {
@@ -1761,7 +3459,9 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         if (this._tabsWindow) this._tabsWindow.refresh();
         if (this._portraitWindow) this._portraitWindow.setActor(actor);
         if (this._infoWindow) this._infoWindow.setActor(actor);
-        if (this._equipPreviewWindow) this._equipPreviewWindow.setActor(actor);
+        if (this._equipPreviewWindow) this._equipPreviewWindow.setActor(actor, true);
+        if (this._classTreeWindow) this._classTreeWindow.setActor(actor, true);
+        if (this._skillListWindow) this._skillListWindow.setActor(actor, true);
         this.updateRightPanel();
     };
 
@@ -1787,6 +3487,9 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     NUSV.StatusScreen.Window_StatusPortrait = Window_StatusPortrait;
     NUSV.StatusScreen.Window_StatusInfo = Window_StatusInfo;
     NUSV.StatusScreen.Window_StatusEquipPreview = Window_StatusEquipPreview;
+    NUSV.StatusScreen.Window_StatusClassTree = Window_StatusClassTree;
+    NUSV.StatusScreen.Window_StatusClassConfirm = Window_StatusClassConfirm;
+    NUSV.StatusScreen.Window_StatusSkillList = Window_StatusSkillList;
     NUSV.StatusScreen.Window_StatePopup = Window_StatePopup;
     NUSV.StatusScreen.Scene_Status = Scene_Status;
     NUSV.StatusScreen.portraitName = portraitName;

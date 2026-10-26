@@ -1,5 +1,5 @@
 /*:
- * @plugindesc v1.0.0 NUSV Damage Core - clean-room damage core for RPG Maker MV.
+ * @plugindesc v1.1.0 NUSV Damage Core - clean-room damage core for RPG Maker MV.
  * @author Ultoid
  *
  * @param Default Damage Cap
@@ -149,6 +149,24 @@
  *
  * If the action/subject has <Armor Penetration: 25%>,
  * nusvDef(b) returns 75% of the target's DEF.
+ *
+ * ============================================================================
+ * MP/SP GAIN POPUPS
+ * ============================================================================
+ *
+ * When a battler gains MP or SP during battle, an extra popup is shown:
+ *
+ *   +10 MP
+ *   +10 SP
+ *
+ * A gain that is fully absorbed by the maximum value shows:
+ *
+ *   MP Max
+ *   SP Max
+ *
+ * The popup only shows the amount that was actually gained after the cap is
+ * applied, and MP/SP gains outside of battle show nothing. The built-in
+ * recovery popup for the same gain is suppressed so only one popup is shown.
  *
  * ============================================================================
  * NOTES
@@ -436,9 +454,140 @@ NUSV.DamageCore = NUSV.DamageCore || {};
     };
 
     // -------------------------------------------------------------------------
+    // MP/SP Gain Popups
+    // -------------------------------------------------------------------------
+
+    // Native damage popups only cover MP/SP loss. Gains are recorded here and
+    // drawn as "+X MP" / "+X SP" popups by the sprite layer instead.
+
+    var resourceGainPopupFontSize = 28;
+    var resourceGainPopupPadding = 24;
+    var resourceGainPopupPrefix = '+';
+    var resourceGainPopupSeparator = ' ';
+    var resourceGainPopupMaxSuffix = ' Max';
+
+    Game_Battler.prototype.nusvResourceGainPopups = function() {
+        if (!this._nusvResourceGainPopups) this._nusvResourceGainPopups = [];
+        return this._nusvResourceGainPopups;
+    };
+
+    Game_Battler.prototype.nusvHasResourceGainPopups = function() {
+        return this.nusvResourceGainPopups().length > 0;
+    };
+
+    Game_Battler.prototype.nusvClearResourceGainPopups = function() {
+        this._nusvResourceGainPopups = [];
+    };
+
+    Game_Battler.prototype.nusvRecordResourceGainPopup = function(type, amount) {
+        if (!$gameParty.inBattle()) {
+            this.nusvClearResourceGainPopups();
+            return;
+        }
+        this.nusvResourceGainPopups().push({
+            type: type,
+            amount: Math.max(0, amount)
+        });
+    };
+
+    Game_Battler.prototype.nusvResourceGainPopupLabel = function(type) {
+        return type === 'tp' ? TextManager.tpA : TextManager.mpA;
+    };
+
+    Game_Battler.prototype.nusvResourceGainPopupText = function(popup) {
+        var label = this.nusvResourceGainPopupLabel(popup.type);
+        if (popup.amount > 0) {
+            return resourceGainPopupPrefix + popup.amount +
+                resourceGainPopupSeparator + label;
+        }
+        return label + resourceGainPopupMaxSuffix;
+    };
+
+    var _Game_Battler_gainMp = Game_Battler.prototype.gainMp;
+    Game_Battler.prototype.gainMp = function(value) {
+        var before = this.mp;
+        _Game_Battler_gainMp.call(this, value);
+        if (value > 0) this.nusvRecordResourceGainPopup('mp', this.mp - before);
+    };
+
+    var _Game_Battler_gainTp = Game_Battler.prototype.gainTp;
+    Game_Battler.prototype.gainTp = function(value) {
+        var before = this.tp;
+        _Game_Battler_gainTp.call(this, value);
+        if (value > 0) this.nusvRecordResourceGainPopup('tp', this.tp - before);
+    };
+
+    var _Game_Battler_gainSilentTp = Game_Battler.prototype.gainSilentTp;
+    Game_Battler.prototype.gainSilentTp = function(value) {
+        var before = this.tp;
+        _Game_Battler_gainSilentTp.call(this, value);
+        if (value > 0) this.nusvRecordResourceGainPopup('tp', this.tp - before);
+    };
+
+    var _Game_Battler_startDamagePopup = Game_Battler.prototype.startDamagePopup;
+    Game_Battler.prototype.startDamagePopup = function() {
+        // The gain is already shown by the gain popup system, so the native
+        // MP/SP recovery popup for the same result is suppressed.
+        if (this.nusvHasResourceGainPopups() && this._result) {
+            if (this._result.mpDamage < 0) this._result.mpDamage = 0;
+            if (this._result.tpDamage < 0) this._result.tpDamage = 0;
+        }
+        _Game_Battler_startDamagePopup.call(this);
+    };
+
+    Sprite_Damage.prototype.nusvSetupResourceGainPopup = function(battler, popup) {
+        var text = battler.nusvResourceGainPopupText(popup);
+        var width = resourceGainPopupPadding * 2 + text.length * resourceGainPopupFontSize;
+        var height = resourceGainPopupFontSize * 2;
+        var bitmap = new Bitmap(width, height);
+        bitmap.fontFace = Window_Base.prototype.standardFontFace();
+        bitmap.fontSize = resourceGainPopupFontSize;
+        bitmap.drawText(text, 0, 0, width, height, 'center');
+
+        var sprite = new Sprite(bitmap);
+        sprite.anchor.x = 0.5;
+        sprite.anchor.y = 0.5;
+        sprite.dy = 0;
+        sprite.ry = 0;
+        this.addChild(sprite);
+    };
+
+    Sprite_Battler.prototype.nusvCreateResourceGainSprite = function(battler, popup) {
+        var sprite = new Sprite_Damage();
+        sprite.x = this.x + this.damageOffsetX();
+        sprite.y = this.y + this.damageOffsetY();
+        sprite.nusvSetupResourceGainPopup(battler, popup);
+        if (this.pushDamageSprite) {
+            this.pushDamageSprite(sprite);
+        } else {
+            this._damages.push(sprite);
+        }
+        if (BattleManager._spriteset) BattleManager._spriteset.addChild(sprite);
+    };
+
+    Sprite_Battler.prototype.nusvUpdateResourceGainPopups = function() {
+        var battler = this._battler;
+        if (!battler || !battler.nusvHasResourceGainPopups()) return;
+        if (battler.isSpriteVisible && !battler.isSpriteVisible()) {
+            battler.nusvClearResourceGainPopups();
+            return;
+        }
+        var popups = battler.nusvResourceGainPopups();
+        while (popups.length > 0) {
+            this.nusvCreateResourceGainSprite(battler, popups.shift());
+        }
+    };
+
+    var _Sprite_Battler_updateDamagePopup = Sprite_Battler.prototype.updateDamagePopup;
+    Sprite_Battler.prototype.updateDamagePopup = function() {
+        _Sprite_Battler_updateDamagePopup.call(this);
+        this.nusvUpdateResourceGainPopups();
+    };
+
+    // -------------------------------------------------------------------------
     // Script-call helpers
     // -------------------------------------------------------------------------
 
-    NUSV.DamageCore.version = '1.0.0';
+    NUSV.DamageCore.version = '1.1.0';
 
 })();

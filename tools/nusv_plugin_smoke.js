@@ -28,6 +28,7 @@ function makeClass(name) {
 [
   'Game_Action',
   'Game_Actor',
+  'Game_Battler',
   'Game_BattlerBase',
   'Game_Enemy',
   'Game_Event',
@@ -58,7 +59,9 @@ function makeClass(name) {
   'Window_Selectable',
   'Window_SkillList',
   'Window_Help',
-  'Sprite_Animation'
+  'Sprite_Animation',
+  'Sprite_Battler',
+  'Sprite_Damage'
 ].forEach(makeClass);
 
 Object.assign(Game_Action.prototype, {
