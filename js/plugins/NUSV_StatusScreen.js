@@ -302,6 +302,13 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         return 'center';
     };
 
+    Window_StatusTabs.prototype.select = function(index) {
+        Window_Command.prototype.select.call(this, index);
+        if (this._onSelectHandler) {
+            this._onSelectHandler(index, this.currentSymbol());
+        }
+    };
+
     // -------------------------------------------------------------------------
     // Window_StatusParty (selectable actor rail)
     // -------------------------------------------------------------------------
@@ -339,20 +346,44 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
                 'rgba(255, 255, 255, 0.16)');
         }
 
-        var imageName = portraitName(actor);
-        var bitmap = ImageManager.loadPicture(imageName);
+        var faceName = actor.faceName();
+        var isFace = Boolean(faceName);
+        var bitmap = isFace ? ImageManager.loadFace(faceName) : ImageManager.loadPicture(portraitName(actor));
+        if (bitmap && !bitmap.isReady()) {
+            bitmap.addLoadListener(this.refresh.bind(this));
+        }
+
         var portraitWidth = Math.max(1, rect.width - 8);
         var portraitHeight = Math.max(1, rect.height - this.lineHeight() - 14);
-        var imageY = rect.y + 4;
-        if (bitmap && bitmap.isReady() && bitmap.width > 0 && bitmap.height > 0) {
-            var scale = Math.min(portraitWidth / bitmap.width, portraitHeight / bitmap.height);
-            var imageWidth = Math.floor(bitmap.width * scale);
-            var imageHeight = Math.floor(bitmap.height * scale);
-            var imageX = rect.x + Math.floor((rect.width - imageWidth) / 2);
-            imageY += Math.floor((portraitHeight - imageHeight) / 2);
-            this.contents.blt(bitmap, 0, 0, bitmap.width, bitmap.height,
-                imageX, imageY, imageWidth, imageHeight);
+        var size = Math.min(portraitWidth, portraitHeight);
+        if (size % 2 !== 0) size--;
+
+        if (bitmap && bitmap.isReady() && bitmap.width > 0 && bitmap.height > 0 && size > 0) {
+            var pw = isFace ? Window_Base._faceWidth : bitmap.width;
+            var ph = isFace ? Window_Base._faceHeight : bitmap.height;
+            var sx = isFace ? (actor.faceIndex() % 4) * pw : 0;
+            var sy = isFace ? Math.floor(actor.faceIndex() / 4) * ph : 0;
+            var sw = pw;
+            var sh = ph;
+
+            var imageX = rect.x + Math.floor((rect.width - size) / 2);
+            var imageY = rect.y + 4 + Math.floor((portraitHeight - size) / 2);
+            var radius = Math.floor(size / 2);
+            var cx = imageX + radius;
+            var cy = imageY + radius;
+
+            var context = this.contents._context;
+            context.save();
+            context.beginPath();
+            context.arc(cx, cy, radius, 0, Math.PI * 2, false);
+            context.clip();
+
+            this.contents.blt(bitmap, sx, sy, sw, sh, imageX, imageY, size, size);
+
+            context.restore();
+            this.contents._setDirty();
         }
+
         this.contents.fontSize = Math.min(18, this.standardFontSize());
         this.drawText(actor.name(), rect.x, rect.y + rect.height - this.lineHeight() - 4,
             rect.width, 'center');
@@ -377,11 +408,12 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     Window_StatusParty.prototype.refreshReadyPortraits = function() {
         var members = $gameParty.members();
         for (var i = 0; i < members.length; i++) {
-            var imageName = portraitName(members[i]);
-            if (this._readyPortraits[imageName]) continue;
-            var bitmap = ImageManager.loadPicture(imageName);
+            var faceName = members[i].faceName();
+            var key = faceName || portraitName(members[i]);
+            if (this._readyPortraits[key]) continue;
+            var bitmap = faceName ? ImageManager.loadFace(faceName) : ImageManager.loadPicture(key);
             if (bitmap && bitmap.isReady() && bitmap.width > 0 && bitmap.height > 0) {
-                this._readyPortraits[imageName] = true;
+                this._readyPortraits[key] = true;
                 this.refresh();
             }
         }
@@ -1041,6 +1073,510 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     // -------------------------------------------------------------------------
+    // Window_StatusEquipPreview (Right panel: Battler, 8 Equip Slots, Item Detail)
+    // -------------------------------------------------------------------------
+
+    function Window_StatusEquipPreview() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_StatusEquipPreview.prototype = Object.create(Window_Selectable.prototype);
+    Window_StatusEquipPreview.prototype.constructor = Window_StatusEquipPreview;
+
+    Window_StatusEquipPreview.prototype.initialize = function(x, y, width, height) {
+        Window_Selectable.prototype.initialize.call(this, x, y, width, height);
+        this._actor = null;
+        this._selectedIndex = 0;
+        this.select(0);
+        this.deactivate();
+        this.refresh();
+    };
+
+    Window_StatusEquipPreview.prototype.maxItems = function() {
+        return this.slotDefs().length;
+    };
+
+    Window_StatusEquipPreview.prototype.isCursorMovable = function() {
+        return this.isOpenAndActive();
+    };
+
+    Window_StatusEquipPreview.prototype.select = function(index) {
+        Window_Selectable.prototype.select.call(this, index);
+        if (this._selectedIndex !== index) {
+            this._selectedIndex = index;
+            this.refresh();
+        }
+    };
+
+    Window_StatusEquipPreview.prototype.activate = function() {
+        Window_Selectable.prototype.activate.call(this);
+        this.refresh();
+    };
+
+    Window_StatusEquipPreview.prototype.deactivate = function() {
+        Window_Selectable.prototype.deactivate.call(this);
+        this.refresh();
+    };
+
+    Window_StatusEquipPreview.prototype.setActor = function(actor) {
+        if (this._actor !== actor) {
+            this._actor = actor;
+            this.refresh();
+        }
+    };
+
+    Window_StatusEquipPreview.prototype.updateCursor = function() {
+        // Custom visual cursor rendered per slot in drawSlots()
+        this.setCursorRect(0, 0, 0, 0);
+    };
+
+    Window_StatusEquipPreview.prototype.slotDefs = function() {
+        var W = this.contents ? this.contents.width : (this.width - this.standardPadding() * 2);
+        var boxW = 40;
+        var cx = Math.floor(W / 2);
+        return [
+            { key: 'helm',      label: 'Helm',       etypeId: 3, occ: 0, placeholderIcon: 130, x: cx - Math.floor(boxW / 2), y: 32 },
+            { key: 'armor',     label: 'Armor',      etypeId: 4, occ: 0, placeholderIcon: 135, x: 12,                        y: 80 },
+            { key: 'boots',     label: 'Boots',      etypeId: 5, occ: 0, placeholderIcon: 139, x: 12,                        y: 150 },
+            { key: 'primary',   label: 'Weapon',     etypeId: 1, occ: 0, placeholderIcon: 96,  x: W - 12 - boxW,             y: 80 },
+            { key: 'secondary', label: 'Secondary',  etypeId: 2, occ: 0, placeholderIcon: 128, x: W - 12 - boxW,             y: 150 },
+            { key: 'acc1',      label: 'Acc 1',      etypeId: 6, occ: 0, placeholderIcon: 144, x: 14,                        y: 220 },
+            { key: 'acc2',      label: 'Acc 2',      etypeId: 6, occ: 1, placeholderIcon: 144, x: cx - Math.floor(boxW / 2), y: 220 },
+            { key: 'relic',     label: 'Relic',      etypeId: 7, occ: 0, placeholderIcon: 160, x: W - 14 - boxW,             y: 220 }
+        ];
+    };
+
+    Window_StatusEquipPreview.prototype.getEquippedItem = function(slotDef) {
+        if (!this._actor || !slotDef) return null;
+        var slots = this._actor.equipSlots();
+        var equips = this._actor.equips();
+
+        if (slotDef.key === 'primary') {
+            for (var i = 0; i < slots.length; i++) {
+                if (slots[i] === 1) return equips[i];
+            }
+        } else if (slotDef.key === 'secondary') {
+            if (slots.length > 1 && (slots[1] === 2 || slots[1] === 1)) {
+                return equips[1];
+            }
+            for (var j = 0; j < slots.length; j++) {
+                if (slots[j] === 2) return equips[j];
+            }
+        } else if (slotDef.key === 'acc1') {
+            for (var a = 0; a < slots.length; a++) {
+                if (slots[a] === 6) return equips[a];
+            }
+        } else if (slotDef.key === 'acc2') {
+            var count = 0;
+            for (var b = 0; b < slots.length; b++) {
+                if (slots[b] === 6) {
+                    if (count === 1) return equips[b];
+                    count++;
+                }
+            }
+            return null;
+        } else {
+            for (var k = 0; k < slots.length; k++) {
+                if (slots[k] === slotDef.etypeId) return equips[k];
+            }
+        }
+        return null;
+    };
+
+    Window_StatusEquipPreview.prototype.refresh = function() {
+        if (!this.contents) return;
+        this.contents.clear();
+        this.resetFontSettings();
+        if (!this._actor) return;
+
+        var W = this.contents.width;
+
+        // Title
+        this.contents.fontSize = 16;
+        this.changeTextColor(this.systemColor());
+        this.contents.drawText('EQUIPMENT', 0, 4, W, 18, 'center');
+        this.resetFontSettings();
+
+        // Battler in center
+        this.drawBattler();
+
+        // 8 Equip slot boxes
+        this.drawSlots();
+
+        // Detail panel at bottom
+        this.drawDetail();
+    };
+
+    Window_StatusEquipPreview.prototype.drawBattler = function() {
+        var actor = this._actor;
+        if (!actor) return;
+        var W = this.contents.width;
+        var cx = Math.floor(W / 2);
+        var bw = 72;
+        var bh = 95;
+        var bx = cx - Math.floor(bw / 2);
+        var by = 88;
+
+        var drawn = false;
+        if (actor.battlerName && typeof ImageManager !== 'undefined' && ImageManager.loadSvActor) {
+            var bName = actor.battlerName();
+            if (bName) {
+                var bitmap = ImageManager.loadSvActor(bName);
+                if (bitmap && !bitmap.isReady()) {
+                    bitmap.addLoadListener(this.refresh.bind(this));
+                } else if (bitmap && bitmap.isReady() && bitmap.width > 0) {
+                    var fw = bitmap.width / 9;
+                    var fh = bitmap.height / 6;
+                    var motionIndex = 1; // wait
+                    var pattern = 1;
+                    var sx = ((motionIndex % 3) * 3 + pattern) * fw;
+                    var sy = Math.floor(motionIndex / 3) * fh;
+                    var scale = Math.min(bw / fw, bh / fh);
+                    var dw = Math.floor(fw * scale);
+                    var dh = Math.floor(fh * scale);
+                    var dx = bx + Math.floor((bw - dw) / 2);
+                    var dy = by + Math.floor((bh - dh) / 2);
+                    this.contents.blt(bitmap, sx, sy, fw, fh, dx, dy, dw, dh);
+                    drawn = true;
+                }
+            }
+        }
+
+        if (!drawn && actor.characterName) {
+            var cName = actor.characterName();
+            if (cName) {
+                var cBitmap = ImageManager.loadCharacter(cName);
+                if (cBitmap && !cBitmap.isReady()) {
+                    cBitmap.addLoadListener(this.refresh.bind(this));
+                } else if (cBitmap && cBitmap.isReady()) {
+                    var big = ImageManager.isBigCharacter(cName);
+                    var pw = cBitmap.width / (big ? 3 : 12);
+                    var ph = cBitmap.height / (big ? 4 : 8);
+                    var n = actor.characterIndex();
+                    var csx = (n % 4 * 3 + 1) * pw;
+                    var csy = Math.floor(n / 4 * 4) * ph;
+                    var cScale = Math.min(bw / pw, bh / ph);
+                    var cdw = Math.floor(pw * cScale);
+                    var cdh = Math.floor(ph * cScale);
+                    var cdx = bx + Math.floor((bw - cdw) / 2);
+                    var cdy = by + Math.floor((bh - cdh) / 2);
+                    this.contents.blt(cBitmap, csx, csy, pw, ph, cdx, cdy, cdw, cdh);
+                }
+            }
+        }
+    };
+
+    Window_StatusEquipPreview.prototype.drawSlots = function() {
+        var defs = this.slotDefs();
+        var boxW = 40;
+        var boxH = 40;
+
+        for (var i = 0; i < defs.length; i++) {
+            var def = defs[i];
+            var item = this.getEquippedItem(def);
+            var isSelected = (i === this._selectedIndex);
+
+            // Box Background
+            var bgColor = isSelected ? 'rgba(50, 110, 200, 0.45)' : 'rgba(10, 20, 42, 0.6)';
+            this.contents.fillRect(def.x, def.y, boxW, boxH, bgColor);
+
+            // Border
+            var ctx = this.contents._context;
+            ctx.save();
+            ctx.strokeStyle = isSelected ? 'rgba(255, 255, 255, 0.95)' : 'rgba(80, 140, 220, 0.4)';
+            ctx.lineWidth = isSelected ? 2 : 1;
+            ctx.strokeRect(def.x + 0.5, def.y + 0.5, boxW - 1, boxH - 1);
+            ctx.restore();
+
+            // Icon (centered in 40x40 box)
+            var ix = def.x + Math.floor((boxW - 32) / 2);
+            var iy = def.y + Math.floor((boxH - 32) / 2);
+            var slotIcon = (item && item.iconIndex > 0) ? item.iconIndex : 0;
+            if (!slotIcon && item && item.note) {
+                var sim = item.note.match(/<icon:\s*(\d+)>/i);
+                if (sim) slotIcon = parseInt(sim[1], 10);
+            }
+            if (slotIcon > 0) {
+                this.drawIcon(slotIcon, ix, iy);
+            } else {
+                this.contents.paintOpacity = item ? 255 : 65;
+                this.drawIcon(def.placeholderIcon, ix, iy);
+                this.contents.paintOpacity = 255;
+            }
+            this.contents._setDirty();
+
+            // Label below box (drawn with explicit 14px height so it doesn't collide with below row)
+            this.contents.fontSize = 10;
+            this.changeTextColor(isSelected ? this.normalColor() : this.systemColor());
+            this.contents.drawText(def.label, def.x - 12, def.y + boxH, boxW + 24, 14, 'center');
+            this.resetFontSettings();
+        }
+    };
+
+    Window_StatusEquipPreview.prototype.drawDetail = function() {
+        var defs = this.slotDefs();
+        var def = defs[this._selectedIndex] || defs[0];
+        var item = this.getEquippedItem(def);
+        var W = this.contents.width;
+        var x = 10;
+        var dy = 292;
+
+        // Divider
+        this.contents.fillRect(x, dy, W - x * 2, 1, 'rgba(255, 255, 255, 0.2)');
+        dy += 12;
+
+        if (!item) {
+            this.contents.fontSize = 17;
+            this.changeTextColor(this.systemColor());
+            this.contents.drawText(def.label + ' (Empty)', x, dy, W - x * 2, 22, 'left');
+            dy += 26;
+            this.resetFontSettings();
+
+            // Empty icon box
+            this.contents.fillRect(x, dy, 40, 40, 'rgba(10, 20, 40, 0.4)');
+            var ctx = this.contents._context;
+            ctx.save();
+            ctx.strokeStyle = 'rgba(80, 140, 220, 0.4)';
+            ctx.strokeRect(x + 0.5, dy + 0.5, 39, 39);
+            ctx.restore();
+            this.contents.paintOpacity = 60;
+            this.drawIcon(def.placeholderIcon, x + 4, dy + 4);
+            this.contents.paintOpacity = 255;
+            this.contents._setDirty();
+
+            this.changeTextColor(this.systemColor());
+            this.contents.fontSize = 13;
+            this.contents.drawText(def.label, x + 48, dy + 2, W - x - 48, 16, 'left');
+            this.resetTextColor();
+            this.contents.fontSize = 12;
+            this.contents.drawText('Empty Slot', x + 48, dy + 20, W - x - 48, 16, 'left');
+            this.resetFontSettings();
+            dy += 46;
+
+            this.changeTextColor(this.systemColor());
+            this.contents.fontSize = 13;
+            this.contents.drawText('Description', x, dy, W - x * 2, 16, 'left');
+            dy += 18;
+            this.resetTextColor();
+            this.contents.fontSize = 12;
+            this.contents.drawText('No equipment equipped in this slot.', x, dy, W - x * 2, 16, 'left');
+            dy += 24;
+
+            this.changeTextColor(this.systemColor());
+            this.contents.fontSize = 13;
+            this.contents.drawText('Stat Bonus', x, dy, W - x * 2, 16, 'left');
+            dy += 20;
+            this.changeTextColor(this.textColor(7));
+            this.contents.fontSize = 12;
+            this.contents.drawText('No stat bonus', x, dy, W - x * 2, 16, 'left');
+            this.resetFontSettings();
+            return;
+        }
+
+        // Item Title
+        var rarity = '';
+        if (item.note) {
+            var rm = item.note.match(/<NUSV Rarity:\s*([^>]+)>/i);
+            if (rm) rarity = rm[1].trim();
+        }
+        this.contents.fontSize = 17;
+        var rLow = rarity.toLowerCase();
+        if (rLow === 'uncommon') {
+            this.changeTextColor(this.textColor(14)); // Light blue
+        } else if (rLow === 'rare') {
+            this.changeTextColor(this.textColor(27)); // Purple
+        } else if (rLow === 'epic' || rLow === 'legendary') {
+            this.changeTextColor(this.textColor(17)); // Gold / yellow
+        } else {
+            this.changeTextColor(this.normalColor());
+        }
+        this.contents.drawText(item.name, x, dy, W - x * 2, 22, 'left');
+        dy += 26;
+        this.resetFontSettings();
+
+        // Large icon box & Type info
+        this.contents.fillRect(x, dy, 40, 40, 'rgba(10, 20, 40, 0.4)');
+        var ctx2 = this.contents._context;
+        ctx2.save();
+        ctx2.strokeStyle = 'rgba(80, 140, 220, 0.4)';
+        ctx2.strokeRect(x + 0.5, dy + 0.5, 39, 39);
+        ctx2.restore();
+
+        var detailIcon = (item.iconIndex > 0) ? item.iconIndex : def.placeholderIcon;
+        if (item.note) {
+            var iconMatch = item.note.match(/<icon:\s*(\d+)>/i);
+            if (iconMatch) detailIcon = parseInt(iconMatch[1], 10);
+        }
+        this.drawIcon(detailIcon, x + 4, dy + 4);
+        this.contents._setDirty();
+
+        this.changeTextColor(this.systemColor());
+        this.contents.fontSize = 13;
+        this.contents.drawText(def.label, x + 48, dy + 2, W - x - 48, 16, 'left');
+
+        var typeText = '';
+        if (DataManager.isWeapon(item)) {
+            typeText = $dataSystem.weaponTypes[item.wtypeId] || TextManager.weapon;
+        } else if (DataManager.isArmor(item)) {
+            typeText = $dataSystem.armorTypes[item.atypeId] || TextManager.armor;
+        }
+        if (rarity) typeText += (typeText ? ' • ' : '') + rarity;
+        this.resetTextColor();
+        this.contents.fontSize = 12;
+        this.contents.drawText(typeText, x + 48, dy + 20, W - x - 48, 16, 'left');
+        this.resetFontSettings();
+        dy += 46;
+
+        // Description
+        this.changeTextColor(this.systemColor());
+        this.contents.fontSize = 13;
+        this.contents.drawText('Description', x, dy, W - x * 2, 16, 'left');
+        dy += 18;
+        this.resetTextColor();
+        this.contents.fontSize = 12;
+        var lines = wrapText(item.description, W - x * 2, this.textWidth.bind(this));
+        if (lines.length > 0) {
+            for (var l = 0; l < Math.min(lines.length, 3); l++) {
+                this.contents.drawText(lines[l], x, dy, W - x * 2, 16, 'left');
+                dy += 16;
+            }
+        } else {
+            this.contents.drawText('-', x, dy, W - x * 2, 16, 'left');
+            dy += 16;
+        }
+        dy += 10;
+
+        // Stat Bonus
+        this.changeTextColor(this.systemColor());
+        this.contents.fontSize = 13;
+        this.contents.drawText('Stat Bonus', x, dy, W - x * 2, 16, 'left');
+        dy += 20;
+        this.resetTextColor();
+        this.contents.fontSize = 12;
+
+        var hasStats = false;
+        if (item.params) {
+            for (var p = 0; p < 8; p++) {
+                var val = item.params[p];
+                if (!val) continue;
+                hasStats = true;
+                this.changeTextColor(this.systemColor());
+                this.contents.drawText(TextManager.param(p), x + 4, dy, 100, 18, 'left');
+                this.changeTextColor(val > 0 ? this.powerUpColor() : this.powerDownColor());
+                this.contents.drawText((val > 0 ? '+' : '') + val, x + 104, dy, W - x * 2 - 104, 18, 'right');
+                this.resetTextColor();
+                dy += 18;
+            }
+        }
+        if (!hasStats) {
+            this.changeTextColor(this.textColor(7));
+            this.contents.drawText('No stat bonus', x + 4, dy, W - x * 2 - 4, 18, 'left');
+            this.resetTextColor();
+        }
+        this.resetFontSettings();
+    };
+
+    Window_StatusEquipPreview.prototype.hitTestSlot = function(x, y) {
+        var defs = this.slotDefs();
+        var boxW = 40;
+        var boxH = 40;
+        for (var i = 0; i < defs.length; i++) {
+            var d = defs[i];
+            if (x >= d.x - 4 && x <= d.x + boxW + 4 &&
+                y >= d.y - 4 && y <= d.y + boxH + 16) {
+                return i;
+            }
+        }
+        return -1;
+    };
+
+    Window_StatusEquipPreview.prototype.update = function() {
+        Window_Selectable.prototype.update.call(this);
+        if (TouchInput.isTriggered() && this.isTouchedInsideFrame()) {
+            var x = this.canvasToLocalX(TouchInput.x);
+            var y = this.canvasToLocalY(TouchInput.y);
+            var hit = this.hitTestSlot(x, y);
+            if (hit >= 0) {
+                this._selectedIndex = hit;
+                SoundManager.playCursor();
+                this.refresh();
+            }
+        }
+    };
+
+    Window_StatusEquipPreview.prototype.cursorDown = function(wrap) {
+        var cur = this._selectedIndex;
+        var next = cur;
+        if (cur === 0) next = 1;
+        else if (cur === 1) next = 2;
+        else if (cur === 2) next = 5;
+        else if (cur === 3) next = 4;
+        else if (cur === 4) next = 7;
+        else if (cur === 5 || cur === 6 || cur === 7) {
+            if (wrap) next = 0;
+        }
+        if (next !== cur) {
+            this._selectedIndex = next;
+            SoundManager.playCursor();
+            this.refresh();
+        }
+    };
+
+    Window_StatusEquipPreview.prototype.cursorUp = function(wrap) {
+        var cur = this._selectedIndex;
+        var next = cur;
+        if (cur === 0) {
+            if (wrap) next = 6;
+        } else if (cur === 1) next = 0;
+        else if (cur === 2) next = 1;
+        else if (cur === 3) next = 0;
+        else if (cur === 4) next = 3;
+        else if (cur === 5 || cur === 6) next = 2;
+        else if (cur === 7) next = 4;
+        if (next !== cur) {
+            this._selectedIndex = next;
+            SoundManager.playCursor();
+            this.refresh();
+        }
+    };
+
+    Window_StatusEquipPreview.prototype.cursorRight = function(wrap) {
+        var cur = this._selectedIndex;
+        var next = cur;
+        if (cur === 0) next = 3;
+        else if (cur === 1) next = 3;
+        else if (cur === 2) next = 4;
+        else if (cur === 3 && wrap) next = 1;
+        else if (cur === 4 && wrap) next = 2;
+        else if (cur === 5) next = 6;
+        else if (cur === 6) next = 7;
+        else if (cur === 7 && wrap) next = 5;
+        if (next !== cur) {
+            this._selectedIndex = next;
+            SoundManager.playCursor();
+            this.refresh();
+        }
+    };
+
+    Window_StatusEquipPreview.prototype.cursorLeft = function(wrap) {
+        var cur = this._selectedIndex;
+        var next = cur;
+        if (cur === 0) next = 1;
+        else if (cur === 1 && wrap) next = 3;
+        else if (cur === 2 && wrap) next = 4;
+        else if (cur === 3) next = 1;
+        else if (cur === 4) next = 2;
+        else if (cur === 5 && wrap) next = 7;
+        else if (cur === 6) next = 5;
+        else if (cur === 7) next = 6;
+        if (next !== cur) {
+            this._selectedIndex = next;
+            SoundManager.playCursor();
+            this.refresh();
+        }
+    };
+
+    // -------------------------------------------------------------------------
     // Scene_Status
     // -------------------------------------------------------------------------
 
@@ -1054,6 +1590,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     Scene_Status.prototype.initialize = function(actor) {
         Scene_MenuBase.prototype.initialize.call(this);
         this._statusActor = actor || null;
+        this._currentTabSymbol = 'status';
     };
 
     Scene_Status.prototype.create = function() {
@@ -1077,6 +1614,13 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         );
         this.addWindow(this._infoWindow);
 
+        this._equipPreviewWindow = new Window_StatusEquipPreview(
+            partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
+        );
+        this._equipPreviewWindow.setHandler('cancel', this.onEquipPreviewCancel.bind(this));
+        this._equipPreviewWindow.hide();
+        this.addWindow(this._equipPreviewWindow);
+
         // Added last so the state tooltip renders above the other windows.
         this._statePopup = new Window_StatePopup();
         this.addWindow(this._statePopup);
@@ -1095,6 +1639,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Scene_Status.prototype.createTabsWindow = function() {
         this._tabsWindow = new Window_StatusTabs(partyWidth(), 0);
+        this._tabsWindow._onSelectHandler = this.onTabChange.bind(this);
         this._tabsWindow.setHandler('status', this.onTabStatus.bind(this));
         this._tabsWindow.setHandler('equip',  this.onTabEquip.bind(this));
         this._tabsWindow.setHandler('class',  this.onTabClass.bind(this));
@@ -1105,13 +1650,41 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.addWindow(this._tabsWindow);
     };
 
+    Scene_Status.prototype.onTabChange = function(index, symbol) {
+        this.updateRightPanel();
+    };
+
+    Scene_Status.prototype.updateRightPanel = function() {
+        var symbol = (this._tabsWindow && this._tabsWindow.currentSymbol()) || 'status';
+        if (symbol === 'equip') {
+            if (this._infoWindow) this._infoWindow.hide();
+            if (this._statePopup) this._statePopup.hide();
+            if (this._equipPreviewWindow) {
+                this._equipPreviewWindow.show();
+                this._equipPreviewWindow.refresh();
+            }
+        } else {
+            if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
+            if (this._infoWindow) {
+                this._infoWindow.show();
+                this._infoWindow.refresh();
+            }
+        }
+    };
+
     Scene_Status.prototype.update = function() {
         Scene_MenuBase.prototype.update.call(this);
-        if (!this._tabsWindow || !this._tabsWindow.active || !$gameParty.members().length) return;
-        if (Input.isRepeated('up')) {
-            this.changePartyActor(-1);
-        } else if (Input.isRepeated('down')) {
-            this.changePartyActor(1);
+        if (!$gameParty.members().length) return;
+        if (this._tabsWindow && this._tabsWindow.active) {
+            if (Input.isRepeated('up')) {
+                this.changePartyActor(-1);
+            } else if (Input.isRepeated('down')) {
+                if (this._tabsWindow.currentSymbol() === 'equip') {
+                    this.onTabEquip();
+                } else {
+                    this.changePartyActor(1);
+                }
+            }
         }
     };
 
@@ -1122,14 +1695,22 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this._tabsWindow.activate();
         this._tabsWindow.select(0);
         this.refreshAll();
+        this.updateRightPanel();
     };
 
     Scene_Status.prototype.onTabStatus = function() {
         this._tabsWindow.activate();
+        this.updateRightPanel();
     };
 
     Scene_Status.prototype.onTabEquip = function() {
-        this.openActorMenu(Scene_Equip);
+        this._tabsWindow.deactivate();
+        this._equipPreviewWindow.activate();
+    };
+
+    Scene_Status.prototype.onEquipPreviewCancel = function() {
+        this._equipPreviewWindow.deactivate();
+        this._tabsWindow.activate();
     };
 
     Scene_Status.prototype.onTabClass = function() {
@@ -1173,18 +1754,21 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     Scene_Status.prototype.refreshAll = function() {
         var actor = this.actor();
         var index = $gameParty.members().indexOf(actor);
-        this._partyWindow.select(Math.max(0, index));
-        this._partyWindow.refresh();
-        this._tabsWindow.refresh();
-        this._tabsWindow.activate();
-        this._portraitWindow.setActor(actor);
-        this._infoWindow.setActor(actor);
+        if (this._partyWindow) {
+            this._partyWindow.select(Math.max(0, index));
+            this._partyWindow.refresh();
+        }
+        if (this._tabsWindow) this._tabsWindow.refresh();
+        if (this._portraitWindow) this._portraitWindow.setActor(actor);
+        if (this._infoWindow) this._infoWindow.setActor(actor);
+        if (this._equipPreviewWindow) this._equipPreviewWindow.setActor(actor);
+        this.updateRightPanel();
     };
 
     Scene_Status.prototype.onActorChange = function() {
         var actor = this.actor();
         var index = $gameParty.members().indexOf(actor);
-        if (index >= 0) this._partyWindow.select(index);
+        if (index >= 0 && this._partyWindow) this._partyWindow.select(index);
         this.refreshAll();
     };
 
@@ -1202,6 +1786,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     NUSV.StatusScreen.Window_StatusDetail = Window_StatusDetail;
     NUSV.StatusScreen.Window_StatusPortrait = Window_StatusPortrait;
     NUSV.StatusScreen.Window_StatusInfo = Window_StatusInfo;
+    NUSV.StatusScreen.Window_StatusEquipPreview = Window_StatusEquipPreview;
     NUSV.StatusScreen.Window_StatePopup = Window_StatePopup;
     NUSV.StatusScreen.Scene_Status = Scene_Status;
     NUSV.StatusScreen.portraitName = portraitName;
