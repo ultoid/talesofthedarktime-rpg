@@ -77,6 +77,7 @@ Imported.NUSV_ClassLevel = true;
 
 var NUSV = NUSV || {};
 NUSV.ClassLevel = NUSV.ClassLevel || {};
+NUSV.Levels = NUSV.Levels || {};
 
 (function() {
     'use strict';
@@ -143,6 +144,102 @@ NUSV.ClassLevel = NUSV.ClassLevel || {};
     }
 
     // -------------------------------------------------------------------------
+    // Global Database & Helper API: NUSV.Levels
+    // -------------------------------------------------------------------------
+    function resolveActor(target) {
+        if (!target) return null;
+        if (typeof target === 'object' && typeof target.actorId === 'function') return target;
+        if (typeof target === 'number' && typeof $gameActors !== 'undefined' && $gameActors) {
+            return $gameActors.actor(target);
+        }
+        return null;
+    }
+
+    NUSV.Levels.resolveActor = resolveActor;
+
+    // Base Level APIs
+    NUSV.Levels.baseLevel = function(target) {
+        var a = resolveActor(target);
+        return a ? (a._level || a.level || 1) : 1;
+    };
+    NUSV.Levels.getBaseLevel = NUSV.Levels.baseLevel;
+
+    NUSV.Levels.setBaseLevel = function(target, level) {
+        var a = resolveActor(target);
+        if (!a) return;
+        var max = a.maxLevel ? a.maxLevel() : 99;
+        var newLevel = Math.max(1, Math.min(max, Math.round(Number(level) || 1)));
+        a._level = newLevel;
+        if (a._exp && a._classId && typeof a.expForLevel === 'function') {
+            a._exp[a._classId] = a.expForLevel(newLevel);
+        }
+        a.refresh();
+    };
+
+    // Class Level APIs
+    NUSV.Levels.classLevel = function(target, classId) {
+        var a = resolveActor(target);
+        if (!a) return 1;
+        return a.classLevel(classId);
+    };
+    NUSV.Levels.getClassLevel = NUSV.Levels.classLevel;
+
+    NUSV.Levels.currentClassLevel = function(target) {
+        var a = resolveActor(target);
+        if (!a) return 1;
+        return a.currentClassLevel();
+    };
+    NUSV.Levels.getCurrentClassLevel = NUSV.Levels.currentClassLevel;
+
+    NUSV.Levels.setClassLevel = function(target, classId, level) {
+        var a = resolveActor(target);
+        if (!a) return;
+        a.setClassLevel(classId, level);
+    };
+
+    NUSV.Levels.classMaxLevel = function(target, classId) {
+        var a = resolveActor(target);
+        if (a) return a.classMaxLevel(classId);
+        var cls = typeof $dataClasses !== 'undefined' ? $dataClasses[Number(classId || 1)] : null;
+        return getClassMaxLevel(cls);
+    };
+    NUSV.Levels.getClassMaxLevel = NUSV.Levels.classMaxLevel;
+
+    NUSV.Levels.classTier = function(classId) {
+        var cls = typeof $dataClasses !== 'undefined' ? $dataClasses[Number(classId || 1)] : null;
+        return getClassTier(cls);
+    };
+    NUSV.Levels.getClassTier = NUSV.Levels.classTier;
+
+    NUSV.Levels.classExp = function(target, classId) {
+        var a = resolveActor(target);
+        return a ? a.classExp(classId) : 0;
+    };
+    NUSV.Levels.getClassExp = NUSV.Levels.classExp;
+
+    NUSV.Levels.classNextLevelExp = function(target, classId) {
+        var a = resolveActor(target);
+        return a ? a.classNextLevelExp(classId) : 0;
+    };
+    NUSV.Levels.getClassNextLevelExp = NUSV.Levels.classNextLevelExp;
+
+    NUSV.Levels.gainClassExp = function(target, amount, classId) {
+        var a = resolveActor(target);
+        if (a) a.gainClassExp(amount, classId);
+    };
+
+    NUSV.Levels.isClassMastered = function(target, classId) {
+        var a = resolveActor(target);
+        return a ? a.isClassMastered(classId) : false;
+    };
+
+    NUSV.Levels.allClassData = function(target) {
+        var a = resolveActor(target);
+        return a ? a.allClassData() : {};
+    };
+    NUSV.Levels.getAllClassData = NUSV.Levels.allClassData;
+
+    // -------------------------------------------------------------------------
     // Game_Enemy - Class EXP Reward
     // -------------------------------------------------------------------------
     Game_Enemy.prototype.classExp = function() {
@@ -163,14 +260,31 @@ NUSV.ClassLevel = NUSV.ClassLevel || {};
         this.initClassData(this._classId);
     };
 
+    Game_Actor.prototype.baseLevel = function() {
+        return this._level || 1;
+    };
+
+    Game_Actor.prototype.setBaseLevel = function(level) {
+        NUSV.Levels.setBaseLevel(this, level);
+    };
+
     Game_Actor.prototype.initClassData = function(classId) {
+        classId = Number(classId || this._classId);
         this._nusvClassData = this._nusvClassData || {};
         if (!this._nusvClassData[classId]) {
+            var initialLevel = 1;
+            // Backwards compatibility migration from legacy _nusvClassLevels
+            if (this._nusvClassLevels && this._nusvClassLevels[classId]) {
+                initialLevel = Math.max(1, Number(this._nusvClassLevels[classId]));
+            }
             this._nusvClassData[classId] = {
-                level: 1,
-                exp: 0
+                level: initialLevel,
+                exp: this.classExpForLevel(initialLevel)
             };
         }
+        // Mirror to _nusvClassLevels so any legacy code reading it stays in sync
+        this._nusvClassLevels = this._nusvClassLevels || {};
+        this._nusvClassLevels[classId] = this._nusvClassData[classId].level;
     };
 
     Game_Actor.prototype.currentClassLevel = function() {
@@ -178,21 +292,83 @@ NUSV.ClassLevel = NUSV.ClassLevel || {};
     };
 
     Game_Actor.prototype.classLevel = function(classId) {
-        classId = classId || this._classId;
+        classId = Number(classId || this._classId);
         this.initClassData(classId);
         return this._nusvClassData[classId].level || 1;
     };
 
+    // Global alias so nusvClassLevel always returns the real class level
+    Game_Actor.prototype.nusvClassLevel = function(classId) {
+        return this.classLevel(classId);
+    };
+
     Game_Actor.prototype.classExp = function(classId) {
-        classId = classId || this._classId;
+        classId = Number(classId || this._classId);
         this.initClassData(classId);
         return this._nusvClassData[classId].exp || 0;
     };
 
     Game_Actor.prototype.classMaxLevel = function(classId) {
-        classId = classId || this._classId;
-        var classObj = $dataClasses[classId];
+        classId = Number(classId || this._classId);
+        var classObj = typeof $dataClasses !== 'undefined' ? $dataClasses[classId] : null;
         return getClassMaxLevel(classObj);
+    };
+
+    Game_Actor.prototype.nusvClassMaxLevel = function(classId) {
+        return this.classMaxLevel(classId);
+    };
+
+    Game_Actor.prototype.classTier = function(classId) {
+        classId = Number(classId || this._classId);
+        var classObj = typeof $dataClasses !== 'undefined' ? $dataClasses[classId] : null;
+        return getClassTier(classObj);
+    };
+
+    Game_Actor.prototype.nusvClassTier = function(classId) {
+        return this.classTier(classId);
+    };
+
+    Game_Actor.prototype.isClassMastered = function(classId) {
+        classId = Number(classId || this._classId);
+        return this.classLevel(classId) >= this.classMaxLevel(classId);
+    };
+
+    Game_Actor.prototype.setClassLevel = function(classId, level) {
+        classId = Number(classId || this._classId);
+        this.initClassData(classId);
+        var max = this.classMaxLevel(classId);
+        level = Math.max(1, Math.min(max, Math.round(Number(level) || 1)));
+        this._nusvClassData[classId].level = level;
+        this._nusvClassData[classId].exp = this.classExpForLevel(level);
+        this._nusvClassLevels = this._nusvClassLevels || {};
+        this._nusvClassLevels[classId] = level;
+
+        if (this._classId === classId) {
+            if (typeof this.nusvRefreshClassLearnedSkills === 'function') {
+                this.nusvRefreshClassLearnedSkills();
+            } else {
+                this.onClassLevelUp(classId, level);
+            }
+            this.refresh();
+        }
+    };
+
+    Game_Actor.prototype.allClassData = function() {
+        this._nusvClassData = this._nusvClassData || {};
+        var result = {};
+        for (var k in this._nusvClassData) {
+            if (this._nusvClassData.hasOwnProperty(k)) {
+                var cId = Number(k);
+                result[cId] = {
+                    level: this._nusvClassData[k].level,
+                    exp: this._nusvClassData[k].exp,
+                    maxLevel: this.classMaxLevel(cId),
+                    tier: this.classTier(cId),
+                    mastered: this.isClassMastered(cId)
+                };
+            }
+        }
+        return result;
     };
 
     // Class EXP required formula for a given level
@@ -203,7 +379,7 @@ NUSV.ClassLevel = NUSV.ClassLevel || {};
     };
 
     Game_Actor.prototype.classNextLevelExp = function(classId) {
-        classId = classId || this._classId;
+        classId = Number(classId || this._classId);
         var lvl = this.classLevel(classId);
         var max = this.classMaxLevel(classId);
         if (lvl >= max) return 0;
@@ -211,7 +387,7 @@ NUSV.ClassLevel = NUSV.ClassLevel || {};
     };
 
     Game_Actor.prototype.gainClassExp = function(amount, classId) {
-        classId = classId || this._classId;
+        classId = Number(classId || this._classId);
         this.initClassData(classId);
         var data = this._nusvClassData[classId];
         var maxLvl = this.classMaxLevel(classId);
@@ -220,15 +396,24 @@ NUSV.ClassLevel = NUSV.ClassLevel || {};
 
         data.exp += Math.max(0, Math.round(amount));
 
+        var leveledUp = false;
         while (data.level < maxLvl && data.exp >= this.classExpForLevel(data.level + 1)) {
             data.level++;
+            leveledUp = true;
+            this._nusvClassLevels = this._nusvClassLevels || {};
+            this._nusvClassLevels[classId] = data.level;
             this.onClassLevelUp(classId, data.level);
+        }
+        if (leveledUp) {
+            if (this._classId === classId && typeof this.nusvRefreshClassLearnedSkills === 'function') {
+                this.nusvRefreshClassLearnedSkills();
+            }
         }
         this.refresh();
     };
 
     Game_Actor.prototype.onClassLevelUp = function(classId, newLevel) {
-        var classObj = $dataClasses[classId];
+        var classObj = typeof $dataClasses !== 'undefined' ? $dataClasses[classId] : null;
         if (!classObj) return;
 
         // Learn class skills matching new class level

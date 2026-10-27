@@ -155,6 +155,27 @@ Imported.NUSV_InventoryUI = true;
         this.addCommand('Key Items', 'keyItem');
     };
 
+    Window_NUSVInventoryCategory.prototype.processHandling = function() {
+        if (this.isOpenAndActive()) {
+            if (Input.isTriggered('pageup')) {
+                var max = this.maxItems();
+                if (max > 0) {
+                    this.select((this.index() - 1 + max) % max);
+                    SoundManager.playCursor();
+                }
+                return;
+            } else if (Input.isTriggered('pagedown')) {
+                var max = this.maxItems();
+                if (max > 0) {
+                    this.select((this.index() + 1) % max);
+                    SoundManager.playCursor();
+                }
+                return;
+            }
+        }
+        Window_HorzCommand.prototype.processHandling.call(this);
+    };
+
     function Window_NUSVInventoryGrid() {
         this.initialize.apply(this, arguments);
     }
@@ -195,6 +216,11 @@ Imported.NUSV_InventoryUI = true;
 
     Window_NUSVInventoryGrid.prototype.item = function() {
         return this._data[this.index()];
+    };
+
+    Window_NUSVInventoryGrid.prototype.isCurrentItemEnabled = function() {
+        var item = this.item();
+        return !!item && !isKeyItem(item);
     };
 
     Window_NUSVInventoryGrid.prototype.setCategory = function(category) {
@@ -261,6 +287,27 @@ Imported.NUSV_InventoryUI = true;
             return;
         }
         Window_Selectable.prototype.cursorUp.call(this, wrap);
+    };
+
+    Window_NUSVInventoryGrid.prototype.processHandling = function() {
+        if (this.isOpenAndActive()) {
+            if (this.isHandled('pageup') && Input.isTriggered('pageup')) {
+                return this.processPageup();
+            } else if (this.isHandled('pagedown') && Input.isTriggered('pagedown')) {
+                return this.processPagedown();
+            }
+        }
+        Window_Selectable.prototype.processHandling.call(this);
+    };
+
+    Window_NUSVInventoryGrid.prototype.processPageup = function() {
+        this.updateInputData();
+        this.callHandler('pageup');
+    };
+
+    Window_NUSVInventoryGrid.prototype.processPagedown = function() {
+        this.updateInputData();
+        this.callHandler('pagedown');
     };
 
     function Window_NUSVInventoryDetail() {
@@ -617,6 +664,12 @@ Imported.NUSV_InventoryUI = true;
         this._headerWindow.contents.fontSize = 28;
         var title = Scene_NUSVInventory._itemOnlyMode ? 'Item' : 'Inventory';
         this._headerWindow.drawText(title, this._headerWindow.textPadding(), 0, this._headerWindow.contents.width);
+        this._headerWindow.resetFontSettings();
+        this._headerWindow.contents.fontSize = 14;
+        this._headerWindow.changeTextColor(this._headerWindow.textColor(7));
+        var legendText = '[Z / Enter] Pilih   [X / Esc] Kembali   [Q / W] Ganti Kategori';
+        this._headerWindow.drawText(legendText, 0, 8, this._headerWindow.contents.width - this._headerWindow.textPadding(), 'right');
+        this._headerWindow.resetTextColor();
         this.addWindow(this._headerWindow);
     };
 
@@ -640,8 +693,40 @@ Imported.NUSV_InventoryUI = true;
         this._gridWindow.setHandler('cancel', this.popScene.bind(this));
         if (!isItemOnly) {
             this._gridWindow.setHandler('category', this.activateCategory.bind(this));
+            this._gridWindow.setHandler('pageup', this.onGridPageup.bind(this));
+            this._gridWindow.setHandler('pagedown', this.onGridPagedown.bind(this));
         }
         this.addWindow(this._gridWindow);
+    };
+
+    Scene_NUSVInventory.prototype.onGridPageup = function() {
+        if (Scene_NUSVInventory._itemOnlyMode || !this._categoryWindow) {
+            this._gridWindow.activate();
+            return;
+        }
+        var max = this._categoryWindow.maxItems();
+        if (max > 0) {
+            var nextIndex = (this._categoryWindow.index() - 1 + max) % max;
+            this._categoryWindow.select(nextIndex);
+            this._gridWindow.setCategory(this._categoryWindow.currentSymbol());
+            SoundManager.playCursor();
+        }
+        this._gridWindow.activate();
+    };
+
+    Scene_NUSVInventory.prototype.onGridPagedown = function() {
+        if (Scene_NUSVInventory._itemOnlyMode || !this._categoryWindow) {
+            this._gridWindow.activate();
+            return;
+        }
+        var max = this._categoryWindow.maxItems();
+        if (max > 0) {
+            var nextIndex = (this._categoryWindow.index() + 1) % max;
+            this._categoryWindow.select(nextIndex);
+            this._gridWindow.setCategory(this._categoryWindow.currentSymbol());
+            SoundManager.playCursor();
+        }
+        this._gridWindow.activate();
     };
 
     Scene_NUSVInventory.prototype.createDetailWindow = function() {
@@ -705,6 +790,7 @@ Imported.NUSV_InventoryUI = true;
         var item = this.item();
         if (!item || isKeyItem(item)) {
             SoundManager.playBuzzer();
+            this._gridWindow.activate();
             return;
         }
         this._actionItem = item;

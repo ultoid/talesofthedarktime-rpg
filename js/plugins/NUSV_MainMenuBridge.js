@@ -24,17 +24,21 @@
  *
  * @param Add Class Command
  * @type boolean
- * @default true
+ * @default false
  *
  * @param Add Learn Skills Command
  * @type boolean
- * @default true
+ * @default false
  *
  * @param Add Synthesis Command
  * @type boolean
- * @default true
+ * @default false
  *
  * @param Add Party Command
+ * @type boolean
+ * @default false
+ *
+ * @param Show Main Status
  * @type boolean
  * @default true
  *
@@ -125,10 +129,11 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
     var TEXT_PARTY = pText('Party Command', 'Formation');
     var TEXT_PARTY_MENU = pText('Party Menu Command', 'Party');
 
-    var ADD_CLASS = pBool('Add Class Command', true);
-    var ADD_SKILL = pBool('Add Learn Skills Command', true);
-    var ADD_SYNTH = pBool('Add Synthesis Command', true);
-    var ADD_PARTY = pBool('Add Party Command', true);
+    var ADD_CLASS = pBool('Add Class Command', false);
+    var ADD_SKILL = pBool('Add Learn Skills Command', false);
+    var ADD_SYNTH = pBool('Add Synthesis Command', false);
+    var ADD_PARTY = pBool('Add Party Command', false);
+    var SHOW_MAIN_STATUS = pBool('Show Main Status', true);
     var DEBUG = pBool('Debug Warnings', true);
 
     function warn(message) {
@@ -226,11 +231,27 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
         _Window_MenuCommand_makeCommandList.call(this);
 
         /*
-         * Class
-         * Also regard YEP's "class" symbol as already present, so we don't
-         * create two visually identical Class commands if the user later
-         * changes MainMenuManager settings.
+         * Filter out commands that are now integrated into the Party (Scene_Status) screen:
+         * Skill, Equipment, Formation, Class, and Learn Skills.
          */
+        var excludedSymbols = [
+            'skill',
+            'equip',
+            'formation',
+            'nusvParty',
+            'class',
+            'nusvClass',
+            'nusvClassChange',
+            'learnSkills',
+            'nusvSkillLearn',
+            'synthesis',
+            'nusvSynthesis'
+        ];
+
+        this._list = this._list.filter(function(cmd) {
+            return excludedSymbols.indexOf(cmd.symbol) === -1;
+        });
+
         if (ADD_CLASS && imported('NUSV_ClassChange')) {
             if (!hasCommand(this, ['nusvClassChange', 'nusvClass', 'class'])) {
                 this.addCommand(TEXT_CLASS, 'nusvClass', !!classScene());
@@ -249,10 +270,6 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
             }
         }
 
-        /*
-         * PartySystem v1 uses symbol "nusvParty". We also detect the native
-         * "formation" symbol to prevent duplicated Formation commands.
-         */
         if (ADD_PARTY && imported('NUSV_PartySystem')) {
             if (!hasCommand(this, ['nusvParty', 'formation'])) {
                 this.addCommand(TEXT_PARTY, 'nusvParty', !!partyScene());
@@ -429,11 +446,18 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
     // -------------------------------------------------------------------------
 
     function actorBaseLevel(actor) {
-        return actor && actor.nusvBaseLevel ? actor.nusvBaseLevel() : actor.level;
+        if (!actor) return 1;
+        if (typeof actor.baseLevel === 'function') return actor.baseLevel();
+        if (typeof actor.nusvBaseLevel === 'function') return actor.nusvBaseLevel();
+        return actor.level || 1;
     }
 
     function actorClassLevel(actor) {
-        return actor && actor.nusvClassLevel ? actor.nusvClassLevel() : actor.level;
+        if (!actor) return 1;
+        if (typeof actor.currentClassLevel === 'function') return actor.currentClassLevel();
+        if (typeof actor.classLevel === 'function') return actor.classLevel(actor._classId);
+        if (typeof actor.nusvClassLevel === 'function') return actor.nusvClassLevel();
+        return 1;
     }
 
     Window_Base.prototype.nusvDrawActorLevelLine = function(label, value, x, y, width) {
@@ -796,12 +820,20 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
         _Scene_Menu_createStatusWindow.call(this);
 
         if (this._statusWindow) {
-            this._statusWindow.hide();
+            if (SHOW_MAIN_STATUS) {
+                this._statusWindow.show();
+                this._statusWindow.deactivate();
+                this._statusWindow.deselect();
+            } else {
+                this._statusWindow.hide();
+            }
         }
     };
 
     function nusvHideStatusWindow(scene) {
-        if (scene._statusWindow) scene._statusWindow.hide();
+        if (!SHOW_MAIN_STATUS && scene._statusWindow) {
+            scene._statusWindow.hide();
+        }
     }
 
     var _Scene_Menu_onPersonalOk = Scene_Menu.prototype.onPersonalOk;
@@ -825,9 +857,38 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
             _Scene_Menu_repositionWindows.call(this);
         }
 
-        if (this._goldWindow) {
-            this._goldWindow.x = Graphics.boxWidth - this._goldWindow.width;
-            this._goldWindow.y = 0;
+        if (SHOW_MAIN_STATUS) {
+            if (this._goldWindow && this._commandWindow) {
+                this._goldWindow.x = 0;
+                this._goldWindow.width = this._commandWindow.width;
+                this._goldWindow.y = Graphics.boxHeight - this._goldWindow.height;
+                this._goldWindow.createContents();
+                this._goldWindow.refresh();
+            }
+            if (this._statusWindow && this._commandWindow) {
+                var sx = this._commandWindow.width;
+                var sw = Graphics.boxWidth - sx;
+                this._statusWindow.move(sx, 0, sw, Graphics.boxHeight);
+                this._statusWindow.createContents();
+                this._statusWindow.refresh();
+                this._statusWindow.show();
+                this._statusWindow.deactivate();
+                this._statusWindow.deselect();
+            }
+        } else {
+            if (this._goldWindow) {
+                this._goldWindow.x = Graphics.boxWidth - this._goldWindow.width;
+                this._goldWindow.y = 0;
+            }
+        }
+    };
+
+    var _Scene_Menu_start = Scene_Menu.prototype.start;
+    Scene_Menu.prototype.start = function() {
+        _Scene_Menu_start.call(this);
+        if (SHOW_MAIN_STATUS && this._statusWindow) {
+            this._statusWindow.deselect();
+            this._statusWindow.deactivate();
         }
     };
 

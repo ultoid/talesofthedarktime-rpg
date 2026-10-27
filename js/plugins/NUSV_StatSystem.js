@@ -91,6 +91,12 @@
  *   <Max SP: +20>
  *   <Critical Damage: +25%>
  *
+ * Pada Item:
+ *   <Reset Stat Points>                 // Mereset seluruh alokasi stat karakter & refund poin 100%
+ *
+ * Plugin Commands:
+ *   NUSVResetStats [actorId]            // Reset alokasi stat actor tertentu (atau leader jika kosong)
+ *
  * Script Calls untuk Developer / Event:
  *   actor.nusvStatPoints()              // Cek sisa poin belum dialokasikan
  *   actor.allocateStat('str', 1)        // Alokasikan 1 poin ke STR
@@ -228,6 +234,45 @@ NUSV.StatSystem = NUSV.StatSystem || {};
         this._nusvStatPoints = (this._nusvStatPoints || 0) + refunded;
         this.refresh();
         return refunded;
+    };
+
+    // -------------------------------------------------------------------------
+    // Stat Reset Item & Action Integration
+    // -------------------------------------------------------------------------
+    var _Game_Action_applyItemUserEffect = Game_Action.prototype.applyItemUserEffect;
+    Game_Action.prototype.applyItemUserEffect = function(target) {
+        _Game_Action_applyItemUserEffect.call(this, target);
+        if (target && target.isActor && target.isActor()) {
+            var item = this.item();
+            if (item && item.meta && (item.meta['Reset Stat Points'] || item.meta['Reset Stats'] || item.meta['Stat Reset'])) {
+                target.resetAllocatedStats();
+                if (typeof SoundManager !== 'undefined' && SoundManager.playUseItem) {
+                    SoundManager.playUseItem();
+                }
+            }
+        }
+    };
+
+    var _Game_Action_hasItemAnyValidEffect = Game_Action.prototype.hasItemAnyValidEffect;
+    Game_Action.prototype.hasItemAnyValidEffect = function(target) {
+        var item = this.item();
+        if (item && item.meta && (item.meta['Reset Stat Points'] || item.meta['Reset Stats'] || item.meta['Stat Reset'])) {
+            return target && target.isActor && target.isActor();
+        }
+        return _Game_Action_hasItemAnyValidEffect.call(this, target);
+    };
+
+    // Plugin Command: NUSVResetStats [actorId]
+    var _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+    Game_Interpreter.prototype.pluginCommand = function(command, args) {
+        _Game_Interpreter_pluginCommand.call(this, command, args);
+        if (command === 'NUSVResetStats' || command === 'ResetStats') {
+            var actorId = args && args[0] ? Number(args[0]) : 0;
+            var actor = actorId > 0 && typeof $gameActors !== 'undefined' ? $gameActors.actor(actorId) : ($gameParty ? $gameParty.leader() : null);
+            if (actor && typeof actor.resetAllocatedStats === 'function') {
+                actor.resetAllocatedStats();
+            }
+        }
     };
 
     // --- Base Stat Value Calculation ---

@@ -336,9 +336,9 @@ NUSV.ClassChange = NUSV.ClassChange || {};
     var _Game_Actor_setup = Game_Actor.prototype.setup;
     Game_Actor.prototype.setup = function(actorId) {
         _Game_Actor_setup.call(this, actorId);
-        this._nusvClassLevels = this._nusvClassLevels || {};
-        this._nusvClassLevels[this._classId] = this._level;
-        this._nusvBaseLevel = this._nusvBaseLevel || this._level;
+        if (typeof this.initClassData === 'function') {
+            this.initClassData(this._classId);
+        }
         this._nusvUnlockedClasses = this._nusvUnlockedClasses || {};
         this.nusvUnlockClass(this._classId);
         this.nusvRefreshClassLearnedSkills();
@@ -393,6 +393,9 @@ NUSV.ClassChange = NUSV.ClassChange || {};
     };
 
     Game_Actor.prototype.nusvClassTier = function() {
+        if (typeof this.classTier === 'function') {
+            return this.classTier(this._classId);
+        }
         var cls = this.currentClass();
         var raw = noteValue(cls, 'Class Tier');
         var value = Number(raw);
@@ -401,53 +404,24 @@ NUSV.ClassChange = NUSV.ClassChange || {};
 
     Game_Actor.prototype.nusvClassMaxLevel = function(classId) {
         classId = Number(classId || this._classId);
+        if (typeof this.classMaxLevel === 'function') {
+            return this.classMaxLevel(classId);
+        }
         var cls = $dataClasses[classId];
         return classMaxLevel(cls);
     };
 
-    var _Game_Actor_maxLevel = Game_Actor.prototype.maxLevel;
-    Game_Actor.prototype.maxLevel = function() {
-        var base = _Game_Actor_maxLevel ? _Game_Actor_maxLevel.call(this) : 99;
-        var classMax = this.nusvClassMaxLevel ? this.nusvClassMaxLevel(this._classId) : null;
-        if (classMax == null) return base;
-        return Math.min(base, classMax);
-    };
-
-    Game_Actor.prototype.nusvClampLevelToClassMax = function(classId) {
-        classId = Number(classId || this._classId);
-        var classMax = this.nusvClassMaxLevel(classId);
-        if (classMax == null || this._level <= classMax) return;
-
-        this._level = classMax;
-        this._exp[classId] = this.expForLevel(this._level);
-        this.refresh();
-    };
-
     Game_Actor.prototype.nusvClassLevel = function(classId) {
         classId = Number(classId || this._classId);
-        var level;
-        var maxLevel = this.nusvClassMaxLevel ? this.nusvClassMaxLevel(classId) : null;
-
-        if (classId === this._classId || maintainLevel) {
-            level = this.level;
-            return maxLevel == null ? level : Math.min(level, maxLevel);
+        if (typeof this.classLevel === 'function') {
+            return this.classLevel(classId);
         }
-
         this._nusvClassLevels = this._nusvClassLevels || {};
-        level = Number(this._nusvClassLevels[classId] || 1);
-        return maxLevel == null ? level : Math.min(level, maxLevel);
+        return Number(this._nusvClassLevels[classId] || 1);
     };
 
     Game_Actor.prototype.nusvBaseLevel = function() {
-        this._nusvClassLevels = this._nusvClassLevels || {};
-
-        var level = Math.max(1, Number(this._nusvBaseLevel || 0), Number(this._level || 1));
-        Object.keys(this._nusvClassLevels).forEach(function(classId) {
-            level = Math.max(level, Number(this._nusvClassLevels[classId] || 1));
-        }, this);
-
-        this._nusvBaseLevel = level;
-        return level;
+        return typeof this.baseLevel === 'function' ? this.baseLevel() : (this._level || 1);
     };
 
     Game_Actor.prototype.nusvForgetActiveClassLearnedSkills = function() {
@@ -480,19 +454,11 @@ NUSV.ClassChange = NUSV.ClassChange || {};
     var _Game_Actor_levelUp = Game_Actor.prototype.levelUp;
     Game_Actor.prototype.levelUp = function() {
         if (_Game_Actor_levelUp) _Game_Actor_levelUp.call(this);
-        this.nusvClampLevelToClassMax(this._classId);
-        this._nusvClassLevels = this._nusvClassLevels || {};
-        this._nusvClassLevels[this._classId] = this._level;
-        this._nusvBaseLevel = Math.max(Number(this._nusvBaseLevel || 1), this._level);
-        this.nusvRefreshClassLearnedSkills();
     };
 
     var _Game_Actor_levelDown = Game_Actor.prototype.levelDown;
     Game_Actor.prototype.levelDown = function() {
         if (_Game_Actor_levelDown) _Game_Actor_levelDown.call(this);
-        this._nusvClassLevels = this._nusvClassLevels || {};
-        this._nusvClassLevels[this._classId] = this._level;
-        this.nusvRefreshClassLearnedSkills();
     };
 
     Game_Actor.prototype.nusvCanChangeClass = function(classId) {
@@ -591,27 +557,16 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         if (!$dataClasses[classId]) return false;
         if (!this.nusvCanChangeClass(classId) && this._classId !== classId) return false;
 
-        this._nusvClassLevels = this._nusvClassLevels || {};
         this.nusvForgetActiveClassLearnedSkills();
-
-        var oldClassId = this._classId;
-        this._nusvClassLevels[oldClassId] = this._level;
-        this._nusvBaseLevel = Math.max(this.nusvBaseLevel(), this._level);
 
         var oldHpRate = this.mhp > 0 ? this.hp / this.mhp : 1;
         var oldMpRate = this.mmp > 0 ? this.mp / this.mmp : 1;
 
-        if (maintainLevel) {
-            this.changeClass(classId, true);
-            this.nusvClampLevelToClassMax(classId);
-        } else {
-            var targetLevel = this._nusvClassLevels[classId] || 1;
-            this.changeClass(classId, false);
-            var maxLevel = this.nusvClassMaxLevel(classId) || targetLevel;
-            this._level = Math.min(maxLevel, Math.max(1, targetLevel));
-            this.initExp();
-            this._exp[classId] = this.expForLevel(this._level);
-            this.refresh();
+        // Change class while PRESERVING base level and base exp!
+        this.changeClass(classId, true);
+
+        if (typeof this.initClassData === 'function') {
+            this.initClassData(classId);
         }
 
         this.nusvUnlockClass(classId);
@@ -796,8 +751,10 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         var width = rect.width - x - this.textPadding();
         var cls = actor.currentClass ? actor.currentClass() : null;
         var className = cls && cls.name ? cls.name : '';
-        var classLevel = actor.nusvClassLevel ? actor.nusvClassLevel() : actor.level;
-        var classLevelText = className + ' Lv. ' + classLevel;
+        var classLevel = actor.classLevel ? actor.classLevel(actor._classId) : (actor.nusvClassLevel ? actor.nusvClassLevel() : 1);
+        var classMax = actor.classMaxLevel ? actor.classMaxLevel(actor._classId) : null;
+        var baseLvl = actor.baseLevel ? actor.baseLevel() : (actor._level || 1);
+        var classLevelText = className + ' Lv.' + classLevel + (classMax != null ? '/' + classMax : '') + ' (Base Lv.' + baseLvl + ')';
 
         this.drawActorName(actor, x, y, width);
         this.changeTextColor(this.systemColor());

@@ -402,7 +402,11 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         if (index >= 0) {
             this.select(index);
             this.refresh();
-            this.callHandler('actorChange');
+            if (this.isHandled('ok')) {
+                this.callHandler('ok');
+            } else if (this.isHandled('actorChange')) {
+                this.callHandler('actorChange');
+            }
         }
     };
 
@@ -626,8 +630,15 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         }
 
         var imageTop = y + pad;
-        var imageHeight = this.contents.height - imageTop - pad;
+        var imageHeight = this.contents.height - imageTop - pad - 28;
         this.drawPortrait(pad, imageTop, width, imageHeight);
+
+        var legendY = this.contents.height - 26;
+        this.contents.fillRect(pad, legendY - 6, width, 1, 'rgba(255, 255, 255, 0.12)');
+        this.contents.fontSize = 12;
+        this.changeTextColor(this.textColor(7));
+        this.drawText('[Z / Enter] Pilih   [X / Esc] Kembali   [Q / W] Ganti Karakter', pad, legendY, width, 'center');
+        this.resetFontSettings();
     };
 
     Window_StatusPortrait.prototype.drawPortrait = function(x, y, width, height) {
@@ -1178,6 +1189,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     Window_StatusAllocate.prototype.initialize = function(x, y, width, height) {
         Window_Selectable.prototype.initialize.call(this, x, y, width, height);
         this._actor = null;
+        this._tempAllocated = { str: 0, int: 0, dex: 0, luk: 0, agi: 0, vit: 0 };
+        this._tempPoints = 0;
         this.select(0);
         this.deactivate();
         this.refresh();
@@ -1185,11 +1198,32 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Window_StatusAllocate.prototype.setActor = function(actor) {
         this._actor = actor;
+        this.resetTemp();
         this.refresh();
     };
 
+    Window_StatusAllocate.prototype.resetTemp = function() {
+        this._tempAllocated = { str: 0, int: 0, dex: 0, luk: 0, agi: 0, vit: 0 };
+        this._tempPoints = (this._actor && typeof this._actor.nusvStatPoints === 'function') ? this._actor.nusvStatPoints() : 0;
+    };
+
+    Window_StatusAllocate.prototype.totalPending = function() {
+        var total = 0;
+        if (!this._tempAllocated) return 0;
+        for (var k in this._tempAllocated) {
+            if (this._tempAllocated.hasOwnProperty(k)) {
+                total += (this._tempAllocated[k] || 0);
+            }
+        }
+        return total;
+    };
+
+    Window_StatusAllocate.prototype.tempAllocated = function() {
+        return this._tempAllocated || { str: 0, int: 0, dex: 0, luk: 0, agi: 0, vit: 0 };
+    };
+
     Window_StatusAllocate.prototype.maxItems = function() {
-        return 6;
+        return 7; // 6 stats + 1 Confirm row
     };
 
     Window_StatusAllocate.prototype.statKeys = function() {
@@ -1220,31 +1254,70 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Window_StatusAllocate.prototype.itemRect = function(index) {
         var rect = Window_Selectable.prototype.itemRect.call(this, index);
-        rect.y += this.lineHeight() * 2 + 10;
-        rect.height = this.lineHeight();
+        var lh = this.lineHeight();
+        rect.y += lh * 2 + 10;
+        if (index === 6) {
+            rect.y += 10;
+            rect.height = lh;
+        } else {
+            rect.height = lh;
+        }
         return rect;
     };
 
     Window_StatusAllocate.prototype.drawItem = function(index) {
         if (!this._actor) return;
         var rect = this.itemRectForText(index);
+
+        if (index === 6) {
+            var total = this.totalPending();
+            var hasPending = total > 0;
+            var btnText = hasPending ? 'CONFIRM ALLOCATION (+' + total + ')' : 'CONFIRM';
+
+            var bg = hasPending ? 'rgba(30, 90, 55, 0.75)' : 'rgba(25, 35, 50, 0.45)';
+            this.contents.fillRect(rect.x, rect.y, rect.width, rect.height, bg);
+
+            var ctx = this.contents._context;
+            ctx.save();
+            ctx.strokeStyle = hasPending ? 'rgba(80, 220, 120, 0.85)' : 'rgba(70, 90, 120, 0.5)';
+            ctx.strokeRect(rect.x + 0.5, rect.y + 0.5, rect.width - 1, rect.height - 1);
+            ctx.restore();
+
+            this.changeTextColor(hasPending ? this.powerUpColor() : this.textColor(7));
+            this.drawText(btnText, rect.x, rect.y, rect.width, 'center');
+            this.resetTextColor();
+            return;
+        }
+
         var key = this.statKeys()[index];
         var name = this.statNames()[index];
-        var val = typeof this._actor.nusvBaseStat === 'function' ? this._actor.nusvBaseStat(key) : 10;
-        var allocated = typeof this._actor.nusvAllocatedStat === 'function' ? this._actor.nusvAllocatedStat(key) : 0;
+        var baseVal = typeof this._actor.nusvBaseStat === 'function' ? this._actor.nusvBaseStat(key) : 10;
+        var pending = this._tempAllocated ? (this._tempAllocated[key] || 0) : 0;
+        var currentTotal = baseVal + pending;
 
+        // Stat Name
         this.changeTextColor(this.systemColor());
         this.drawText(name, rect.x, rect.y, rect.width - 110);
         this.resetTextColor();
 
-        var valText = String(val);
-        if (allocated > 0) {
-            valText += ' (+' + allocated + ')';
-        }
-        this.drawText(valText, rect.x, rect.y, rect.width - 35, 'right');
+        // Left button [-]
+        var canSub = pending > 0;
+        this.changeTextColor(canSub ? this.textColor(14) : this.textColor(7));
+        this.drawText('[-]', rect.x + rect.width - 96, rect.y, 24, 'center');
 
-        this.changeTextColor(this.textColor(14));
-        this.drawText('[+]', rect.x, rect.y, rect.width, 'right');
+        // Value
+        if (pending > 0) {
+            this.changeTextColor(this.powerUpColor());
+            this.drawText(String(currentTotal), rect.x + rect.width - 72, rect.y, 48, 'center');
+        } else {
+            this.resetTextColor();
+            this.drawText(String(currentTotal), rect.x + rect.width - 72, rect.y, 48, 'center');
+        }
+
+        // Right button [+]
+        var canAdd = this._tempPoints > 0;
+        this.changeTextColor(canAdd ? this.textColor(14) : this.textColor(7));
+        this.drawText('[+]', rect.x + rect.width - 24, rect.y, 24, 'center');
         this.resetTextColor();
     };
 
@@ -1262,14 +1335,19 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.drawText('Stat Allocation', pad, y, width, 'center');
         y += lh;
 
-        var pts = typeof this._actor.nusvStatPoints === 'function' ? this._actor.nusvStatPoints() : 0;
+        var total = this.totalPending();
         this.resetTextColor();
-        this.drawText('Available Points: ' + pts, pad, y, width, 'center');
+        var ptsText = 'Available Points: ' + this._tempPoints;
+        if (total > 0) {
+            ptsText += ' (-' + total + ')';
+        }
+        this.drawText(ptsText, pad, y, width, 'center');
 
         this.drawAllItems();
 
-        var descY = this.lineHeight() * 2 + 10 + (lh * 6) + 16;
-        var desc = this.statDescriptions()[this.index()] || '';
+        var descY = lh * 2 + 10 + (lh * 6) + 10 + lh + 14;
+        var curIdx = this.index();
+        var desc = (curIdx >= 0 && curIdx < 6) ? (this.statDescriptions()[curIdx] || '') : 'Save all allocated stat points permanently.';
         this.changeTextColor(this.systemColor());
         this.drawText('Effect:', pad, descY, width);
         descY += lh;
@@ -1278,14 +1356,93 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
         var footY = this.contents.height - lh - 4;
         this.changeTextColor(this.systemColor());
-        this.contents.fontSize = Math.max(14, this.standardFontSize() - 6);
-        this.drawText('Select a stat and press OK to allocate +1 point', pad, footY, width, 'center');
+        this.contents.fontSize = Math.max(13, this.standardFontSize() - 7);
+        this.drawText('◄ Left: -1  |  ► Right: +1  |  OK: Confirm', pad, footY, width, 'center');
         this.resetFontSettings();
     };
 
     Window_StatusAllocate.prototype.select = function(index) {
         Window_Selectable.prototype.select.call(this, index);
         this.refresh();
+    };
+
+    Window_StatusAllocate.prototype.cursorRight = function(wrap) {
+        var index = this.index();
+        if (index >= 0 && index < 6) {
+            var key = this.statKeys()[index];
+            if (this._tempPoints > 0) {
+                this._tempAllocated[key] = (this._tempAllocated[key] || 0) + 1;
+                this._tempPoints--;
+                SoundManager.playCursor();
+                this.refresh();
+            } else {
+                SoundManager.playBuzzer();
+            }
+        }
+    };
+
+    Window_StatusAllocate.prototype.cursorLeft = function(wrap) {
+        var index = this.index();
+        if (index >= 0 && index < 6) {
+            var key = this.statKeys()[index];
+            if (this._tempAllocated[key] > 0) {
+                this._tempAllocated[key]--;
+                this._tempPoints++;
+                SoundManager.playCursor();
+                this.refresh();
+            } else {
+                SoundManager.playBuzzer();
+            }
+        }
+    };
+
+    Window_StatusAllocate.prototype.processOk = function() {
+        var index = this.index();
+        if (index === 6) {
+            if (this.totalPending() > 0) {
+                this.callOkHandler();
+            } else {
+                SoundManager.playBuzzer();
+                this.activate();
+            }
+        } else if (index >= 0 && index < 6) {
+            if (this._tempPoints > 0) {
+                this.cursorRight();
+            } else {
+                this.select(6);
+                SoundManager.playCursor();
+            }
+        }
+    };
+
+    Window_StatusAllocate.prototype.processCancel = function() {
+        this.resetTemp();
+        Window_Selectable.prototype.processCancel.call(this);
+    };
+
+    Window_StatusAllocate.prototype.onTouch = function(triggered) {
+        var x = this.canvasToLocalX(TouchInput.x);
+        var y = this.canvasToLocalY(TouchInput.y);
+        var hitIndex = this.hitTest(x, y);
+        if (hitIndex >= 0) {
+            if (hitIndex === this.index()) {
+                if (triggered) {
+                    if (hitIndex === 6) {
+                        this.processOk();
+                    } else if (hitIndex >= 0 && hitIndex < 6) {
+                        var rect = this.itemRect(hitIndex);
+                        var midX = rect.x + rect.width - 50;
+                        if (x < midX) {
+                            this.cursorLeft();
+                        } else {
+                            this.cursorRight();
+                        }
+                    }
+                }
+            } else {
+                this.select(hitIndex);
+            }
+        }
     };
 
     // -------------------------------------------------------------------------
@@ -1316,12 +1473,20 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         return this.isOpenAndActive();
     };
 
-    Window_StatusEquipPreview.prototype.select = function(index) {
-        Window_Selectable.prototype.select.call(this, index);
-        if (this._selectedIndex !== index) {
-            this._selectedIndex = index;
-            this.refresh();
+    Window_StatusEquipPreview.prototype.itemRect = function(index) {
+        var defs = this.slotDefs();
+        var d = defs[index];
+        if (d) {
+            return new Rectangle(d.x, d.y, 40, 40);
         }
+        return new Rectangle(0, 0, 0, 0);
+    };
+
+    Window_StatusEquipPreview.prototype.select = function(index) {
+        this._selectedIndex = index >= 0 ? index : 0;
+        this._index = this._selectedIndex;
+        Window_Selectable.prototype.select.call(this, this._selectedIndex);
+        this.refresh();
     };
 
     Window_StatusEquipPreview.prototype.activate = function() {
@@ -1692,32 +1857,44 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.resetFontSettings();
     };
 
-    Window_StatusEquipPreview.prototype.hitTestSlot = function(x, y) {
+    Window_StatusEquipPreview.prototype.hitTestSlot = function(cx, cy) {
         var defs = this.slotDefs();
         var boxW = 40;
         var boxH = 40;
         for (var i = 0; i < defs.length; i++) {
             var d = defs[i];
-            if (x >= d.x - 4 && x <= d.x + boxW + 4 &&
-                y >= d.y - 4 && y <= d.y + boxH + 16) {
+            if (cx >= d.x - 6 && cx <= d.x + boxW + 6 &&
+                cy >= d.y - 6 && cy <= d.y + boxH + 18) {
                 return i;
             }
         }
         return -1;
     };
 
-    Window_StatusEquipPreview.prototype.update = function() {
-        Window_Selectable.prototype.update.call(this);
-        if (this.isOpenAndActive() && TouchInput.isTriggered() && this.isTouchedInsideFrame()) {
-            var x = this.canvasToLocalX(TouchInput.x);
-            var y = this.canvasToLocalY(TouchInput.y);
-            var hit = this.hitTestSlot(x, y);
+    Window_StatusEquipPreview.prototype.processTouch = function() {
+        if (!this.isOpenAndActive()) return;
+
+        if (TouchInput.isTriggered() && this.isTouchedInsideFrame()) {
+            var cx = this.canvasToLocalX(TouchInput.x) - this.standardPadding();
+            var cy = this.canvasToLocalY(TouchInput.y) - this.standardPadding();
+            var hit = this.hitTestSlot(cx, cy);
             if (hit >= 0) {
-                this._selectedIndex = hit;
-                SoundManager.playCursor();
-                this.refresh();
+                if (this._selectedIndex === hit) {
+                    this.processOk();
+                } else {
+                    this.select(hit);
+                    SoundManager.playCursor();
+                }
+            }
+        } else if (TouchInput.isCancelled()) {
+            if (this.isCancelEnabled()) {
+                this.processCancel();
             }
         }
+    };
+
+    Window_StatusEquipPreview.prototype.update = function() {
+        Window_Selectable.prototype.update.call(this);
     };
 
     Window_StatusEquipPreview.prototype.cursorDown = function(wrap) {
@@ -1732,9 +1909,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             if (wrap) next = 0;
         }
         if (next !== cur) {
-            this._selectedIndex = next;
+            this.select(next);
             SoundManager.playCursor();
-            this.refresh();
         }
     };
 
@@ -1750,9 +1926,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         else if (cur === 5 || cur === 6) next = 2;
         else if (cur === 7) next = 4;
         if (next !== cur) {
-            this._selectedIndex = next;
+            this.select(next);
             SoundManager.playCursor();
-            this.refresh();
         }
     };
 
@@ -1768,9 +1943,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         else if (cur === 6) next = 7;
         else if (cur === 7 && wrap) next = 5;
         if (next !== cur) {
-            this._selectedIndex = next;
+            this.select(next);
             SoundManager.playCursor();
-            this.refresh();
         }
     };
 
@@ -1786,9 +1960,268 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         else if (cur === 6) next = 5;
         else if (cur === 7) next = 6;
         if (next !== cur) {
-            this._selectedIndex = next;
+            this.select(next);
             SoundManager.playCursor();
-            this.refresh();
+        }
+    };
+
+    Window_StatusEquipPreview.prototype.index = function() {
+        return this._selectedIndex;
+    };
+
+    Window_StatusEquipPreview.prototype.currentSlotDef = function() {
+        var defs = this.slotDefs();
+        return defs[this._selectedIndex] || null;
+    };
+
+    Window_StatusEquipPreview.prototype.currentActorSlotIndex = function() {
+        if (!this._actor) return -1;
+        var def = this.currentSlotDef();
+        if (!def) return -1;
+        var slots = this._actor.equipSlots();
+
+        if (def.key === 'primary') {
+            for (var i = 0; i < slots.length; i++) {
+                if (slots[i] === 1) return i;
+            }
+        } else if (def.key === 'secondary') {
+            if (slots.length > 1 && (slots[1] === 2 || slots[1] === 1)) {
+                return 1;
+            }
+            for (var j = 0; j < slots.length; j++) {
+                if (slots[j] === 2) return j;
+            }
+        } else if (def.key === 'acc1') {
+            for (var a = 0; a < slots.length; a++) {
+                if (slots[a] === 6) return a;
+            }
+        } else if (def.key === 'acc2') {
+            var count = 0;
+            for (var b = 0; b < slots.length; b++) {
+                if (slots[b] === 6) {
+                    if (count === 1) return b;
+                    count++;
+                }
+            }
+            return -1;
+        } else {
+            for (var k = 0; k < slots.length; k++) {
+                if (slots[k] === def.etypeId) return k;
+            }
+        }
+        return -1;
+    };
+
+    // -------------------------------------------------------------------------
+    // Window_StatusEquipItem (Selectable list to equip/unequip gear in a slot)
+    // -------------------------------------------------------------------------
+
+    function Window_StatusEquipItem() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_StatusEquipItem.prototype = Object.create(Window_Selectable.prototype);
+    Window_StatusEquipItem.prototype.constructor = Window_StatusEquipItem;
+
+    Window_StatusEquipItem.prototype.initialize = function(x, y, width, height) {
+        Window_Selectable.prototype.initialize.call(this, x, y, width, height);
+        this._actor = null;
+        this._slotIndex = -1;
+        this._slotDef = null;
+        this._data = [];
+        this.hide();
+        this.deactivate();
+    };
+
+    Window_StatusEquipItem.prototype.playOkSound = function() {
+        // Suppress default OK sound because SoundManager.playEquip() is played upon equip
+    };
+
+    Window_StatusEquipItem.prototype.maxItems = function() {
+        return this._data ? this._data.length : 0;
+    };
+
+    Window_StatusEquipItem.prototype.maxPageRows = function() {
+        var pageHeight = this.height - this.padding * 2 - 28;
+        return Math.max(1, Math.floor(pageHeight / this.itemHeight()));
+    };
+
+    Window_StatusEquipItem.prototype.itemRect = function(index) {
+        var rect = Window_Selectable.prototype.itemRect.call(this, index);
+        rect.y += 28;
+        return rect;
+    };
+
+    Window_StatusEquipItem.prototype.refresh = function() {
+        if (!this.contents) return;
+        this.contents.clear();
+        this.resetFontSettings();
+        var slotName = this._slotDef ? (this._slotDef.label || this._slotDef.name || 'SLOT').toUpperCase() : 'SLOT';
+        this.contents.fontSize = 12;
+        this.changeTextColor(this.systemColor());
+        this.drawText('PILIH: ' + slotName, 6, 2, this.contentsWidth() - 12, 'left');
+        this.contents.fillRect(6, 24, this.contentsWidth() - 12, 1, 'rgba(255, 255, 255, 0.2)');
+        this.resetTextColor();
+        this.resetFontSettings();
+        this.drawAllItems();
+    };
+
+    Window_StatusEquipItem.prototype.item = function() {
+        return (this._data && this.index() >= 0) ? this._data[this.index()] : null;
+    };
+
+    Window_StatusEquipItem.prototype.slotIndex = function() {
+        return this._slotIndex;
+    };
+
+    Window_StatusEquipItem.prototype.setActorAndSlot = function(actor, slotIndex, slotDef) {
+        this._actor = actor;
+        this._slotIndex = slotIndex;
+        this._slotDef = slotDef;
+        this.makeItemList();
+        this.refresh();
+        this.select(0);
+    };
+
+    Window_StatusEquipItem.prototype.makeItemList = function() {
+        this._data = [];
+        if (!this._actor || this._slotIndex < 0) return;
+
+        var currentEquip = this._actor.equips()[this._slotIndex];
+        if (currentEquip) {
+            this._data.push(null);
+        }
+
+        var actor = this._actor;
+        var slotTypeId = actor.equipSlots()[this._slotIndex];
+        var allEquips = $gameParty.equipItems();
+
+        for (var i = 0; i < allEquips.length; i++) {
+            var it = allEquips[i];
+            if (!it) continue;
+            if (it.etypeId === slotTypeId && actor.canEquip(it)) {
+                if (currentEquip && currentEquip === it) continue;
+                this._data.push(it);
+            }
+        }
+
+        if (this._data.length === 0) {
+            this._data.push({ dummy: true, name: 'Tidak ada item cocok di tas' });
+        }
+    };
+
+    Window_StatusEquipItem.prototype.isCurrentItemEnabled = function() {
+        var it = this.item();
+        if (it && it.dummy) return false;
+        return true;
+    };
+
+    Window_StatusEquipItem.prototype.drawItem = function(index) {
+        var it = this._data[index];
+        var rect = this.itemRect(index);
+        rect.width -= this.textPadding();
+
+        if (it === null) {
+            this.changeTextColor(this.textColor(6));
+            this.drawIcon(16, rect.x, rect.y + 2);
+            this.contents.fontSize = 14;
+            this.drawText('Lepas Perlengkapan', rect.x + 36, rect.y, rect.width - 36);
+            this.resetFontSettings();
+            this.resetTextColor();
+            return;
+        }
+
+        if (it.dummy) {
+            this.changePaintOpacity(false);
+            this.contents.fontSize = 13;
+            this.drawText(it.name, rect.x, rect.y, rect.width, 'center');
+            this.resetFontSettings();
+            this.changePaintOpacity(true);
+            return;
+        }
+
+        this.drawItemName(it, rect.x, rect.y, rect.width - 76);
+
+        var bonus = this.paramSummary(it);
+        if (bonus) {
+            this.contents.fontSize = 11;
+            this.changeTextColor(this.systemColor());
+            this.drawText(bonus, rect.x + rect.width - 74, rect.y + 2, 74, 'right');
+            this.resetFontSettings();
+            this.resetTextColor();
+        }
+    };
+
+    Window_StatusEquipItem.prototype.paramSummary = function(item) {
+        if (!item || !item.params) return '';
+        var names = ['HP', 'MP', 'ATK', 'DEF', 'MAT', 'MDF', 'AGI', 'LUK'];
+        for (var p = 0; p < item.params.length; p++) {
+            var val = item.params[p];
+            if (val !== 0) {
+                return names[p] + (val > 0 ? ' +' : ' ') + val;
+            }
+        }
+        return '';
+    };
+
+    // -------------------------------------------------------------------------
+    // Window_StatusToast (Floating brief notification on status screen)
+    // -------------------------------------------------------------------------
+
+    function Window_StatusToast() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_StatusToast.prototype = Object.create(Window_Base.prototype);
+    Window_StatusToast.prototype.constructor = Window_StatusToast;
+
+    Window_StatusToast.prototype.initialize = function() {
+        var w = 520;
+        var h = 56;
+        var x = Math.floor((Graphics.boxWidth - w) / 2);
+        var y = Graphics.boxHeight - h - 44;
+        Window_Base.prototype.initialize.call(this, x, y, w, h);
+        this._timer = 0;
+        this.opacity = 0;
+        this.contentsOpacity = 0;
+        this.hide();
+    };
+
+    Window_StatusToast.prototype.showMessage = function(text, duration) {
+        this._timer = duration || 110;
+        this.contents.clear();
+        this.resetFontSettings();
+        this.contents.fontSize = 15;
+
+        this.contents.fillRect(0, 0, this.contents.width, this.contents.height, 'rgba(12, 24, 52, 0.92)');
+        var ctx = this.contents._context;
+        ctx.save();
+        ctx.strokeStyle = '#4ea1ff';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(1, 1, this.contents.width - 2, this.contents.height - 2);
+        ctx.restore();
+
+        this.changeTextColor('#ffffff');
+        this.drawText(text, 0, 8, this.contents.width, 'center');
+        this.resetTextColor();
+
+        this.opacity = 255;
+        this.contentsOpacity = 255;
+        this.show();
+    };
+
+    Window_StatusToast.prototype.update = function() {
+        Window_Base.prototype.update.call(this);
+        if (this._timer > 0) {
+            this._timer--;
+            if (this._timer < 25) {
+                var alpha = Math.floor((this._timer / 25) * 255);
+                this.opacity = alpha;
+                this.contentsOpacity = alpha;
+            }
+            if (this._timer <= 0) {
+                this.hide();
+            }
         }
     };
 
@@ -2186,13 +2619,20 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
             var parentId = (raw.tier > 1 ? (getClassParentId(cls) || raw.parentId) : 0);
 
+            var cLvl = typeof this._actor.classLevel === 'function' ? this._actor.classLevel(raw.classId) : 1;
+            var cMax = typeof this._actor.classMaxLevel === 'function' ? this._actor.classMaxLevel(raw.classId) : 10;
+            var isMastered = (cLvl >= cMax);
+
             if (isCur) {
                 status = 'current';
-                levelText = 'Lv ' + this._actor.level;
+                levelText = isMastered ? 'Lv ' + cLvl + ' (MAX)' : 'Lv ' + cLvl + '/' + cMax;
                 curIdx = nodes.length;
+            } else if (isMastered) {
+                status = 'mastered';
+                levelText = 'Lv ' + cLvl + ' (MAX)';
             } else if (isUnlocked) {
                 status = 'mastered';
-                levelText = 'Max Level';
+                levelText = 'Lv ' + cLvl + '/' + cMax;
             } else if (canChange) {
                 status = 'available';
                 levelText = 'Available';
@@ -3504,9 +3944,18 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this._equipPreviewWindow = new Window_StatusEquipPreview(
             partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
         );
+        this._equipPreviewWindow.setHandler('ok',     this.onEquipSlotOk.bind(this));
         this._equipPreviewWindow.setHandler('cancel', this.onEquipPreviewCancel.bind(this));
         this._equipPreviewWindow.hide();
         this.addWindow(this._equipPreviewWindow);
+
+        this._equipItemWindow = new Window_StatusEquipItem(
+            partyWidth() + centerWidth(), 270, rightWidth(), Graphics.boxHeight - 270
+        );
+        this._equipItemWindow.setHandler('ok',     this.onEquipItemOk.bind(this));
+        this._equipItemWindow.setHandler('cancel', this.onEquipItemCancel.bind(this));
+        this._equipItemWindow.hide();
+        this.addWindow(this._equipItemWindow);
 
         this._classTreeWindow = new Window_StatusClassTree(
             partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
@@ -3536,6 +3985,9 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this._confirmWindow.setHandler('cancel', this.onConfirmChangeNo.bind(this));
         this.addWindow(this._confirmWindow);
         this._pendingClassNode = null;
+
+        this._toastWindow = new Window_StatusToast();
+        this.addWindow(this._toastWindow);
 
         this.refreshAll();
     };
@@ -3571,6 +4023,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         if (symbol === 'allocate') {
             if (this._infoWindow) this._infoWindow.hide();
             if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
+            if (this._equipItemWindow) this._equipItemWindow.hide();
             if (this._classTreeWindow) this._classTreeWindow.hide();
             if (this._skillListWindow) this._skillListWindow.hide();
             if (this._statePopup) this._statePopup.hide();
@@ -3584,6 +4037,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             if (this._classTreeWindow) this._classTreeWindow.hide();
             if (this._skillListWindow) this._skillListWindow.hide();
             if (this._statePopup) this._statePopup.hide();
+            if (this._equipItemWindow) this._equipItemWindow.hide();
             if (this._equipPreviewWindow) {
                 this._equipPreviewWindow.show();
                 this._equipPreviewWindow.refresh();
@@ -3592,6 +4046,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             if (this._infoWindow) this._infoWindow.hide();
             if (this._allocateWindow) this._allocateWindow.hide();
             if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
+            if (this._equipItemWindow) this._equipItemWindow.hide();
             if (this._skillListWindow) this._skillListWindow.hide();
             if (this._statePopup) this._statePopup.hide();
             if (this._classTreeWindow) {
@@ -3602,6 +4057,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             if (this._infoWindow) this._infoWindow.hide();
             if (this._allocateWindow) this._allocateWindow.hide();
             if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
+            if (this._equipItemWindow) this._equipItemWindow.hide();
             if (this._classTreeWindow) this._classTreeWindow.hide();
             if (this._statePopup) this._statePopup.hide();
             if (this._skillListWindow) {
@@ -3611,6 +4067,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         } else {
             if (this._allocateWindow) this._allocateWindow.hide();
             if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
+            if (this._equipItemWindow) this._equipItemWindow.hide();
             if (this._classTreeWindow) this._classTreeWindow.hide();
             if (this._skillListWindow) this._skillListWindow.hide();
             if (this._infoWindow) {
@@ -3632,6 +4089,12 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         }
     };
 
+    Scene_Status.prototype.showToast = function(text, duration) {
+        if (this._toastWindow) {
+            this._toastWindow.showMessage(text, duration);
+        }
+    };
+
     Scene_Status.prototype.start = function() {
         Scene_MenuBase.prototype.start.call(this);
         var actor = $gameParty.menuActor();
@@ -3649,42 +4112,110 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Scene_Status.prototype.onTabAllocate = function() {
         this._tabsWindow.deactivate();
+        this._allocateWindow.setActor(this.actor());
         this._allocateWindow.activate();
         this._allocateWindow.select(0);
     };
 
     Scene_Status.prototype.onAllocateCancel = function() {
+        this._allocateWindow.resetTemp();
         this._allocateWindow.deactivate();
         this._tabsWindow.activate();
+        this._allocateWindow.refresh();
+        if (this._infoWindow) this._infoWindow.refresh();
     };
 
     Scene_Status.prototype.onAllocateOk = function() {
-        var index = this._allocateWindow.index();
-        var keys = this._allocateWindow.statKeys();
-        var key = keys[index];
         var actor = this.actor();
-        if (actor && typeof actor.allocateStat === 'function') {
-            if (actor.canAllocateStat(key, 1)) {
-                actor.allocateStat(key, 1);
-                SoundManager.playDecision();
-                this._allocateWindow.refresh();
-                if (this._infoWindow) this._infoWindow.refresh();
-                if (this._portraitWindow) this._portraitWindow.refresh();
-            } else {
-                SoundManager.playBuzzer();
+        var pending = this._allocateWindow.tempAllocated();
+        var total = this._allocateWindow.totalPending();
+
+        if (actor && total > 0 && typeof actor.allocateStat === 'function') {
+            for (var k in pending) {
+                if (pending.hasOwnProperty(k) && pending[k] > 0) {
+                    actor.allocateStat(k, pending[k]);
+                }
             }
+            SoundManager.playOk();
+            this._allocateWindow.resetTemp();
+            this._allocateWindow.refresh();
+            if (this._infoWindow) this._infoWindow.refresh();
+            if (this._portraitWindow) this._portraitWindow.refresh();
+        } else {
+            SoundManager.playBuzzer();
         }
         this._allocateWindow.activate();
     };
 
     Scene_Status.prototype.onTabEquip = function() {
         this._tabsWindow.deactivate();
+        if (this._equipItemWindow) {
+            this._equipItemWindow.hide();
+            this._equipItemWindow.deactivate();
+        }
         this._equipPreviewWindow.activate();
     };
 
     Scene_Status.prototype.onEquipPreviewCancel = function() {
+        if (this._equipItemWindow && this._equipItemWindow.visible) {
+            this._equipItemWindow.hide();
+            this._equipItemWindow.deactivate();
+            this._equipPreviewWindow.activate();
+            return;
+        }
         this._equipPreviewWindow.deactivate();
         this._tabsWindow.activate();
+    };
+
+    Scene_Status.prototype.onEquipSlotOk = function() {
+        var slotDef = this._equipPreviewWindow.currentSlotDef();
+        var slotIndex = this._equipPreviewWindow.currentActorSlotIndex();
+        var actor = this.actor();
+
+        if (!actor || slotIndex < 0) {
+            SoundManager.playBuzzer();
+            this.showToast('Slot ini tidak tersedia pada karakter ini.');
+            this._equipPreviewWindow.activate();
+            return;
+        }
+
+        this._equipPreviewWindow.deactivate();
+        this._equipItemWindow.setActorAndSlot(actor, slotIndex, slotDef);
+        this._equipItemWindow.show();
+        this._equipItemWindow.activate();
+        this._equipItemWindow.select(0);
+    };
+
+    Scene_Status.prototype.onEquipItemCancel = function() {
+        this._equipItemWindow.hide();
+        this._equipItemWindow.deactivate();
+        this._equipPreviewWindow.activate();
+        this._equipPreviewWindow.refresh();
+    };
+
+    Scene_Status.prototype.onEquipItemOk = function() {
+        var item = this._equipItemWindow.item();
+        var slotIndex = this._equipItemWindow.slotIndex();
+        var actor = this.actor();
+
+        if (!actor || slotIndex < 0) {
+            SoundManager.playBuzzer();
+            this._equipItemWindow.activate();
+            return;
+        }
+
+        actor.changeEquip(slotIndex, item);
+        SoundManager.playEquip();
+
+        this._equipItemWindow.hide();
+        this._equipItemWindow.deactivate();
+
+        this.refreshAll();
+        this._equipPreviewWindow.activate();
+        this._equipPreviewWindow.refresh();
+
+        var msg = item ? (item.name + ' dipasang!') : 'Perlengkapan dilepas!';
+        this.showToast(msg);
     };
 
     Scene_Status.prototype.onTabClass = function() {
@@ -3783,9 +4314,157 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     Scene_Status.prototype.onSkillListOk = function() {
-        // Untuk saat ini skill belum bisa digunakan di luar pertempuran.
-        // Memutar buzzer sebagai feedback audio standar RPG Maker.
+        var skill = this._skillListWindow.item();
+        var isLearned = this._skillListWindow.isCurrentItemLearned();
+        var actor = this.actor();
+
+        if (!skill || !actor) {
+            SoundManager.playBuzzer();
+            this._skillListWindow.activate();
+            return;
+        }
+
+        if (!isLearned) {
+            SoundManager.playBuzzer();
+            var entry = this._skillListWindow._data ? this._skillListWindow._data[this._skillListWindow.index()] : null;
+            var reqLv = entry ? entry.unlockLevel : 1;
+            this.showToast('Skill belum dipelajari (Unlock Lv. ' + reqLv + ')');
+            this._skillListWindow.activate();
+            return;
+        }
+
+        if (skill.occasion === 1) {
+            SoundManager.playBuzzer();
+            this.showToast('Skill ini hanya dapat digunakan saat pertempuran!');
+            this._skillListWindow.activate();
+            return;
+        }
+
+        if (skill.occasion === 3) {
+            SoundManager.playBuzzer();
+            this.showToast('Skill Pasif (selalu aktif secara otomatis)');
+            this._skillListWindow.activate();
+            return;
+        }
+
+        if (!actor.canUse(skill)) {
+            SoundManager.playBuzzer();
+            if (actor.mp < actor.skillMpCost(skill)) {
+                this.showToast('MP tidak cukup! (Butuh ' + actor.skillMpCost(skill) + ' MP)');
+            } else if (actor.tp < actor.skillTpCost(skill)) {
+                this.showToast('SP/TP tidak mencukupi!');
+            } else {
+                this.showToast('Skill tidak dapat digunakan saat ini!');
+            }
+            this._skillListWindow.activate();
+            return;
+        }
+
+        if (skill.scope === 11) {
+            this.executeFieldSkill(skill, [actor]);
+            return;
+        }
+
+        if (skill.scope === 8 || skill.scope === 10) {
+            var allTargets = $gameParty.members();
+            this.executeFieldSkill(skill, allTargets);
+            return;
+        }
+
+        if (skill.scope === 7 || skill.scope === 9) {
+            this._pendingSkill = skill;
+            this._skillListWindow.deactivate();
+            this._partyWindow.activate();
+            this._partyWindow.setHandler('ok', this.onPartyTargetOk.bind(this));
+            this._partyWindow.setHandler('cancel', this.onPartyTargetCancel.bind(this));
+            this.showToast('Pilih anggota party penerima skill:');
+            SoundManager.playOk();
+            return;
+        }
+
         SoundManager.playBuzzer();
+        this.showToast('Skill tidak memiliki target yang valid di map.');
+        this._skillListWindow.activate();
+    };
+
+    Scene_Status.prototype.executeFieldSkill = function(skill, targets) {
+        var actor = this.actor();
+        var action = new Game_Action(actor);
+        action.setItemObject(skill);
+        actor.useItem(skill);
+        targets.forEach(function(target) {
+            for (var i = 0; i < action.numRepeats(); i++) {
+                action.apply(target);
+            }
+        });
+        action.applyGlobal();
+        SoundManager.playUseSkill();
+        this.refreshAll();
+
+        var targetName = targets.length > 1 ? 'semua anggota' : targets[0].name();
+        this.showToast(skill.name + ' digunakan pada ' + targetName + '!');
+        this._skillListWindow.activate();
+        this._skillListWindow.refresh();
+
+        if ($gameTemp.isCommonEventReserved()) {
+            SceneManager.goto(Scene_Map);
+        }
+    };
+
+    Scene_Status.prototype.onPartyTargetOk = function() {
+        var target = $gameParty.members()[this._partyWindow.index()];
+        var skill = this._pendingSkill;
+        var actor = this.actor();
+
+        if (target && skill && actor) {
+            var action = new Game_Action(actor);
+            action.setItemObject(skill);
+            if (!action.testApply(target)) {
+                SoundManager.playBuzzer();
+                if (target.isDead() && skill.scope !== 9 && skill.scope !== 10) {
+                    this.showToast('Target gugur / tidak sadarkan diri!');
+                } else if (target.hp === target.mhp && (skill.damage.type === 3 || skill.damage.type === 4)) {
+                    this.showToast('HP target sudah penuh!');
+                } else {
+                    this.showToast('Skill tidak memiliki efek pada target ini.');
+                }
+                this._partyWindow.activate();
+                return;
+            }
+        }
+
+        this._partyWindow.setHandler('ok', null);
+        this._partyWindow.setHandler('cancel', null);
+        this._partyWindow.deactivate();
+
+        var casterIndex = $gameParty.members().indexOf(actor);
+        if (casterIndex >= 0) {
+            this._partyWindow.select(casterIndex);
+            this._partyWindow.refresh();
+        }
+
+        if (target && skill) {
+            this.executeFieldSkill(skill, [target]);
+        } else {
+            SoundManager.playBuzzer();
+            this._skillListWindow.activate();
+        }
+        this._pendingSkill = null;
+    };
+
+    Scene_Status.prototype.onPartyTargetCancel = function() {
+        this._partyWindow.setHandler('ok', null);
+        this._partyWindow.setHandler('cancel', null);
+        this._partyWindow.deactivate();
+        this._pendingSkill = null;
+
+        var casterIndex = $gameParty.members().indexOf(this.actor());
+        if (casterIndex >= 0) {
+            this._partyWindow.select(casterIndex);
+            this._partyWindow.refresh();
+        }
+
+        SoundManager.playCancel();
         this._skillListWindow.activate();
     };
 
@@ -3810,6 +4489,10 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     Scene_Status.prototype.onPartyActorChange = function() {
+        if (this._pendingSkill) return;
+        if (this._allocateWindow && this._allocateWindow.active) return;
+        if (this._equipItemWindow && this._equipItemWindow.active) return;
+
         var actor = $gameParty.members()[this._partyWindow.index()];
         if (!actor) return;
         $gameParty.setMenuActor(actor);

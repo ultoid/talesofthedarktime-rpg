@@ -1887,6 +1887,16 @@ Notetag Weapon / Armor / State:
 <Critical Damage: +25%>
 ```
 
+Notetag Item (Item Reset Stat):
+```text
+<Reset Stat Points>
+```
+
+Plugin Command:
+```text
+NUSVResetStats [actorId]       // Reset alokasi stat karakter (contoh: NUSVResetStats 1)
+```
+
 Script Calls:
 ```javascript
 actor.nusvStatPoints();        // Cek sisa poin belum dialokasikan
@@ -1918,13 +1928,31 @@ Notetag Enemy:
 <Class EXP: 25>
 ```
 
-Script Calls:
+Script Calls (Instance & Global Database):
 ```javascript
-actor.classLevel(classId);        // Level class tertentu
-actor.currentClassLevel();        // Level class yang sedang aktif
-actor.classMaxLevel(classId);     // Batas level maksimum class (sesuai Tier)
-actor.classExp(classId);          // Total Class EXP saat ini
-actor.gainClassExp(50);           // Tambah Class EXP
+// Database Global Terpadu (bisa panggil actor object atau ID actor):
+NUSV.Levels.getBaseLevel(actor);                // Base Level karakter
+NUSV.Levels.setBaseLevel(actor, level);         // Set Base Level
+NUSV.Levels.getClassLevel(actor, classId);      // Level Class tertentu
+NUSV.Levels.getCurrentClassLevel(actor);         // Level Class aktif
+NUSV.Levels.setClassLevel(actor, classId, lvl); // Set Level Class
+NUSV.Levels.getClassMaxLevel(actor, classId);   // Batas Level Class (Tier)
+NUSV.Levels.getClassExp(actor, classId);        // Total Class EXP
+NUSV.Levels.gainClassExp(actor, 50, classId);   // Tambah Class EXP
+NUSV.Levels.isClassMastered(actor, classId);    // Cek apakah class sudah MAX level
+NUSV.Levels.getAllClassData(actor);             // Data lengkap semua class
+
+// Melalui Actor langsung:
+actor.baseLevel();                              // Base Level karakter
+actor.setBaseLevel(5);                          // Set Base Level
+actor.classLevel(classId);                      // Level class tertentu
+actor.currentClassLevel();                      // Level class yang sedang aktif
+actor.nusvClassLevel(classId);                  // Alias konsisten untuk classLevel()
+actor.classMaxLevel(classId);                   // Batas level maksimum class (sesuai Tier)
+actor.classExp(classId);                        // Total Class EXP saat ini
+actor.gainClassExp(50);                         // Tambah Class EXP
+actor.setClassLevel(classId, 10);               // Set Class Level
+actor.isClassMastered(classId);                 // Cek apakah class MAX
 ```
 
 ## NUSV_StaminaBattle
