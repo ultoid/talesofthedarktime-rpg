@@ -1,0 +1,279 @@
+/*:
+ * @plugindesc v1.0.0 NUSV Class Level - Dual Level System (Base Level & Class Level) with Tier Caps and Class Stat Growth.
+ * @author Ultoid
+ *
+ * @param Default Class EXP Rate
+ * @desc Persentase Class EXP yang didapat dari musuh relatif terhadap Base EXP (1.0 = 100%, 0.7 = 70%).
+ * @default 0.8
+ *
+ * @param Tier 1 Max Level
+ * @desc Level maksimum untuk Class Tier 1.
+ * @default 10
+ *
+ * @param Tier 2 Max Level
+ * @desc Level maksimum untuk Class Tier 2.
+ * @default 30
+ *
+ * @param Tier 3 Max Level
+ * @desc Level maksimum untuk Class Tier 3.
+ * @default 40
+ *
+ * @param Tier 4 Max Level
+ * @desc Level maksimum untuk Class Tier 4.
+ * @default 50
+ *
+ * @param Tier 5 Max Level
+ * @desc Level maksimum untuk Class Tier 5.
+ * @default 60
+ *
+ * @help
+ * ============================================================================
+ * NUSV_ClassLevel
+ * ============================================================================
+ *
+ * Sistem Dua Tingkat Level (Dual Level System):
+ *
+ * 1. Base Level:
+ *    - Level murni karakter dari Base EXP.
+ *    - Memberikan 3 Stat Point bebas tiap naik level (dikelola oleh NUSV_StatSystem).
+ *
+ * 2. Class Level:
+ *    - Level penguasaan profesi/Class yang sedang aktif dari Class EXP.
+ *    - Menyimpan level independen untuk masing-masing Class saat berganti class.
+ *    - Batas Level per Tier:
+ *        * Tier 1 : Level 1 - 10
+ *        * Tier 2 : Level 1 - 30
+ *        * Tier 3 : Level 1 - 40
+ *        * Tier 4 : Level 1 - 50
+ *        * Tier 5 : Level 1 - 60 (Coming Soon)
+ *    - Memberikan pertumbuhan Base Stat alami (Fixed Stat Growth) yang melekat
+ *      pada Class tersebut.
+ *    - Membuka skill baru di daftar Learnings class saat Class Level naik.
+ *
+ * ============================================================================
+ * CLASS NOTETAGS
+ * ============================================================================
+ *
+ * Menentukan pertumbuhan Base Stat alami per Class Level:
+ *   <Class Stat Growth: STR +1.2, VIT +1.0, AGI +0.5>
+ *   <Class Stat Growth: INT +1.5, MDF +0.8>
+ *
+ * Menentukan Tier Class (opsional jika sudah ada <Class Tier: X>):
+ *   <Class Tier: 2>
+ *
+ * Menentukan batas level khusus per Class (override default Tier):
+ *   <Class Max Level: 30>
+ *
+ * ============================================================================
+ * ENEMY NOTETAGS
+ * ============================================================================
+ *
+ * Menentukan Class EXP spesifik dari musuh:
+ *   <Class EXP: 25>
+ */
+
+var Imported = Imported || {};
+Imported.NUSV_ClassLevel = true;
+
+var NUSV = NUSV || {};
+NUSV.ClassLevel = NUSV.ClassLevel || {};
+
+(function() {
+    'use strict';
+
+    var parameters = PluginManager.parameters('NUSV_ClassLevel') || {};
+    var CLASS_EXP_RATE = Number(parameters['Default Class EXP Rate'] || 0.8);
+    var TIER_CAPS = {
+        1: Number(parameters['Tier 1 Max Level'] || 10),
+        2: Number(parameters['Tier 2 Max Level'] || 30),
+        3: Number(parameters['Tier 3 Max Level'] || 40),
+        4: Number(parameters['Tier 4 Max Level'] || 50),
+        5: Number(parameters['Tier 5 Max Level'] || 60)
+    };
+
+    // -------------------------------------------------------------------------
+    // Helper: Parse Class Stat Growth Notetag
+    // -------------------------------------------------------------------------
+    function parseClassStatGrowth(classObj) {
+        if (!classObj) return {};
+        if (classObj._nusvStatGrowthCache) return classObj._nusvStatGrowthCache;
+
+        var growth = {};
+        var note = classObj.note || '';
+        var match = note.match(/<Class Stat Growth:[ ]*([^>]+)>/i);
+        if (match) {
+            var entries = match[1].split(',');
+            for (var i = 0; i < entries.length; i++) {
+                var pair = entries[i].trim().split(/\s+/);
+                if (pair.length >= 2) {
+                    var statKey = pair[0].toLowerCase();
+                    var val = Number(pair[1].replace('+', '')) || 0;
+                    growth[statKey] = val;
+                }
+            }
+        } else {
+            // Default growth if not specified, based on native param proportions
+            growth.str = 0.5;
+            growth.int = 0.5;
+            growth.dex = 0.5;
+            growth.luk = 0.3;
+            growth.agi = 0.5;
+            growth.vit = 0.5;
+        }
+
+        classObj._nusvStatGrowthCache = growth;
+        return growth;
+    }
+
+    function getClassTier(classObj) {
+        if (!classObj) return 1;
+        if (classObj.meta && classObj.meta['Class Tier']) {
+            return Number(classObj.meta['Class Tier']) || 1;
+        }
+        return 1;
+    }
+
+    function getClassMaxLevel(classObj) {
+        if (!classObj) return 10;
+        if (classObj.meta && classObj.meta['Class Max Level']) {
+            return Number(classObj.meta['Class Max Level']) || 10;
+        }
+        var tier = getClassTier(classObj);
+        return TIER_CAPS[tier] || 10;
+    }
+
+    // -------------------------------------------------------------------------
+    // Game_Enemy - Class EXP Reward
+    // -------------------------------------------------------------------------
+    Game_Enemy.prototype.classExp = function() {
+        var enemyObj = this.enemy();
+        if (enemyObj && enemyObj.meta && enemyObj.meta['Class EXP']) {
+            return Number(enemyObj.meta['Class EXP']) || 0;
+        }
+        return Math.max(1, Math.round(this.exp() * CLASS_EXP_RATE));
+    };
+
+    // -------------------------------------------------------------------------
+    // Game_Actor - Class Level Tracking, Curve, & Stat Bonus Hook
+    // -------------------------------------------------------------------------
+    var _Game_Actor_setup = Game_Actor.prototype.setup;
+    Game_Actor.prototype.setup = function(actorId) {
+        this._nusvClassData = {};
+        _Game_Actor_setup.call(this, actorId);
+        this.initClassData(this._classId);
+    };
+
+    Game_Actor.prototype.initClassData = function(classId) {
+        this._nusvClassData = this._nusvClassData || {};
+        if (!this._nusvClassData[classId]) {
+            this._nusvClassData[classId] = {
+                level: 1,
+                exp: 0
+            };
+        }
+    };
+
+    Game_Actor.prototype.currentClassLevel = function() {
+        return this.classLevel(this._classId);
+    };
+
+    Game_Actor.prototype.classLevel = function(classId) {
+        classId = classId || this._classId;
+        this.initClassData(classId);
+        return this._nusvClassData[classId].level || 1;
+    };
+
+    Game_Actor.prototype.classExp = function(classId) {
+        classId = classId || this._classId;
+        this.initClassData(classId);
+        return this._nusvClassData[classId].exp || 0;
+    };
+
+    Game_Actor.prototype.classMaxLevel = function(classId) {
+        classId = classId || this._classId;
+        var classObj = $dataClasses[classId];
+        return getClassMaxLevel(classObj);
+    };
+
+    // Class EXP required formula for a given level
+    Game_Actor.prototype.classExpForLevel = function(level) {
+        if (level <= 1) return 0;
+        // Moderate exponential curve for class progression
+        return Math.round(35 * Math.pow(level - 1, 1.65));
+    };
+
+    Game_Actor.prototype.classNextLevelExp = function(classId) {
+        classId = classId || this._classId;
+        var lvl = this.classLevel(classId);
+        var max = this.classMaxLevel(classId);
+        if (lvl >= max) return 0;
+        return this.classExpForLevel(lvl + 1);
+    };
+
+    Game_Actor.prototype.gainClassExp = function(amount, classId) {
+        classId = classId || this._classId;
+        this.initClassData(classId);
+        var data = this._nusvClassData[classId];
+        var maxLvl = this.classMaxLevel(classId);
+
+        if (data.level >= maxLvl) return; // At max class tier cap
+
+        data.exp += Math.max(0, Math.round(amount));
+
+        while (data.level < maxLvl && data.exp >= this.classExpForLevel(data.level + 1)) {
+            data.level++;
+            this.onClassLevelUp(classId, data.level);
+        }
+        this.refresh();
+    };
+
+    Game_Actor.prototype.onClassLevelUp = function(classId, newLevel) {
+        var classObj = $dataClasses[classId];
+        if (!classObj) return;
+
+        // Learn class skills matching new class level
+        var learnings = classObj.learnings || [];
+        for (var i = 0; i < learnings.length; i++) {
+            var l = learnings[i];
+            if (l.level === newLevel) {
+                this.learnSkill(l.skillId);
+            }
+        }
+    };
+
+    // Hook to NUSV_StatSystem: bonus to base stats from Class Level
+    Game_Actor.prototype.nusvClassStatBonus = function(statKey) {
+        var classObj = this.currentClass();
+        if (!classObj) return 0;
+        var growth = parseClassStatGrowth(classObj);
+        var rate = growth[statKey.toLowerCase()] || 0;
+        var cLevel = this.currentClassLevel();
+        // Bonus = (Class Level - 1) * growth rate
+        return Math.max(0, Math.round((cLevel - 1) * rate));
+    };
+
+    // -------------------------------------------------------------------------
+    // Battle Rewards Integration (Base EXP + Class EXP)
+    // -------------------------------------------------------------------------
+    var _BattleManager_makeRewards = BattleManager.makeRewards;
+    BattleManager.makeRewards = function() {
+        _BattleManager_makeRewards.call(this);
+        this._rewards.classExp = $gameTroop.members().reduce(function(sum, enemy) {
+            return sum + (enemy.isDead() && typeof enemy.classExp === 'function' ? enemy.classExp() : 0);
+        }, 0);
+    };
+
+    var _BattleManager_gainExp = BattleManager.gainExp;
+    BattleManager.gainExp = function() {
+        _BattleManager_gainExp.call(this);
+        var classExp = this._rewards ? (this._rewards.classExp || 0) : 0;
+        if (classExp > 0) {
+            $gameParty.allMembers().forEach(function(actor) {
+                if (actor.isAlive && actor.isAlive() && typeof actor.gainClassExp === 'function') {
+                    actor.gainClassExp(classExp);
+                }
+            });
+        }
+    };
+
+})();

@@ -88,6 +88,14 @@ Urutan aktif saat ini mengikuti `js/plugins.js`:
 52. `NUSV_MapSelectItem`
 53. `NUSV_MapSelectSkill`
 54. `NUSV_ButtonCommonEvents`
+55. `NUSV_GameFontBaseline`
+56. `NUSV_AlwaysCenterPlayer`
+57. `NUSV_AutoTextWrap`
+58. `NUSV_InventoryUI`
+59. `NUSV_StatSystem`
+60. `NUSV_ClassLevel`
+61. `NUSV_StaminaBattle`
+62. `NUSV_StatusScreen`
 
 File lain yang ada di folder tetapi tidak aktif di `plugins.js`: `AltMenuScreen`, `AltSaveScreen`, `EnemyBook`, `ItemBook`, `MadeWithMv`, `SimpleMsgSideView`, `TitleCommandPosition`, dan separator `--------------------`.
 
@@ -1852,6 +1860,82 @@ Parameter:
 - `Background`
 
 Tidak ada notetag/plugin command.
+
+## NUSV_StatSystem
+
+Fungsi: Mengimplementasikan sistem 6 Base Stats (STR, INT, DEX, LUK, AGI, VIT), sistem alokasi Stat Points per Base Level, serta kalkulasi Stat Turunan (Max HP, Max MP, Max SP dinamis, ATK, DEF, MAT, MDF, Action Speed, Crit Rate, Evasion, Crit Dmg, Guard Efficiency, dan All Regens).
+
+Notetag Actor / Class:
+```text
+<Base STR: 12>
+<Base INT: 8>
+<Base DEX: 10>
+<Base LUK: 10>
+<Base AGI: 11>
+<Base VIT: 12>
+```
+
+Notetag Weapon / Armor / State:
+```text
+<STR: +5>
+<INT: +2>
+<DEX: +4>
+<LUK: +1>
+<AGI: +3>
+<VIT: +5>
+<Max SP: +20>
+<Critical Damage: +25%>
+```
+
+Script Calls:
+```javascript
+actor.nusvStatPoints();        // Cek sisa poin belum dialokasikan
+actor.allocateStat('str', 1);  // Alokasi 1 poin ke STR
+actor.resetAllocatedStats();   // Reset dan refund semua poin stat
+actor.gainStatPoints(3);       // Tambah bonus stat point (misal item buku)
+```
+
+## NUSV_ClassLevel
+
+Fungsi: Mengatur sistem Dual Level (Base Level & Class Level). Menyimpan Class Level independen untuk tiap class dengan batas Tier Cap, memberikan bonus Base Stat alami per Class Level, serta membuka skill class baru secara otomatis.
+
+Batas Level per Tier:
+- Tier 1: Level 1 - 10
+- Tier 2: Level 1 - 30
+- Tier 3: Level 1 - 40
+- Tier 4: Level 1 - 50
+- Tier 5: Level 1 - 60 (Coming Soon)
+
+Notetag Class:
+```text
+<Class Stat Growth: STR +1.2, VIT +1.0, AGI +0.5>
+<Class Tier: 2>
+<Class Max Level: 30>
+```
+
+Notetag Enemy:
+```text
+<Class EXP: 25>
+```
+
+Script Calls:
+```javascript
+actor.classLevel(classId);        // Level class tertentu
+actor.currentClassLevel();        // Level class yang sedang aktif
+actor.classMaxLevel(classId);     // Batas level maksimum class (sesuai Tier)
+actor.classExp(classId);          // Total Class EXP saat ini
+actor.gainClassExp(50);           // Tambah Class EXP
+```
+
+## NUSV_StaminaBattle
+
+Fungsi: Mengatur mekanik pertempuran berbasis Stamina (SP):
+1. **Guard / Defend Stamina Recovery:** Memilih aksi Guard memulihkan Stamina secara instan sebesar persentase Max SP yang dipengaruhi oleh stat SP Regen (TRG).
+2. **On-Hit Adrenaline SP Recovery:** Saat terkena serangan musuh, karakter meregenerasi SP berdasarkan persentase HP yang hilang, stat ketahanan tubuh (VIT), dan stat SP Regen (TRG).
+
+Parameter:
+- `Guard Base SP Recovery Rate`: Default `0.15` (15% Max SP).
+- `On-Hit SP Recovery Multiplier`: Default `0.5`.
 
 ## Tips Praktis
 

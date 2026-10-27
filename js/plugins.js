@@ -68,5 +68,8 @@ var $plugins =
 {"name":"NUSV_AlwaysCenterPlayer","status":true,"description":"Kamera selalu mengikuti player, termasuk di tepi map (MV).","parameters":{}},
 {"name":"NUSV_AutoTextWrap","status":true,"description":"v1.0 Automatically wrap message and help text inside windows.","parameters":{"Message Windows":"true","Help Windows":"true","Other Windows":"false","Right Margin":"6"}},
 {"name":"NUSV_InventoryUI","status":true,"description":"v1.0.0 Grid-based Inventory UI for the main menu Item command.","parameters":{}},
+{"name":"NUSV_StatSystem","status":true,"description":"v1.0.0 NUSV Stat System - 6 Base Stats, Stat Allocation, Dynamic Derived Stats & SP System.","parameters":{"Points Per Base Level":"3","Base SP Value":"50","Max Evasion Cap":"0.80","Max Critical Cap":"0.85","Base Critical Damage Multiplier":"1.5"}},
+{"name":"NUSV_ClassLevel","status":true,"description":"v1.0.0 NUSV Class Level - Dual Level System (Base Level & Class Level) with Tier Caps and Class Stat Growth.","parameters":{"Default Class EXP Rate":"0.8","Tier 1 Max Level":"10","Tier 2 Max Level":"30","Tier 3 Max Level":"40","Tier 4 Max Level":"50","Tier 5 Max Level":"60"}},
+{"name":"NUSV_StaminaBattle","status":true,"description":"v1.0.0 NUSV Stamina Battle - Guard Stamina Recovery and On-Hit Adrenaline SP Recovery.","parameters":{"Guard Base SP Recovery Rate":"0.15","On-Hit SP Recovery Multiplier":"0.5"}},
 {"name":"NUSV_StatusScreen","status":true,"description":"v1.0.0 NUSV Status Screen - Genshin-style character status layout.","parameters":{"Tab: Equipment":"Equipment","Tab: Class":"Class","Tab: Skills":"Skills","Show Parameters":"true","Show Nickname":"true","Use TP As SP":"true","SP Label":"SP","Portrait Note Tag":"Status Image","Default Portrait Prefix":"Hero_"}}
 ];

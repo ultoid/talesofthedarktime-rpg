@@ -288,11 +288,12 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     Window_StatusTabs.prototype.maxCols = function() {
-        return 4;
+        return 5;
     };
 
     Window_StatusTabs.prototype.makeCommandList = function() {
         this.addCommand(TextManager.status || 'Status', 'status');
+        this.addCommand('Allocate', 'allocate');
         this.addCommand(TAB_EQUIP, 'equip');
         this.addCommand(TAB_CLASS, 'class');
         this.addCommand(TAB_SKILLS, 'skills');
@@ -602,11 +603,20 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.contents.fontSize = this.standardFontSize();
 
         this.changeTextColor(this.systemColor());
-        this.drawText(this._actor.currentClass().name, pad, y, width, 'center');
+        var clsName = this._actor.currentClass().name;
+        if (typeof this._actor.classMaxLevel === 'function') {
+            var tier = (this._actor.currentClass().meta && this._actor.currentClass().meta['Class Tier']) || 1;
+            clsName += ' (Tier ' + tier + ')';
+        }
+        this.drawText(clsName, pad, y, width, 'center');
         y += lh;
 
         this.resetTextColor();
-        this.drawText(TextManager.levelA + ' ' + this._actor.level, pad, y, width, 'center');
+        var lvlText = TextManager.levelA + ' ' + this._actor.level;
+        if (typeof this._actor.currentClassLevel === 'function') {
+            lvlText = 'Base Lv.' + this._actor._level + '  |  Class Lv.' + this._actor.currentClassLevel() + '/' + this._actor.classMaxLevel();
+        }
+        this.drawText(lvlText, pad, y, width, 'center');
         y += lh;
 
         if (SHOW_NICKNAME && this._actor.nickname()) {
@@ -720,28 +730,110 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             this.tpGaugeColor1(), this.tpGaugeColor2(), pad, y, width);
         y += lh + 14;
 
-        // --- EXP bar (4th bar) ---
-        this.drawStatBar('EXP', this.expValueText(), this.expRate(),
+        // --- EXP bar (Base EXP) ---
+        var expLabel = typeof this._actor.classExp === 'function' ? 'B.EXP' : 'EXP';
+        this.drawStatBar(expLabel, this.expValueText(), this.expRate(),
             this.expGaugeColor1(), this.expGaugeColor2(), pad, y, width);
-        y += lh + 18;
+        y += lh + 14;
+
+        // --- Class EXP bar (if Dual Level active) ---
+        if (typeof this._actor.classExp === 'function') {
+            var cExp = this._actor.classExp(this._actor._classId);
+            var nextCExp = this._actor.classNextLevelExp(this._actor._classId);
+            var cLvl = this._actor.classLevel(this._actor._classId);
+            var maxLvl = this._actor.classMaxLevel(this._actor._classId);
+            var cExpText = (cLvl >= maxLvl) ? 'MAX' : (cExp + ' / ' + nextCExp);
+            var cExpRate = (cLvl >= maxLvl) ? 1.0 : (nextCExp > 0 ? cExp / nextCExp : 0);
+            this.drawStatBar('C.EXP', cExpText, cExpRate, this.textColor(14), this.textColor(6), pad, y, width);
+            y += lh + 14;
+        }
 
         // --- Status Effects: icons only, click one to see its details ---
         y = this.drawStateIcons(pad, y, width);
         y += 6;
 
-        // --- Attribute: single column, 6 rows ---
+        // --- Attributes ---
         if (SHOW_PARAMS) {
-            this.changeTextColor(this.systemColor());
-            this.drawText('Attribute', pad, y, width);
-            this.resetTextColor();
-            y += lh;
-            for (var p = 2; p <= 7; p++) {
-                if (y + lh > this.contents.height) break;
+            var halfW = Math.floor(width / 2);
+
+            if (typeof this._actor.nusvBaseStat === 'function') {
+                var pts = typeof this._actor.nusvStatPoints === 'function' ? this._actor.nusvStatPoints() : 0;
                 this.changeTextColor(this.systemColor());
-                this.drawText(TextManager.param(p), pad + 8, y, width - 60);
+                this.drawText('Base Stats' + (pts > 0 ? ' (+' + pts + ' Pts)' : ''), pad, y, width);
                 this.resetTextColor();
-                this.drawText(this._actor.param(p), pad, y, width, 'right');
                 y += lh;
+
+                var baseStats = [
+                    { name: 'STR', val: this._actor.str },
+                    { name: 'INT', val: this._actor.int },
+                    { name: 'DEX', val: this._actor.dex },
+                    { name: 'LUK', val: this._actor.luk },
+                    { name: 'AGI', val: this._actor.agi },
+                    { name: 'VIT', val: this._actor.vit }
+                ];
+
+                for (var b = 0; b < baseStats.length; b += 2) {
+                    var s1 = baseStats[b];
+                    var s2 = baseStats[b + 1];
+                    this.changeTextColor(this.systemColor());
+                    this.drawText(s1.name, pad + 4, y, halfW - 35);
+                    this.resetTextColor();
+                    this.drawText(s1.val, pad, y, halfW - 8, 'right');
+
+                    if (s2) {
+                        this.changeTextColor(this.systemColor());
+                        this.drawText(s2.name, pad + halfW + 4, y, halfW - 35);
+                        this.resetTextColor();
+                        this.drawText(s2.val, pad + halfW, y, halfW - 8, 'right');
+                    }
+                    y += lh;
+                }
+
+                y += 4;
+                this.changeTextColor(this.systemColor());
+                this.drawText('Combat Attributes', pad, y, width);
+                this.resetTextColor();
+                y += lh;
+
+                var combatStats = [
+                    { name: TextManager.param(2), val: this._actor.param(2) }, // ATK
+                    { name: TextManager.param(3), val: this._actor.param(3) }, // DEF
+                    { name: TextManager.param(4), val: this._actor.param(4) }, // MAT
+                    { name: TextManager.param(5), val: this._actor.param(5) }, // MDF
+                    { name: 'Crit', val: Math.round(this._actor.cri * 100) + '%' },
+                    { name: 'Eva', val: Math.round(this._actor.eva * 100) + '%' }
+                ];
+
+                for (var c = 0; c < combatStats.length; c += 2) {
+                    if (y + lh > this.contents.height - 30) break;
+                    var c1 = combatStats[c];
+                    var c2 = combatStats[c + 1];
+                    this.changeTextColor(this.systemColor());
+                    this.drawText(c1.name, pad + 4, y, halfW - 35);
+                    this.resetTextColor();
+                    this.drawText(c1.val, pad, y, halfW - 8, 'right');
+
+                    if (c2) {
+                        this.changeTextColor(this.systemColor());
+                        this.drawText(c2.name, pad + halfW + 4, y, halfW - 35);
+                        this.resetTextColor();
+                        this.drawText(c2.val, pad + halfW, y, halfW - 8, 'right');
+                    }
+                    y += lh;
+                }
+            } else {
+                this.changeTextColor(this.systemColor());
+                this.drawText('Attribute', pad, y, width);
+                this.resetTextColor();
+                y += lh;
+                for (var p = 2; p <= 7; p++) {
+                    if (y + lh > this.contents.height) break;
+                    this.changeTextColor(this.systemColor());
+                    this.drawText(TextManager.param(p), pad + 8, y, width - 60);
+                    this.resetTextColor();
+                    this.drawText(this._actor.param(p), pad, y, width, 'right');
+                    y += lh;
+                }
             }
             y += 6;
         }
@@ -1070,6 +1162,130 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             }
             this.resetFontSettings();
         }
+    };
+
+    // -------------------------------------------------------------------------
+    // Window_StatusAllocate (Right panel: Interactive Base Stat Point Allocation)
+    // -------------------------------------------------------------------------
+
+    function Window_StatusAllocate() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_StatusAllocate.prototype = Object.create(Window_Selectable.prototype);
+    Window_StatusAllocate.prototype.constructor = Window_StatusAllocate;
+
+    Window_StatusAllocate.prototype.initialize = function(x, y, width, height) {
+        Window_Selectable.prototype.initialize.call(this, x, y, width, height);
+        this._actor = null;
+        this.select(0);
+        this.deactivate();
+        this.refresh();
+    };
+
+    Window_StatusAllocate.prototype.setActor = function(actor) {
+        this._actor = actor;
+        this.refresh();
+    };
+
+    Window_StatusAllocate.prototype.maxItems = function() {
+        return 6;
+    };
+
+    Window_StatusAllocate.prototype.statKeys = function() {
+        return ['str', 'int', 'dex', 'luk', 'agi', 'vit'];
+    };
+
+    Window_StatusAllocate.prototype.statNames = function() {
+        return [
+            'STR (Strength)',
+            'INT (Intelligence)',
+            'DEX (Dexterity)',
+            'LUK (Luck)',
+            'AGI (Agility)',
+            'VIT (Vitality)'
+        ];
+    };
+
+    Window_StatusAllocate.prototype.statDescriptions = function() {
+        return [
+            'Boosts Physical ATK, Max SP, and DEF.',
+            'Boosts Magic ATK, Magic DEF, Max MP, and MP Regen.',
+            'Boosts Ranged/Finesse ATK, Critical, and Hit Rate.',
+            'Boosts Critical Chance, Crit Evasion, and Luck.',
+            'Boosts Action Speed (CTB), Evasion, and SP Regen.',
+            'Boosts Max HP, Max SP, DEF, and Guard Efficiency.'
+        ];
+    };
+
+    Window_StatusAllocate.prototype.itemRect = function(index) {
+        var rect = Window_Selectable.prototype.itemRect.call(this, index);
+        rect.y += this.lineHeight() * 2 + 10;
+        rect.height = this.lineHeight();
+        return rect;
+    };
+
+    Window_StatusAllocate.prototype.drawItem = function(index) {
+        if (!this._actor) return;
+        var rect = this.itemRectForText(index);
+        var key = this.statKeys()[index];
+        var name = this.statNames()[index];
+        var val = typeof this._actor.nusvBaseStat === 'function' ? this._actor.nusvBaseStat(key) : 10;
+        var allocated = typeof this._actor.nusvAllocatedStat === 'function' ? this._actor.nusvAllocatedStat(key) : 0;
+
+        this.changeTextColor(this.systemColor());
+        this.drawText(name, rect.x, rect.y, rect.width - 110);
+        this.resetTextColor();
+
+        var valText = String(val);
+        if (allocated > 0) {
+            valText += ' (+' + allocated + ')';
+        }
+        this.drawText(valText, rect.x, rect.y, rect.width - 35, 'right');
+
+        this.changeTextColor(this.textColor(14));
+        this.drawText('[+]', rect.x, rect.y, rect.width, 'right');
+        this.resetTextColor();
+    };
+
+    Window_StatusAllocate.prototype.refresh = function() {
+        this.contents.clear();
+        this.resetFontSettings();
+        if (!this._actor) return;
+
+        var pad = this.textPadding();
+        var width = this.contents.width - pad * 2;
+        var lh = this.lineHeight();
+        var y = 0;
+
+        this.changeTextColor(this.systemColor());
+        this.drawText('Stat Allocation', pad, y, width, 'center');
+        y += lh;
+
+        var pts = typeof this._actor.nusvStatPoints === 'function' ? this._actor.nusvStatPoints() : 0;
+        this.resetTextColor();
+        this.drawText('Available Points: ' + pts, pad, y, width, 'center');
+
+        this.drawAllItems();
+
+        var descY = this.lineHeight() * 2 + 10 + (lh * 6) + 16;
+        var desc = this.statDescriptions()[this.index()] || '';
+        this.changeTextColor(this.systemColor());
+        this.drawText('Effect:', pad, descY, width);
+        descY += lh;
+        this.resetTextColor();
+        this.drawText(desc, pad + 4, descY, width - 8);
+
+        var footY = this.contents.height - lh - 4;
+        this.changeTextColor(this.systemColor());
+        this.contents.fontSize = Math.max(14, this.standardFontSize() - 6);
+        this.drawText('Select a stat and press OK to allocate +1 point', pad, footY, width, 'center');
+        this.resetFontSettings();
+    };
+
+    Window_StatusAllocate.prototype.select = function(index) {
+        Window_Selectable.prototype.select.call(this, index);
+        this.refresh();
     };
 
     // -------------------------------------------------------------------------
@@ -3277,6 +3493,14 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         );
         this.addWindow(this._infoWindow);
 
+        this._allocateWindow = new Window_StatusAllocate(
+            partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
+        );
+        this._allocateWindow.setHandler('cancel', this.onAllocateCancel.bind(this));
+        this._allocateWindow.setHandler('ok',     this.onAllocateOk.bind(this));
+        this._allocateWindow.hide();
+        this.addWindow(this._allocateWindow);
+
         this._equipPreviewWindow = new Window_StatusEquipPreview(
             partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
         );
@@ -3327,10 +3551,11 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     Scene_Status.prototype.createTabsWindow = function() {
         this._tabsWindow = new Window_StatusTabs(partyWidth(), 0);
         this._tabsWindow._onSelectHandler = this.onTabChange.bind(this);
-        this._tabsWindow.setHandler('status', this.onTabStatus.bind(this));
-        this._tabsWindow.setHandler('equip',  this.onTabEquip.bind(this));
-        this._tabsWindow.setHandler('class',  this.onTabClass.bind(this));
-        this._tabsWindow.setHandler('skills', this.onTabSkills.bind(this));
+        this._tabsWindow.setHandler('status',   this.onTabStatus.bind(this));
+        this._tabsWindow.setHandler('allocate', this.onTabAllocate.bind(this));
+        this._tabsWindow.setHandler('equip',    this.onTabEquip.bind(this));
+        this._tabsWindow.setHandler('class',    this.onTabClass.bind(this));
+        this._tabsWindow.setHandler('skills',   this.onTabSkills.bind(this));
         this._tabsWindow.setHandler('cancel', this.popScene.bind(this));
         this._tabsWindow.setHandler('pageup',  this.previousActor.bind(this));
         this._tabsWindow.setHandler('pagedown', this.nextActor.bind(this));
@@ -3343,8 +3568,19 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Scene_Status.prototype.updateRightPanel = function() {
         var symbol = (this._tabsWindow && this._tabsWindow.currentSymbol()) || 'status';
-        if (symbol === 'equip') {
+        if (symbol === 'allocate') {
             if (this._infoWindow) this._infoWindow.hide();
+            if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
+            if (this._classTreeWindow) this._classTreeWindow.hide();
+            if (this._skillListWindow) this._skillListWindow.hide();
+            if (this._statePopup) this._statePopup.hide();
+            if (this._allocateWindow) {
+                this._allocateWindow.show();
+                this._allocateWindow.refresh();
+            }
+        } else if (symbol === 'equip') {
+            if (this._infoWindow) this._infoWindow.hide();
+            if (this._allocateWindow) this._allocateWindow.hide();
             if (this._classTreeWindow) this._classTreeWindow.hide();
             if (this._skillListWindow) this._skillListWindow.hide();
             if (this._statePopup) this._statePopup.hide();
@@ -3354,6 +3590,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             }
         } else if (symbol === 'class') {
             if (this._infoWindow) this._infoWindow.hide();
+            if (this._allocateWindow) this._allocateWindow.hide();
             if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
             if (this._skillListWindow) this._skillListWindow.hide();
             if (this._statePopup) this._statePopup.hide();
@@ -3363,6 +3600,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             }
         } else if (symbol === 'skills') {
             if (this._infoWindow) this._infoWindow.hide();
+            if (this._allocateWindow) this._allocateWindow.hide();
             if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
             if (this._classTreeWindow) this._classTreeWindow.hide();
             if (this._statePopup) this._statePopup.hide();
@@ -3371,6 +3609,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
                 this._skillListWindow.refresh();
             }
         } else {
+            if (this._allocateWindow) this._allocateWindow.hide();
             if (this._equipPreviewWindow) this._equipPreviewWindow.hide();
             if (this._classTreeWindow) this._classTreeWindow.hide();
             if (this._skillListWindow) this._skillListWindow.hide();
@@ -3406,6 +3645,36 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     Scene_Status.prototype.onTabStatus = function() {
         this._tabsWindow.activate();
         this.updateRightPanel();
+    };
+
+    Scene_Status.prototype.onTabAllocate = function() {
+        this._tabsWindow.deactivate();
+        this._allocateWindow.activate();
+        this._allocateWindow.select(0);
+    };
+
+    Scene_Status.prototype.onAllocateCancel = function() {
+        this._allocateWindow.deactivate();
+        this._tabsWindow.activate();
+    };
+
+    Scene_Status.prototype.onAllocateOk = function() {
+        var index = this._allocateWindow.index();
+        var keys = this._allocateWindow.statKeys();
+        var key = keys[index];
+        var actor = this.actor();
+        if (actor && typeof actor.allocateStat === 'function') {
+            if (actor.canAllocateStat(key, 1)) {
+                actor.allocateStat(key, 1);
+                SoundManager.playDecision();
+                this._allocateWindow.refresh();
+                if (this._infoWindow) this._infoWindow.refresh();
+                if (this._portraitWindow) this._portraitWindow.refresh();
+            } else {
+                SoundManager.playBuzzer();
+            }
+        }
+        this._allocateWindow.activate();
     };
 
     Scene_Status.prototype.onTabEquip = function() {
@@ -3558,6 +3827,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         if (this._tabsWindow) this._tabsWindow.refresh();
         if (this._portraitWindow) this._portraitWindow.setActor(actor);
         if (this._infoWindow) this._infoWindow.setActor(actor);
+        if (this._allocateWindow) this._allocateWindow.setActor(actor);
         if (this._equipPreviewWindow) this._equipPreviewWindow.setActor(actor, true);
         if (this._classTreeWindow) this._classTreeWindow.setActor(actor, true);
         if (this._skillListWindow) this._skillListWindow.setActor(actor, true);
@@ -3585,6 +3855,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     NUSV.StatusScreen.Window_StatusDetail = Window_StatusDetail;
     NUSV.StatusScreen.Window_StatusPortrait = Window_StatusPortrait;
     NUSV.StatusScreen.Window_StatusInfo = Window_StatusInfo;
+    NUSV.StatusScreen.Window_StatusAllocate = Window_StatusAllocate;
     NUSV.StatusScreen.Window_StatusEquipPreview = Window_StatusEquipPreview;
     NUSV.StatusScreen.Window_StatusClassTree = Window_StatusClassTree;
     NUSV.StatusScreen.Window_StatusClassConfirm = Window_StatusClassConfirm;
