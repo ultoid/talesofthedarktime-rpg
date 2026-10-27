@@ -2721,6 +2721,17 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         return 74;
     }
 
+    function isPassiveSkill(skill) {
+        if (!skill) return false;
+        // In RPG Maker MV, occasion 3 means "Never" (passive / cannot be selected in battle or menu)
+        if (skill.occasion === 3) return true;
+        var note = skill.note || '';
+        if (/<(?:Passive State|Passive|Auto Passive)>/i.test(note)) return true;
+        if (/<Passive State:\s*\d+/i.test(note)) return true;
+        if (/\[PLUGIN\]\s*YEP_AutoPassiveStates/i.test(note)) return true;
+        return false;
+    }
+
     // -------------------------------------------------------------------------
     // Window_StatusSkillList (Right panel: Skill Cards with Lock & Unlock details)
     // -------------------------------------------------------------------------
@@ -2746,12 +2757,48 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         return 12;
     };
 
+    Window_StatusSkillList.prototype.headerHeight = function() {
+        return 28;
+    };
+
     Window_StatusSkillList.prototype.maxItems = function() {
         return this._data ? this._data.length : 0;
     };
 
     Window_StatusSkillList.prototype.itemHeight = function() {
-        return 100;
+        return 95;
+    };
+
+    Window_StatusSkillList.prototype.maxPageRows = function() {
+        var pageHeight = this.height - this.padding * 2 - this.headerHeight();
+        return Math.floor(pageHeight / this.itemHeight());
+    };
+
+    Window_StatusSkillList.prototype.itemRect = function(index) {
+        var rect = new Rectangle();
+        var maxCols = this.maxCols();
+        rect.width = this.itemWidth();
+        rect.height = this.itemHeight();
+        rect.x = index % maxCols * (rect.width + this.spacing()) - this._scrollX;
+        rect.y = this.headerHeight() + Math.floor(index / maxCols) * rect.height - this._scrollY;
+        return rect;
+    };
+
+    Window_StatusSkillList.prototype.drawTitle = function() {
+        var W = this.contents.width;
+        this.contents.fontSize = 16;
+        this.changeTextColor(this.systemColor());
+        var title = (TAB_SKILLS || 'Skills').toUpperCase();
+        this.contents.drawText(title, 0, 4, W, 18, 'center');
+        this.resetFontSettings();
+    };
+
+    Window_StatusSkillList.prototype.refresh = function() {
+        if (!this.contents) return;
+        this.contents.clear();
+        this.resetFontSettings();
+        this.drawTitle();
+        this.drawAllItems();
     };
 
     Window_StatusSkillList.prototype.isCursorMovable = function() {
@@ -2793,7 +2840,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     Window_StatusSkillList.prototype.updateCursor = function() {
         if (this.isOpenAndActive() && this.index() >= 0) {
             var rect = this.itemRect(this.index());
-            this.setCursorRect(rect.x + 2, rect.y + 2, rect.width - 4, rect.height - 4);
+            this.setCursorRect(rect.x + 2, rect.y + 2, rect.width - 4, rect.height - 5);
         } else {
             this.setCursorRect(0, 0, 0, 0);
         }
@@ -2971,9 +3018,9 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var rect = this.itemRect(index);
 
         var cardX = rect.x + 2;
-        var cardY = rect.y + 3;
+        var cardY = rect.y + 2;
         var cardW = rect.width - 4;
-        var cardH = rect.height - 6;
+        var cardH = rect.height - 5;
 
         var ctx = this.contents._context;
 
@@ -3001,9 +3048,9 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
         // 3. Left Icon Box (Gambar 2 styling)
         var boxX = cardX + 6;
-        var boxY = cardY + 6;
+        var boxY = cardY + 5;
         var boxW = 58;
-        var boxH = cardH - 12;
+        var boxH = cardH - 10;
 
         ctx.save();
         ctx.fillStyle = isLearned ? 'rgba(20, 40, 70, 0.9)' : 'rgba(25, 28, 35, 0.85)';
@@ -3016,16 +3063,46 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         // Icon with fallback so it is never blank
         var iconIdx = getSkillIconIndex(skill, this._actor);
         var ix = boxX + Math.floor((boxW - 32) / 2);
-        var iy = boxY + 8;
+        var iy = boxY + 5;
         this.contents.paintOpacity = isLearned ? 255 : 120;
         this.drawIcon(iconIdx, ix, iy);
         this.contents.paintOpacity = 255;
 
+        // Middle Type Badge (PASIF / AKTIF)
+        var isPassive = isPassiveSkill(skill);
+        var typeBadgeX = boxX + 3;
+        var typeBadgeY = boxY + 39;
+        var typeBadgeW = boxW - 6;
+        var typeBadgeH = 15;
+
+        ctx.save();
+        if (isPassive) {
+            ctx.fillStyle = isLearned ? 'rgba(65, 45, 15, 0.92)' : 'rgba(40, 30, 15, 0.85)';
+            ctx.fillRect(typeBadgeX, typeBadgeY, typeBadgeW, typeBadgeH);
+            ctx.strokeStyle = isLearned ? 'rgba(250, 185, 45, 0.85)' : 'rgba(160, 120, 35, 0.6)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(typeBadgeX + 0.5, typeBadgeY + 0.5, typeBadgeW - 1, typeBadgeH - 1);
+            ctx.restore();
+            this.contents.fontSize = 10;
+            this.changeTextColor(isLearned ? this.textColor(14) : this.textColor(7));
+            this.contents.drawText('PASIF', typeBadgeX, typeBadgeY - 2, typeBadgeW, 18, 'center');
+        } else {
+            ctx.fillStyle = isLearned ? 'rgba(15, 50, 80, 0.92)' : 'rgba(20, 35, 50, 0.85)';
+            ctx.fillRect(typeBadgeX, typeBadgeY, typeBadgeW, typeBadgeH);
+            ctx.strokeStyle = isLearned ? 'rgba(60, 190, 245, 0.85)' : 'rgba(50, 110, 140, 0.6)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(typeBadgeX + 0.5, typeBadgeY + 0.5, typeBadgeW - 1, typeBadgeH - 1);
+            ctx.restore();
+            this.contents.fontSize = 10;
+            this.changeTextColor(isLearned ? this.textColor(4) : this.textColor(7));
+            this.contents.drawText('AKTIF', typeBadgeX, typeBadgeY - 2, typeBadgeW, 18, 'center');
+        }
+
         // Bottom Level Badge in Icon Box
         var badgeX = boxX + 3;
-        var badgeY = boxY + boxH - 20;
+        var badgeY = boxY + 57;
         var badgeW = boxW - 6;
-        var badgeH = 16;
+        var badgeH = 17;
 
         ctx.save();
         if (isLearned) {
@@ -3036,7 +3113,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             ctx.restore();
             this.contents.fontSize = 11;
             this.changeTextColor(this.systemColor());
-            this.contents.drawText('Lv ' + item.unlockLevel, badgeX, badgeY - 2, badgeW, 18, 'center');
+            this.contents.drawText('Lv ' + item.unlockLevel, badgeX, badgeY - 1, badgeW, 18, 'center');
         } else {
             ctx.fillStyle = 'rgba(45, 25, 30, 0.92)';
             ctx.fillRect(badgeX, badgeY, badgeW, badgeH);
@@ -3045,7 +3122,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             ctx.restore();
             this.contents.fontSize = 10;
             this.changeTextColor(this.textColor(7));
-            this.contents.drawText('LOCK', badgeX, badgeY - 2, badgeW, 18, 'center');
+            this.contents.drawText('LOCK', badgeX, badgeY - 1, badgeW, 18, 'center');
         }
 
         // 4. Right Content Area
@@ -3055,14 +3132,14 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         // Baris 1: Nama Skill (full width, tidak berdesakan dengan cost)
         this.contents.fontSize = 15;
         this.changeTextColor(isLearned ? this.normalColor() : this.textColor(7));
-        this.contents.drawText(skill.name, rightX, cardY + 5, rightW, 20, 'left');
+        this.contents.drawText(skill.name, rightX, cardY + 4, rightW, 20, 'left');
 
         if (!isLearned) {
             // Saat skill terkunci: menutupi area cost, elemen & deskripsi
             var lockBoxX = rightX;
-            var lockBoxY = cardY + 28;
+            var lockBoxY = cardY + 26;
             var lockBoxW = rightW;
-            var lockBoxH = cardH - 34;
+            var lockBoxH = cardH - 31;
 
             this.contents.fillRect(lockBoxX, lockBoxY, lockBoxW, lockBoxH, 'rgba(32, 16, 20, 0.92)');
             ctx.save();
@@ -3071,29 +3148,51 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             ctx.strokeRect(lockBoxX + 0.5, lockBoxY + 0.5, lockBoxW - 1, lockBoxH - 1);
             ctx.restore();
 
-            var textY = lockBoxY + Math.floor((lockBoxH - 20) / 2);
-            this.contents.fontSize = 12;
-            this.changeTextColor(this.textColor(14)); // Amber / Gold
-            this.contents.drawText('🔒 Terkunci (Unlock at Level ' + item.unlockLevel + ')', lockBoxX, textY, lockBoxW, 20, 'center');
-        } else {
-            // Baris 2: Cost & Elemen tepat di bawah nama skill (rapi & enak dibaca)
-            var cost = getSkillCost(skill);
-            var elem = getSkillElement(skill);
-            var costPart = cost ? 'Cost: ' + cost.replace(/^Cost:\s*/i, '') : 'Cost: 0 MP';
-            var elemPart = elem ? 'Element: ' + elem : '';
-            var infoTag = costPart;
-            if (elemPart) infoTag += '   •   ' + elemPart;
+            var lineH = 17;
+            var yOffset = lockBoxY + Math.floor((lockBoxH - lineH * 2) / 2);
 
             this.contents.fontSize = 11;
-            this.changeTextColor(this.systemColor());
-            this.contents.drawText(infoTag, rightX, cardY + 26, rightW, 18, 'left');
+            this.changeTextColor(this.textColor(7));
+            this.contents.drawText('🔒 Terkunci (Unlock at Level ' + item.unlockLevel + ')', lockBoxX, yOffset, lockBoxW, lineH, 'center');
+
+            this.contents.fontSize = 10;
+            if (isPassive) {
+                this.changeTextColor(this.textColor(14)); // Gold
+                this.contents.drawText('Tipe: Skill Pasif', lockBoxX, yOffset + lineH, lockBoxW, lineH, 'center');
+            } else {
+                this.changeTextColor(this.textColor(4)); // Cyan
+                this.contents.drawText('Tipe: Skill Aktif (Battle)', lockBoxX, yOffset + lineH, lockBoxW, lineH, 'center');
+            }
+        } else {
+            // Baris 2: Keterangan Pasif / Aktif (Battle) serta Cost & Elemen
+            var elem = getSkillElement(skill);
+            var elemPart = elem ? 'Element: ' + elem : '';
+
+            this.contents.fontSize = 10;
+            if (isPassive) {
+                var tagText = 'Skill Pasif (Selalu Aktif)';
+                if (elemPart && elem !== 'Neutral') {
+                    tagText = 'Skill Pasif • ' + elemPart;
+                }
+                this.changeTextColor(this.textColor(14)); // Amber / Gold
+                this.contents.drawText(tagText, rightX, cardY + 24, rightW, 18, 'left');
+            } else {
+                var cost = getSkillCost(skill);
+                var costPart = cost ? cost.replace(/^Cost:\s*/i, '') : '0 MP';
+                var tagText = 'Skill Aktif (Battle) • ' + costPart;
+                if (elemPart && elem !== 'Neutral') {
+                    tagText = 'Aktif (Battle) • ' + costPart + ' • ' + elem;
+                }
+                this.changeTextColor(this.textColor(4)); // Cyan / Light Blue
+                this.contents.drawText(tagText, rightX, cardY + 24, rightW, 18, 'left');
+            }
 
             // Baris 3 & 4: Damage / Effect Badges & Deskripsi
             var damageText = getSkillDamage(skill);
             var effectText = getSkillEffect(skill);
             var descText = getSkillDescription(skill);
 
-            var curY = cardY + 45;
+            var curY = cardY + 43;
             var hasBadges = false;
 
             if (damageText || effectText) {
@@ -3125,14 +3224,14 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
             // Description lines
             if (descText) {
-                var descY = hasBadges ? (cardY + 65) : (cardY + 45);
+                var descY = hasBadges ? (cardY + 63) : (cardY + 43);
                 this.contents.fontSize = 11;
                 this.changeTextColor(this.normalColor());
                 var lines = wrapText(descText, rightW, this.textWidth.bind(this));
                 var maxLines = hasBadges ? 2 : 3;
                 for (var l = 0; l < Math.min(lines.length, maxLines); l++) {
-                    if (descY + (l * 16) + 14 > cardY + cardH) break;
-                    this.contents.drawText(lines[l], rightX, descY + (l * 16), rightW, 16, 'left');
+                    if (descY + (l * 15) + 13 > cardY + cardH) break;
+                    this.contents.drawText(lines[l], rightX, descY + (l * 15), rightW, 15, 'left');
                 }
             }
         }
