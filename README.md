@@ -2,6 +2,8 @@
 
 Tales of The Dark Time adalah game RPG berbasis RPG Maker MV yang dikembangkan berdasarkan world building Nusvanir, menghadirkan dunia, cerita, dan petualangan dalam semesta fantasi Nusvanir.
 
+Lihat panduan langkah demi langkah lengkap di [ROADMAP_PENGEMBANGAN.md](ROADMAP_PENGEMBANGAN.md).
+
 ## Log Pengembangan
 
 - Mapping World Map
