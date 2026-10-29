@@ -53,7 +53,7 @@ const beforeGuard = battler._tp;
 battler.performGuardStaminaRecovery();
 const gainedFromGuard = battler._tp - beforeGuard;
 assert.equal(gainedFromGuard, 38, 'Guard should recover 38 SP (25% of 150 Max SP)');
-assert.ok(battler._popups > 0, 'Damage popup should be triggered for SP gain');
+assert.equal(battler._popups, 0, 'Damage popup should NOT be triggered directly for SP gain (handled by ResourceGain / BEC)');
 
 // 2. On-Hit Adrenaline recovery test
 // damageRate = 0.30 (lost 30% HP)
@@ -63,5 +63,6 @@ const gainedFromHit = battler._tp - beforeHit;
 assert.ok(gainedFromHit > 0, 'Should gain positive SP on being hit');
 // Expected: 150 * 0.30 * 0.5 * endurance (1.06) * regen (1.25) * 1.0 ≈ 29 SP
 assert.ok(gainedFromHit >= 25 && gainedFromHit <= 35, `Gained from hit should be ~29 (got: ${gainedFromHit})`);
+assert.equal(battler._popups, 0, 'Damage popup should NOT be triggered by on-hit SP recovery (avoids duplicate damage popups)');
 
 console.log('NUSV_StaminaBattle unit tests passed successfully!');

@@ -126,6 +126,88 @@ NUSV.EquipRules.version = 1.2;
         // ---------------------------------------------------------------------
         // 5. Initial Equipment Setup: Map default equips and support notetags
         // ---------------------------------------------------------------------
+        NUSV.EquipRules.applySecondAccessory = function(actor) {
+            if (!actor) return;
+            var actorObj = (typeof actor.actor === 'function') ? actor.actor() : null;
+            if (!actorObj || !actorObj.note) return;
+            var match = actorObj.note.match(/<(?:Second Accessory|Accessory 2):[ ]*(.+?)>/i);
+            if (!match) return;
+
+            var slots = actor.equipSlots();
+            var count = 0;
+            var slotIndex = -1;
+            for (var i = 0; i < slots.length; i++) {
+                if (slots[i] === 6) {
+                    count++;
+                    if (count === 2) {
+                        slotIndex = i;
+                        break;
+                    }
+                }
+            }
+            if (slotIndex === -1) return;
+            if (actor.equips()[slotIndex]) return; // Already equipped
+
+            var val = match[1].trim();
+            var secAcc = null;
+            if (/^\d+$/.test(val)) {
+                secAcc = $dataArmors[parseInt(val, 10)];
+            } else if (typeof $dataArmors !== 'undefined') {
+                for (var a = 1; a < $dataArmors.length; a++) {
+                    if ($dataArmors[a] && $dataArmors[a].name && $dataArmors[a].name.toLowerCase() === val.toLowerCase()) {
+                        secAcc = $dataArmors[a];
+                        break;
+                    }
+                }
+            }
+            if (!secAcc || !actor.canEquip(secAcc)) return;
+
+            if (typeof DataManager !== 'undefined' && DataManager.isIndependent && DataManager.isIndependent(secAcc)) {
+                if (typeof $gameParty !== 'undefined' && typeof $gameParty.gainIndependentItem === 'function') {
+                    var array = $gameParty.gainIndependentItem(secAcc, 1);
+                    if (array instanceof Array && array[0]) {
+                        actor.changeEquip(slotIndex, array[0]);
+                        return;
+                    }
+                }
+            }
+            if (actor._equips && actor._equips[slotIndex]) {
+                actor._equips[slotIndex].setObject(secAcc);
+            } else if (typeof actor.forceChangeEquip === 'function') {
+                actor.forceChangeEquip(slotIndex, secAcc);
+            }
+            actor.refresh();
+        };
+
+        if (typeof Game_Actor.prototype.convertInitEquips === 'function') {
+            var _Game_Actor_convertInitEquips = Game_Actor.prototype.convertInitEquips;
+            Game_Actor.prototype.convertInitEquips = function(equips) {
+                var items = _Game_Actor_convertInitEquips.call(this, equips);
+                var actorObj = this.actor();
+                if (actorObj && actorObj.note) {
+                    var match = actorObj.note.match(/<(?:Second Accessory|Accessory 2):[ ]*(.+?)>/i);
+                    if (match) {
+                        var val = match[1].trim();
+                        var secAcc = null;
+                        if (/^\d+$/.test(val)) {
+                            secAcc = $dataArmors[parseInt(val, 10)];
+                        } else if (typeof $dataArmors !== 'undefined') {
+                            for (var a = 1; a < $dataArmors.length; a++) {
+                                if ($dataArmors[a] && $dataArmors[a].name && $dataArmors[a].name.toLowerCase() === val.toLowerCase()) {
+                                    secAcc = $dataArmors[a];
+                                    break;
+                                }
+                            }
+                        }
+                        if (secAcc) {
+                            items.push(secAcc);
+                        }
+                    }
+                }
+                return items;
+            };
+        }
+
         var _Game_Actor_initEquips = Game_Actor.prototype.initEquips;
         Game_Actor.prototype.initEquips = function(equips) {
             _Game_Actor_initEquips.call(this, equips);
@@ -137,39 +219,34 @@ NUSV.EquipRules.version = 1.2;
                 }
             }
 
-            // Check if actor has notetag for 2nd accessory (supports ID or Name)
-            var actorObj = this.actor();
-            if (actorObj && actorObj.note) {
-                var match = actorObj.note.match(/<(?:Second Accessory|Accessory 2):[ ]*(.+?)>/i);
-                if (match) {
-                    var val = match[1].trim();
-                    var secAcc = null;
-                    if (/^\d+$/.test(val)) {
-                        secAcc = $dataArmors[parseInt(val, 10)];
-                    } else if (typeof $dataArmors !== 'undefined') {
-                        for (var a = 1; a < $dataArmors.length; a++) {
-                            if ($dataArmors[a] && $dataArmors[a].name && $dataArmors[a].name.toLowerCase() === val.toLowerCase()) {
-                                secAcc = $dataArmors[a];
-                                break;
-                            }
-                        }
-                    }
-                    if (secAcc && this.canEquip(secAcc)) {
-                        var slots = this.equipSlots();
-                        var count = 0;
-                        for (var i = 0; i < slots.length; i++) {
-                            if (slots[i] === 6) {
-                                count++;
-                                if (count === 2) {
-                                    this.changeEquip(i, secAcc);
-                                    break;
-                                }
-                            }
-                        }
+            NUSV.EquipRules.applySecondAccessory(this);
+        };
+
+        if (typeof DataManager !== 'undefined') {
+            var _DataManager_extractSaveContents = DataManager.extractSaveContents;
+            DataManager.extractSaveContents = function(contents) {
+                _DataManager_extractSaveContents.call(this, contents);
+                if (typeof $gameParty !== 'undefined' && $gameParty) {
+                    var members = $gameParty.allMembers ? $gameParty.allMembers() : $gameParty.members();
+                    for (var i = 0; i < members.length; i++) {
+                        NUSV.EquipRules.applySecondAccessory(members[i]);
                     }
                 }
-            }
-        };
+            };
+        }
+
+        if (typeof Scene_MenuBase !== 'undefined') {
+            var _Scene_MenuBase_start = Scene_MenuBase.prototype.start;
+            Scene_MenuBase.prototype.start = function() {
+                _Scene_MenuBase_start.call(this);
+                if (typeof $gameParty !== 'undefined' && $gameParty && typeof $gameParty.members === 'function') {
+                    var members = $gameParty.members();
+                    for (var i = 0; i < members.length; i++) {
+                        NUSV.EquipRules.applySecondAccessory(members[i]);
+                    }
+                }
+            };
+        }
     }
 
     // -------------------------------------------------------------------------

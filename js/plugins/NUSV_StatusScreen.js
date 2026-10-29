@@ -61,9 +61,10 @@
  * The full body portrait is loaded from img/pictures/ using the actor's
  * portrait name. Resolution order:
  *
- *   1. Actor note tag:  <Status Image: MyPortrait>
- *   2. Default prefix + actor name:  Hero_ + name   (e.g. Hero_Cassian)
- *   3. Fallback: the actor's face image (drawn large)
+ *   1. Actor note tag:  <Portrait: NamaFile> or <Status Image: NamaFile>
+ *   2. Class note tag:  <Portrait: NamaFile> or <Status Image: NamaFile>
+ *   3. Default prefix + actor name: Hero_ + name (ONLY if the file exists on disk)
+ *   4. Safe fallback: the actor's face image (drawn large, no crash if picture missing)
  *
  * The class description is taken from NUSV_ClassChange when available
  * (actor.nusvClassDescription), otherwise from the class note tag
@@ -149,15 +150,93 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         return m ? String(m[1]).replace(/\r/g, '').trim() : '';
     }
 
+    function singleTag(note, tag) {
+        if (!note) return '';
+        var re = new RegExp('<' + tag + ':\\s*([^>]+)>', 'i');
+        var m = re.exec(note);
+        return m ? String(m[1]).trim() : '';
+    }
+
+    function cleanImageName(name) {
+        if (!name) return '';
+        name = String(name).trim();
+        return name.replace(/\.(png|jpe?g|webp)$/i, '');
+    }
+
+    function pictureFileExists(filename) {
+        if (!filename) return false;
+        try {
+            if (typeof require === 'function') {
+                var fs = require('fs');
+                var path = require('path');
+                var relPath = path.join('img', 'pictures', filename + '.png');
+                if (fs.existsSync(relPath)) return true;
+
+                if (process.mainModule && process.mainModule.filename) {
+                    var appDir = path.dirname(process.mainModule.filename);
+                    var fullPath = path.join(appDir, 'img', 'pictures', filename + '.png');
+                    if (fs.existsSync(fullPath)) return true;
+                }
+
+                if (typeof window !== 'undefined' && window.location && window.location.pathname) {
+                    var rawLoc = window.location.pathname.replace(/^\/([A-Za-z]:)/, '$1');
+                    var locDir = path.dirname(decodeURIComponent(rawLoc));
+                    var locPath = path.join(locDir, 'img', 'pictures', filename + '.png');
+                    if (fs.existsSync(locPath)) return true;
+                }
+                return false;
+            }
+        } catch (e) {}
+        return true;
+    }
+
+    function extractPortraitTag(obj) {
+        if (!obj) return '';
+        var note = obj.note || '';
+        var meta = obj.meta || {};
+
+        var tags = ['Portrait', 'Status Image', 'Status Portrait', 'Hero Image', 'Character Image'];
+        if (PORTRAIT_TAG && tags.indexOf(PORTRAIT_TAG) === -1) {
+            tags.unshift(PORTRAIT_TAG);
+        }
+
+        for (var i = 0; i < tags.length; i++) {
+            var tag = tags[i];
+            var m = multilineTag(note, tag);
+            if (m) return cleanImageName(m);
+            var s = singleTag(note, tag);
+            if (s) return cleanImageName(s);
+            if (meta[tag] && typeof meta[tag] === 'string') {
+                return cleanImageName(meta[tag]);
+            }
+        }
+        return '';
+    }
+
     function portraitName(actor) {
-        var note = (actor.actor() && actor.actor().note) || '';
-        var tagged = multilineTag(note, PORTRAIT_TAG);
-        if (tagged) return tagged;
+        if (!actor) return '';
 
-        var single = new RegExp('<' + PORTRAIT_TAG + ':\\s*([^>]+)>', 'i').exec(note);
-        if (single) return single[1].trim();
+        // 1. Notetag from actor
+        var actorData = (typeof actor.actor === 'function') ? actor.actor() : (actor._actor || null);
+        var fromActor = extractPortraitTag(actorData);
+        if (fromActor) {
+            if (pictureFileExists(fromActor)) return fromActor;
+            console.warn('[NUSV_StatusScreen] Portrait not found: img/pictures/' + fromActor + '.png. Falling back to face graphic.');
+            return '';
+        }
 
-        return PORTRAIT_PREF + actor.name();
+        // 2. Notetag from class
+        var classData = (typeof actor.currentClass === 'function') ? actor.currentClass() : null;
+        var fromClass = extractPortraitTag(classData);
+        if (fromClass) {
+            if (pictureFileExists(fromClass)) return fromClass;
+            console.warn('[NUSV_StatusScreen] Portrait not found: img/pictures/' + fromClass + '.png. Falling back to face graphic.');
+            return '';
+        }
+
+        // If no notetag is set on actor or class, do not force Hero_ + name.
+        // Return empty so it cleanly falls back to the actor face graphic without crashing.
+        return '';
     }
 
     function classDescription(actor) {
@@ -349,7 +428,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
         var faceName = actor.faceName();
         var isFace = Boolean(faceName);
-        var bitmap = isFace ? ImageManager.loadFace(faceName) : ImageManager.loadPicture(portraitName(actor));
+        var pName = portraitName(actor);
+        var bitmap = isFace ? ImageManager.loadFace(faceName) : (pName ? ImageManager.loadPicture(pName) : null);
         if (bitmap && !bitmap.isReady()) {
             bitmap.addLoadListener(this.refresh.bind(this));
         }
@@ -414,9 +494,10 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var members = $gameParty.members();
         for (var i = 0; i < members.length; i++) {
             var faceName = members[i].faceName();
-            var key = faceName || portraitName(members[i]);
-            if (this._readyPortraits[key]) continue;
-            var bitmap = faceName ? ImageManager.loadFace(faceName) : ImageManager.loadPicture(key);
+            var pName = portraitName(members[i]);
+            var key = faceName || pName;
+            if (!key || this._readyPortraits[key]) continue;
+            var bitmap = faceName ? ImageManager.loadFace(faceName) : (pName ? ImageManager.loadPicture(pName) : null);
             if (bitmap && bitmap.isReady() && bitmap.width > 0 && bitmap.height > 0) {
                 this._readyPortraits[key] = true;
                 this.refresh();
@@ -643,7 +724,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Window_StatusPortrait.prototype.drawPortrait = function(x, y, width, height) {
         var name = portraitName(this._actor);
-        var bitmap = ImageManager.loadPicture(name);
+        var bitmap = name ? ImageManager.loadPicture(name) : null;
 
         if (bitmap && bitmap.isReady() && bitmap.width > 0) {
             var scale = Math.min(width / bitmap.width, height / bitmap.height);
@@ -676,6 +757,10 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
                 this._portraitDrawn = false;
                 this.refresh();
             }
+        } else if (this._lastPortraitName !== null) {
+            this._lastPortraitName = null;
+            this._portraitDrawn = false;
+            this.refresh();
         }
     };
 

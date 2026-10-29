@@ -63,9 +63,6 @@ NUSV.StaminaBattle = NUSV.StaminaBattle || {};
         var amount = Math.max(1, Math.round(this.maxTp() * recoveryRate));
 
         this.gainTp(amount);
-        if (typeof this.startDamagePopup === 'function') {
-            this.startDamagePopup();
-        }
     };
 
     // -------------------------------------------------------------------------
@@ -88,9 +85,6 @@ NUSV.StaminaBattle = NUSV.StaminaBattle || {};
         var value = Math.max(1, Math.floor(this.maxTp() * gainRate));
 
         this.gainTp(value);
-        if (typeof this.startDamagePopup === 'function') {
-            this.startDamagePopup();
-        }
     };
 
 })();
