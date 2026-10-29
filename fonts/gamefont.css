@@ -3,6 +3,21 @@
     src: url("Minecraftia-Regular.ttf");
 }
 
+@font-face {
+    font-family: BattleFont;
+    src: url("final-fantasy-advance-ds.otf");
+}
+
+@font-face {
+    font-family: MPlusFont;
+    src: url("mplus-1m-regular.ttf");
+}
+
+@font-face {
+    font-family: PressStartFont;
+    src: url("PressStart2P.ttf");
+}
+
 .IIV::-webkit-media-controls-play-button,
 video::-webkit-media-controls-start-playback-button {
     opacity: 0;

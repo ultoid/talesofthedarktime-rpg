@@ -1553,6 +1553,10 @@ Enemy:
 <Scale Sprite Width: 150%>
 <Scale Sprite Height: 150%>
 <Sideview Battler: filename>
+<Sideview Folder: sv_actors / sv_enemies>
+<Sideview Frames: x>
+<Sideview Rows: y>
+<Sideview No Mirror>
 <Sideview Anchor X: 0.5>
 <Sideview Anchor Y: 1.0>
 <Sideview Width: x>

@@ -1523,7 +1523,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             { key: 'secondary', label: 'Secondary',  etypeId: 2, occ: 0, placeholderIcon: 128, x: W - 12 - boxW,             y: 150 },
             { key: 'acc1',      label: 'Acc 1',      etypeId: 6, occ: 0, placeholderIcon: 144, x: 14,                        y: 220 },
             { key: 'acc2',      label: 'Acc 2',      etypeId: 6, occ: 1, placeholderIcon: 144, x: cx - Math.floor(boxW / 2), y: 220 },
-            { key: 'relic',     label: 'Relic',      etypeId: 7, occ: 0, placeholderIcon: 160, x: W - 14 - boxW,             y: 220 }
+            { key: 'relic',     label: 'Relic',      etypeId: ($dataSystem && $dataSystem.equipTypes && $dataSystem.equipTypes.indexOf('Relic') >= 0 ? $dataSystem.equipTypes.indexOf('Relic') : 8), occ: 0, placeholderIcon: 160, x: W - 14 - boxW,             y: 220 }
         ];
     };
 
@@ -1656,9 +1656,10 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             var def = defs[i];
             var item = this.getEquippedItem(def);
             var isSelected = this.active && (i === this._selectedIndex);
+            var isSealed = (def.key === 'secondary' && this._actor && this._actor.isEquipTypeSealed(this._actor.equipSlots()[1]));
 
             // Box Background
-            var bgColor = isSelected ? 'rgba(50, 110, 200, 0.45)' : 'rgba(10, 20, 42, 0.6)';
+            var bgColor = isSealed ? 'rgba(40, 15, 20, 0.65)' : (isSelected ? 'rgba(50, 110, 200, 0.45)' : 'rgba(10, 20, 42, 0.6)');
             this.contents.fillRect(def.x, def.y, boxW, boxH, bgColor);
 
             // Border
@@ -2101,6 +2102,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             if (!it) continue;
             if (it.etypeId === slotTypeId && actor.canEquip(it)) {
                 if (currentEquip && currentEquip === it) continue;
+                if (this._slotIndex === 1 && typeof NUSV !== 'undefined' && NUSV.EquipRules && NUSV.EquipRules.isTwoHanded(it)) continue;
                 this._data.push(it);
             }
         }
@@ -4175,6 +4177,17 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         if (!actor || slotIndex < 0) {
             SoundManager.playBuzzer();
             this.showToast('Slot ini tidak tersedia pada karakter ini.');
+            this._equipPreviewWindow.activate();
+            return;
+        }
+
+        if (!actor.isEquipChangeOk(slotIndex)) {
+            SoundManager.playBuzzer();
+            if (actor.isEquipTypeSealed(actor.equipSlots()[slotIndex])) {
+                this.showToast('Slot ini terkunci karena menggunakan senjata 2-Handed.');
+            } else {
+                this.showToast('Slot ini sedang terkunci.');
+            }
             this._equipPreviewWindow.activate();
             return;
         }

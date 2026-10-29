@@ -1851,6 +1851,10 @@ DataManager.processSVENotetags1 = function(group) {
     obj.sideviewFloatHeight = Yanfly.Param.SVEFloatHeight;
     obj.sideviewFloatDeath = Yanfly.Param.SVEFloatDeath;
     obj.sideviewStateOverlay = Yanfly.Param.SVEOverlay;
+    obj.sideviewFrames = 0;
+    obj.sideviewRows = 1;
+    obj.sideviewFolder = 'sv_actors';
+    obj.sideviewNoMirror = false;
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
@@ -1916,8 +1920,16 @@ DataManager.processSVENotetags1 = function(group) {
         obj.sideviewShadowScaleX = parseFloat(RegExp.$1 * 0.01);
       } else if (line.match(/<(?:SIDEVIEW SHADOW HEIGHT):[ ](\d+)([%％])>/i)) {
         obj.sideviewShadowScaleY = parseFloat(RegExp.$1 * 0.01);
-      } else if (line.match(/<(?:SIDEVIEW FRAME SPEED):[ ](\d+)>/i)) {
+      } else if (line.match(/<(?:SIDEVIEW FRAME SPEED|SIDEVIEW SPEED):[ ](\d+)>/i)) {
         obj.sideviewFrameSpeed = parseInt(RegExp.$1);
+      } else if (line.match(/<(?:SIDEVIEW FRAMES):[ ](\d+)>/i)) {
+        obj.sideviewFrames = parseInt(RegExp.$1);
+      } else if (line.match(/<(?:SIDEVIEW ROWS):[ ](\d+)>/i)) {
+        obj.sideviewRows = parseInt(RegExp.$1);
+      } else if (line.match(/<(?:SIDEVIEW FOLDER):[ ](.*)>/i)) {
+        obj.sideviewFolder = String(RegExp.$1).trim();
+      } else if (line.match(/<(?:SIDEVIEW NO MIRROR|SIDEVIEW FACING RIGHT)>/i)) {
+        obj.sideviewNoMirror = true;
       } else if (line.match(/<(?:FLOATING|float)>/i)) {
         obj.sideviewFloating = true;
       } else if (line.match(/<(?:FLOATING SPEED):[ ](\d+)>/i)) {
@@ -2187,8 +2199,27 @@ Game_Enemy.prototype.sideviewShadowScaleY = function() {
     return this.enemy().sideviewShadowScaleY;
 };
 
+Game_Enemy.prototype.sideviewFrames = function() {
+    return this.enemy().sideviewFrames || 0;
+};
+
+Game_Enemy.prototype.sideviewRows = function() {
+    return this.enemy().sideviewRows || 1;
+};
+
+Game_Enemy.prototype.sideviewFolder = function() {
+    return this.enemy().sideviewFolder || 'sv_actors';
+};
+
+Game_Enemy.prototype.sideviewNoMirror = function() {
+    return this.enemy().sideviewNoMirror || false;
+};
+
 Game_Enemy.prototype.spriteScaleX = function() {
-    if (this.hasSVBattler()) return this.enemy().spriteScaleX * -1;
+    if (this.hasSVBattler()) {
+      if (this.sideviewNoMirror()) return this.enemy().spriteScaleX;
+      return this.enemy().spriteScaleX * -1;
+    }
     return this.enemy().spriteScaleX;
 };
 
@@ -2399,7 +2430,13 @@ Sprite_Enemy.prototype.setBattler = function(battler) {
 };
 
 Sprite_Enemy.prototype.setMirror = function(value) {
-    if (this._svBattlerEnabled) value = !value;
+    if (this._svBattlerEnabled) {
+      if (this._enemy && this._enemy.sideviewNoMirror()) {
+        // preserve natural direction (no inversion)
+      } else {
+        value = !value;
+      }
+    }
     Sprite_Battler.prototype.setMirror.call(this, value);
 };
 
@@ -2519,7 +2556,12 @@ Sprite_Enemy.prototype.updateSVBitmap = function() {
     if (this._svBattlerEnabled && this._svBattlerName !== name) {
       this._createdDummyMainSprite = false;
       this._svBattlerName = name;
-      this._mainSprite.bitmap = ImageManager.loadSvActor(name);
+      var folder = this._enemy.sideviewFolder();
+      if (folder === 'sv_enemies') {
+        this._mainSprite.bitmap = ImageManager.loadSvEnemy(name);
+      } else {
+        this._mainSprite.bitmap = ImageManager.loadSvActor(name);
+      }
       this.adjustAnchor();
       this.refreshMotion();
       this.updateScale();
@@ -2562,6 +2604,22 @@ Sprite_Enemy.prototype.updateSVFrame = function() {
     var bitmap = this._mainSprite.bitmap;
     if (bitmap.width <= 0) return;
     this._effectTarget = this._mainSprite;
+    if (this._enemy && this._enemy.sideviewFrames() > 0) {
+      var maxFrames = this._enemy.sideviewFrames();
+      var rows = this._enemy.sideviewRows() || 1;
+      var cw = bitmap.width / maxFrames;
+      var ch = bitmap.height / rows;
+      var cx = (this._pattern % maxFrames) * cw;
+      var cy = 0;
+      var cdh = 0;
+      if (this._effectType === 'bossCollapse') {
+        cdh = ch - this._effectDuration;
+      }
+      this._mainSprite.setFrame(cx, cy, cw, ch - cdh);
+      this.adjustMainBitmapSettings(bitmap);
+      this.adjustSVShadowSettings();
+      return;
+    }
     var motionIndex = this._motion ? this._motion.index : 0;
     var pattern = this._pattern < 3 ? this._pattern : 1;
     var cw = bitmap.width / 9;
@@ -2583,8 +2641,10 @@ Sprite_Enemy.prototype.adjustMainBitmapSettings = function(bitmap) {
     this._adjustMainBitmapSettings = true;
     var svw = this._enemy.sideviewWidth();
     var svh = this._enemy.sideviewHeight();
-    if (svw === 'auto') svw = bitmap.width / 9;
-    if (svh === 'auto') svh = bitmap.height / 6;
+    var cols = (this._enemy && this._enemy.sideviewFrames() > 0) ? this._enemy.sideviewFrames() : 9;
+    var rows = (this._enemy && this._enemy.sideviewFrames() > 0) ? (this._enemy.sideviewRows() || 1) : 6;
+    if (svw === 'auto') svw = bitmap.width / cols;
+    if (svh === 'auto') svh = bitmap.height / rows;
     svw = Math.floor(Math.abs(svw * this._enemy.spriteScaleX()));
     svh = Math.floor(Math.abs(svh * this._enemy.spriteScaleY()));
     this.bitmap = new Bitmap(svw, svh);
@@ -2594,8 +2654,9 @@ Sprite_Enemy.prototype.adjustSVShadowSettings = function() {
     if (this._enemy.showSideviewShadow()) this._shadowSprite.opacity = 255;
     var scaleX = this._enemy.sideviewShadowScaleX();
     var scaleY = this._enemy.sideviewShadowScaleY();
-    if (scaleX === 'auto') scaleX = this._mainSprite.bitmap.width / 9 / 64;
-    if (scaleY === 'auto') scaleY = this._mainSprite.bitmap.width / 9 / 64;
+    var cols = (this._enemy && this._enemy.sideviewFrames() > 0) ? this._enemy.sideviewFrames() : 9;
+    if (scaleX === 'auto') scaleX = this._mainSprite.bitmap.width / cols / 64;
+    if (scaleY === 'auto') scaleY = this._mainSprite.bitmap.width / cols / 64;
     this._shadowSprite.scale.x = scaleX;
     this._shadowSprite.scale.y = scaleY;
 };
@@ -2636,6 +2697,14 @@ Sprite_Enemy.prototype.setupWeaponAnimation = function() {
 
 Sprite_Enemy.prototype.updateMotionCount = function() {
     if (!this._svBattlerEnabled) return;
+    if (this._enemy && this._enemy.sideviewFrames() > 0) {
+      if (++this._motionCount >= this.motionSpeed()) {
+        var maxFrames = this._enemy.sideviewFrames();
+        this._pattern = (this._pattern + 1) % maxFrames;
+        this._motionCount = 0;
+      }
+      return;
+    }
     if (this._motion && ++this._motionCount >= this.motionSpeed()) {
       if (this._motion.loop) {
         this._pattern = (this._pattern + 1) % 4;

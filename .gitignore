@@ -5,3 +5,4 @@ save/
 # Temporary & Extracted Directories
 talesofthedarktime-rpg/
 .gemini/
+*.bak

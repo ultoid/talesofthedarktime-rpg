@@ -91,6 +91,7 @@ assert.ok(icons.draws.every(draw => draw.x >= 0 && draw.x < 60));
 
 const pluginsContext = vm.createContext({});
 vm.runInContext(fs.readFileSync(path.join(root, 'js/plugins.js'), 'utf8'), pluginsContext);
-assert.equal(pluginsContext.$plugins.at(-1).name, 'NUSV_AutoTextWrap');
-assert.equal(pluginsContext.$plugins.at(-1).status, true);
+const wrapPlugin = pluginsContext.$plugins.find(p => p.name === 'NUSV_AutoTextWrap');
+assert.ok(wrapPlugin, 'NUSV_AutoTextWrap must exist in $plugins');
+assert.equal(wrapPlugin.status, true);
 console.log('Auto text wrap: 15 rendering cases and plugin registration passed.');

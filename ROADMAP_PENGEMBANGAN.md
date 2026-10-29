@@ -40,23 +40,27 @@ flowchart TD
 ### ⚔️ Fase 1: Combat Sandbox & Battle System Stabilization
 *Fokus: Menguji rasa pertarungan (combat feel), pacing CTB, action sequences, dan formula damage di ruangan tertutup.*
 
-- [ ] **1.1 Pembuatan Map Khusus Pengujian (`Dev_Combat_Sandbox`)**
-  - [ ] Buat 1 map kecil tertutup khusus untuk testing developer (tidak dapat diakses oleh pemain biasa).
-  - [ ] Pasang NPC Spawner Musuh:
+- [x] **1.1 Pembuatan Map Khusus Pengujian (`Dev_Combat_Sandbox`)**
+  - [x] Buat 1 map kecil tertutup khusus untuk testing developer (tidak dapat diakses oleh pemain biasa).
+  - [x] Pasang NPC Spawner Musuh:
     - NPC Dummy (musuh diam dengan HP tinggi untuk tes kalkulasi damage).
     - NPC Kelompok Musuh Ringan (tes ritme turn CTB 3 lawan 3).
     - NPC Bos Uji Coba (tes fase skill musuh & AI Core).
-  - [ ] Pasang NPC Full Heal (pemulih instan HP, MP, dan Stamina setelah battle).
-- [ ] **1.2 Kalibrasi CTB Battle System (`YEP_X_BattleSysCTB`)**
-  - [ ] Periksa kecepatan pengisian *Charge Turn Bar*:
+  - [x] Pasang NPC Full Heal (pemulih instan HP, MP, dan Stamina setelah battle).
+- [x] **1.2 Kalibrasi CTB Battle System (`YEP_X_BattleSysCTB`)**
+  - [x] Periksa kecepatan pengisian *Charge Turn Bar*:
     - Pastikan Agility (AGI) berpengaruh nyata pada urutan giliran tanpa membuat musuh terlalu sering memotong antrean secara berlebihan.
-  - [ ] Tampilan giliran (Turn Order Icon): Pastikan ikon wajah/nama karakter di bar antrean CTB tampak jelas dan tidak tumpang tindih.
+  - [x] Tampilan giliran (Turn Order Icon): Pastikan ikon wajah/nama karakter di bar antrean CTB tampak jelas dan tidak tumpang tindih.
 - [ ] **1.3 Action Sequence & Dampak Serangan (*Game Feel*)**
   - [ ] Kustomisasi urutan aksi serang (`YEP_X_ActSeqPack1/2/3`) untuk karakter utama:
     - **Hector:** Gerakan melangkah maju $\to$ tebasan pedang dengan efek kilat $\to$ guncangan layar (*Screen Shake*) halus saat kena musuh.
     - **Cassian:** Posisi mengangkat tongkat $\to$ lingkaran sihir di bawah kaki $\to$ proyektil doa suci melesat ke target.
     - **Rama:** Animasi hembusan angin/aeromancy berkecepatan tinggi.
-  - [ ] Pastikan animasi popup angka kerusakan (*damage popup*) dan warna teks (Critical = Emas/Merah, Heal = Hijau) terbaca tegas.
+  - [x] Tipografi Vektor HD & Overhead Positioning (`NUSV_BattlePopups`):
+    - Angka damage & heal melayang rapi di atas kepala battler (overhead origin), bebas overlap multi-hit (+22px cascade).
+    - Menggunakan font RPG HD (`BattleFont` / `final-fantasy-advance-ds.otf`) dengan outline tegas 5px dan drop shadow pekat.
+    - Palet warna jelas: Normal Damage Putih/Coral, Critical Emas (#FFD700) + Badge "CRITICAL!", Heal Zamrud (#2ECC71), Miss Perak (#E5E7EB).
+    - Visual Enemy Select Nameplate dipindahkan ke atas kepala musuh (overhead dark glass pill, 38px clearance).
   - [ ] Berikan efek suara benturan (*Sound FX*) yang berbobot saat serangan mendarat.
 - [ ] **1.4 Validasi Formula Stat & Efek Status (States)**
   - [ ] Uji formula pertempuran dari [`Sistem_Stat_&_Formula_Turn_Based.md`](file:///mnt/DC9EA2C29EA29494/Nusvanir_Vault/06_Sistem%20Game%20&%20Ekonomi/Sistem_Stat_&_Formula_Turn_Based.md) melalui plugin `NUSV_DamageCore` dan `damage_simulator.html`.
