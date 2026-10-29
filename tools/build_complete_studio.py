@@ -358,6 +358,7 @@ HTML_CONTENT = r'''<!DOCTYPE html>
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .stat-sidebar-header h3 {
@@ -373,15 +374,34 @@ HTML_CONTENT = r'''<!DOCTYPE html>
         .stat-sidebar-content {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
+            overflow-x: hidden;
+            padding: 16px 16px 60px 16px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
+        }
+
+        .stat-sidebar-content > * {
+            flex-shrink: 0;
+        }
+
+        .stat-sidebar-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .stat-sidebar-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .stat-sidebar-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        .stat-sidebar-content::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
         }
 
         @media (max-width: 1400px) {
             .stat-sidebar {
-                width: 390px;
+                width: 410px;
             }
         }
 
@@ -2498,190 +2518,184 @@ HTML_CONTENT = r'''<!DOCTYPE html>
             const classMaxLvl = parseInt(getTagVal(actorClass.note || '', 'Class Max Level', '0'), 10) || defaultMaxLvl;
 
             container.innerHTML = `
-                <!-- DUAL LEVEL SLIDERS (BASE LEVEL & CLASS LEVEL) -->
+                <!-- 1. DUAL LEVEL SLIDERS (BASE LEVEL & CLASS LEVEL) -->
                 <div class="card" style="border: 1px solid rgba(59, 130, 246, 0.4); margin-bottom: 0;">
-                    <div class="card-header" style="background: linear-gradient(90deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); padding: 10px 14px;">
-                        <h2 style="font-size:0.9rem; margin:0;">🎚️ Level Simulation</h2>
+                    <div class="card-header" style="background: linear-gradient(90deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); padding: 8px 12px;">
+                        <h2 style="font-size:0.85rem; margin:0; display:flex; align-items:center; gap:6px;">🎚️ Level Simulation</h2>
                         <div style="display:flex; gap:6px;">
-                            <span class="badge-sub" style="font-size:0.8rem; font-weight:700; color:#38bdf8;" id="actorSimBaseBadge">Base Lv ${simBaseLevel}</span>
-                            <span class="badge-sub" style="font-size:0.8rem; font-weight:700; color:#c084fc;" id="actorSimClassBadge">Class Lv ${simClassLevel} / ${classMaxLvl}</span>
+                            <span class="badge-sub" style="font-size:0.75rem; font-weight:700; color:#38bdf8;" id="actorSimBaseBadge">Base Lv ${simBaseLevel}</span>
+                            <span class="badge-sub" style="font-size:0.75rem; font-weight:700; color:#c084fc;" id="actorSimClassBadge">Class Lv ${simClassLevel} / ${classMaxLvl}</span>
                         </div>
                     </div>
-                    <div class="card-body" style="padding: 12px 14px;">
-                        <!-- 1. BASE LEVEL SLIDER -->
-                        <div style="margin-bottom:12px;">
+                    <div class="card-body" style="padding: 10px 12px; display:flex; flex-direction:column; gap:10px;">
+                        <!-- Base Level Slider -->
+                        <div>
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                <label style="font-weight:700; font-size:0.8rem; margin:0;" title="Level karakter utama yang menaikkan stat pertumbuhan alami (Base Growth)">👤 Base Level (1 - 99):</label>
+                                <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;">👤 Base Level (1 - 99):</label>
                             </div>
                             <div style="display:flex; gap:8px; align-items:center;">
                                 <input type="range" min="1" max="99" value="${simBaseLevel}" class="form-control" style="flex:1; cursor:pointer;" 
                                        id="actorSimBaseSlider" oninput="onActorSimBaseLevelChange(this.value)">
-                                <input type="number" min="1" max="99" value="${simBaseLevel}" class="form-control" style="width:60px; text-align:center; padding:4px 6px;" 
+                                <input type="number" min="1" max="99" value="${simBaseLevel}" class="form-control" style="width:55px; text-align:center; padding:3px 4px; font-weight:700; font-size:0.85rem;" 
                                        id="actorSimBaseInput" onchange="onActorSimBaseLevelChange(this.value)">
                             </div>
                         </div>
 
-                        <!-- 2. CLASS LEVEL SLIDER -->
+                        <!-- Class Level Slider -->
                         <div>
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                <label style="font-weight:700; font-size:0.8rem; margin:0;" title="Level penguasaan kelas yang menaikkan stat berdasarkan scaling IV (1-10)">🛡️ Class Level (1 - ${classMaxLvl}):</label>
-                                <span class="badge-sub" style="font-size:0.75rem; color:#a78bfa;">${escapeHtml(actorClass.name)}</span>
+                                <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;">🛡️ Class Level (1 - ${classMaxLvl}):</label>
+                                <span class="badge-sub" style="font-size:0.72rem; color:#a78bfa; padding:1px 6px;">${escapeHtml(actorClass.name)}</span>
                             </div>
                             <div style="display:flex; gap:8px; align-items:center;">
                                 <input type="range" min="1" max="${classMaxLvl}" value="${simClassLevel}" class="form-control" style="flex:1; cursor:pointer;" 
                                        id="actorSimClassSlider" oninput="onActorSimClassLevelChange(this.value)">
-                                <input type="number" min="1" max="${classMaxLvl}" value="${simClassLevel}" class="form-control" style="width:60px; text-align:center; padding:4px 6px;" 
+                                <input type="number" min="1" max="${classMaxLvl}" value="${simClassLevel}" class="form-control" style="width:55px; text-align:center; padding:3px 4px; font-weight:700; font-size:0.85rem;" 
                                        id="actorSimClassInput" onchange="onActorSimClassLevelChange(this.value)">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 1. SUMBER DAYA VITAL -->
-                <div class="card" style="margin-bottom:0;">
-                    <div class="card-header" style="padding:8px 12px;"><h2 style="font-size:0.85rem; margin:0; color:#38bdf8;">❤️ Vital Resources</h2></div>
-                    <div class="card-body" style="padding:10px 12px;">
-                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
-                            <div class="stat-card-input" style="border-left: 3px solid #f87171; padding:6px 8px;">
-                                <div style="font-size:0.72rem; color:var(--text-muted);">Max HP</div>
-                                <div style="font-size:1.15rem; font-weight:700; color:#f87171;" id="sim-mhp">0</div>
-                                <div style="font-size:0.62rem; color:var(--text-muted);" id="sim-mhp-detail">Class+VIT+Eq</div>
-                            </div>
-                            <div class="stat-card-input" style="border-left: 3px solid #60a5fa; padding:6px 8px;">
-                                <div style="font-size:0.72rem; color:var(--text-muted);">Max MP</div>
-                                <div style="font-size:1.15rem; font-weight:700; color:#60a5fa;" id="sim-mmp">0</div>
-                                <div style="font-size:0.62rem; color:var(--text-muted);" id="sim-mmp-detail">Class+INT+Eq</div>
-                            </div>
-                            <div class="stat-card-input" style="border-left: 3px solid #38bdf8; padding:6px 8px;">
-                                <div style="font-size:0.72rem; color:var(--text-muted);">Max SP</div>
-                                <div style="font-size:1.15rem; font-weight:700; color:#38bdf8;" id="sim-msp">0</div>
-                                <div style="font-size:0.62rem; color:var(--text-muted);" id="sim-msp-detail">Base50+VIT+Eq</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. TOTAL 6 ATRIBUT DASAR (ACTOR BASE + CLASS IV + GROWTH + EQ) -->
+                <!-- 2. VITAL RESOURCES & 6 CORE STATS -->
                 <div class="card" style="margin-bottom:0;">
                     <div class="card-header" style="padding:8px 12px;">
-                        <h2 style="font-size:0.85rem; margin:0; color:#f59e0b;">📊 Total 6 Core Stats</h2>
+                        <h2 style="font-size:0.85rem; margin:0; color:#38bdf8;">📊 Vital Resources &amp; 6 Core Stats</h2>
                         <span style="font-size:0.7rem; color:var(--text-muted);">Actor + Class IV + Level + Eq</span>
                     </div>
-                    <div class="card-body" style="padding:10px 12px;">
+                    <div class="card-body" style="padding:10px 12px; display:flex; flex-direction:column; gap:10px;">
+                        <!-- Row Vitals: HP, MP, SP -->
+                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+                            <div class="stat-card-input" style="border-left: 3px solid #f87171; padding:6px 8px; min-height:56px; justify-content:space-between;">
+                                <div style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">Max HP</div>
+                                <div style="font-size:1.15rem; font-weight:700; color:#f87171; line-height:1.1;" id="sim-mhp">0</div>
+                                <div style="font-size:0.6rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="sim-mhp-detail">Class+VIT+Eq</div>
+                            </div>
+                            <div class="stat-card-input" style="border-left: 3px solid #60a5fa; padding:6px 8px; min-height:56px; justify-content:space-between;">
+                                <div style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">Max MP</div>
+                                <div style="font-size:1.15rem; font-weight:700; color:#60a5fa; line-height:1.1;" id="sim-mmp">0</div>
+                                <div style="font-size:0.6rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="sim-mmp-detail">Class+INT+Eq</div>
+                            </div>
+                            <div class="stat-card-input" style="border-left: 3px solid #38bdf8; padding:6px 8px; min-height:56px; justify-content:space-between;">
+                                <div style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">Max SP</div>
+                                <div style="font-size:1.15rem; font-weight:700; color:#38bdf8; line-height:1.1;" id="sim-msp">0</div>
+                                <div style="font-size:0.6rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="sim-msp-detail">Base50+VIT+Eq</div>
+                            </div>
+                        </div>
+
+                        <!-- 6 Core Attributes (2 columns: Physical & Special) -->
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
                             ${CORE_ATTRIBUTES.map(a => `
-                                <div class="stat-card-input" style="border-left: 2px solid ${a.color}; padding:6px 8px;">
+                                <div class="stat-card-input" style="border-left: 3px solid ${a.color}; padding:6px 8px; min-height:52px; justify-content:space-between;">
                                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                                        <span style="color:${a.color}; font-weight:700; font-size:0.8rem;">${a.icon} ${a.code}</span>
-                                        <span style="font-size:1.15rem; font-weight:700; color:${a.color};" id="sim-core-${a.code}">0</span>
+                                        <span style="color:${a.color}; font-weight:700; font-size:0.78rem;">${a.icon} ${a.code}</span>
+                                        <span style="font-size:1.15rem; font-weight:700; color:${a.color}; line-height:1.1;" id="sim-core-${a.code}">0</span>
                                     </div>
-                                    <div style="font-size:0.65rem; color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" id="sim-core-${a.code}-detail" title="">Base + ClsIV + Eq</div>
+                                    <div style="font-size:0.62rem; color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" id="sim-core-${a.code}-detail" title="">Base + ClsIV + Eq</div>
                                 </div>
                             `).join('')}
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. PARAMETER TEMPUR UTAMA -->
+                <!-- 3. PARAMETER TEMPUR & MITIGASI -->
                 <div class="card" style="margin-bottom:0;">
-                    <div class="card-header" style="padding:8px 12px;"><h2 style="font-size:0.85rem; margin:0; color:#fb923c;">⚔️ Combat Parameters</h2></div>
-                    <div class="card-body" style="padding:10px 12px;">
-                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
-                            <div class="stat-card-input" style="border-left: 2px solid #fb923c; padding:6px 8px;">
-                                <div style="font-size:0.72rem; color:var(--text-muted);">⚔️ P.ATK</div>
-                                <div style="font-size:1.1rem; font-weight:700; color:#fb923c;" id="sim-atk">0</div>
-                                <div style="font-size:0.62rem; color:var(--text-muted);" id="sim-atk-detail">STR/DEX+Eq</div>
+                    <div class="card-header" style="padding:8px 12px;">
+                        <h2 style="font-size:0.85rem; margin:0; color:#fb923c;">⚔️ Combat Parameters &amp; Mitigation</h2>
+                    </div>
+                    <div class="card-body" style="padding:10px 12px; display:flex; flex-direction:column; gap:10px;">
+                        <!-- Primary Combat Parameters (3 columns) -->
+                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px;">
+                            <div class="stat-card-input" style="border-left: 2px solid #fb923c; padding:5px 6px; min-height:50px; justify-content:space-between;">
+                                <div style="font-size:0.68rem; color:var(--text-muted);">⚔️ P.ATK</div>
+                                <div style="font-size:1.05rem; font-weight:700; color:#fb923c; line-height:1.1;" id="sim-atk">0</div>
+                                <div style="font-size:0.6rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="sim-atk-detail">STR/DEX+Eq</div>
                             </div>
-                            <div class="stat-card-input" style="border-left: 2px solid #34d399; padding:6px 8px;">
-                                <div style="font-size:0.72rem; color:var(--text-muted);">🛡️ P.DEF</div>
-                                <div style="font-size:1.1rem; font-weight:700; color:#34d399;" id="sim-def">0</div>
-                                <div style="font-size:0.62rem; color:var(--text-muted);">VIT+Armor</div>
+                            <div class="stat-card-input" style="border-left: 2px solid #34d399; padding:5px 6px; min-height:50px; justify-content:space-between;">
+                                <div style="font-size:0.68rem; color:var(--text-muted);">🛡️ P.DEF</div>
+                                <div style="font-size:1.05rem; font-weight:700; color:#34d399; line-height:1.1;" id="sim-def">0</div>
+                                <div style="font-size:0.6rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">VIT+Armor</div>
                             </div>
-                            <div class="stat-card-input" style="border-left: 2px solid #a78bfa; padding:6px 8px;">
-                                <div style="font-size:0.72rem; color:var(--text-muted);">🔮 M.ATK</div>
-                                <div style="font-size:1.1rem; font-weight:700; color:#a78bfa;" id="sim-mat">0</div>
-                                <div style="font-size:0.62rem; color:var(--text-muted);">INT+Weap</div>
+                            <div class="stat-card-input" style="border-left: 2px solid #a78bfa; padding:5px 6px; min-height:50px; justify-content:space-between;">
+                                <div style="font-size:0.68rem; color:var(--text-muted);">🔮 M.ATK</div>
+                                <div style="font-size:1.05rem; font-weight:700; color:#a78bfa; line-height:1.1;" id="sim-mat">0</div>
+                                <div style="font-size:0.6rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">INT+Weap</div>
                             </div>
-                            <div class="stat-card-input" style="border-left: 2px solid #38bdf8; padding:6px 8px;">
-                                <div style="font-size:0.72rem; color:var(--text-muted);">🔰 M.MDF</div>
-                                <div style="font-size:1.1rem; font-weight:700; color:#38bdf8;" id="sim-mdf">0</div>
-                                <div style="font-size:0.62rem; color:var(--text-muted);">INT/VIT+Eq</div>
+                            <div class="stat-card-input" style="border-left: 2px solid #38bdf8; padding:5px 6px; min-height:50px; justify-content:space-between;">
+                                <div style="font-size:0.68rem; color:var(--text-muted);">🔰 M.MDF</div>
+                                <div style="font-size:1.05rem; font-weight:700; color:#38bdf8; line-height:1.1;" id="sim-mdf">0</div>
+                                <div style="font-size:0.6rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">INT/VIT+Eq</div>
                             </div>
-                            <div class="stat-card-input" style="border-left: 2px solid #facc15; padding:6px 8px;">
-                                <div style="font-size:0.72rem; color:var(--text-muted);">⚡ Speed</div>
-                                <div style="font-size:1.1rem; font-weight:700; color:#facc15;" id="sim-spd">0</div>
-                                <div style="font-size:0.62rem; color:var(--text-muted);">AGI+Equip</div>
+                            <div class="stat-card-input" style="border-left: 2px solid #facc15; padding:5px 6px; min-height:50px; justify-content:space-between;">
+                                <div style="font-size:0.68rem; color:var(--text-muted);">⚡ Speed</div>
+                                <div style="font-size:1.05rem; font-weight:700; color:#facc15; line-height:1.1;" id="sim-spd">0</div>
+                                <div style="font-size:0.6rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">AGI+Equip</div>
                             </div>
-                            <div class="stat-card-input" style="border-left: 2px solid #4ade80; padding:6px 8px;">
-                                <div style="font-size:0.72rem; color:var(--text-muted);">🍀 Luck</div>
-                                <div style="font-size:1.1rem; font-weight:700; color:#4ade80;" id="sim-luk">0</div>
-                                <div style="font-size:0.62rem; color:var(--text-muted);">LUK+Equip</div>
+                            <div class="stat-card-input" style="border-left: 2px solid #4ade80; padding:5px 6px; min-height:50px; justify-content:space-between;">
+                                <div style="font-size:0.68rem; color:var(--text-muted);">🍀 Luck</div>
+                                <div style="font-size:1.05rem; font-weight:700; color:#4ade80; line-height:1.1;" id="sim-luk">0</div>
+                                <div style="font-size:0.6rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">LUK+Equip</div>
+                            </div>
+                        </div>
+
+                        <!-- Precision & Mitigation (4 columns chip badges) -->
+                        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:4px; background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:6px;">
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#facc15;">🎯 HIT</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:#facc15;" id="sim-hit">0%</div>
+                            </div>
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#10b981;">💨 EVA</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:#10b981;" id="sim-eva">0%</div>
+                            </div>
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#fb923c;">💥 CRI</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:#fb923c;" id="sim-cri">0%</div>
+                            </div>
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#ef4444;">🗡️ CDMG</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:#ef4444;" id="sim-cdmg">150%</div>
+                            </div>
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#4ade80;">🛡️ CEV</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:#4ade80;" id="sim-cev">0%</div>
+                            </div>
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#60a5fa;">🛡️ GRD</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:#60a5fa;" id="sim-grd">100%</div>
+                            </div>
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#34d399;">🔰 PDR</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:#34d399;" id="sim-pdr">0%</div>
+                            </div>
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#38bdf8;">💠 MDR</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:#38bdf8;" id="sim-mdr">0%</div>
+                            </div>
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#f87171;">❤️ HRG</div>
+                                <div style="font-size:0.82rem; font-weight:700; color:#f87171;" id="sim-hrg">0%/T</div>
+                            </div>
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#38bdf8;">🔋 TRG</div>
+                                <div style="font-size:0.82rem; font-weight:700; color:#38bdf8;" id="sim-trg">3%/T</div>
+                            </div>
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#f59e0b;">🏹 ArPen</div>
+                                <div style="font-size:0.82rem; font-weight:700; color:#f59e0b;" id="sim-armpen">0%</div>
+                            </div>
+                            <div style="padding:3px 4px; text-align:center;">
+                                <div style="font-size:0.65rem; color:#a78bfa;">🔮 MgPen</div>
+                                <div style="font-size:0.82rem; font-weight:700; color:#a78bfa;" id="sim-magpen">0%</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 4. DERIVED COMBAT STATS -->
+                <!-- 4. ACTIVE SETS & ELEMENTS -->
                 <div class="card" style="margin-bottom:0;">
-                    <div class="card-header" style="padding:8px 12px;"><h2 style="font-size:0.85rem; margin:0; color:#a855f7;">⚡ Precision &amp; Mitigation</h2></div>
-                    <div class="card-body" style="padding:10px 12px;">
-                        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px;">
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#facc15;">🎯 HIT</label>
-                                <div style="font-size:0.9rem; font-weight:700; color:#facc15;" id="sim-hit">0%</div>
-                            </div>
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#10b981;">💨 EVA</label>
-                                <div style="font-size:0.9rem; font-weight:700; color:#10b981;" id="sim-eva">0%</div>
-                            </div>
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#fb923c;">💥 CRI</label>
-                                <div style="font-size:0.9rem; font-weight:700; color:#fb923c;" id="sim-cri">0%</div>
-                            </div>
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#ef4444;">🗡️ CDMG</label>
-                                <div style="font-size:0.9rem; font-weight:700; color:#ef4444;" id="sim-cdmg">150%</div>
-                            </div>
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#4ade80;">🛡️ CEV</label>
-                                <div style="font-size:0.9rem; font-weight:700; color:#4ade80;" id="sim-cev">0%</div>
-                            </div>
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#60a5fa;">🛡️ GRD</label>
-                                <div style="font-size:0.9rem; font-weight:700; color:#60a5fa;" id="sim-grd">100%</div>
-                            </div>
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#34d399;">🔰 PDR</label>
-                                <div style="font-size:0.9rem; font-weight:700; color:#34d399;" id="sim-pdr">0%</div>
-                            </div>
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#38bdf8;">💠 MDR</label>
-                                <div style="font-size:0.9rem; font-weight:700; color:#38bdf8;" id="sim-mdr">0%</div>
-                            </div>
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#f87171;">❤️ HRG</label>
-                                <div style="font-size:0.85rem; font-weight:700; color:#f87171;" id="sim-hrg">0%/T</div>
-                            </div>
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#38bdf8;">🔋 TRG</label>
-                                <div style="font-size:0.85rem; font-weight:700; color:#38bdf8;" id="sim-trg">3%/T</div>
-                            </div>
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#f59e0b;">🏹 ArPen</label>
-                                <div style="font-size:0.85rem; font-weight:700; color:#f59e0b;" id="sim-armpen">0%</div>
-                            </div>
-                            <div class="stat-card-input" style="padding:5px 6px;">
-                                <label style="font-size:0.7rem; color:#a78bfa;">🔮 MgPen</label>
-                                <div style="font-size:0.85rem; font-weight:700; color:#a78bfa;" id="sim-magpen">0%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. SET BONUS & ELEMEN -->
-                <div class="card" style="margin-bottom:0;">
-                    <div class="card-header" style="padding:8px 12px;"><h2 style="font-size:0.85rem; margin:0;">✨ Active Sets &amp; Elements</h2></div>
-                    <div class="card-body" style="padding:10px 12px;">
+                    <div class="card-header" style="padding:8px 12px;"><h2 style="font-size:0.85rem; margin:0; color:#eab308;">✨ Active Sets &amp; Elements</h2></div>
+                    <div class="card-body" style="padding:8px 12px;">
                         <div id="sim-extra-tags" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
                             <span style="font-size:0.75rem; color:var(--text-muted);">(None)</span>
                         </div>
