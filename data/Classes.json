@@ -93,7 +93,7 @@
       }
     ],
     "name": "Fighter",
-    "note": "<Class Tier: 1>\n<Class Icon: 96>\n<Class Description>\nPetarung yang mengandalkan keberanian, latihan dasar, dan naluri tempur untuk menghadapi bahaya Nusvanir.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 9>\n<Base INT: 1>\n<Base DEX: 3>\n<Base LUK: 4>\n<Base AGI: 4>\n<Base VIT: 7>\n<Class Stat Growth: +2 STR, +1 VIT>\n",
+    "note": "<Class Max Level: 10>\n<Base LUK: 1>\n<Base DEX: 1>\n<Base AGI: 2>\n<Base VIT: 3>\n<Base STR: 4>\n<Class Tier: 1>\n<Class Icon: 96>\n<Class Description>\nPetarung yang mengandalkan keberanian, latihan dasar, dan naluri tempur untuk menghadapi bahaya Nusvanir.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base INT: 1>",
     "params": [
       [
         0,

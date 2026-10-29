@@ -7,7 +7,7 @@
     "characterName": "hero_overworld",
     "classId": 32,
     "equips": [
-      40,
+      0,
       1,
       0,
       41,
@@ -22,7 +22,7 @@
     "maxLevel": 50,
     "name": "Cassian",
     "nickname": "",
-    "note": "<Base INT: 20>",
+    "note": "<Base INT: 0>",
     "profile": "Sorang Avesari yang jenius, realistis, dan jujur. Ia menyampaikan pemikirannya secara blak-blakan, dengan sikap dingin dan cuek. Ekspresi dingin sering terlihat di wajahnya, tetapi ia juga memiliki sisi periang: pada saat tertentu, ia dapat tertawa dan memperlihatkan suasana hati yang lebih cerah."
   },
   {
@@ -108,12 +108,12 @@
     "classId": 1,
     "equips": [
       1,
-      10,
-      1,
-      5,
-      8,
-      15,
-      16
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
     ],
     "faceIndex": 0,
     "faceName": "Avalerion",
@@ -122,7 +122,7 @@
     "maxLevel": 10,
     "name": "FIGHTER",
     "nickname": "",
-    "note": "<Second Accessory: Iron Ring>",
+    "note": "<Second Accessory: Prabha Signet>",
     "profile": ""
   },
   {
