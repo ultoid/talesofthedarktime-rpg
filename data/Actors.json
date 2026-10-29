@@ -22,7 +22,7 @@
     "maxLevel": 50,
     "name": "Cassian",
     "nickname": "",
-    "note": "",
+    "note": "<Base INT: 20>",
     "profile": "Sorang Avesari yang jenius, realistis, dan jujur. Ia menyampaikan pemikirannya secara blak-blakan, dengan sikap dingin dan cuek. Ekspresi dingin sering terlihat di wajahnya, tetapi ia juga memiliki sisi periang: pada saat tertentu, ia dapat tertawa dan memperlihatkan suasana hati yang lebih cerah."
   },
   {
@@ -47,7 +47,7 @@
     "maxLevel": 50,
     "name": "Hector",
     "nickname": "",
-    "note": "",
+    "note": "<Base DEX: 12>\n<Base STR: 30>",
     "profile": ""
   },
   {

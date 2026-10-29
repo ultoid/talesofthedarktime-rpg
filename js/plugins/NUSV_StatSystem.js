@@ -399,20 +399,20 @@ NUSV.StatSystem = NUSV.StatSystem || {};
                 return Math.round(baseFromClass + (this.int * 8));
             case 2: // ATK (Physical Attack)
                 if (this.isFinesseWeaponUser()) {
-                    return Math.round((this.dex * 2) + (this.str * 0.5));
+                    return Math.round(baseFromClass + (this.dex * 2) + (this.str * 0.5));
                 } else {
-                    return Math.round((this.str * 2) + (this.dex * 0.5));
+                    return Math.round(baseFromClass + (this.str * 2) + (this.dex * 0.5));
                 }
             case 3: // DEF (Physical Defense)
-                return Math.round((this.vit * 1.5) + (this.str * 0.5));
+                return Math.round(baseFromClass + (this.vit * 1.5) + (this.str * 0.5));
             case 4: // MAT (Magic Attack)
-                return Math.round(this.int * 2);
+                return Math.round(baseFromClass + (this.int * 2));
             case 5: // MDF (Magic Defense)
-                return Math.round((this.int * 1.2) + (this.vit * 0.8));
+                return Math.round(baseFromClass + (this.int * 1.2) + (this.vit * 0.8));
             case 6: // AGI (Action Speed)
-                return Math.round(this.agi * 1.5);
+                return Math.round(baseFromClass + (this.agi * 1.5));
             case 7: // LUK (Luck)
-                return Math.round(this.luk);
+                return Math.round(baseFromClass + this.luk);
             default:
                 return baseFromClass;
         }

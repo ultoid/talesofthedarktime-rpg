@@ -8520,7 +8520,7 @@
       }
     ],
     "name": "Paladin",
-    "note": "<Class Tier: 4>\n<Class Icon: 96>\n<Class Change From: 6>\n<Class Description>\nKesatria suci yang memadukan kekuatan senjata dengan keyakinan, sumpah, dan perlindungan terhadap mereka yang lemah.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 38>\n<Base INT: 18>\n<Base DEX: 18>\n<Base LUK: 12>\n<Base AGI: 16>\n<Base VIT: 55>\n<Class Stat Growth: +2 VIT, +1 STR, +1 INT, +1 DEX>\n",
+    "note": "<Base LUK: 5>\n<Base AGI: 5>\n<Base DEX: 1>\n<Base INT: 1>\n<Class Tier: 4>\n<Class Icon: 96>\n<Class Change From: 6>\n<Class Description>\nKesatria suci yang memadukan kekuatan senjata dengan keyakinan, sumpah, dan perlindungan terhadap mereka yang lemah.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 38>\n<Base VIT: 55>\n<Class Stat Growth: +2 VIT, +1 STR, +1 INT, +1 DEX>",
     "params": [
       [
         0,
@@ -29021,7 +29021,7 @@
       }
     ],
     "name": "Priest",
-    "note": "<Class Tier: 4>\n<Class Icon: 74>\n<Class Change From: 22>\n<Class Description>\nRohaniwan tinggi yang menguasai doa dan mukjizat untuk menyembuhkan, melindungi, dan menuntun para pengikutnya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 10>\n<Base INT: 52>\n<Base DEX: 20>\n<Base LUK: 18>\n<Base AGI: 18>\n<Base VIT: 40>\n<Class Stat Growth: +2 INT, +2 VIT, +1 LUK>\n",
+    "note": "<Base LUK: 4>\n<Base VIT: 7>\n<Base AGI: 1>\n<Base DEX: 2>\n<Base INT: 9>\n<Base STR: 1>\n<Class Tier: 4>\n<Class Icon: 74>\n<Class Change From: 22>\n<Class Description>\nRohaniwan tinggi yang menguasai doa dan mukjizat untuk menyembuhkan, melindungi, dan menuntun para pengikutnya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Stat Growth: +2 INT, +2 VIT, +1 LUK>",
     "params": [
       [
         0,

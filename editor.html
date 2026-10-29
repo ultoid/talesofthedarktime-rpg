@@ -1752,8 +1752,9 @@
             const mainWeap = State.weapons[actor.equips[0]];
             const isFinesse = mainWeap && (/finesse|bow|dagger|crossbow|whip/i.test(mainWeap.note || '') || mainWeap.wtypeId === 7 || mainWeap.wtypeId === 8);
 
-            const totalAtk = isFinesse ? Math.round((totalCore.DEX * 2) + (totalCore.STR * 0.5) + eqParams[2])
-                                       : Math.round((totalCore.STR * 2) + (totalCore.DEX * 0.5) + eqParams[2]);
+            const classAtk = (cls.params && cls.params[2] && cls.params[2][baseLevel]) ? cls.params[2][baseLevel] : 10;
+            const totalAtk = isFinesse ? Math.round(classAtk + (totalCore.DEX * 2) + (totalCore.STR * 0.5) + eqParams[2])
+                                       : Math.round(classAtk + (totalCore.STR * 2) + (totalCore.DEX * 0.5) + eqParams[2]);
 
             const classDef = (cls.params && cls.params[3] && cls.params[3][baseLevel]) ? cls.params[3][baseLevel] : 15;
             const totalDef = Math.round(classDef + (totalCore.VIT * 1.5) + (totalCore.STR * 0.5) + eqParams[3]);
@@ -2074,7 +2075,7 @@
             const elAtk = document.getElementById('sim-atk');
             if (elAtk) elAtk.innerText = res.totalAtk;
             const elAtkD = document.getElementById('sim-atk-detail');
-            if (elAtkD) elAtkD.innerText = res.isFinesse ? 'Finesse: (DEX×2 + STR×0.5)' : 'Melee: (STR×2 + DEX×0.5)';
+            if (elAtkD) elAtkD.innerText = res.isFinesse ? 'Base+DEX/STR+Eq' : 'Base+STR/DEX+Eq';
 
             const elDef = document.getElementById('sim-def');
             if (elDef) elDef.innerText = res.totalDef;
