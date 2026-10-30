@@ -463,7 +463,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 120,
     "name": "Iron War Axe",
     "note": "<NUSV Rarity: Common>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<NUSV Acquisition: Normal Craft / Shop>\n<NUSV Craft Recipe: Iron Ore ×6 + Ulin Wood ×2>\n<NUSV Region: Mandala / Arkananta>\n[IMPLEMENTATION] Native MV",
     "params": [
@@ -506,7 +506,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 121,
     "name": "Black Iron Axe",
     "note": "<NUSV Rarity: Uncommon>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<NUSV Acquisition: Normal Craft>\n<NUSV Craft Recipe: Black Iron Ore ×6 + Ironwood ×2>\n<NUSV Region: Mandala / Arkananta>\n[IMPLEMENTATION] Native MV",
     "params": [
@@ -549,7 +549,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 122,
     "name": "Obsidian Cleaver",
     "note": "<NUSV Rarity: Rare>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<NUSV Acquisition: Normal Craft / Elite Drop>\n<NUSV Craft Recipe: Black Iron Ore ×4 + Obsidian ×3>\n<NUSV Region: Mandala / Arkananta>\n[IMPLEMENTATION] Native MV",
     "params": [
@@ -592,7 +592,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 123,
     "name": "Adamantine War Axe",
     "note": "<NUSV Rarity: Epic>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<Armor Penetration: +15%>\n<NUSV Acquisition: Special Craft>\n<NUSV Craft Recipe: Adamantine ×6 + Butoraksa Bone ×2 + Primordial Crystal ×1>\n<NUSV Region: Mandala / Arkananta>\n[IMPLEMENTATION] YEP/custom",
     "params": [
@@ -630,7 +630,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 124,
     "name": "Mahasvara Executioner",
     "note": "<NUSV Rarity: Legendary>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<Critical Damage: +15%>\n<Armor Penetration: +18%>\n[PENDING WEAPON EFFECT] Guard Break +15%\n<NUSV Acquisition: Boss Drop / Rare Craft>\n<NUSV Craft Recipe: Mahasvara Ore ×7 + Primordial Crystal ×1 + Butoraksa Bone ×2>\n<NUSV Region: Agnitra>\n[IMPLEMENTATION] YEP/custom",
     "params": [
@@ -668,7 +668,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 125,
     "name": "Rakshadara, Axe of the Shattered Peak",
     "note": "<NUSV Rarity: Mythic>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<Critical Damage: +20%>\n<Armor Penetration: +20%>\n[PENDING WEAPON EFFECT] Guard Break +20%\n<NUSV Acquisition: Arkananta Ancient Trial / Mountain Boss Reward>\n<NUSV Craft Recipe: NOT CRAFTABLE>\n<NUSV Region: Pegunungan Arkananta>\n[IMPLEMENTATION] YEP/custom\n[SIGNATURE EFFECT] Shattered Peak: heavy skills can break Guard/Barrier and inflict massive stagger.\nMythic mountain weapon.",
     "params": [
@@ -706,7 +706,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 114,
     "name": "Iron Spear",
     "note": "<NUSV Rarity: Common>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<NUSV Acquisition: Normal Craft / Shop>\n<NUSV Craft Recipe: Iron Ore ×3 + Bamboo ×3>\n<NUSV Region: Mandala>\n[IMPLEMENTATION] Native MV",
     "params": [
@@ -744,7 +744,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 115,
     "name": "Steel Lance",
     "note": "<NUSV Rarity: Uncommon>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<Armor Penetration: +3%>\n<NUSV Acquisition: Normal Craft>\n<NUSV Craft Recipe: Steel ×3 + Ironwood ×3>\n<NUSV Region: Mandala>\n[IMPLEMENTATION] YEP/custom",
     "params": [
@@ -782,7 +782,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 116,
     "name": "Arkananta Horn Spear",
     "note": "<NUSV Rarity: Rare>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<Armor Penetration: +6%>\n<NUSV Acquisition: Normal Craft / Elite Drop>\n<NUSV Craft Recipe: Black Iron Ore ×3 + Arkananta Horn ×2 + Ulin Wood ×1>\n<NUSV Region: Pegunungan Arkananta>\n[IMPLEMENTATION] YEP/custom",
     "params": [
@@ -820,7 +820,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 117,
     "name": "Mithril Dragon Spear",
     "note": "<NUSV Rarity: Epic>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<Armor Penetration: +8%>\n[PENDING WEAPON EFFECT] Damage vs Large +10%\n<NUSV Acquisition: Special Craft>\n<NUSV Craft Recipe: Mithril ×4 + Mithril Dragon Fang ×2 + Aksuara Wood ×1>\n<NUSV Region: Agnitra>\n[IMPLEMENTATION] YEP/custom",
     "params": [
@@ -858,7 +858,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 118,
     "name": "Storm Wyvern Lance",
     "note": "<NUSV Rarity: Legendary>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<Armor Penetration: +12%>\n[PENDING WEAPON EFFECT] Damage vs Large +15%\n<Element Amplify Air: +10%>\n<NUSV Acquisition: Boss Drop / Rare Craft>\n<NUSV Craft Recipe: Orichalcum ×4 + Storm Wyvern Fang ×2 + Spirit Thread ×1>\n<NUSV Region: Thalantira>\n[IMPLEMENTATION] YEP/custom",
     "params": [
@@ -896,7 +896,7 @@
         "value": 1
       }
     ],
-    "iconIndex": 0,
+    "iconIndex": 119,
     "name": "Rangnala, Spear of the Abyssal Tide",
     "note": "<NUSV Rarity: Mythic>\n<NUSV Hand Slot: 2H Primary+Secondary>\n[PENDING WEAPON EFFECT] anti-large\n<Armor Penetration: +18%>\n[PENDING WEAPON EFFECT] Damage vs Large/Sea Monsters +20%\n[PENDING WEAPON EFFECT] Water/Storm Damage +15%\n<NUSV Acquisition: Rangkaruna Sea Boss Reward>\n<NUSV Craft Recipe: NOT CRAFTABLE>\n<NUSV Region: Laut Rangkaruna>\n[IMPLEMENTATION] YEP/custom\n[SIGNATURE EFFECT] Abyssal Harpoon: hits on Large/Boss targets build Anchor; at maximum, the target loses EVA and takes increased physical damage.\nMythic sea-monster hunting spear.",
     "params": [
