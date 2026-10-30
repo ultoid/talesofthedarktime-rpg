@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=NUSV Database Studio
+Comment=Standalone Database Editor Window for RPG Maker MV & NUSV Project
+Icon=icon/icon.png
+Exec=bash -c 'cd "$(dirname "%k")" && ./NUSV_Database_Studio.sh'
+Terminal=false
+Categories=Development;Game;
+StartupWMClass=NUSV Full Database Studio
+

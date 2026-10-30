@@ -1,0 +1,83 @@
+/**
+ * NUSV Database Studio - Central Reactive State Store
+ */
+
+const State = {
+    currentTab: 'actors',
+    pictures: [],
+    faces: [],
+    characters: [],
+    svActors: [],
+    enemiesPics: [],
+    actors: [],
+    classes: [],
+    weapons: [],
+    armors: [],
+    skills: [],
+    items: [],
+    enemies: [],
+    states: [],
+    animations: [],
+    system: {},
+    selectedIndex: 1,
+    selectedIndices: {
+        actors: 1,
+        classes: 1,
+        weapons: 1,
+        armors: 1,
+        skills: 1,
+        items: 1,
+        enemies: 1,
+        states: 1
+    },
+    hasUnsavedChanges: false,
+    classPreviewLevel: 1,
+    actorSimBaseLevel: 1,
+    actorSimClassLevel: 1,
+        armorSlotFilter: 'all',
+    weaponTypeFilter: 'all',
+    classTierFilter: 'all',
+    skillClassFilter: 'all',
+    itemCategoryFilter: 'all',
+    stateCategoryFilter: 'all'
+};
+
+// Standard definitions
+
+
+function getActiveItem() {
+    const items = getActiveList();
+    return items[State.selectedIndex] || null;
+}
+
+
+
+function getActiveList() {
+    switch (State.currentTab) {
+        case 'actors': return State.actors;
+        case 'classes': return State.classes;
+        case 'weapons': return State.weapons;
+        case 'armors': return State.armors;
+        case 'skills': return State.skills;
+        case 'items': return State.items;
+        case 'enemies': return State.enemies;
+        case 'states': return State.states;
+        default: return [];
+    }
+}
+
+
+
+function setUnsaved(status) {
+    State.hasUnsavedChanges = status;
+    if (status) {
+        if (!State.modifiedTabs) State.modifiedTabs = new Set();
+        if (State.currentTab) State.modifiedTabs.add(State.currentTab);
+    } else {
+        if (State.modifiedTabs) State.modifiedTabs.clear();
+    }
+    const badge = document.getElementById('unsavedBadge');
+    if (badge) {
+        badge.style.display = status ? 'inline-block' : 'none';
+    }
+}

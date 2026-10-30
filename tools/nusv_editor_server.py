@@ -17,6 +17,18 @@ import webbrowser
 import datetime
 from pathlib import Path
 
+# Safe IO streams for background or windowless (pythonw) execution
+if sys.stdout is None:
+    try:
+        sys.stdout = open(os.devnull, 'w')
+    except Exception:
+        pass
+if sys.stderr is None:
+    try:
+        sys.stderr = open(os.devnull, 'w')
+    except Exception:
+        pass
+
 PORT = 5050
 SCRIPT_DIR = Path(__file__).resolve().parent
 GAME_DIR = SCRIPT_DIR.parent
@@ -34,6 +46,13 @@ class NUSVEditorHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
         self.send_header("Access-Control-Allow-Private-Network", "true")
         super().end_headers()
+
+    def log_message(self, format, *args):
+        try:
+            if sys.stderr and hasattr(sys.stderr, 'write'):
+                sys.stderr.write("%s - - [%s] %s\n" % (self.address_string(), self.log_date_time_string(), format % args))
+        except Exception:
+            pass
 
     def do_OPTIONS(self):
         self.send_response(200)
@@ -199,7 +218,7 @@ def main():
             actual_port = try_port
             break
         except OSError as e:
-            if e.errno == 98: # Address already in use
+            if e.errno == 98 or getattr(e, "winerror", None) == 10048: # Address already in use
                 continue
             raise
 
