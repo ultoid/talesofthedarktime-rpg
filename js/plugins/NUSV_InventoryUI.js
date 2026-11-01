@@ -107,25 +107,242 @@ Imported.NUSV_InventoryUI = true;
         return fallback;
     }
 
-    function drawLargeIcon(window, iconIndex, x, y, size) {
-        var bitmap = ImageManager.loadSystem('IconSet');
-        var pw = Window_Base._iconWidth;
-        var ph = Window_Base._iconHeight;
-        var sx = iconIndex % 16 * pw;
-        var sy = Math.floor(iconIndex / 16) * ph;
-        window.contents.blt(bitmap, sx, sy, pw, ph, x, y, size, size);
+    var RARITY_CONFIG = {
+        'common': {
+            name: 'Common',
+            color: '#cfd8dc',
+            border: 'rgba(176, 190, 197, 0.8)',
+            accent: 'rgba(207, 216, 220, 0.95)',
+            glow: 'rgba(176, 190, 197, 0.2)',
+            bg: 'rgba(18, 28, 44, 0.85)'
+        },
+        'uncommon': {
+            name: 'Uncommon',
+            color: '#4ade80',
+            border: 'rgba(74, 222, 128, 0.85)',
+            accent: 'rgba(134, 239, 172, 0.95)',
+            glow: 'rgba(74, 222, 128, 0.25)',
+            bg: 'rgba(12, 36, 24, 0.85)'
+        },
+        'rare': {
+            name: 'Rare',
+            color: '#60a5fa',
+            border: 'rgba(59, 130, 246, 0.85)',
+            accent: 'rgba(147, 197, 253, 0.95)',
+            glow: 'rgba(59, 130, 246, 0.25)',
+            bg: 'rgba(12, 30, 58, 0.85)'
+        },
+        'epic': {
+            name: 'Epic',
+            color: '#c084fc',
+            border: 'rgba(168, 85, 247, 0.9)',
+            accent: 'rgba(216, 180, 254, 0.95)',
+            glow: 'rgba(168, 85, 247, 0.25)',
+            bg: 'rgba(36, 16, 54, 0.85)'
+        },
+        'legendary': {
+            name: 'Legendary',
+            color: '#fbbf24',
+            border: 'rgba(245, 158, 11, 0.95)',
+            accent: 'rgba(252, 211, 77, 0.95)',
+            glow: 'rgba(245, 158, 11, 0.3)',
+            bg: 'rgba(50, 36, 10, 0.85)'
+        },
+        'mythic': {
+            name: 'Mythic',
+            color: '#f87171',
+            border: 'rgba(239, 68, 68, 0.95)',
+            accent: 'rgba(252, 165, 165, 0.95)',
+            glow: 'rgba(239, 68, 68, 0.35)',
+            bg: 'rgba(52, 14, 18, 0.85)'
+        }
+    };
+
+    function getBaseItem(item) {
+        if (!item) return null;
+        if (typeof DataManager.getBaseItem === 'function') {
+            var base = DataManager.getBaseItem(item);
+            if (base) return base;
+        }
+        if (item.baseItemId) {
+            if (DataManager.isWeapon(item) && $dataWeapons && $dataWeapons[item.baseItemId]) {
+                return $dataWeapons[item.baseItemId];
+            }
+            if (DataManager.isArmor(item) && $dataArmors && $dataArmors[item.baseItemId]) {
+                return $dataArmors[item.baseItemId];
+            }
+            if (DataManager.isItem(item) && $dataItems && $dataItems[item.baseItemId]) {
+                return $dataItems[item.baseItemId];
+            }
+        }
+        return item;
     }
 
-    // Window_Base.drawFace crops the centre when a smaller width/height is
-    // requested. Inventory badges need the full portrait, just scaled down.
-    function drawPortrait(window, actor, x, y, size) {
-        var bitmap = ImageManager.loadFace(actor.faceName());
+    function itemRarityData(item) {
+        if (!item) return RARITY_CONFIG['common'];
+        var base = getBaseItem(item);
+        var rarity = '';
+
+        if (item.rarity) {
+            rarity = String(item.rarity).trim();
+        } else if (base && base.rarity) {
+            rarity = String(base.rarity).trim();
+        }
+
+        if (!rarity) {
+            var note = (item.note || '') + '\n' + (base && base !== item && base.note ? base.note : '');
+            if (note) {
+                var m = note.match(/<NUSV Rarity:\s*([^>]+)>/i);
+                if (!m) m = note.match(/<(?:Item )?Rarity:\s*([^>]+)>/i);
+                if (!m) m = note.match(/<Rarity\s+Tier:\s*([^>]+)>/i);
+                if (m) rarity = m[1].trim();
+            }
+        }
+
+        if (!rarity) rarity = 'Common';
+        var key = rarity.toLowerCase();
+        return RARITY_CONFIG[key] || RARITY_CONFIG['common'];
+    }
+
+    function drawLargeIcon(window, iconIndex, x, y, size) {
+        if (!window || !window.contents || !iconIndex) return;
+        var bitmap = ImageManager.loadSystem('IconSet');
+        if (!bitmap.isReady()) {
+            bitmap.addLoadListener(function() {
+                if (window && window.contents && typeof window.refresh === 'function') {
+                    window.refresh();
+                }
+            });
+            return;
+        }
+        var pw = Window_Base._iconWidth;
+        var ph = Window_Base._iconHeight;
+        var sx = (iconIndex % 16) * pw;
+        var sy = Math.floor(iconIndex / 16) * ph;
+        var ctx = window.contents._context;
+        var prevSmooth = ctx.imageSmoothingEnabled;
+
+        // Force nearest-neighbor scaling to prevent blur on pixel art icons
+        ctx.imageSmoothingEnabled = false;
+        if ('mozImageSmoothingEnabled' in ctx) ctx.mozImageSmoothingEnabled = false;
+        if ('webkitImageSmoothingEnabled' in ctx) ctx.webkitImageSmoothingEnabled = false;
+        if ('msImageSmoothingEnabled' in ctx) ctx.msImageSmoothingEnabled = false;
+
+        window.contents.blt(bitmap, sx, sy, pw, ph, x, y, size, size);
+
+        ctx.imageSmoothingEnabled = prevSmooth;
+        if ('mozImageSmoothingEnabled' in ctx) ctx.mozImageSmoothingEnabled = prevSmooth;
+        if ('webkitImageSmoothingEnabled' in ctx) ctx.webkitImageSmoothingEnabled = prevSmooth;
+        if ('msImageSmoothingEnabled' in ctx) ctx.msImageSmoothingEnabled = prevSmooth;
+    }
+
+    // Draws a circular portrait with a circular border for equipped status and list windows.
+    function drawCirclePortrait(window, actor, x, y, size, borderColor) {
+        if (!actor || !window || !window.contents) return;
+        var faceName = actor.faceName();
+        if (!faceName) return;
+        var bitmap = ImageManager.loadFace(faceName);
+        if (!bitmap.isReady()) {
+            bitmap.addLoadListener(function() {
+                if (window && window.contents && typeof window.refresh === 'function') {
+                    window.refresh();
+                }
+            });
+            return;
+        }
         var pw = Window_Base._faceWidth;
         var ph = Window_Base._faceHeight;
         var index = actor.faceIndex();
-        var sx = index % 4 * pw;
+        var sx = (index % 4) * pw;
         var sy = Math.floor(index / 4) * ph;
+
+        var ctx = window.contents._context;
+        var radius = size / 2;
+        var cx = x + radius;
+        var cy = y + radius;
+
+        // 1. Dark circular backing
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius - 1, 0, Math.PI * 2, false);
+        ctx.fillStyle = 'rgba(10, 20, 36, 0.95)';
+        ctx.fill();
+
+        // 2. Circular clip for portrait graphic
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius - 1, 0, Math.PI * 2, false);
+        ctx.closePath();
+        ctx.clip();
+
+        // 3. Draw face inside circle
         window.contents.blt(bitmap, sx, sy, pw, ph, x, y, size, size);
+        ctx.restore();
+
+        // 4. Circular border ring
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius - 1, 0, Math.PI * 2, false);
+        ctx.strokeStyle = borderColor || 'rgba(135, 205, 255, 0.95)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+
+        window.contents._setDirty();
+    }
+
+    function drawPortrait(window, actor, x, y, size) {
+        drawCirclePortrait(window, actor, x, y, size);
+    }
+
+    // Helper to generate a rounded rectangle path for HTML5 2D canvas
+    function drawRoundedRectPath(ctx, x, y, width, height, radius) {
+        if (typeof ctx.roundRect === 'function') {
+            ctx.beginPath();
+            ctx.roundRect(x, y, width, height, radius);
+            return;
+        }
+        radius = Math.min(radius, width / 2, height / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.arcTo(x + width, y, x + width, y + radius, radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+        ctx.lineTo(x + radius, y + height);
+        ctx.arcTo(x, y + height, x, y + height - radius, radius);
+        ctx.lineTo(x, y + radius);
+        ctx.arcTo(x, y, x + radius, y, radius);
+        ctx.closePath();
+    }
+
+    // Draws a card with border-radius, background, clipped top accent line, and border
+    function drawRoundedCard(ctx, x, y, w, h, radius, bg, border, accent) {
+        ctx.save();
+        // 1. Background fill
+        drawRoundedRectPath(ctx, x, y, w, h, radius);
+        ctx.fillStyle = bg;
+        ctx.fill();
+
+        // 2. Top accent highlight (clipped to the rounded top corners)
+        if (accent) {
+            ctx.save();
+            drawRoundedRectPath(ctx, x, y, w, h, radius);
+            ctx.clip();
+            ctx.fillStyle = accent;
+            ctx.fillRect(x, y, w, 3);
+            ctx.restore();
+        }
+
+        // 3. Border stroke
+        if (border) {
+            ctx.save();
+            drawRoundedRectPath(ctx, x + 1, y + 1, w - 2, h - 2, Math.max(0, radius - 1));
+            ctx.strokeStyle = border;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+        }
+        ctx.restore();
     }
 
     function Window_NUSVInventoryCategory() {
@@ -264,19 +481,45 @@ Imported.NUSV_InventoryUI = true;
         var y = rect.y + 4;
         var w = rect.width - 8;
         var h = rect.height - 8;
-        this.contents.fillRect(x, y, w, h, 'rgba(12, 26, 52, 0.72)');
-        this.contents.fillRect(x + 1, y + 1, w - 2, 2, 'rgba(135, 205, 255, 0.65)');
-        drawLargeIcon(this, item.iconIndex, x + Math.floor((w - 60) / 2), y + 8, 60);
+        var rarity = itemRarityData(item);
+
+        // Card with border-radius (8px), rarity border, and curved top accent
+        var ctx = this.contents._context;
+        drawRoundedCard(ctx, x, y, w, h, 8, rarity.bg, rarity.border, rarity.accent);
+
+        var base = getBaseItem(item);
+        var iconIndex = (item.iconIndex > 0) ? item.iconIndex : (base && base.iconIndex > 0 ? base.iconIndex : 0);
+
+        // Nearest-neighbor scaled pixel-perfect icon centered horizontally & vertically in card
+        var iconSize = 60;
+        var iconX = x + Math.floor((w - iconSize) / 2);
+        var iconY = y + Math.floor((h - iconSize) / 2);
+        drawLargeIcon(this, iconIndex, iconX, iconY, iconSize);
+
+        // Item quantity
         this.resetFontSettings();
         this.contents.fontSize = 18;
         this.drawText('×' + $gameParty.numItems(item), x + 4, y + h - 28, w - 8, 'right');
 
+        // Equipped status badge (circular portrait with border)
         var actors = equippedBy(item);
         if (actors.length) {
-            drawPortrait(this, actors[0], x + w - 34, y + 2, 32);
+            drawCirclePortrait(this, actors[0], x + w - 34, y + 4, 30, 'rgba(255, 255, 255, 0.9)');
             if (actors.length > 1) {
-                this.contents.fontSize = 14;
-                this.drawText('+' + (actors.length - 1), x + w - 31, y + 15, 27, 'right');
+                var badgeX = x + w - 18;
+                var badgeY = y + 20;
+                this.contents.fillRect(badgeX - 1, badgeY - 1, 18, 14, 'rgba(0, 0, 0, 0.8)');
+                var bCtx = this.contents._context;
+                bCtx.save();
+                bCtx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                bCtx.lineWidth = 1;
+                bCtx.strokeRect(badgeX - 0.5, badgeY - 0.5, 17, 13);
+                bCtx.restore();
+                this.contents.fontSize = 12;
+                this.changeTextColor('#ffffff');
+                this.drawText('+' + (actors.length - 1), badgeX, badgeY - 3, 16, 'center');
+                this.resetTextColor();
+                this.resetFontSettings();
             }
         }
     };
@@ -358,24 +601,58 @@ Imported.NUSV_InventoryUI = true;
             return;
         }
 
+        var rarity = itemRarityData(item);
         var width = this.contents.width;
         var x = this.textPadding();
-        this.changeTextColor(this.systemColor());
+
+        // Item Name in its Rarity Color
+        this.changeTextColor(rarity.color);
         this.contents.fontSize = 28;
         this.drawText(item.name, x, 0, width - x * 2);
         this.resetFontSettings();
-
-        drawLargeIcon(this, item.iconIndex, x, this.lineHeight() + 8, 88);
-        this.changeTextColor(this.systemColor());
-        this.drawText('Quantity', 108, this.lineHeight() + 16, 130);
         this.resetTextColor();
-        this.drawText(String($gameParty.numItems(item)), 108, this.lineHeight() + 50, 130);
+
+        var base = getBaseItem(item);
+        var iconIndex = (item.iconIndex > 0) ? item.iconIndex : (base && base.iconIndex > 0 ? base.iconIndex : 0);
+
+        // Large icon box with border-radius (8px), rarity border, and curved top accent
+        var iconBoxSize = 88;
+        var iconY = this.lineHeight() + 8;
+        var ctx = this.contents._context;
+        drawRoundedCard(ctx, x, iconY, iconBoxSize, iconBoxSize, 8, rarity.bg, rarity.border, rarity.accent);
+        drawLargeIcon(this, iconIndex, x + 4, iconY + 4, iconBoxSize - 8);
+
+        // Quantity & Rarity Label
+        var infoX = x + iconBoxSize + 16;
+        this.changeTextColor(this.systemColor());
+        this.contents.fontSize = 17;
+        this.drawText('Quantity', infoX, iconY + 2, width - infoX);
+        this.resetTextColor();
+        this.contents.fontSize = 22;
+        this.drawText(String($gameParty.numItems(item)), infoX, iconY + 24, width - infoX);
+
+        this.contents.fontSize = 17;
+        var labelText = 'Rarity: ';
+        var labelWidth = this.textWidth(labelText);
+        this.changeTextColor(this.systemColor());
+        this.drawText(labelText, infoX, iconY + 54, width - infoX);
+        this.changeTextColor(rarity.color);
+        this.drawText(rarity.name, infoX + labelWidth, iconY + 54, width - infoX - labelWidth);
+        this.resetTextColor();
+        this.resetFontSettings();
+
+        var desc = item.description || (base && base.description) || '';
+        if (!desc) {
+            var fullNote = (item.note || '') + '\n' + (base && base !== item && base.note ? base.note : '');
+            var sigMatch = fullNote.match(/\[SIGNATURE EFFECT\]\s*([^\n\r]+)/i);
+            if (sigMatch) desc = sigMatch[1].trim();
+        }
 
         var y = this.lineHeight() * 4 + 12;
         this.changeTextColor(this.systemColor());
         this.drawText('Description', x, y, width - x * 2);
         this.resetTextColor();
-        y = this.drawWrapped(item.description, x, y + this.lineHeight(), width - x * 2) + 12;
+        y = this.drawWrapped(desc, x, y + this.lineHeight(), width - x * 2) + 12;
 
         this.changeTextColor(this.systemColor());
         this.drawText('Stat Bonus', x, y, width - x * 2);
@@ -401,17 +678,44 @@ Imported.NUSV_InventoryUI = true;
             this.resetTextColor();
         }
 
+        // Footer: Equipped Status with circular portrait and border
         var actors = equippedBy(item);
-        var footerY = this.contents.height - this.lineHeight() - 4;
-        this.contents.fillRect(0, footerY - 4, width, this.lineHeight() + 8, 'rgba(18, 38, 74, 0.9)');
+        var footerH = this.lineHeight() + 8;
+        var footerY = this.contents.height - footerH - 4;
+        this.contents.fillRect(0, footerY - 4, width, footerH, 'rgba(18, 38, 74, 0.95)');
+        this.contents.fillRect(0, footerY - 4, width, 1, 'rgba(135, 205, 255, 0.4)');
         this.changeTextColor(this.systemColor());
         this.drawText('Equipped', x, footerY, 100);
         this.resetTextColor();
         if (actors.length) {
-            drawPortrait(this, actors[0], x + 104, footerY - 2, 32);
-            this.drawText(actors.map(function(actor) { return actor.name(); }).join(', '), x + 144, footerY, width - x - 144);
+            var portraitSize = 34;
+            var portraitY = footerY - 4 + Math.floor((footerH - portraitSize) / 2);
+            var portraitX = x + 104;
+            drawCirclePortrait(this, actors[0], portraitX, portraitY, portraitSize, 'rgba(135, 205, 255, 0.95)');
+            if (actors.length > 1) {
+                var badgeX = portraitX + portraitSize - 12;
+                var badgeY = portraitY + portraitSize - 12;
+                this.contents.fillRect(badgeX - 1, badgeY - 1, 16, 13, 'rgba(0, 0, 0, 0.8)');
+                var bCtx = this.contents._context;
+                bCtx.save();
+                bCtx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                bCtx.lineWidth = 1;
+                bCtx.strokeRect(badgeX - 0.5, badgeY - 0.5, 15, 12);
+                bCtx.restore();
+                this.contents.fontSize = 11;
+                this.changeTextColor('#ffffff');
+                this.drawText('+' + (actors.length - 1), badgeX, badgeY - 3, 14, 'center');
+                this.resetTextColor();
+                this.resetFontSettings();
+            }
+            var nameX = portraitX + portraitSize + 12;
+            this.contents.fontSize = 20;
+            this.drawText(actors.map(function(actor) { return actor.name(); }).join(', '), nameX, footerY, width - nameX - x);
+            this.resetFontSettings();
         } else {
+            this.changeTextColor(this.textColor(7));
             this.drawText('Not equipped', x + 104, footerY, width - x - 104);
+            this.resetTextColor();
         }
     };
 
@@ -610,7 +914,7 @@ Imported.NUSV_InventoryUI = true;
         if (!entry) return;
         var rect = this.itemRect(index);
         if (entry.actor) {
-            drawPortrait(this, entry.actor, rect.x + 6, rect.y + 4, 38);
+            drawCirclePortrait(this, entry.actor, rect.x + 6, rect.y + 5, 38, 'rgba(135, 205, 255, 0.95)');
             this.contents.fontSize = 20;
             this.drawText(entry.label, rect.x + 52, rect.y, rect.width - 56);
             this.contents.fontSize = 16;

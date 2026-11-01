@@ -107,6 +107,14 @@ function makeContext() {
         return [200, 0, this.atk, this.def, this.mat, 20, this.agi, 10][id] || 10;
     };
 
+    // Stubs for Game_Action
+    context.Game_Action = function() {};
+    context.Game_Action.prototype.applyItemUserEffect = function(target) {};
+
+    // Stubs for Game_Interpreter
+    context.Game_Interpreter = function() {};
+    context.Game_Interpreter.prototype.pluginCommand = function(command, args) {};
+
     const pluginCode = fs.readFileSync(path.join(root, 'js/plugins/NUSV_StatSystem.js'), 'utf8');
     vm.createContext(context);
     vm.runInContext(pluginCode, context);
