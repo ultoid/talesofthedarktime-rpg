@@ -65,6 +65,13 @@ class NUSVEditorHandler(http.server.SimpleHTTPRequestHandler):
         self.do_GET(is_head=True)
 
     def do_GET(self, is_head=False):
+        # Force fresh responses (never 304 Not Modified)
+        if hasattr(self, 'headers') and self.headers:
+            if "If-Modified-Since" in self.headers:
+                del self.headers["If-Modified-Since"]
+            if "If-None-Match" in self.headers:
+                del self.headers["If-None-Match"]
+
         # 0. API: Ping & Status
         if self.path.startswith("/api/ping.png"):
             # 1x1 transparent PNG bytes

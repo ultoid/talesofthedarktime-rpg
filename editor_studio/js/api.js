@@ -105,6 +105,7 @@ async function reloadAllData() {
 
     if (dataLoaded) {
         try {
+            if (typeof ensureNavTabs === 'function') ensureNavTabs();
             setUnsaved(false);
             renderSidebar();
             renderEditor();

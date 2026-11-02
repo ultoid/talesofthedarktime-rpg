@@ -2,7 +2,33 @@
  * NUSV Database Studio - UI Navigation & Entry Management
  */
 
+function ensureNavTabs() {
+    const nav = document.querySelector('.nav-tabs');
+    if (!nav) return;
+    const tabBtns = Array.from(nav.querySelectorAll('.tab-btn'));
+    const hasRaces = tabBtns.some(b => {
+        const onclick = b.getAttribute('onclick') || '';
+        return onclick.includes('races');
+    });
+    if (!hasRaces) {
+        const clsBtn = tabBtns.find(b => {
+            const onclick = b.getAttribute('onclick') || '';
+            return onclick.includes('classes');
+        });
+        const raceBtn = document.createElement('button');
+        raceBtn.className = 'tab-btn' + (State.currentTab === 'races' ? ' active' : '');
+        raceBtn.setAttribute('onclick', "switchTab('races')");
+        raceBtn.innerHTML = '🧬 Races';
+        if (clsBtn && clsBtn.nextSibling) {
+            nav.insertBefore(raceBtn, clsBtn.nextSibling);
+        } else {
+            nav.appendChild(raceBtn);
+        }
+    }
+}
+
 function switchTab(tabKey) {
+    ensureNavTabs();
     if (typeof stopEnemyBattlerAnimation === 'function') {
         stopEnemyBattlerAnimation();
     }
@@ -218,6 +244,7 @@ function setArmorSlotFilter(filterVal) {
 }
 
 function renderSidebar() {
+    ensureNavTabs();
     const listEl = document.getElementById('sidebarList');
     listEl.innerHTML = '';
     const items = getActiveList();
@@ -704,4 +731,12 @@ function deleteSelectedEntry() {
     renderSidebar();
     renderEditor();
     showToast(`Entri #${curr.id} berhasil dihapus/dikosongkan!`, 'info');
+}
+
+if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', ensureNavTabs);
+    } else {
+        ensureNavTabs();
+    }
 }
