@@ -540,4 +540,23 @@ NUSV.StatSystem = NUSV.StatSystem || {};
         return BASE_CRIT_DMG + statBonus + equipBonus;
     };
 
+    // -------------------------------------------------------------------------
+    // Class Innate Passive Ability Helpers
+    // -------------------------------------------------------------------------
+    Game_Actor.prototype.nusvClassAbility = function(classId) {
+        var cls = classId ? $dataClasses[Number(classId)] : this.currentClass();
+        if (!cls || !cls.note) return '';
+        var m = cls.note.match(/<Class Ability:\s*([^>]+)>/i);
+        return m ? m[1].trim() : '';
+    };
+
+    Game_Actor.prototype.nusvClassAbilityDesc = function(classId) {
+        var cls = classId ? $dataClasses[Number(classId)] : this.currentClass();
+        if (!cls || !cls.note) return '';
+        var m = cls.note.match(/<Class Ability Description>([\s\S]*?)<\/Class Ability Description>/i);
+        if (m) return m[1].trim();
+        var m2 = cls.note.match(/<Class Ability Desc:\s*([^>]+)>/i);
+        return m2 ? m2[1].trim() : '';
+    };
+
 })();

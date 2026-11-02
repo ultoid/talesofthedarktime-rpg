@@ -480,7 +480,12 @@ function renderSidebar() {
             if (getStateCategory(item) !== State.stateCategoryFilter) return;
         }
         if (query && !String(item.name).toLowerCase().includes(query) && !String(item.id).includes(query)) {
-            return;
+            if (State.currentTab === 'classes') {
+                const ab = getTagVal(item.note, 'Class Ability', '').toLowerCase();
+                if (!ab.includes(query)) return;
+            } else {
+                return;
+            }
         }
 
         const div = document.createElement('div');
@@ -496,7 +501,8 @@ function renderSidebar() {
         let extraTag = '';
         if (State.currentTab === 'classes') {
             const t = getTagVal(item.note, 'Class Tier', '1');
-            extraTag = `<span class="list-badge">T${t}</span>`;
+            const ab = getTagVal(item.note, 'Class Ability', '');
+            extraTag = `<span class="list-badge">T${t}</span>${ab ? `<span class="list-badge" style="color:#fbbf24; border-color:rgba(245,158,11,0.3); font-size:0.65rem;" title="Class Ability: ${escapeHtml(ab)}">✨</span>` : ''}`;
         } else if (State.currentTab === 'weapons') {
             const wtypes = (State.system && State.system.weaponTypes) ? State.system.weaponTypes : [];
             const wtName = wtypes[item.wtypeId] || '';

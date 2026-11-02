@@ -2492,6 +2492,19 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         return m ? m[1].trim() : '';
     }
 
+    function getClassAbility(cls) {
+        if (!cls || !cls.note) return { name: '', desc: '' };
+        var m = cls.note.match(/<Class Ability:\s*([^>]+)>/i);
+        var name = m ? m[1].trim() : '';
+        var d = cls.note.match(/<Class Ability Description>([\s\S]*?)<\/Class Ability Description>/i);
+        var desc = d ? d[1].trim() : '';
+        if (!desc) {
+            var d2 = cls.note.match(/<Class Ability Desc:\s*([^>]+)>/i);
+            if (d2) desc = d2[1].trim();
+        }
+        return { name: name, desc: desc };
+    }
+
     function Window_StatusClassTree() {
         this.initialize.apply(this, arguments);
     }
@@ -3020,15 +3033,36 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             }
         }
 
+        // Class Ability (Innate Passive)
+        var ability = getClassAbility(node.cls);
+        if (ability.name && lineY < cardY + cardH - 45) {
+            this.contents.fillRect(cardX + 8, lineY + 3, cardW - 16, 1, 'rgba(255, 255, 255, 0.12)');
+            lineY += 7;
+            this.contents.fontSize = 12;
+            this.changeTextColor(this.textColor(14)); // Cyan/Gold
+            this.contents.drawText('★ PASSIVE: ' + ability.name, cardX + 12, lineY, cardW - 24, 16, 'left');
+            lineY += 16;
+            if (ability.desc && lineY < cardY + cardH - 24) {
+                this.contents.fontSize = 11;
+                this.changeTextColor(this.textColor(6)); // Light cyan/gray
+                var abLines = wrapText(ability.desc, cardW - 24, this.textWidth.bind(this));
+                for (var al = 0; al < Math.min(abLines.length, 2); al++) {
+                    if (lineY + 14 > cardY + cardH) break;
+                    this.contents.drawText(abLines[al], cardX + 12, lineY, cardW - 24, 14, 'left');
+                    lineY += 14;
+                }
+            }
+        }
+
         // Class Description if space permits
         var desc = getClassDescription(node.cls);
-        if (desc && lineY < cardY + cardH - 32) {
+        if (desc && lineY < cardY + cardH - 30) {
             this.contents.fillRect(cardX + 8, lineY + 3, cardW - 16, 1, 'rgba(255, 255, 255, 0.10)');
             lineY += 8;
             this.contents.fontSize = 11;
-            this.changeTextColor(this.normalColor());
+            this.changeTextColor(this.textColor(7));
             var lines = wrapText(desc, cardW - 24, this.textWidth.bind(this));
-            for (var l = 0; l < Math.min(lines.length, 3); l++) {
+            for (var l = 0; l < Math.min(lines.length, 2); l++) {
                 if (lineY + 14 > cardY + cardH) break;
                 this.contents.drawText(lines[l], cardX + 12, lineY, cardW - 24, 14, 'left');
                 lineY += 14;

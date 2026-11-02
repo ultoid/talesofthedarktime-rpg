@@ -624,6 +624,22 @@ NUSV.ClassChange = NUSV.ClassChange || {};
         return text || '';
     };
 
+    Game_Actor.prototype.nusvClassAbility = function(classId) {
+        var cls = classId ? $dataClasses[Number(classId)] : this.currentClass();
+        if (!cls || !cls.note) return '';
+        var m = cls.note.match(/<Class Ability:\s*([^>]+)>/i);
+        return m ? m[1].trim() : '';
+    };
+
+    Game_Actor.prototype.nusvClassAbilityDesc = function(classId) {
+        var cls = classId ? $dataClasses[Number(classId)] : this.currentClass();
+        if (!cls || !cls.note) return '';
+        var m = cls.note.match(/<Class Ability Description>([\s\S]*?)<\/Class Ability Description>/i);
+        if (m) return m[1].trim();
+        var m2 = cls.note.match(/<Class Ability Desc:\s*([^>]+)>/i);
+        return m2 ? m2[1].trim() : '';
+    };
+
     // -------------------------------------------------------------------------
     // Plugin Commands
     // -------------------------------------------------------------------------
@@ -737,16 +753,29 @@ NUSV.ClassChange = NUSV.ClassChange || {};
             return;
         }
 
+        var ability = this._actor.nusvClassAbility(cls.id);
+        var abilityDesc = this._actor.nusvClassAbilityDesc(cls.id);
         var desc = this._actor.nusvClassDescription(cls.id);
-        if (!allowSameClass && this._actor._classId === cls.id) {
-            if (desc) desc += '\n';
-            desc += 'Already in this Class';
-        } else if (!this._actor.nusvCanChangeClass(cls.id)) {
-            if (desc) desc += '\n';
-            desc += '[Locked / Requirements not met]';
+        var helpText = '';
+
+        if (ability) {
+            helpText += '★ Ability: ' + ability;
+            if (abilityDesc) helpText += ' — ' + abilityDesc;
+            if (desc) helpText += '\n';
+        }
+        if (desc) {
+            helpText += desc;
         }
 
-        this._helpWindow.setText(desc);
+        if (!allowSameClass && this._actor._classId === cls.id) {
+            if (helpText) helpText += '\n';
+            helpText += 'Already in this Class';
+        } else if (!this._actor.nusvCanChangeClass(cls.id)) {
+            if (helpText) helpText += '\n';
+            helpText += '[Locked / Requirements not met]';
+        }
+
+        this._helpWindow.setText(helpText);
     };
 
     function Window_NUSVClassStatus() {

@@ -354,6 +354,29 @@ Rincian: IV ${iv} (Grade ${ivInfo.grade}, +${rate}/Lv) + Pertumbuhan ${growth} (
     const defEl = document.getElementById('cls-sim-def');
     if (defEl) defEl.innerText = (cls.params && cls.params[3] && cls.params[3][lvl]) ? cls.params[3][lvl] : '15';
 
+    // Update Class Passive Ability in right column
+    const abilityContainer = document.getElementById('cls-sim-ability-container');
+    if (abilityContainer) {
+        const abName = getTagVal(note, 'Class Ability', '');
+        const abDesc = getBlockTag(note, 'Class Ability Description', '') || getTagVal(note, 'Class Ability Desc', '');
+        if (abName) {
+            abilityContainer.innerHTML = `
+                <div style="font-weight:700; font-size:0.85rem; color:#fde047; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                    <span>⚡</span> <span>${escapeHtml(abName)}</span>
+                </div>
+                <div style="font-size:0.75rem; color:#cbd5e1; line-height:1.4;">
+                    ${escapeHtml(abDesc || '(Deskripsi belum diisi)')}
+                </div>
+            `;
+        } else {
+            abilityContainer.innerHTML = `
+                <div style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">
+                    (Belum ada pasif kelas yang dikonfigurasi)
+                </div>
+            `;
+        }
+    }
+
     // Update Right Column Content (Tree or Scrolls)
     const isScrolls = State.classRightTab === 'scrolls';
     if (isScrolls) {
@@ -436,6 +459,8 @@ function renderClassEditor(container, cls) {
     const currentIcon = getTagVal(note, 'Class Icon', '0');
     const currentDesc = getBlockTag(note, 'Class Description', '');
     const currentGrowth = getTagVal(note, 'Class Stat Growth', '');
+    const currentAbility = getTagVal(note, 'Class Ability', '');
+    const currentAbilityDesc = getBlockTag(note, 'Class Ability Description', '') || getTagVal(note, 'Class Ability Desc', '');
 
     const classTier = parseInt(currentTier, 10) || 1;
     const defaultMaxLvl = classTier === 1 ? 10 : (classTier === 2 ? 30 : (classTier === 3 ? 40 : (classTier === 4 ? 50 : (classTier === 5 ? 60 : 99))));
@@ -524,6 +549,40 @@ function renderClassEditor(container, cls) {
                             <textarea class="form-control" rows="4" onchange="setBlockTag(cls, 'Class Description', this.value);">${escapeHtml(currentDesc)}</textarea>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✨ CLASS PASSIVE ABILITY (INNATE CLASS ABILITY) -->
+        <div class="card" style="border-left: 3px solid #f59e0b; box-shadow: 0 4px 20px rgba(245, 158, 11, 0.08);">
+            <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <h2 title="Kemampuan pasif bawaan khusus yang aktif selama karakter berada di kelas/profesi ini">✨ Class Passive Ability (Innate Ability)</h2>
+                    <span class="badge" style="background:rgba(245,158,11,0.2); color:#fbbf24; font-size:0.75rem;">1 Active per Class (Evolution)</span>
+                </div>
+                <span style="font-size:0.8rem; color:var(--text-muted);">Aktif otomatis di pertempuran saat karakter menggunakan kelas ini</span>
+            </div>
+            <div class="card-body">
+                <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">
+                    Kemampuan pasif bertarung bawaan profesi. Saat karakter promosi ke Tier berikutnya, pasif kelas sebelumnya akan berevolusi menjadi pasif kelas baru yang lebih kuat.
+                </p>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label title="Nama kemampuan pasif kelas dalam bahasa Inggris (contoh: Battle Spirit, Heavy Impact, Elemental Overload)">
+                        Passive Ability Name (&lt;Class Ability: Name&gt;)
+                    </label>
+                    <input type="text" class="form-control" style="font-weight:700; color:#fbbf24;" placeholder="Contoh: Battle Spirit" 
+                           value="${escapeHtml(currentAbility)}" 
+                           oninput="setTagVal(cls, 'Class Ability', this.value); renderSidebar(); updateClassSimulationLive();" 
+                           onchange="setTagVal(cls, 'Class Ability', this.value); renderSidebar(); updateClassSimulationLive();">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label title="Deskripsi mekanik efek tempur pasif dalam bahasa Indonesia">
+                        Passive Ability Description (&lt;Class Ability Description&gt;)
+                    </label>
+                    <textarea class="form-control" rows="3" placeholder="Contoh: Meningkatkan P.ATK sebesar +8%. Saat HP di bawah 50%, memulihkan +2 SP ekstra setiap giliran." 
+                              oninput="setTagVal(cls, 'Class Ability Desc', ''); setBlockTag(cls, 'Class Ability Description', this.value); updateClassSimulationLive();" 
+                              onchange="setTagVal(cls, 'Class Ability Desc', ''); setBlockTag(cls, 'Class Ability Description', this.value); updateClassSimulationLive();">${escapeHtml(currentAbilityDesc)}</textarea>
+                    <div class="helper-text">Format teks mendukung penjelasan bonus parameter (P.ATK, M.ATK, DEF, dsb.) dan pemicu kondisi tempur.</div>
                 </div>
             </div>
         </div>
@@ -912,6 +971,20 @@ function renderClassStatPreview(container, cls) {
                     <input type="number" min="1" max="${classMaxLvl}" value="${simLvl}" class="form-control" style="width:65px; text-align:center; font-weight:700;" 
                            id="classSimInput" onchange="onClassSimLevelChange(this.value)">
                 </div>
+            </div>
+        </div>
+
+        <!-- 1.5 ACTIVE CLASS PASSIVE ABILITY -->
+        <div class="card" style="margin-bottom:0; border: 1px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.05);">
+            <div class="card-header" style="padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-size:0.95rem;">✨</span>
+                    <h2 style="font-size:0.85rem; margin:0; color:#fbbf24;">Class Passive Ability</h2>
+                </div>
+                <span class="badge" style="background:rgba(245,158,11,0.2); color:#fbbf24; font-size:0.7rem; font-weight:700; border:1px solid rgba(245,158,11,0.3);">Innate</span>
+            </div>
+            <div class="card-body" style="padding:10px 12px;" id="cls-sim-ability-container">
+                <!-- Populated dynamically by updateClassSimulationLive -->
             </div>
         </div>
 
