@@ -240,3 +240,4 @@ def setup_races():
 
 if __name__ == '__main__':
     setup_races()
+

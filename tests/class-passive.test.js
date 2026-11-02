@@ -59,3 +59,4 @@ for (let i = 1; i <= 50; i++) {
 
 console.log(`Verified all ${verifiedCount} classes have valid Class Ability names and descriptions!`);
 console.log("Class Passive tests passed successfully!");
+
