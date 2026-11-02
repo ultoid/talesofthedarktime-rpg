@@ -35,7 +35,7 @@
  * @on ON
  * @off OFF
  * @default true
- * @desc If true, actors permanently retain learned skills across class changes (Pokemon Movepool style).
+ * @desc If true, actors permanently retain learned skills across class changes (Cross-Class Skill Mastery).
  *
  * @help
  * ============================================================================
@@ -434,7 +434,7 @@ NUSV.ClassChange = NUSV.ClassChange || {};
 
     Game_Actor.prototype.nusvForgetActiveClassLearnedSkills = function() {
         if (retainSkills) {
-            // Nusvanir Pokemon-style Movepool System:
+            // Nusvanir Cross-Class Skill Mastery System:
             // Skills once learned/mastered are permanently retained by the actor!
             this._nusvActiveClassLearningSkills = [];
             return;

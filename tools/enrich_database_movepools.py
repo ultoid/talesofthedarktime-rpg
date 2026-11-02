@@ -279,14 +279,19 @@ for it in items:
     compat_str = ', '.join(compat_list)
     short_compat = ', '.join(compat_list[:4]) + ("..." if len(compat_list) > 4 else "")
     
-    it['description'] = f"[TM Tier {tier}] Mengajarkan jurus [{sname}] permanen. Kompatibel: {short_compat}"
+    is_magic = s.get('stypeId') in (1, 2)
+    doc_type = "Kitab" if is_magic else "Gulungan"
+    it['description'] = f"[{doc_type} Tier {tier}] Mengajarkan jurus [{sname}] secara permanen. Kompatibel: {short_compat}"
     it['note'] = '\n'.join([
+        "<Skill Scroll>",
         "<TM Item>",
         f"<Learn Skill: {sid}>",
         f"<Skill Tier: {tier}>",
         f"<Original Class: {cname}>",
+        f"<Scroll Compatible: {compat_str}>",
         f"<TM Compatible: {compat_str}>",
-        "<Item Category: Skill Scroll>"
+        "<Item Category: Skill Scroll>",
+        "<Menu Category: Consumable>"
     ])
     updated_tms += 1
 

@@ -404,7 +404,7 @@ NUSV.SkillLearn = NUSV.SkillLearn || {};
     };
 
     // -------------------------------------------------------------------------
-    // Pokemon-Style TM (Technical Machine / Gulungan Jurus) Compatibility
+    // Nusvanir Kitab & Gulungan Pusaka (Skill Scrolls) Compatibility
     // -------------------------------------------------------------------------
 
     Game_Actor.prototype.nusvCanLearnTmSkill = function(skillId) {
@@ -412,13 +412,14 @@ NUSV.SkillLearn = NUSV.SkillLearn || {};
         if (!skill) return false;
         if (this.isLearnedSkill(skill.id)) return false;
 
-        // Ultimate / Signature moves cannot be taught via TM
-        if (hasTag(skill, 'TM Status: Exclusive') ||
+        // Ultimate / Signature moves cannot be taught via scrolls
+        if (hasTag(skill, 'Scroll Status: Exclusive') ||
+            hasTag(skill, 'TM Status: Exclusive') ||
             (noteValue(skill, 'Skill Type') || '').toLowerCase() === 'ultimate') {
             return false;
         }
 
-        var compatRaw = noteValue(skill, 'TM Compatible');
+        var compatRaw = noteValue(skill, 'Scroll Compatible') || noteValue(skill, 'TM Compatible');
         if (!compatRaw) return true; // Universal if no restriction tag
 
         var allowedList = compatRaw.split(',').map(function(s) {
