@@ -120,3 +120,4 @@ def update_classes_json():
 
 if __name__ == '__main__':
     update_classes_json()
+

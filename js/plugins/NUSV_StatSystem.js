@@ -142,6 +142,19 @@ NUSV.StatSystem = NUSV.StatSystem || {};
         return Number(val) || 0;
     }
 
+    function parseMetaRate(meta, key) {
+        if (!meta) return 1.0;
+        var raw = meta[key.toUpperCase() + ' RATE'] || meta[key.toLowerCase() + ' rate'] || meta[key + 'Rate'];
+        if (raw === undefined || raw === null) return 1.0;
+        if (typeof raw === 'string') {
+            raw = raw.replace('%', '').trim();
+            var num = parseFloat(raw);
+            if (num > 2.0) return num / 100.0;
+            return num || 1.0;
+        }
+        return Number(raw) || 1.0;
+    }
+
     // -------------------------------------------------------------------------
     // Game_BattlerBase - SP (Stamina) Overrides & Helpers
     // -------------------------------------------------------------------------
@@ -182,6 +195,14 @@ NUSV.StatSystem = NUSV.StatSystem || {};
         
         // Initialize SP full like MP on character creation
         this._tp = this.maxTp();
+
+        // Attach Race state if available
+        if (typeof this.nusvRaceState === 'function') {
+            var rSt = this.nusvRaceState();
+            if (rSt && typeof this.addNewState === 'function' && typeof this.isStateAffected === 'function' && !this.isStateAffected(rSt.id)) {
+                this.addNewState(rSt.id);
+            }
+        }
     };
 
     var _Game_Actor_levelUp = Game_Actor.prototype.levelUp;
@@ -311,17 +332,53 @@ NUSV.StatSystem = NUSV.StatSystem || {};
             }
         }
 
-        // 5. State bonus
+        // 5. State bonus & Nature/Rate multipliers (including innate Race state)
         var stateBonus = 0;
+        var stateRate = 1.0;
         var states = this.states ? this.states() : [];
+        if (typeof this.nusvRaceState === 'function') {
+            var rSt = this.nusvRaceState();
+            if (rSt && !states.some(function(s) { return s && s.id === rSt.id; })) {
+                states = states.concat([rSt]);
+            }
+        }
         for (var j = 0; j < states.length; j++) {
             var st = states[j];
             if (st && st.meta) {
                 stateBonus += parseMetaBonus(st.meta, k);
+                var rVal = parseMetaRate(st.meta, k);
+                if (rVal > 0) stateRate *= rVal;
             }
         }
 
-        return Math.max(1, Math.round(base + allocated + classGrowth + equipBonus + stateBonus));
+        return Math.max(1, Math.round((base + allocated + classGrowth + equipBonus + stateBonus) * stateRate));
+    };
+
+    Game_Actor.prototype.nusvRaceName = function() {
+        if (this._nusvRace) return String(this._nusvRace);
+        var actorObj = this.actor();
+        if (actorObj && actorObj.meta) {
+            if (actorObj.meta.Race) return String(actorObj.meta.Race);
+            if (actorObj.meta.RACE) return String(actorObj.meta.RACE);
+            var m = (actorObj.note || '').match(/<Race:\s*([^>]+)>/i);
+            if (m) return m[1].trim();
+        }
+        return 'Pribumi';
+    };
+
+    Game_Actor.prototype.nusvRaceState = function() {
+        var rName = this.nusvRaceName();
+        if (!rName || typeof $dataStates === 'undefined' || !$dataStates) return null;
+        var clean = rName.toLowerCase();
+        for (var i = 1; i < $dataStates.length; i++) {
+            var st = $dataStates[i];
+            if (!st) continue;
+            var stMeta = st.meta || {};
+            var metaRace = stMeta.Race || stMeta.RACE || stMeta['Race Key'];
+            if (metaRace && String(metaRace).toLowerCase() === clean) return st;
+            if (st.name && st.name.toLowerCase().indexOf('ras: ' + clean) !== -1) return st;
+        }
+        return null;
     };
 
     // Shorthand getters on Game_Actor

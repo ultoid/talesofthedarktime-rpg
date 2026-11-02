@@ -165,6 +165,15 @@ function calculateActorSimulation(actor, baseLevel = 1, classLevel = 1) {
         });
     }
 
+    // 3. Race / Nature Stat Modifiers (▲ +10%, ● 100%, ▼ -10%)
+    const actorRaceName = getTagVal(note, 'Race', 'Pribumi');
+    const raceObj = (State.races || []).find(r => r && (
+        r.name.toLowerCase() === actorRaceName.toLowerCase() || 
+        (r.englishName && r.englishName.toLowerCase() === actorRaceName.toLowerCase())
+    ));
+    const raceMods = (raceObj && raceObj.modifiers) ? raceObj.modifiers : { str: 1.0, int: 1.0, dex: 1.0, luk: 1.0, agi: 1.0, vit: 1.0 };
+    const raceNatureTags = (raceObj && raceObj.natureTags) ? raceObj.natureTags : { str: '=', int: '=', dex: '=', luk: '=', agi: '=', vit: '=' };
+
     // 4. Calculate Final 6 Core Attributes
     const actorGrowthCore = {};
     const classGrowthCore = {};
@@ -176,7 +185,9 @@ function calculateActorSimulation(actor, baseLevel = 1, classLevel = 1) {
         actorGrowthCore[a.code] = actGrowth;
         classGrowthCore[a.code] = clsGrowth;
 
-        totalCore[a.code] = Math.max(1, Math.round(baseCore[a.code] + actGrowth + clsGrowth + eqCore[a.code]));
+        const raw = baseCore[a.code] + actGrowth + clsGrowth + eqCore[a.code];
+        const rRate = raceMods[a.code.toLowerCase()] || 1.0;
+        totalCore[a.code] = Math.max(1, Math.round(raw * rRate));
     });
 
     ensureClassParams(cls);
@@ -235,6 +246,10 @@ function calculateActorSimulation(actor, baseLevel = 1, classLevel = 1) {
         cls,
         isFinesse,
         actorBaseCore,
+        actorRaceName,
+        raceObj,
+        raceMods,
+        raceNatureTags,
         classIVRating,
         classBaseCore: classIVRating,
         baseCore,
@@ -390,6 +405,10 @@ Rincian: Base 50 + VIT(${res.totalCore.VIT}×1.5=${Math.round(res.totalCore.VIT*
             if (res.actorGrowthCore[a.code] > 0) parts.push(`Actor Growth: +${res.actorGrowthCore[a.code]}`);
             if (res.classGrowthCore[a.code] > 0) parts.push(`Class Growth: +${res.classGrowthCore[a.code]}`);
             if (res.eqCore[a.code] !== 0) parts.push(`Equip: ${res.eqCore[a.code] > 0 ? '+' : ''}${res.eqCore[a.code]}`);
+            const rTag = (res.raceNatureTags && res.raceNatureTags[a.code.toLowerCase()]) || '=';
+            const rRate = (res.raceMods && res.raceMods[a.code.toLowerCase()]) || 1.0;
+            if (rTag === '+') parts.push(`Ras (${res.actorRaceName} ▲): ×${rRate.toFixed(2)}`);
+            else if (rTag === '-') parts.push(`Ras (${res.actorRaceName} ▼): ×${rRate.toFixed(2)}`);
             card.title = `${a.name} (${a.code})
 ${a.desc || ''}
 Rumus: ${a.formula || ''}
@@ -586,8 +605,23 @@ function renderActorEditor(container, actor) {
 
                         <div class="grid-2">
                             <div class="form-group">
-                                <label title="Ras atau spesies karakter untuk interaksi afinitas cerita dan sifat khusus">Race (&lt;Race: ...&gt;)</label>
-                                <input type="text" class="form-control" placeholder="Contoh: Avesari, Human" value="${escapeHtml(race)}" onchange="setTagVal(actor, 'Race', this.value);">
+                                <label title="Ras atau spesies karakter untuk interaksi afinitas cerita, pengali Nature stat (▲ +10%, ▼ -10%), dan Racial Ability bawaan">Ras Karakter (&lt;Race: ...&gt;)</label>
+                                <select class="form-control" onchange="setTagVal(actor, 'Race', this.value); updateActorSimulationLive();">
+                                    <option value="Pribumi" ${race.toLowerCase() === 'pribumi' || !race ? 'selected' : ''}>Pribumi (True Neutral / All =)</option>
+                                    ${(State.races || []).map(r => {
+                                        if (!r || r.name === 'Pribumi') return '';
+                                        const tags = r.natureTags || {};
+                                        const pos = [];
+                                        const neg = [];
+                                        ['str','int','dex','luk','agi','vit'].forEach(k => {
+                                            if (tags[k] === '+') pos.push(k.toUpperCase());
+                                            if (tags[k] === '-') neg.push(k.toUpperCase());
+                                        });
+                                        const summary = (pos.length ? `▲${pos.join(',')} ` : '') + (neg.length ? `▼${neg.join(',')}` : '');
+                                        const isSel = race.toLowerCase() === r.name.toLowerCase();
+                                        return `<option value="${escapeHtml(r.name)}" ${isSel ? 'selected' : ''}>${escapeHtml(r.name)} (${escapeHtml(r.group || '')}) [${summary}]</option>`;
+                                    }).join('')}
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label title="Posisi baris tempur awal: 1 (Baris Depan / Melee), 2 (Tengah), 3 (Belakang / Support)">Default Row (&lt;Default Row: 1-3&gt;)</label>

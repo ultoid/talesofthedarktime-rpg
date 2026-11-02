@@ -62,6 +62,23 @@ function setClassTierFilter(filterVal) {
     renderSidebar();
 }
 
+function setRaceGroupFilter(filterVal) {
+    State.raceGroupFilter = filterVal;
+    if (filterVal !== 'all') {
+        const currentRace = (State.races || [])[State.selectedIndex];
+        if (!currentRace || currentRace.group !== filterVal) {
+            const firstMatch = (State.races || []).findIndex((r, idx) => idx > 0 && r && r.group === filterVal);
+            if (firstMatch !== -1) {
+                State.selectedIndex = firstMatch;
+                State.selectedIndices = State.selectedIndices || {};
+                State.selectedIndices.races = firstMatch;
+                renderEditor();
+            }
+        }
+    }
+    renderSidebar();
+}
+
 function setWeaponTypeFilter(filterVal) {
     State.weaponTypeFilter = filterVal;
     if (filterVal !== 'all') {
@@ -373,6 +390,27 @@ function renderSidebar() {
                     }).join('')}
                 </select>
             `;
+        } else if (State.currentTab === 'races') {
+            filterContainer.style.display = 'flex';
+            const f = State.raceGroupFilter || 'all';
+            const groups = [
+                { id: 'all', name: '🧬 Semua Golongan Ras' },
+                { id: 'Suku Bumi', name: '🌍 Suku Bumi (Daratan Utama)' },
+                { id: 'Wuru Loka', name: '🐾 Wuru Loka (Makhluk Eksotis/Liar)' },
+                { id: 'Arkahyan', name: '✨ Arkahyan (Surgawi/Cahaya)' },
+                { id: 'Drahkthar', name: '🌑 Drahkthar (Entitas Gelap/Iblis)' }
+            ];
+            const totalCount = (State.races || []).filter(r => r).length;
+            filterContainer.innerHTML = `
+                <select class="form-control" onchange="setRaceGroupFilter(this.value)" title="Filter ras berdasarkan golongan alam">
+                    ${groups.map(g => {
+                        const count = g.id === 'all'
+                            ? totalCount
+                            : (State.races || []).filter(r => r && r.group === g.id).length;
+                        return `<option value="${g.id}" ${f === g.id ? 'selected' : ''}>${g.name} (${count})</option>`;
+                    }).join('')}
+                </select>
+            `;
         } else {
             filterContainer.style.display = 'none';
         }
@@ -380,6 +418,9 @@ function renderSidebar() {
 
     items.forEach((item, index) => {
         if (!item) return;
+        if (State.currentTab === 'races' && State.raceGroupFilter && State.raceGroupFilter !== 'all') {
+            if (item.group !== State.raceGroupFilter) return;
+        }
         if (State.currentTab === 'classes' && State.classTierFilter && State.classTierFilter !== 'all') {
             const t = getTagVal(item.note, 'Class Tier', '1') || '1';
             if (String(t) !== String(State.classTierFilter)) return;
@@ -458,6 +499,16 @@ function renderSidebar() {
             } else if (cat === 'Skill Effect') {
                 extraTag = `<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3);">Skill Effect</span>`;
             }
+        } else if (State.currentTab === 'races') {
+            const grp = item.group || '';
+            const grpColors = {
+                'Suku Bumi': '#38bdf8',
+                'Wuru Loka': '#f59e0b',
+                'Arkahyan': '#ec4899',
+                'Drahkthar': '#a855f7'
+            };
+            const col = grpColors[grp] || '#94a3b8';
+            extraTag = `<span class="list-badge" style="color:${col}; border-color:${col}40;">${escapeHtml(grp)}</span>`;
         }
 
         div.innerHTML = `
@@ -508,6 +559,7 @@ function renderEditor() {
     window.item = item;
     window.enemy = item;
     window.state = item;
+    window.race = item;
 
     if (State.currentTab !== 'enemies' && typeof stopEnemyBattlerAnimation === 'function') {
         stopEnemyBattlerAnimation();
@@ -525,6 +577,12 @@ function renderEditor() {
             if (statSub) statSub.innerText = 'Job Level Simulation';
             renderClassEditor(container, item); 
             if (previewContainer) renderClassStatPreview(previewContainer, item);
+            break;
+        case 'races': 
+            if (statTitle) statTitle.innerHTML = '🧬 Nature Stat Modifier';
+            if (statSub) statSub.innerText = 'Racial Attributes & Nature Matrix';
+            renderRaceEditor(container, item); 
+            if (previewContainer) renderRaceStatPreview(previewContainer, item);
             break;
         case 'weapons': 
             if (statTitle) statTitle.innerHTML = '⚔️ Weapon Stat Inspector';

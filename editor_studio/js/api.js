@@ -54,7 +54,7 @@ async function reloadAllData() {
     showToast('Loading project database...', 'info');
     let dataLoaded = false;
     try {
-        const [pics, faces, chars, svs, enes, act, cls, wep, arm, ski, itm, ene, sta, anim, sys, ce] = await Promise.all([
+        const [pics, faces, chars, svs, enes, act, cls, wep, arm, ski, itm, ene, sta, anim, sys, ce, rce] = await Promise.all([
             fetch(getApiUrl('/api/images/pictures')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/faces')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/characters')).then(r => r.json()).catch(() => []),
@@ -70,7 +70,8 @@ async function reloadAllData() {
             fetch(getApiUrl('/api/data/States.json')).then(r => { if (!r.ok) throw new Error('Failed to load States.json'); return r.json(); }),
             fetch(getApiUrl('/api/data/Animations.json')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/data/System.json')).then(r => r.json()).catch(() => ({})),
-            fetch(getApiUrl('/api/data/CommonEvents.json')).then(r => r.json()).catch(() => [])
+            fetch(getApiUrl('/api/data/CommonEvents.json')).then(r => r.json()).catch(() => []),
+            fetch(getApiUrl('/api/data/Races.json')).then(r => r.json()).catch(() => [])
         ]);
         State.commonEvents = ce || [];
 
@@ -82,6 +83,7 @@ async function reloadAllData() {
 
         State.actors = act || [];
         State.classes = cls || [];
+        State.races = rce || [];
         State.weapons = wep || [];
         State.armors = arm || [];
         State.skills = ski || [];
@@ -120,6 +122,7 @@ async function saveActiveDataset() {
     const tabMap = {
         actors: { filename: 'Actors.json', data: () => State.actors },
         classes: { filename: 'Classes.json', data: () => State.classes },
+        races: { filename: 'Races.json', data: () => State.races },
         weapons: { filename: 'Weapons.json', data: () => State.weapons },
         armors: { filename: 'Armors.json', data: () => State.armors },
         skills: { filename: 'Skills.json', data: () => State.skills },

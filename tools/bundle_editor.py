@@ -17,8 +17,10 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 def bundle():
     inplace = '--inplace' in sys.argv
     editor_html_path = ROOT_DIR / "editor.html"
+    template_path = ROOT_DIR / "editor.template.html"
+    source_path = template_path if template_path.exists() else editor_html_path
     
-    with open(editor_html_path, 'r', encoding='utf-8') as f:
+    with open(source_path, 'r', encoding='utf-8') as f:
         html = f.read()
         
     # 1. Inline CSS stylesheets

@@ -11,6 +11,7 @@ const State = {
     enemiesPics: [],
     actors: [],
     classes: [],
+    races: [],
     weapons: [],
     armors: [],
     skills: [],
@@ -23,6 +24,7 @@ const State = {
     selectedIndices: {
         actors: 1,
         classes: 1,
+        races: 1,
         weapons: 1,
         armors: 1,
         skills: 1,
@@ -34,9 +36,10 @@ const State = {
     classPreviewLevel: 1,
     actorSimBaseLevel: 1,
     actorSimClassLevel: 1,
-        armorSlotFilter: 'all',
+    armorSlotFilter: 'all',
     weaponTypeFilter: 'all',
     classTierFilter: 'all',
+    raceGroupFilter: 'all',
     skillClassFilter: 'all',
     itemCategoryFilter: 'all',
     stateCategoryFilter: 'all'
@@ -56,6 +59,7 @@ function getActiveList() {
     switch (State.currentTab) {
         case 'actors': return State.actors;
         case 'classes': return State.classes;
+        case 'races': return State.races;
         case 'weapons': return State.weapons;
         case 'armors': return State.armors;
         case 'skills': return State.skills;
