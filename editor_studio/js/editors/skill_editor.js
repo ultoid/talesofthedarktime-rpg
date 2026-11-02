@@ -137,11 +137,11 @@ function renderSkillEditor(container, skill) {
     const elements = State.system.elements || [];
 
     container.innerHTML = `
-        <!-- NUSVANIR MOVEPOOL & TM SYSTEM CARD -->
+        <!-- NUSVANIR SKILL MASTERY & SCROLL SYSTEM CARD -->
         <div class="card" style="border:1px solid #8b5cf655; background:linear-gradient(180deg, rgba(30,27,75,0.45) 0%, rgba(15,23,42,0.6) 100%); margin-bottom:16px;">
             <div class="card-header" style="border-bottom:1px solid #8b5cf633; display:flex; justify-content:space-between; align-items:center;">
                 <h2 style="color:#c4b5fd; font-size:1.05rem; display:flex; align-items:center; gap:8px;">
-                    <span>🌟</span> Nusvanir Movepool &amp; Pokémon TM System
+                    <span>🌟</span> Nusvanir Skill Mastery &amp; Kitab / Gulungan Pusaka
                 </h2>
                 <span class="badge" style="background:#8b5cf622; color:#c4b5fd; border:1px solid #8b5cf655; font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:9999px;">
                     ${tierLabels[tier] || 'Tier ' + (tier || 1)}
@@ -156,9 +156,9 @@ function renderSkillEditor(container, skill) {
                         </div>
                     </div>
                     <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:10px;">
-                        <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">STATUS GULUNGAN TM</div>
+                        <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">STATUS KITAB / GULUNGAN</div>
                         <div style="font-size:0.95rem; font-weight:700; color:${isExclusive ? '#f87171' : '#34d399'}; margin-top:3px;">
-                            ${isExclusive ? '★ Eksklusif (Signature Move)' : (tmItem ? `Item #${tmItem.id} (${escapeHtml(tmItem.name)})` : 'Tersedia via Gulungan TM')}
+                            ${isExclusive ? '★ Eksklusif (Signature Move)' : (tmItem ? `Item #${tmItem.id} (${escapeHtml(tmItem.name)})` : 'Tersedia via Kitab / Gulungan')}
                         </div>
                     </div>
                     <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:10px;">
@@ -171,7 +171,7 @@ function renderSkillEditor(container, skill) {
 
                 <div>
                     <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; margin-bottom:6px;">
-                        ${isExclusive ? '👑 HANYA DIKUASAI OLEH:' : `📜 KELAS YANG BISA MEMPELAJARI VIA TM (${tmClasses.length} KELAS):`}
+                        ${isExclusive ? '👑 HANYA DIKUASAI OLEH:' : `📜 KELAS YANG BISA MEMPELAJARI DARI KITAB/GULUNGAN (${tmClasses.length} KELAS):`}
                     </div>
                     <div style="display:flex; flex-wrap:wrap; gap:6px;">
                         ${isExclusive ? `<span class="badge" style="background:#ef444422; color:#f87171; border:1px solid #ef444455; padding:4px 10px; font-weight:600;">Khusus ${escapeHtml(learnClass || 'Master')} (Jurus Pamungkas)</span>` : 

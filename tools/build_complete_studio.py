@@ -2819,8 +2819,8 @@ HTML_CONTENT = r'''<!DOCTYPE html>
                 <div class="card">
                     <div class="card-header">
                         <div style="display:flex; align-items:center; gap:8px;">
-                            <h2 title="Aptitude profesi berskala 1 - 10 (Sistem IV Pokémon)">⭐ Class Stat Aptitude / IV Rating (Skala 1 - 10)</h2>
-                            <span class="badge" style="background:rgba(59,130,246,0.2); color:#60a5fa; font-size:0.75rem;">Pokemon IV Model</span>
+                            <h2 title="Aptitude profesi berskala 1 - 10 (Potensi Pertumbuhan Stat)">⭐ Class Stat Aptitude Rating (Skala 1 - 10)</h2>
+                            <span class="badge" style="background:rgba(59,130,246,0.2); color:#60a5fa; font-size:0.75rem;">Stat Aptitude Model</span>
                         </div>
                         <span style="font-size:0.8rem; color:var(--text-muted);">Menentukan stat awal Lv 1 &amp; scaling stat per Job Level</span>
                     </div>

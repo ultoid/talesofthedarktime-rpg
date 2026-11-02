@@ -23,8 +23,8 @@ def bundle():
         
     # 1. Inline CSS stylesheets
     def replace_css_link(match):
-        css_href = match.group(1)
-        css_file = ROOT_DIR / css_href.replace('/', '\\')
+        css_href = match.group(1).replace('\\', '/')
+        css_file = ROOT_DIR / css_href
         if css_file.exists():
             with open(css_file, 'r', encoding='utf-8') as cf:
                 css_content = cf.read().replace('../../img/', 'img/')
@@ -39,8 +39,8 @@ def bundle():
     if matches:
         combined_scripts = []
         for m in matches:
-            js_src = m.group(1)
-            js_file = ROOT_DIR / js_src.replace('/', '\\')
+            js_src = m.group(1).replace('\\', '/')
+            js_file = ROOT_DIR / js_src
             if js_file.exists():
                 with open(js_file, 'r', encoding='utf-8') as jf:
                     combined_scripts.append(f"/* Inlined from {js_src} */\n{jf.read()}")
