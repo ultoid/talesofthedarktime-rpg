@@ -16472,5 +16472,137 @@
     "speed": 0,
     "successRate": 100,
     "tpGain": 0
+  },
+  {
+    "id": 582,
+    "animationId": 41,
+    "consumable": false,
+    "damage": {
+      "critical": false,
+      "elementId": 0,
+      "formula": "0",
+      "type": 0,
+      "variance": 20
+    },
+    "description": "[Kitab Grimoire Pusaka] Mengajarkan mantra [Lumos] untuk menerangi gua gelap dan dungeon bawah tanah. Tidak habis saat digunakan.",
+    "effects": [
+      {
+        "code": 43,
+        "dataId": 560,
+        "value1": 0,
+        "value2": 0
+      }
+    ],
+    "hitType": 0,
+    "iconIndex": 190,
+    "itypeId": 2,
+    "name": "Grimoire: Lumos",
+    "note": "<Grimoire Item>\n<Field Skill: Light>\n<Learn Skill: 560>\n<Item Category: Grimoire>\n<Scroll Compatible: all>\n<TM Compatible: all>\n<NUSV Category: Key Item>\n<NUSV Subcategory: Grimoire>\n<NUSV Rarity: Epic>\n<NUSV Region: Anywhere>",
+    "occasion": 2,
+    "price": 0,
+    "repeats": 1,
+    "scope": 7,
+    "speed": 0,
+    "successRate": 100,
+    "tpGain": 0
+  },
+  {
+    "id": 583,
+    "animationId": 41,
+    "consumable": false,
+    "damage": {
+      "critical": false,
+      "elementId": 0,
+      "formula": "0",
+      "type": 0,
+      "variance": 20
+    },
+    "description": "[Kitab Grimoire Pusaka] Mengajarkan teknik [Garuda's Wings] untuk fast travel ke perkemahan atau waypoint suci. Tidak habis saat digunakan.",
+    "effects": [
+      {
+        "code": 43,
+        "dataId": 561,
+        "value1": 0,
+        "value2": 0
+      }
+    ],
+    "hitType": 0,
+    "iconIndex": 190,
+    "itypeId": 2,
+    "name": "Grimoire: Garuda's Wings",
+    "note": "<Grimoire Item>\n<Field Skill: FastTravel>\n<Learn Skill: 561>\n<Item Category: Grimoire>\n<Scroll Compatible: all>\n<TM Compatible: all>\n<NUSV Category: Key Item>\n<NUSV Subcategory: Grimoire>\n<NUSV Rarity: Epic>\n<NUSV Region: Anywhere>",
+    "occasion": 2,
+    "price": 0,
+    "repeats": 1,
+    "scope": 7,
+    "speed": 0,
+    "successRate": 100,
+    "tpGain": 0
+  },
+  {
+    "id": 584,
+    "animationId": 41,
+    "consumable": false,
+    "damage": {
+      "critical": false,
+      "elementId": 0,
+      "formula": "0",
+      "type": 0,
+      "variance": 20
+    },
+    "description": "[Kitab Grimoire Pusaka] Mengajarkan jurus [Trailblaze] untuk meremukkan rintangan batu padas dan reruntuhan dungeon. Tidak habis saat digunakan.",
+    "effects": [
+      {
+        "code": 43,
+        "dataId": 562,
+        "value1": 0,
+        "value2": 0
+      }
+    ],
+    "hitType": 0,
+    "iconIndex": 190,
+    "itypeId": 2,
+    "name": "Grimoire: Trailblaze",
+    "note": "<Grimoire Item>\n<Field Skill: BreakObstacle>\n<Learn Skill: 562>\n<Item Category: Grimoire>\n<Scroll Compatible: all>\n<TM Compatible: all>\n<NUSV Category: Key Item>\n<NUSV Subcategory: Grimoire>\n<NUSV Rarity: Epic>\n<NUSV Region: Anywhere>",
+    "occasion": 2,
+    "price": 0,
+    "repeats": 1,
+    "scope": 7,
+    "speed": 0,
+    "successRate": 100,
+    "tpGain": 0
+  },
+  {
+    "id": 585,
+    "animationId": 41,
+    "consumable": false,
+    "damage": {
+      "critical": false,
+      "elementId": 0,
+      "formula": "0",
+      "type": 0,
+      "variance": 20
+    },
+    "description": "[Kitab Grimoire Pusaka] Mengajarkan mantra [Water Strider] untuk melangkah di atas air dungeon tenang. Tidak habis saat digunakan.",
+    "effects": [
+      {
+        "code": 43,
+        "dataId": 563,
+        "value1": 0,
+        "value2": 0
+      }
+    ],
+    "hitType": 0,
+    "iconIndex": 190,
+    "itypeId": 2,
+    "name": "Grimoire: Water Strider",
+    "note": "<Grimoire Item>\n<Field Skill: WaterWalk>\n<Learn Skill: 563>\n<Item Category: Grimoire>\n<Scroll Compatible: all>\n<TM Compatible: all>\n<NUSV Category: Key Item>\n<NUSV Subcategory: Grimoire>\n<NUSV Rarity: Epic>\n<NUSV Region: Anywhere>",
+    "occasion": 2,
+    "price": 0,
+    "repeats": 1,
+    "scope": 7,
+    "speed": 0,
+    "successRate": 100,
+    "tpGain": 0
   }
 ]
