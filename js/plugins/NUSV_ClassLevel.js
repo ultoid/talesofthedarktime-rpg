@@ -105,21 +105,32 @@ NUSV.Levels = NUSV.Levels || {};
         if (match) {
             var entries = match[1].split(',');
             for (var i = 0; i < entries.length; i++) {
-                var pair = entries[i].trim().split(/\s+/);
-                if (pair.length >= 2) {
-                    var statKey = pair[0].toLowerCase();
-                    var val = Number(pair[1].replace('+', '')) || 0;
-                    growth[statKey] = val;
+                var p = entries[i].trim();
+                var m = p.match(/\+?\s*([\d.]+)\s*([A-Za-z]{3})/i);
+                if (m) {
+                    growth[m[2].toLowerCase()] = parseFloat(m[1]) || 0;
+                    continue;
+                }
+                m = p.match(/([A-Za-z]{3})\s*\+?\s*([\d.]+)/i);
+                if (m) {
+                    growth[m[1].toLowerCase()] = parseFloat(m[2]) || 0;
                 }
             }
-        } else {
-            // Default growth if not specified, based on native param proportions
-            growth.str = 0.5;
-            growth.int = 0.5;
-            growth.dex = 0.5;
-            growth.luk = 0.3;
-            growth.agi = 0.5;
-            growth.vit = 0.5;
+        }
+
+        // Fill any unassigned stat with Class Stat Aptitude rate (Base ATTR * 0.2)
+        var attrs = ['str', 'int', 'dex', 'luk', 'agi', 'vit'];
+        for (var a = 0; a < attrs.length; a++) {
+            var k = attrs[a];
+            if (growth[k] === undefined) {
+                var baseTag = note.match(new RegExp('<Base\\s+' + k.toUpperCase() + ':\\s*(\\d+)>', 'i'));
+                if (baseTag) {
+                    var baseVal = parseInt(baseTag[1], 10) || 1;
+                    growth[k] = Math.round(baseVal * 0.2 * 10) / 10;
+                } else {
+                    growth[k] = (k === 'luk') ? 0.3 : 0.5;
+                }
+            }
         }
 
         classObj._nusvStatGrowthCache = growth;

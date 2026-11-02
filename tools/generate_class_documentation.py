@@ -135,58 +135,58 @@ class_filenames = {
 
 # Metadata & Roles
 class_meta_info = {
-    1: {"role": "Petarung Melee Serbaguna", "tier": 1, "cap": 10, "growth": "+2 STR, +1 VIT", "stats": (9, 1, 3, 4, 4, 7)},
-    2: {"role": "Bruiser & Offense Frontliner", "tier": 2, "cap": 30, "growth": "+2 STR, +1 VIT", "stats": (18, 2, 7, 5, 8, 12)},
-    3: {"role": "Shield Tank & Protector", "tier": 2, "cap": 30, "growth": "+2 VIT, +1 STR", "stats": (10, 2, 5, 5, 5, 20)},
-    4: {"role": "Combo Striker & Dodge Fighter", "tier": 2, "cap": 30, "growth": "+1 STR, +1 AGI, +1 DEX", "stats": (14, 2, 8, 6, 14, 8)},
-    5: {"role": "Heavy Aggressive Bruiser", "tier": 3, "cap": 40, "growth": "+2 STR, +1 VIT, +1 DEX", "stats": (34, 3, 14, 8, 14, 22)},
-    6: {"role": "Fortress Defender & Counter Protector", "tier": 3, "cap": 40, "growth": "+2 VIT, +1 STR, +1 DEX", "stats": (20, 4, 12, 8, 10, 38)},
-    7: {"role": "Chi Master & Fast Evasion Striker", "tier": 3, "cap": 40, "growth": "+2 AGI, +1 STR, +1 DEX", "stats": (26, 5, 18, 10, 28, 16)},
-    8: {"role": "Offensive Juggernaut Tank", "tier": 4, "cap": 50, "growth": "+2 VIT, +2 STR, +1 DEX", "stats": (52, 5, 20, 12, 18, 50)},
-    9: {"role": "Aerial Dragoon & High-Mobility Boss Killer", "tier": 4, "cap": 50, "growth": "+2 STR, +2 AGI, +1 DEX", "stats": (56, 6, 22, 12, 36, 30)},
-    10: {"role": "Holy Guardian & Defensive Fortress", "tier": 4, "cap": 50, "growth": "+2 VIT, +1 STR, +1 INT, +1 DEX", "stats": (38, 18, 18, 12, 16, 55)},
-    11: {"role": "Asura Chi Burst & Evasion Master", "tier": 4, "cap": 50, "growth": "+2 AGI, +1 STR, +1 INT, +1 DEX", "stats": (45, 14, 24, 15, 45, 28)},
-    12: {"role": "Rage Berserker & World-Breaker Bruiser", "tier": 5, "cap": 60, "growth": "+3 STR, +2 VIT", "stats": (55, 8, 25, 15, 28, 45)},
-    13: {"role": "Dark Bastion & Soul Siphon Dread Knight", "tier": 5, "cap": 60, "growth": "+2 VIT, +2 STR, +1 INT", "stats": (45, 25, 22, 18, 18, 58)},
-    14: {"role": "Sanctuary Avatar & Immortal Holy Vanguard", "tier": 5, "cap": 60, "growth": "+2 VIT, +2 INT, +1 STR", "stats": (42, 30, 22, 20, 16, 60)},
-    15: {"role": "Supreme Chi Incarnate & Meridian Annihilator", "tier": 5, "cap": 60, "growth": "+3 AGI, +1 STR, +1 DEX", "stats": (48, 18, 30, 18, 60, 36)},
-    16: {"role": "Sky Conqueror & Celestial Skystrike Sovereign", "tier": 5, "cap": 60, "growth": "+3 STR, +2 AGI", "stats": (62, 10, 28, 15, 48, 38)},
+    1: {"role": "Petarung Melee Serbaguna", "tier": 1, "cap": 10, "growth": "+0.8 STR, +0.6 VIT", "stats": (4, 1, 2, 1, 2, 3)},
+    2: {"role": "Bruiser & Offense Frontliner", "tier": 2, "cap": 30, "growth": "+1.2 STR, +1.0 VIT", "stats": (6, 1, 2, 1, 3, 5)},
+    3: {"role": "Shield Tank & Protector", "tier": 2, "cap": 30, "growth": "+1.2 VIT, +0.8 STR", "stats": (4, 1, 3, 2, 2, 6)},
+    4: {"role": "Combo Striker & Dodge Fighter", "tier": 2, "cap": 30, "growth": "+1.0 STR, +1.0 AGI", "stats": (5, 1, 3, 2, 5, 3)},
+    5: {"role": "Heavy Aggressive Bruiser", "tier": 3, "cap": 40, "growth": "+1.6 STR, +1.2 VIT", "stats": (8, 1, 4, 2, 3, 6)},
+    6: {"role": "Fortress Defender & Counter Protector", "tier": 3, "cap": 40, "growth": "+1.6 VIT, +1.2 STR", "stats": (6, 2, 3, 2, 3, 8)},
+    7: {"role": "Chi Master & Fast Evasion Striker", "tier": 3, "cap": 40, "growth": "+1.4 AGI, +1.4 STR", "stats": (7, 2, 4, 2, 7, 4)},
+    8: {"role": "Offensive Juggernaut Tank", "tier": 4, "cap": 50, "growth": "+1.8 STR, +1.6 VIT", "stats": (9, 2, 5, 2, 4, 8)},
+    9: {"role": "Aerial Dragoon & High-Mobility Boss Killer", "tier": 4, "cap": 50, "growth": "+1.8 STR, +1.6 AGI", "stats": (9, 2, 4, 2, 8, 6)},
+    10: {"role": "Holy Guardian & Defensive Fortress", "tier": 4, "cap": 50, "growth": "+1.8 VIT, +1.4 STR, +1.0 INT", "stats": (7, 5, 4, 3, 3, 9)},
+    11: {"role": "Asura Chi Burst & Evasion Master", "tier": 4, "cap": 50, "growth": "+1.8 AGI, +1.6 STR", "stats": (8, 4, 4, 3, 9, 5)},
+    12: {"role": "Rage Berserker & World-Breaker Bruiser", "tier": 5, "cap": 60, "growth": "+2.0 STR, +1.6 VIT", "stats": (10, 2, 5, 3, 5, 8)},
+    13: {"role": "Dark Bastion & Soul Siphon Dread Knight", "tier": 5, "cap": 60, "growth": "+2.0 VIT, +1.6 STR, +1.2 INT", "stats": (8, 6, 4, 4, 3, 10)},
+    14: {"role": "Sanctuary Avatar & Immortal Holy Vanguard", "tier": 5, "cap": 60, "growth": "+2.0 VIT, +1.6 INT, +1.4 STR", "stats": (7, 8, 4, 4, 3, 10)},
+    15: {"role": "Supreme Chi Incarnate & Meridian Annihilator", "tier": 5, "cap": 60, "growth": "+2.0 AGI, +1.6 STR, +1.2 DEX", "stats": (8, 4, 6, 3, 10, 5)},
+    16: {"role": "Sky Conqueror & Celestial Skystrike Sovereign", "tier": 5, "cap": 60, "growth": "+2.0 STR, +1.8 AGI", "stats": (10, 2, 6, 3, 9, 5)},
 
-    17: {"role": "Inisiat Sihir Arcane Pemula", "tier": 1, "cap": 10, "growth": "+2 INT, +1 DEX", "stats": (1, 9, 5, 4, 3, 3)},
-    18: {"role": "Multi-Elemental Caster", "tier": 2, "cap": 30, "growth": "+2 INT, +1 DEX", "stats": (2, 18, 10, 6, 6, 5)},
-    19: {"role": "Healer & Holy Blessing Support", "tier": 2, "cap": 30, "growth": "+2 INT, +1 VIT", "stats": (3, 16, 6, 7, 5, 10)},
-    20: {"role": "Dark Hexer & Siphon Caster", "tier": 2, "cap": 30, "growth": "+2 INT, +1 LUK", "stats": (2, 17, 7, 11, 5, 6)},
-    21: {"role": "Master Elemental Specialist", "tier": 3, "cap": 40, "growth": "+2 INT, +1 DEX, +1 VIT", "stats": (4, 36, 18, 10, 12, 12)},
-    22: {"role": "Party Sustain & Cleanse Healer", "tier": 3, "cap": 40, "growth": "+2 INT, +1 VIT, +1 LUK", "stats": (6, 32, 12, 12, 10, 22)},
-    23: {"role": "Soul Sacrifice & Minion Summoner", "tier": 3, "cap": 40, "growth": "+2 INT, +1 LUK, +1 VIT", "stats": (4, 34, 14, 20, 10, 14)},
-    24: {"role": "Fire Burst & Burn Specialist", "tier": 4, "cap": 50, "growth": "+3 INT, +1 DEX, +1 VIT", "stats": (8, 60, 25, 15, 22, 25)},
-    25: {"role": "Water Control & Sustain Caster", "tier": 4, "cap": 50, "growth": "+3 INT, +1 VIT, +1 DEX", "stats": (8, 56, 22, 16, 20, 32)},
-    26: {"role": "Earth Barrier & Fortification Caster", "tier": 4, "cap": 50, "growth": "+2 INT, +2 VIT, +1 STR", "stats": (14, 54, 18, 14, 16, 42)},
-    27: {"role": "Wind Mobility & Swift Gale Caster", "tier": 4, "cap": 50, "growth": "+3 INT, +2 AGI", "stats": (8, 56, 25, 16, 36, 20)},
-    28: {"role": "Lightning Shock & Voltage Burst Caster", "tier": 4, "cap": 50, "growth": "+3 INT, +1 AGI, +1 DEX", "stats": (8, 62, 26, 18, 28, 18)},
-    29: {"role": "Ice Freeze & CC Specialist Caster", "tier": 4, "cap": 50, "growth": "+3 INT, +1 VIT, +1 DEX", "stats": (8, 56, 22, 16, 20, 32)},
-    30: {"role": "Metal Shard & Armored Battle Caster", "tier": 4, "cap": 50, "growth": "+2 INT, +2 VIT, +1 STR", "stats": (18, 52, 20, 14, 16, 40)},
-    31: {"role": "Sonic Vibration & Silence Disruption Caster", "tier": 4, "cap": 50, "growth": "+3 INT, +1 DEX, +1 AGI", "stats": (8, 58, 28, 18, 26, 22)},
-    32: {"role": "High Priest of Sanctuary & Rebirth Healer", "tier": 4, "cap": 50, "growth": "+2 INT, +2 VIT, +1 LUK", "stats": (8, 58, 20, 18, 16, 40)},
-    33: {"role": "Undead Commander & Corpse Explosion Necromancer", "tier": 4, "cap": 50, "growth": "+2 INT, +2 LUK, +1 VIT", "stats": (8, 56, 22, 32, 16, 24)},
-    34: {"role": "Grand Elemental Archmage & Meteor Cataclysm", "tier": 5, "cap": 60, "growth": "+4 INT, +1 DEX", "stats": (10, 75, 32, 20, 25, 25)},
-    35: {"role": "Supreme Miracle & Divine Rebirth High Priest", "tier": 5, "cap": 60, "growth": "+3 INT, +2 VIT", "stats": (12, 70, 20, 25, 18, 45)},
-    36: {"role": "Netherworld Void Singularity Warlock", "tier": 5, "cap": 60, "growth": "+3 INT, +2 LUK", "stats": (12, 72, 25, 38, 20, 28)},
-    37: {"role": "Ancestral Totem & Primal Spirit Shaman", "tier": 5, "cap": 60, "growth": "+2 INT, +2 VIT, +1 LUK", "stats": (18, 65, 22, 26, 18, 42)},
-    38: {"role": "Primordial Dragon Awakening & Breath Aspect", "tier": 5, "cap": 60, "growth": "+3 INT, +1 STR, +1 VIT", "stats": (30, 68, 25, 20, 24, 44)},
-    49: {"role": "Time Distortion & Chronos Apocalypse Master", "tier": 6, "cap": 70, "growth": "+4 INT, +2 AGI, +1 DEX", "stats": (15, 88, 38, 25, 45, 30)},
-    50: {"role": "Void Incarnate & Absolute Matter Annihilator", "tier": 6, "cap": 70, "growth": "+4 INT, +2 LUK, +1 VIT", "stats": (20, 90, 32, 45, 28, 42)},
+    17: {"role": "Inisiat Sihir Arcane Pemula", "tier": 1, "cap": 10, "growth": "+0.8 INT, +0.6 DEX", "stats": (1, 4, 3, 2, 2, 2)},
+    18: {"role": "Multi-Elemental Caster", "tier": 2, "cap": 30, "growth": "+1.2 INT, +0.8 DEX", "stats": (1, 6, 4, 3, 2, 2)},
+    19: {"role": "Healer & Holy Blessing Support", "tier": 2, "cap": 30, "growth": "+1.0 INT, +1.0 VIT", "stats": (1, 5, 2, 3, 2, 5)},
+    20: {"role": "Dark Hexer & Siphon Caster", "tier": 2, "cap": 30, "growth": "+1.0 INT, +1.0 LUK", "stats": (1, 5, 3, 5, 2, 2)},
+    21: {"role": "Master Elemental Specialist", "tier": 3, "cap": 40, "growth": "+1.6 INT, +1.0 DEX", "stats": (1, 8, 5, 3, 3, 4)},
+    22: {"role": "Party Sustain & Cleanse Healer", "tier": 3, "cap": 40, "growth": "+1.4 INT, +1.4 VIT", "stats": (2, 7, 3, 4, 2, 7)},
+    23: {"role": "Soul Sacrifice & Minion Summoner", "tier": 3, "cap": 40, "growth": "+1.4 INT, +1.4 LUK", "stats": (2, 7, 4, 7, 2, 3)},
+    24: {"role": "Fire Burst & Burn Specialist", "tier": 4, "cap": 50, "growth": "+1.8 INT, +1.2 DEX", "stats": (2, 9, 6, 3, 5, 4)},
+    25: {"role": "Water Control & Sustain Caster", "tier": 4, "cap": 50, "growth": "+1.8 INT, +1.4 VIT", "stats": (2, 9, 5, 4, 3, 7)},
+    26: {"role": "Earth Barrier & Fortification Caster", "tier": 4, "cap": 50, "growth": "+1.6 INT, +1.6 VIT", "stats": (5, 8, 4, 3, 2, 8)},
+    27: {"role": "Wind Mobility & Swift Gale Caster", "tier": 4, "cap": 50, "growth": "+1.8 INT, +1.6 AGI", "stats": (2, 9, 5, 3, 8, 3)},
+    28: {"role": "Lightning Shock & Voltage Burst Caster", "tier": 4, "cap": 50, "growth": "+1.8 INT, +1.4 DEX", "stats": (2, 9, 7, 4, 5, 3)},
+    29: {"role": "Ice Freeze & CC Specialist Caster", "tier": 4, "cap": 50, "growth": "+1.8 INT, +1.4 VIT", "stats": (2, 9, 5, 4, 3, 7)},
+    30: {"role": "Metal Shard & Armored Battle Caster", "tier": 4, "cap": 50, "growth": "+1.6 INT, +1.6 VIT, +1.2 STR", "stats": (6, 8, 4, 3, 2, 8)},
+    31: {"role": "Sonic Vibration & Silence Disruption Caster", "tier": 4, "cap": 50, "growth": "+1.8 INT, +1.2 DEX, +1.2 AGI", "stats": (2, 9, 6, 4, 6, 3)},
+    32: {"role": "High Priest of Sanctuary & Rebirth Healer", "tier": 4, "cap": 50, "growth": "+1.6 INT, +1.6 VIT, +1.0 LUK", "stats": (2, 8, 4, 5, 3, 8)},
+    33: {"role": "Undead Commander & Corpse Explosion Necromancer", "tier": 4, "cap": 50, "growth": "+1.8 INT, +1.6 LUK", "stats": (2, 9, 4, 8, 3, 5)},
+    34: {"role": "Grand Elemental Archmage & Meteor Cataclysm", "tier": 5, "cap": 60, "growth": "+2.0 INT, +1.4 DEX", "stats": (2, 10, 7, 4, 6, 5)},
+    35: {"role": "Supreme Miracle & Divine Rebirth High Priest", "tier": 5, "cap": 60, "growth": "+2.0 VIT, +1.8 INT", "stats": (2, 9, 5, 6, 3, 10)},
+    36: {"role": "Netherworld Void Singularity Warlock", "tier": 5, "cap": 60, "growth": "+2.0 INT, +1.6 LUK", "stats": (2, 10, 6, 8, 4, 5)},
+    37: {"role": "Ancestral Totem & Primal Spirit Shaman", "tier": 5, "cap": 60, "growth": "+1.8 INT, +1.6 VIT, +1.4 LUK", "stats": (4, 9, 5, 7, 3, 8)},
+    38: {"role": "Primordial Dragon Awakening & Breath Aspect", "tier": 5, "cap": 60, "growth": "+1.8 INT, +1.6 STR, +1.6 VIT", "stats": (8, 9, 5, 4, 4, 8)},
+    49: {"role": "Time Distortion & Chronos Apocalypse Master", "tier": 6, "cap": 70, "growth": "+2.0 INT, +2.0 AGI, +1.6 DEX", "stats": (3, 10, 8, 5, 10, 6)},
+    50: {"role": "Void Incarnate & Absolute Matter Annihilator", "tier": 6, "cap": 70, "growth": "+2.0 INT, +2.0 LUK, +1.6 VIT", "stats": (4, 10, 7, 10, 5, 8)},
 
-    39: {"role": "Pengintai Alam & Penjelajah Cepat", "tier": 1, "cap": 10, "growth": "+1 DEX, +1 AGI, +1 LUK", "stats": (3, 1, 8, 5, 8, 3)},
-    40: {"role": "Precision Long-Range Marksman", "tier": 2, "cap": 30, "growth": "+2 DEX, +1 AGI", "stats": (6, 2, 16, 7, 12, 6)},
-    41: {"role": "Stealth Infiltrator & Resource Stealer", "tier": 2, "cap": 30, "growth": "+2 AGI, +1 DEX", "stats": (6, 2, 12, 10, 16, 5)},
-    42: {"role": "Wilderness Survival & Trap Specialist", "tier": 3, "cap": 40, "growth": "+2 DEX, +1 AGI, +1 VIT", "stats": (12, 4, 34, 12, 24, 14)},
-    43: {"role": "Shadow Bleed & Evasive Dual Striker", "tier": 3, "cap": 40, "growth": "+2 AGI, +1 DEX, +1 LUK", "stats": (12, 4, 24, 18, 32, 10)},
-    44: {"role": "Ballista Sniper & Critical Executioner", "tier": 4, "cap": 50, "growth": "+3 DEX, +1 AGI, +1 LUK", "stats": (18, 6, 64, 20, 35, 20)},
-    45: {"role": "Lethal Shadow & Poison Assassin", "tier": 4, "cap": 50, "growth": "+2 AGI, +2 DEX, +1 LUK", "stats": (20, 6, 40, 32, 52, 16)},
-    46: {"role": "Behemoth Commander & Primordial Beastmaster", "tier": 5, "cap": 60, "growth": "+2 DEX, +2 VIT, +1 AGI", "stats": (26, 12, 68, 24, 42, 35)},
-    47: {"role": "Thousand Blades & Eclipse Shadow Walker", "tier": 5, "cap": 60, "growth": "+3 AGI, +2 DEX", "stats": (28, 10, 55, 38, 70, 24)},
-    48: {"role": "Sonic Tempest & Celestial Windrunner", "tier": 5, "cap": 60, "growth": "+3 DEX, +2 AGI", "stats": (25, 12, 75, 26, 62, 26)}
+    39: {"role": "Pengintai Alam & Penjelajah Cepat", "tier": 1, "cap": 10, "growth": "+0.8 DEX, +0.8 AGI", "stats": (2, 1, 4, 2, 4, 2)},
+    40: {"role": "Precision Long-Range Marksman", "tier": 2, "cap": 30, "growth": "+1.2 DEX, +0.8 AGI", "stats": (2, 1, 6, 3, 4, 2)},
+    41: {"role": "Stealth Infiltrator & Resource Stealer", "tier": 2, "cap": 30, "growth": "+1.2 AGI, +0.8 DEX, +0.8 LUK", "stats": (2, 1, 4, 4, 6, 1)},
+    42: {"role": "Wilderness Survival & Trap Specialist", "tier": 3, "cap": 40, "growth": "+1.6 DEX, +1.2 AGI", "stats": (3, 1, 8, 3, 6, 4)},
+    43: {"role": "Shadow Bleed & Evasive Dual Striker", "tier": 3, "cap": 40, "growth": "+1.6 AGI, +1.2 DEX, +1.0 LUK", "stats": (3, 1, 6, 5, 8, 2)},
+    44: {"role": "Ballista Sniper & Critical Executioner", "tier": 4, "cap": 50, "growth": "+1.8 DEX, +1.4 AGI, +1.2 LUK", "stats": (4, 2, 9, 6, 7, 4)},
+    45: {"role": "Lethal Shadow & Poison Assassin", "tier": 4, "cap": 50, "growth": "+1.8 AGI, +1.6 DEX, +1.2 LUK", "stats": (4, 2, 8, 6, 9, 3)},
+    46: {"role": "Behemoth Commander & Primordial Beastmaster", "tier": 5, "cap": 60, "growth": "+1.8 DEX, +1.8 VIT, +1.4 STR", "stats": (7, 3, 9, 5, 6, 9)},
+    47: {"role": "Thousand Blades & Eclipse Shadow Walker", "tier": 5, "cap": 60, "growth": "+2.0 AGI, +1.6 DEX, +1.4 LUK", "stats": (5, 2, 8, 7, 10, 4)},
+    48: {"role": "Sonic Tempest & Celestial Windrunner", "tier": 5, "cap": 60, "growth": "+2.0 DEX, +1.8 AGI", "stats": (5, 2, 10, 6, 9, 4)}
 }
 
 # Evolution tree relationships
@@ -494,8 +494,23 @@ def generate_single_class_md(cid):
     desc_m = re.search(r'<Class Description>\s*([\s\S]*?)\s*</Class Description>', note)
     class_desc = desc_m.group(1).strip() if desc_m else f"Kelas petualang spesialisasi tingkat Tier {meta['tier']} di dunia Nusvanir."
 
-    # 6 Base Stats
+    # 6 Base Stats & Aptitude Grades
     str_v, int_v, dex_v, luk_v, agi_v, vit_v = meta['stats']
+
+    def get_grade(v):
+        if v >= 10: return 'S', 2.0
+        if v >= 8: return 'A', round(1.6 + (v - 8) * 0.2, 1)
+        if v >= 6: return 'B', round(1.2 + (v - 6) * 0.2, 1)
+        if v >= 4: return 'C', round(0.8 + (v - 4) * 0.2, 1)
+        if v >= 2: return 'D', round(0.4 + (v - 2) * 0.2, 1)
+        return 'E', 0.2
+
+    str_g, str_r = get_grade(str_v)
+    int_g, int_r = get_grade(int_v)
+    dex_g, dex_r = get_grade(dex_v)
+    luk_g, luk_r = get_grade(luk_v)
+    agi_g, agi_r = get_grade(agi_v)
+    vit_g, vit_r = get_grade(vit_v)
 
     # Baseline Derived Stats
     max_hp = 50 + (vit_v * 15) + (str_v * 5)
@@ -558,12 +573,14 @@ def generate_single_class_md(cid):
 
     # 2. Parameter Pertumbuhan & Karakteristik
     out.append("## 2. Parameter Pertumbuhan & Karakteristik (Turn-Based RPG)\n")
-    out.append("### A. 6 Base Stats (Atribut Dasar Kelas)")
-    out.append("| STR | INT | DEX | LUK | AGI | VIT |")
-    out.append("| :---: | :---: | :---: | :---: | :---: | :---: |")
-    out.append(f"| **{str_v}** | **{int_v}** | **{dex_v}** | **{luk_v}** | **{agi_v}** | **{vit_v}** |\n")
-    out.append(f"* **Pertumbuhan Stat Alami (Fixed Stat Growth per Class Level):** `{meta['growth']}`")
-    out.append(f"* **Kurva EXP Kelas:** `Tier {meta['tier']}` *(Batas Maksimum: Lv. {meta['cap']})*\n")
+    out.append("### A. Class Stat Aptitude Rating & 6 Base Stats (Skala 1 – 10)")
+    out.append("| Parameter | STR | INT | DEX | LUK | AGI | VIT |")
+    out.append("| :--- | :---: | :---: | :---: | :---: | :---: | :---: |")
+    out.append(f"| **Stat Aptitude (1–10)** | **{str_v}** | **{int_v}** | **{dex_v}** | **{luk_v}** | **{agi_v}** | **{vit_v}** |")
+    out.append(f"| **Grade Evaluasi** | **Grade {str_g}** | **Grade {int_g}** | **Grade {dex_g}** | **Grade {luk_g}** | **Grade {agi_g}** | **Grade {vit_g}** |")
+    out.append(f"| **Growth Rate Alami** | `+{str_r:.1f}/Lv` | `+{int_r:.1f}/Lv` | `+{dex_r:.1f}/Lv` | `+{luk_r:.1f}/Lv` | `+{agi_r:.1f}/Lv` | `+{vit_r:.1f}/Lv` |\n")
+    out.append(f"* **Fokus Pertumbuhan Stat Alami:** `{meta['growth']}`")
+    out.append(f"* **Kurva EXP & Batas Level:** `Tier {meta['tier']}` *(Batas Maksimum: Lv. {meta['cap']})*\n")
 
     out.append("### B. Stat Turunan Awal (Baseline Derived Stats)")
     out.append("*Dihitung deterministik dari 6 Base Stats awal kelas menggunakan formula resmi dunia Nusvanir:*\n")

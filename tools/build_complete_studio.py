@@ -1102,10 +1102,11 @@ HTML_CONTENT = r'''<!DOCTYPE html>
         function getIVGradeInfo(val) {
             const r = Math.max(1, Math.min(10, parseInt(val, 10) || 5));
             if (r >= 10) return { grade: 'S', color: '#ec4899', rate: 2.0, label: 'Grade S (+2.0/Lv) Max' };
-            if (r >= 8) return { grade: 'A', color: '#a855f7', rate: 1.6 + (r - 8) * 0.2, label: `Grade A (+${(1.6 + (r - 8) * 0.2).toFixed(1)}/Lv) High` };
-            if (r >= 6) return { grade: 'B', color: '#3b82f6', rate: 1.2 + (r - 6) * 0.2, label: `Grade B (+${(1.2 + (r - 6) * 0.2).toFixed(1)}/Lv) Balanced` };
-            if (r >= 4) return { grade: 'C', color: '#10b981', rate: 0.8 + (r - 4) * 0.2, label: `Grade C (+${(0.8 + (r - 4) * 0.2).toFixed(1)}/Lv) Moderate` };
-            return { grade: 'E', color: '#94a3b8', rate: Math.max(0.2, r * 0.2), label: `Grade E (+${(r * 0.2).toFixed(1)}/Lv) Low` };
+            if (r >= 8) return { grade: 'A', color: '#a855f7', rate: Math.round((1.6 + (r - 8) * 0.2) * 10) / 10, label: `Grade A (+${(1.6 + (r - 8) * 0.2).toFixed(1)}/Lv) High` };
+            if (r >= 6) return { grade: 'B', color: '#3b82f6', rate: Math.round((1.2 + (r - 6) * 0.2) * 10) / 10, label: `Grade B (+${(1.2 + (r - 6) * 0.2).toFixed(1)}/Lv) Balanced` };
+            if (r >= 4) return { grade: 'C', color: '#10b981', rate: Math.round((0.8 + (r - 4) * 0.2) * 10) / 10, label: `Grade C (+${(0.8 + (r - 4) * 0.2).toFixed(1)}/Lv) Moderate` };
+            if (r >= 2) return { grade: 'D', color: '#f59e0b', rate: Math.round((0.4 + (r - 2) * 0.2) * 10) / 10, label: `Grade D (+${(0.4 + (r - 2) * 0.2).toFixed(1)}/Lv) Low` };
+            return { grade: 'E', color: '#94a3b8', rate: 0.2, label: 'Grade E (+0.2/Lv) Minimal' };
         }
 
         function ensureItemParams(item) {

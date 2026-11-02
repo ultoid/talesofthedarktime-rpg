@@ -93,7 +93,7 @@
       }
     ],
     "name": "Fighter",
-    "note": "<Class Max Level: 10>\n<Base LUK: 1>\n<Base DEX: 1>\n<Base AGI: 2>\n<Base VIT: 3>\n<Base STR: 4>\n<Class Tier: 1>\n<Class Icon: 96>\n<Class Description>\nPetarung yang mengandalkan keberanian, latihan dasar, dan naluri tempur untuk menghadapi bahaya Nusvanir.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base INT: 1>",
+    "note": "<Class Tier: 1>\n<Class Icon: 96>\n<Class Description>\nPetarung yang mengandalkan keberanian, latihan dasar, dan naluri tempur untuk menghadapi bahaya Nusvanir.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 10>\n<Base STR: 4>\n<Base INT: 1>\n<Base DEX: 2>\n<Base LUK: 1>\n<Base AGI: 2>\n<Base VIT: 3>\n<Class Stat Growth: STR +0.8, VIT +0.6>\n",
     "params": [
       [
         0,
@@ -1006,7 +1006,7 @@
       }
     ],
     "name": "Warrior",
-    "note": "<Class Tier: 2>\n<Class Icon: 99>\n<Class Change From: 1>\n<Class Description>\nPrajurit tangguh yang menempuh hidup di garis depan, mengandalkan kekuatan, daya tahan, dan keberanian dalam pertempuran.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 18>\n<Base INT: 2>\n<Base DEX: 7>\n<Base LUK: 5>\n<Base AGI: 8>\n<Base VIT: 12>\n<Class Stat Growth: +2 STR, +1 VIT>\n",
+    "note": "<Class Tier: 2>\n<Class Icon: 99>\n<Class Change From: 1>\n<Class Description>\nPrajurit tangguh yang menempuh hidup di garis depan, mengandalkan kekuatan, daya tahan, dan keberanian dalam pertempuran.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 6>\n<Base INT: 1>\n<Base DEX: 2>\n<Base LUK: 1>\n<Base AGI: 3>\n<Base VIT: 5>\n<Class Stat Growth: STR +1.2, VIT +1.0>\n",
     "params": [
       [
         0,
@@ -1914,7 +1914,7 @@
       }
     ],
     "name": "Squire",
-    "note": "<Class Tier: 2>\n<Class Icon: 128>\n<Class Change From: 1>\n<Class Description>\nCalon kesatria yang belajar disiplin, tata tempur, dan nilai kehormatan sebelum layak mengangkat sumpahnya sendiri.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 10>\n<Base INT: 2>\n<Base DEX: 5>\n<Base LUK: 5>\n<Base AGI: 5>\n<Base VIT: 20>\n<Class Stat Growth: +2 VIT, +1 STR>\n",
+    "note": "<Class Tier: 2>\n<Class Icon: 128>\n<Class Change From: 1>\n<Class Description>\nCalon kesatria yang belajar disiplin, tata tempur, dan nilai kehormatan sebelum layak mengangkat sumpahnya sendiri.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 4>\n<Base INT: 1>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 2>\n<Base VIT: 6>\n<Class Stat Growth: VIT +1.2, STR +0.8>\n",
     "params": [
       [
         0,
@@ -2817,7 +2817,7 @@
       }
     ],
     "name": "Brawler",
-    "note": "<Class Tier: 2>\n<Class Icon: 104>\n<Class Change From: 1>\n<Class Description>\nPetarung keras yang mengandalkan tinju, refleks, dan ketangguhan tubuh untuk menaklukkan lawan dari jarak dekat.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 14>\n<Base INT: 2>\n<Base DEX: 8>\n<Base LUK: 6>\n<Base AGI: 14>\n<Base VIT: 8>\n<Class Stat Growth: +1 STR, +1 AGI, +1 DEX>\n",
+    "note": "<Class Tier: 2>\n<Class Icon: 104>\n<Class Change From: 1>\n<Class Description>\nPetarung keras yang mengandalkan tinju, refleks, dan ketangguhan tubuh untuk menaklukkan lawan dari jarak dekat.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 5>\n<Base INT: 1>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 5>\n<Base VIT: 3>\n<Class Stat Growth: STR +1.0, AGI +1.0>\n",
     "params": [
       [
         0,
@@ -3725,7 +3725,7 @@
       }
     ],
     "name": "Mercenary",
-    "note": "<Class Tier: 3>\n<Class Icon: 96>\n<Class Change From: 2>\n<Class Description>\nPrajurit bayaran berpengalaman yang hidup dari kontrak, perang, dan kemampuan beradaptasi di medan yang tak menentu.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 34>\n<Base INT: 3>\n<Base DEX: 14>\n<Base LUK: 8>\n<Base AGI: 14>\n<Base VIT: 22>\n<Class Stat Growth: +2 STR, +1 VIT, +1 DEX>\n",
+    "note": "<Class Tier: 3>\n<Class Icon: 96>\n<Class Change From: 2>\n<Class Description>\nPrajurit bayaran berpengalaman yang hidup dari kontrak, perang, dan kemampuan beradaptasi di medan yang tak menentu.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 8>\n<Base INT: 1>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 3>\n<Base VIT: 6>\n<Class Stat Growth: STR +1.6, VIT +1.2>\n",
     "params": [
       [
         0,
@@ -4628,7 +4628,7 @@
       }
     ],
     "name": "Knight",
-    "note": "<Class Tier: 3>\n<Class Icon: 128>\n<Class Change From: 3>\n<Class Description>\nKesatria terlatih yang menjunjung sumpah, kehormatan, dan kewajiban untuk berdiri teguh di hadapan ancaman.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 20>\n<Base INT: 4>\n<Base DEX: 12>\n<Base LUK: 8>\n<Base AGI: 10>\n<Base VIT: 38>\n<Class Stat Growth: +2 VIT, +1 STR, +1 DEX>\n",
+    "note": "<Class Tier: 3>\n<Class Icon: 128>\n<Class Change From: 3>\n<Class Description>\nKesatria terlatih yang menjunjung sumpah, kehormatan, dan kewajiban untuk berdiri teguh di hadapan ancaman.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 6>\n<Base INT: 2>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 3>\n<Base VIT: 8>\n<Class Stat Growth: VIT +1.6, STR +1.2>\n",
     "params": [
       [
         0,
@@ -5536,7 +5536,7 @@
       }
     ],
     "name": "Martial Artist",
-    "note": "<Class Tier: 3>\n<Class Icon: 104>\n<Class Change From: 4>\n<Class Description>\nPendekar yang mengasah tubuh dan teknik melalui disiplin panjang hingga setiap geraknya menjadi senjata.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 26>\n<Base INT: 5>\n<Base DEX: 18>\n<Base LUK: 10>\n<Base AGI: 28>\n<Base VIT: 16>\n<Class Stat Growth: +2 AGI, +1 STR, +1 DEX>\n",
+    "note": "<Class Tier: 3>\n<Class Icon: 104>\n<Class Change From: 4>\n<Class Description>\nPendekar yang mengasah tubuh dan teknik melalui disiplin panjang hingga setiap geraknya menjadi senjata.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 7>\n<Base INT: 2>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 7>\n<Base VIT: 4>\n<Class Stat Growth: AGI +1.4, STR +1.4>\n",
     "params": [
       [
         0,
@@ -6449,7 +6449,7 @@
       }
     ],
     "name": "Champion",
-    "note": "<Class Tier: 4>\n<Class Icon: 99>\n<Class Change From: 5>\n<Class Description>\nPejuang unggulan yang dikenal karena keberanian, ketangguhan, dan kemenangan yang ditempa dari banyak pertempuran.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 52>\n<Base INT: 5>\n<Base DEX: 20>\n<Base LUK: 12>\n<Base AGI: 18>\n<Base VIT: 50>\n<Class Stat Growth: +2 VIT, +2 STR, +1 DEX>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 99>\n<Class Change From: 5>\n<Class Description>\nPejuang unggulan yang dikenal karena keberanian, ketangguhan, dan kemenangan yang ditempa dari banyak pertempuran.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 9>\n<Base INT: 2>\n<Base DEX: 5>\n<Base LUK: 2>\n<Base AGI: 4>\n<Base VIT: 8>\n<Class Stat Growth: STR +1.8, VIT +1.6>\n",
     "params": [
       [
         0,
@@ -7357,7 +7357,7 @@
       }
     ],
     "name": "Dragoon",
-    "note": "<Class Tier: 4>\n<Class Icon: 101>\n<Class Change From: 6>\n<Class Description>\nPrajurit tombak yang menguasai lompatan dan serangan dari atas, meniru keganasan makhluk bersayap dan naga.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 56>\n<Base INT: 6>\n<Base DEX: 22>\n<Base LUK: 12>\n<Base AGI: 36>\n<Base VIT: 30>\n<Class Stat Growth: +2 STR, +2 AGI, +1 DEX>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 101>\n<Class Change From: 6>\n<Class Description>\nPrajurit tombak yang menguasai lompatan dan serangan dari atas, meniru keganasan makhluk bersayap dan naga.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 9>\n<Base INT: 2>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 8>\n<Base VIT: 6>\n<Class Stat Growth: STR +1.8, AGI +1.6>\n",
     "params": [
       [
         0,
@@ -8270,7 +8270,7 @@
       }
     ],
     "name": "Paladin",
-    "note": "<Base LUK: 5>\n<Base AGI: 5>\n<Base DEX: 1>\n<Base INT: 1>\n<Class Tier: 4>\n<Class Icon: 96>\n<Class Change From: 6>\n<Class Description>\nKesatria suci yang memadukan kekuatan senjata dengan keyakinan, sumpah, dan perlindungan terhadap mereka yang lemah.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 38>\n<Base VIT: 55>\n<Class Stat Growth: +2 VIT, +1 STR, +1 INT, +1 DEX>",
+    "note": "<Class Tier: 4>\n<Class Icon: 96>\n<Class Change From: 6>\n<Class Description>\nKesatria suci yang memadukan kekuatan senjata dengan keyakinan, sumpah, dan perlindungan terhadap mereka yang lemah.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 7>\n<Base INT: 5>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 3>\n<Base VIT: 9>\n<Class Stat Growth: VIT +1.8, STR +1.4, INT +1.0>\n",
     "params": [
       [
         0,
@@ -9183,7 +9183,7 @@
       }
     ],
     "name": "Monk",
-    "note": "<Class Tier: 4>\n<Class Icon: 104>\n<Class Change From: 7>\n<Class Description>\nPertapa tempur yang menyelaraskan tubuh, pikiran, dan napas untuk melampaui batas kekuatan manusia biasa.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 45>\n<Base INT: 14>\n<Base DEX: 24>\n<Base LUK: 15>\n<Base AGI: 45>\n<Base VIT: 28>\n<Class Stat Growth: +2 AGI, +1 STR, +1 INT, +1 DEX>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 104>\n<Class Change From: 7>\n<Class Description>\nPertapa tempur yang menyelaraskan tubuh, pikiran, dan napas untuk melampaui batas kekuatan manusia biasa.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 8>\n<Base INT: 4>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 9>\n<Base VIT: 5>\n<Class Stat Growth: AGI +1.8, STR +1.6>\n",
     "params": [
       [
         0,
@@ -10121,7 +10121,7 @@
       }
     ],
     "name": "Berserker",
-    "note": "<Class Tier: 5>\n<Class Icon: 99>\n<Class Change From: 8>\n<Class Description>\nPejuang ganas yang membiarkan amarah dan insting perang mendorong tubuhnya melewati rasa sakit dan rasa takut.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 99>\n<Class Change From: 8>\n<Class Description>\nPejuang ganas yang membiarkan amarah dan insting perang mendorong tubuhnya melewati rasa sakit dan rasa takut.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 10>\n<Base INT: 2>\n<Base DEX: 5>\n<Base LUK: 3>\n<Base AGI: 5>\n<Base VIT: 8>\n<Class Stat Growth: STR +2.0, VIT +1.6>\n",
     "params": [
       [
         0,
@@ -11049,7 +11049,7 @@
       }
     ],
     "name": "Death Knight",
-    "note": "<Class Tier: 5>\n<Class Icon: 135>\n<Class Change From: 10>\n<Class Description>\nKesatria kelam yang membawa jejak kematian dalam zirah dan senjatanya, ditakuti bahkan oleh sesama prajurit.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 135>\n<Class Change From: 10>\n<Class Description>\nKesatria kelam yang membawa jejak kematian dalam zirah dan senjatanya, ditakuti bahkan oleh sesama prajurit.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 8>\n<Base INT: 6>\n<Base DEX: 4>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 10>\n<Class Stat Growth: VIT +2.0, STR +1.6, INT +1.2>\n",
     "params": [
       [
         0,
@@ -11982,7 +11982,7 @@
       }
     ],
     "name": "Holy Knight",
-    "note": "<Class Tier: 5>\n<Class Icon: 128>\n<Class Change From: 10>\n<Class Description>\nKesatria agung yang mengabdikan hidupnya pada kekuatan suci dan bertarung sebagai perisai bagi cahaya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 128>\n<Class Change From: 10>\n<Class Description>\nKesatria agung yang mengabdikan hidupnya pada kekuatan suci dan bertarung sebagai perisai bagi cahaya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 7>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 10>\n<Class Stat Growth: VIT +2.0, INT +1.6, STR +1.4>\n",
     "params": [
       [
         0,
@@ -12900,7 +12900,7 @@
       }
     ],
     "name": "Brahma",
-    "note": "<Class Tier: 5>\n<Class Icon: 104>\n<Class Change From: 11>\n<Class Description>\nMahaguru bela diri yang telah menempuh disiplin tertinggi hingga tenaga batinnya mampu menandingi kekuatan senjata.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 104>\n<Class Change From: 11>\n<Class Description>\nMahaguru bela diri yang telah menempuh disiplin tertinggi hingga tenaga batinnya mampu menandingi kekuatan senjata.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 8>\n<Base INT: 4>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 10>\n<Base VIT: 5>\n<Class Stat Growth: AGI +2.0, STR +1.6, DEX +1.2>\n",
     "params": [
       [
         0,
@@ -13813,7 +13813,7 @@
       }
     ],
     "name": "Sky Sovereign",
-    "note": "<Class Tier: 5>\n<Class Icon: 101>\n<Class Change From: 9>\n<Class Description>\nAhli tombak legendaris yang menguasai langit dan medan tinggi seolah keduanya merupakan bagian dari tubuhnya sendiri.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 101>\n<Class Change From: 9>\n<Class Description>\nAhli tombak legendaris yang menguasai langit dan medan tinggi seolah keduanya merupakan bagian dari tubuhnya sendiri.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 10>\n<Base INT: 2>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 9>\n<Base VIT: 5>\n<Class Stat Growth: STR +2.0, AGI +1.8>\n",
     "params": [
       [
         0,
@@ -14711,7 +14711,7 @@
       }
     ],
     "name": "Apprentice",
-    "note": "<Class Tier: 1>\n<Class Icon: 100>\n<Class Description>\nPemula dalam seni sihir yang baru mempelajari cara memahami mana, mantra, dan aturan dasar kekuatan gaib.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 1>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 3>\n<Class Stat Growth: +2 INT, +1 DEX>\n",
+    "note": "<Class Tier: 1>\n<Class Icon: 100>\n<Class Description>\nPemula dalam seni sihir yang baru mempelajari cara memahami mana, mantra, dan aturan dasar kekuatan gaib.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 10>\n<Base STR: 1>\n<Base INT: 4>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 2>\n<Base VIT: 2>\n<Class Stat Growth: INT +0.8, DEX +0.6>\n",
     "params": [
       [
         0,
@@ -15619,7 +15619,7 @@
       }
     ],
     "name": "Magician",
-    "note": "<Class Tier: 2>\n<Class Icon: 64>\n<Class Change From: 17>\n<Class Description>\nPenyihir terlatih yang mengubah pengetahuan arcane menjadi mantra untuk menyerang, bertahan, atau mengendalikan keadaan.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 2>\n<Base INT: 18>\n<Base DEX: 10>\n<Base LUK: 6>\n<Base AGI: 6>\n<Base VIT: 5>\n<Class Stat Growth: +2 INT, +1 DEX>\n",
+    "note": "<Class Tier: 2>\n<Class Icon: 64>\n<Class Change From: 17>\n<Class Description>\nPenyihir terlatih yang mengubah pengetahuan arcane menjadi mantra untuk menyerang, bertahan, atau mengendalikan keadaan.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 1>\n<Base INT: 6>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 2>\n<Class Stat Growth: INT +1.2, DEX +0.8>\n",
     "params": [
       [
         0,
@@ -16522,7 +16522,7 @@
       }
     ],
     "name": "Acolyte",
-    "note": "<Class Tier: 2>\n<Class Icon: 72>\n<Class Change From: 17>\n<Class Description>\nPelayan muda jalan suci yang belajar menyalurkan doa, pemulihan, dan perlindungan melalui keyakinannya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 3>\n<Base INT: 16>\n<Base DEX: 6>\n<Base LUK: 7>\n<Base AGI: 5>\n<Base VIT: 10>\n<Class Stat Growth: +2 INT, +1 VIT>\n",
+    "note": "<Class Tier: 2>\n<Class Icon: 72>\n<Class Change From: 17>\n<Class Description>\nPelayan muda jalan suci yang belajar menyalurkan doa, pemulihan, dan perlindungan melalui keyakinannya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 1>\n<Base INT: 5>\n<Base DEX: 2>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 5>\n<Class Stat Growth: INT +1.0, VIT +1.0>\n",
     "params": [
       [
         0,
@@ -17435,7 +17435,7 @@
       }
     ],
     "name": "Occultist",
-    "note": "<Class Tier: 2>\n<Class Icon: 71>\n<Class Change From: 17>\n<Class Description>\nPraktisi ilmu terlarang yang mencari kekuatan dari ritual, rahasia kuno, dan pengetahuan yang dihindari kebanyakan orang.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 2>\n<Base INT: 17>\n<Base DEX: 7>\n<Base LUK: 11>\n<Base AGI: 5>\n<Base VIT: 6>\n<Class Stat Growth: +2 INT, +1 LUK>\n",
+    "note": "<Class Tier: 2>\n<Class Icon: 71>\n<Class Change From: 17>\n<Class Description>\nPraktisi ilmu terlarang yang mencari kekuatan dari ritual, rahasia kuno, dan pengetahuan yang dihindari kebanyakan orang.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 1>\n<Base INT: 5>\n<Base DEX: 3>\n<Base LUK: 5>\n<Base AGI: 2>\n<Base VIT: 2>\n<Class Stat Growth: INT +1.0, LUK +1.0>\n",
     "params": [
       [
         0,
@@ -18348,7 +18348,7 @@
       }
     ],
     "name": "Mage",
-    "note": "<Class Tier: 3>\n<Class Icon: 65>\n<Class Change From: 18>\n<Class Description>\nPenyihir berpengalaman yang memahami arus mana dan mampu membentuknya menjadi sihir yang jauh lebih kuat dan rumit.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 4>\n<Base INT: 36>\n<Base DEX: 18>\n<Base LUK: 10>\n<Base AGI: 12>\n<Base VIT: 12>\n<Class Stat Growth: +2 INT, +1 DEX, +1 VIT>\n",
+    "note": "<Class Tier: 3>\n<Class Icon: 65>\n<Class Change From: 18>\n<Class Description>\nPenyihir berpengalaman yang memahami arus mana dan mampu membentuknya menjadi sihir yang jauh lebih kuat dan rumit.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 1>\n<Base INT: 8>\n<Base DEX: 5>\n<Base LUK: 3>\n<Base AGI: 3>\n<Base VIT: 4>\n<Class Stat Growth: INT +1.6, DEX +1.0>\n",
     "params": [
       [
         0,
@@ -19261,7 +19261,7 @@
       }
     ],
     "name": "Cleric",
-    "note": "<Class Tier: 3>\n<Class Icon: 73>\n<Class Change From: 19>\n<Class Description>\nRohaniwan pengembara yang membawa penyembuhan, doa, dan perlindungan bagi mereka yang berjuang di sisinya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 6>\n<Base INT: 32>\n<Base DEX: 12>\n<Base LUK: 12>\n<Base AGI: 10>\n<Base VIT: 22>\n<Class Stat Growth: +2 INT, +1 VIT, +1 LUK>\n",
+    "note": "<Class Tier: 3>\n<Class Icon: 73>\n<Class Change From: 19>\n<Class Description>\nRohaniwan pengembara yang membawa penyembuhan, doa, dan perlindungan bagi mereka yang berjuang di sisinya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 2>\n<Base INT: 7>\n<Base DEX: 3>\n<Base LUK: 4>\n<Base AGI: 2>\n<Base VIT: 7>\n<Class Stat Growth: INT +1.4, VIT +1.4>\n",
     "params": [
       [
         0,
@@ -20174,7 +20174,7 @@
       }
     ],
     "name": "Cultist",
-    "note": "<Class Tier: 3>\n<Class Icon: 80>\n<Class Change From: 20>\n<Class Description>\nPengikut ajaran terlarang yang menukar batas moral dengan pengetahuan, ritual, dan kekuatan dari sumber yang berbahaya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 4>\n<Base INT: 34>\n<Base DEX: 14>\n<Base LUK: 20>\n<Base AGI: 10>\n<Base VIT: 14>\n<Class Stat Growth: +2 INT, +1 LUK, +1 VIT>\n",
+    "note": "<Class Tier: 3>\n<Class Icon: 80>\n<Class Change From: 20>\n<Class Description>\nPengikut ajaran terlarang yang menukar batas moral dengan pengetahuan, ritual, dan kekuatan dari sumber yang berbahaya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 2>\n<Base INT: 7>\n<Base DEX: 4>\n<Base LUK: 7>\n<Base AGI: 2>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.4, LUK +1.4>\n",
     "params": [
       [
         0,
@@ -21082,7 +21082,7 @@
       }
     ],
     "name": "Elementalist - Pyromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 64>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur api yang membentuk bara, panas, dan ledakan menjadi senjata di medan pertempuran.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 8>\n<Base INT: 60>\n<Base DEX: 25>\n<Base LUK: 15>\n<Base AGI: 22>\n<Base VIT: 25>\n<Class Stat Growth: +3 INT, +1 DEX, +1 VIT>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 64>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur api yang membentuk bara, panas, dan ledakan menjadi senjata di medan pertempuran.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 5>\n<Base VIT: 4>\n<Class Stat Growth: INT +1.8, DEX +1.2>\n",
     "params": [
       [
         0,
@@ -21995,7 +21995,7 @@
       }
     ],
     "name": "Elementalist - Hydromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 67>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur air yang menguasai aliran, tekanan, dan sifat pemulihan dari kekuatan Tirta.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 8>\n<Base INT: 56>\n<Base DEX: 22>\n<Base LUK: 16>\n<Base AGI: 20>\n<Base VIT: 32>\n<Class Stat Growth: +3 INT, +1 VIT, +1 DEX>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 67>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur air yang menguasai aliran, tekanan, dan sifat pemulihan dari kekuatan Tirta.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 7>\n<Class Stat Growth: INT +1.8, VIT +1.4>\n",
     "params": [
       [
         0,
@@ -22908,7 +22908,7 @@
       }
     ],
     "name": "Elementalist - Geomancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 68>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur bumi yang memanggil batu, tanah, dan kekuatan daratan untuk melindungi atau menghancurkan.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 14>\n<Base INT: 54>\n<Base DEX: 18>\n<Base LUK: 14>\n<Base AGI: 16>\n<Base VIT: 42>\n<Class Stat Growth: +2 INT, +2 VIT, +1 STR>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 68>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur bumi yang memanggil batu, tanah, dan kekuatan daratan untuk melindungi atau menghancurkan.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 5>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.6, VIT +1.6>\n",
     "params": [
       [
         0,
@@ -23821,7 +23821,7 @@
       }
     ],
     "name": "Elementalist - Aeromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 69>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur angin yang memanfaatkan arus udara, kecepatan, dan tekanan untuk mengubah jalannya pertempuran.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 8>\n<Base INT: 56>\n<Base DEX: 25>\n<Base LUK: 16>\n<Base AGI: 36>\n<Base VIT: 20>\n<Class Stat Growth: +3 INT, +2 AGI>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 69>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur angin yang memanfaatkan arus udara, kecepatan, dan tekanan untuk mengubah jalannya pertempuran.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 3>\n<Base AGI: 8>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.8, AGI +1.6>\n",
     "params": [
       [
         0,
@@ -24734,7 +24734,7 @@
       }
     ],
     "name": "Elementalist - Electromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 66>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur petir yang menyalurkan kilat dan muatan listrik menjadi serangan cepat dan berbahaya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 8>\n<Base INT: 62>\n<Base DEX: 26>\n<Base LUK: 18>\n<Base AGI: 28>\n<Base VIT: 18>\n<Class Stat Growth: +3 INT, +1 AGI, +1 DEX>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 66>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur petir yang menyalurkan kilat dan muatan listrik menjadi serangan cepat dan berbahaya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 7>\n<Base LUK: 4>\n<Base AGI: 5>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.8, DEX +1.4>\n",
     "params": [
       [
         0,
@@ -25647,7 +25647,7 @@
       }
     ],
     "name": "Elementalist - Cryomancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 65>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur es yang mengendalikan dingin, embun beku, dan kristal untuk melemahkan atau membekukan lawan.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 8>\n<Base INT: 56>\n<Base DEX: 22>\n<Base LUK: 16>\n<Base AGI: 20>\n<Base VIT: 32>\n<Class Stat Growth: +3 INT, +1 VIT, +1 DEX>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 65>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur es yang mengendalikan dingin, embun beku, dan kristal untuk melemahkan atau membekukan lawan.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 7>\n<Class Stat Growth: INT +1.8, VIT +1.4>\n",
     "params": [
       [
         0,
@@ -26555,7 +26555,7 @@
       }
     ],
     "name": "Elementalist - Ferromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 70>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur logam yang mampu memengaruhi besi, baja, dan logam lain melalui kendali mana yang terlatih.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 18>\n<Base INT: 52>\n<Base DEX: 20>\n<Base LUK: 14>\n<Base AGI: 16>\n<Base VIT: 40>\n<Class Stat Growth: +2 INT, +2 VIT, +1 STR>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 70>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur logam yang mampu memengaruhi besi, baja, dan logam lain melalui kendali mana yang terlatih.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 6>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.6, VIT +1.6, STR +1.2>\n",
     "params": [
       [
         0,
@@ -27468,7 +27468,7 @@
       }
     ],
     "name": "Elementalist - Echomancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 76>\n<Class Change From: 21>\n<Class Description>\nPenyihir gema yang menjadikan suara, resonansi, dan getaran sebagai medium untuk sihir yang tidak biasa.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 8>\n<Base INT: 58>\n<Base DEX: 28>\n<Base LUK: 18>\n<Base AGI: 26>\n<Base VIT: 22>\n<Class Stat Growth: +3 INT, +1 DEX, +1 AGI>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 76>\n<Class Change From: 21>\n<Class Description>\nPenyihir gema yang menjadikan suara, resonansi, dan getaran sebagai medium untuk sihir yang tidak biasa.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 6>\n<Base LUK: 4>\n<Base AGI: 6>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.8, DEX +1.2, AGI +1.2>\n",
     "params": [
       [
         0,
@@ -28391,7 +28391,7 @@
       }
     ],
     "name": "Priest",
-    "note": "<Base LUK: 4>\n<Base VIT: 7>\n<Base AGI: 1>\n<Base DEX: 2>\n<Base INT: 9>\n<Base STR: 1>\n<Class Tier: 4>\n<Class Icon: 74>\n<Class Change From: 22>\n<Class Description>\nRohaniwan tinggi yang menguasai doa dan mukjizat untuk menyembuhkan, melindungi, dan menuntun para pengikutnya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Stat Growth: +2 INT, +2 VIT, +1 LUK>",
+    "note": "<Class Tier: 4>\n<Class Icon: 74>\n<Class Change From: 22>\n<Class Description>\nRohaniwan tinggi yang menguasai doa dan mukjizat untuk menyembuhkan, melindungi, dan menuntun para pengikutnya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 5>\n<Base AGI: 3>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.6, VIT +1.6, LUK +1.0>\n",
     "params": [
       [
         0,
@@ -29309,7 +29309,7 @@
       }
     ],
     "name": "Necromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 80>\n<Class Change From: 23>\n<Class Description>\nPenyihir kematian yang mempelajari jiwa, jasad, dan ikatan antara kehidupan serta dunia setelah kematian.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 8>\n<Base INT: 56>\n<Base DEX: 22>\n<Base LUK: 32>\n<Base AGI: 16>\n<Base VIT: 24>\n<Class Stat Growth: +2 INT, +2 LUK, +1 VIT>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 80>\n<Class Change From: 23>\n<Class Description>\nPenyihir kematian yang mempelajari jiwa, jasad, dan ikatan antara kehidupan serta dunia setelah kematian.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 4>\n<Base LUK: 8>\n<Base AGI: 3>\n<Base VIT: 5>\n<Class Stat Growth: INT +1.8, LUK +1.6>\n",
     "params": [
       [
         0,
@@ -30232,7 +30232,7 @@
       }
     ],
     "name": "Archmage",
-    "note": "<Class Tier: 5>\n<Class Icon: 79>\n<Class Change From: 21>\n<Class Description>\nPenyihir agung yang telah menguasai cabang-cabang sihir tingkat tinggi dan memahami teori arcane yang jarang diketahui.\n</Class Description>\n[PENDING TRAIT] Equip Weapon: Ultimate\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 79>\n<Class Change From: 21>\n<Class Description>\nPenyihir agung yang telah menguasai cabang-cabang sihir tingkat tinggi dan memahami teori arcane yang jarang diketahui.\n</Class Description>\n[PENDING TRAIT] Equip Weapon: Ultimate\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 2>\n<Base INT: 10>\n<Base DEX: 7>\n<Base LUK: 4>\n<Base AGI: 6>\n<Base VIT: 5>\n<Class Stat Growth: INT +2.0, DEX +1.4>\n",
     "params": [
       [
         0,
@@ -31145,7 +31145,7 @@
       }
     ],
     "name": "High Priest",
-    "note": "<Class Tier: 5>\n<Class Icon: 74>\n<Class Change From: 32>\n<Class Description>\nPemuka suci yang dihormati karena kedalaman iman, kekuatan mukjizat, dan pengaruhnya di kalangan umat.\n</Class Description>\n[PENDING TRAIT] State Resist: All Bad States\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 74>\n<Class Change From: 32>\n<Class Description>\nPemuka suci yang dihormati karena kedalaman iman, kekuatan mukjizat, dan pengaruhnya di kalangan umat.\n</Class Description>\n[PENDING TRAIT] State Resist: All Bad States\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 6>\n<Base AGI: 3>\n<Base VIT: 10>\n<Class Stat Growth: VIT +2.0, INT +1.8>\n",
     "params": [
       [
         0,
@@ -32078,7 +32078,7 @@
       }
     ],
     "name": "Warlock",
-    "note": "<Class Tier: 5>\n<Class Icon: 71>\n<Class Change From: 33>\n<Class Description>\nPenyihir yang memperoleh kekuatan melalui perjanjian dan sumber gaib yang menuntut harga lebih besar daripada sihir biasa.\n</Class Description>\n[PENDING TRAIT] Attack State: Corruption 100%\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 71>\n<Class Change From: 33>\n<Class Description>\nPenyihir yang memperoleh kekuatan melalui perjanjian dan sumber gaib yang menuntut harga lebih besar daripada sihir biasa.\n</Class Description>\n[PENDING TRAIT] Attack State: Corruption 100%\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 2>\n<Base INT: 10>\n<Base DEX: 6>\n<Base LUK: 8>\n<Base AGI: 4>\n<Base VIT: 5>\n<Class Stat Growth: INT +2.0, LUK +1.6>\n",
     "params": [
       [
         0,
@@ -33006,7 +33006,7 @@
       }
     ],
     "name": "Shaman",
-    "note": "<Class Tier: 5>\n<Class Icon: 68>\n<Class Change From: 22>\n<Class Description>\nPenuntun roh yang berhubungan dengan leluhur, alam, dan makhluk gaib melalui ritual serta tradisi kuno.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 68>\n<Class Change From: 22>\n<Class Description>\nPenuntun roh yang berhubungan dengan leluhur, alam, dan makhluk gaib melalui ritual serta tradisi kuno.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 4>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 7>\n<Base AGI: 3>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.8, VIT +1.6, LUK +1.4>\n",
     "params": [
       [
         0,
@@ -33934,7 +33934,7 @@
       }
     ],
     "name": "Dragon Aspect",
-    "note": "<Class Tier: 5>\n<Class Icon: 64>\n<Class Change From: 21>\n<Class Description>\nPengguna kekuatan drakonik yang membangkitkan sifat dan daya naga hingga batas antara manusia dan Nagarasven menjadi samar.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 64>\n<Class Change From: 21>\n<Class Description>\nPengguna kekuatan drakonik yang membangkitkan sifat dan daya naga hingga batas antara manusia dan Nagarasven menjadi samar.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 8>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 4>\n<Base AGI: 4>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.8, STR +1.6, VIT +1.6>\n",
     "params": [
       [
         0,
@@ -34827,7 +34827,7 @@
       }
     ],
     "name": "Scout",
-    "note": "<Class Tier: 1>\n<Class Icon: 102>\n<Class Description>\nPenjelajah cekatan yang mengandalkan pengamatan, gerak cepat, dan kemampuan membaca medan untuk menghindari bahaya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 3>\n<Base INT: 1>\n<Base DEX: 8>\n<Base LUK: 5>\n<Base AGI: 8>\n<Base VIT: 3>\n<Class Stat Growth: +1 DEX, +1 AGI, +1 LUK>\n",
+    "note": "<Class Tier: 1>\n<Class Icon: 102>\n<Class Description>\nPenjelajah cekatan yang mengandalkan pengamatan, gerak cepat, dan kemampuan membaca medan untuk menghindari bahaya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 10>\n<Base STR: 2>\n<Base INT: 1>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 4>\n<Base VIT: 2>\n<Class Stat Growth: DEX +0.8, AGI +0.8>\n",
     "params": [
       [
         0,
@@ -35720,7 +35720,7 @@
       }
     ],
     "name": "Archer",
-    "note": "<Class Tier: 2>\n<Class Icon: 102>\n<Class Change From: 39>\n<Class Description>\nPemanah terlatih yang mengandalkan ketenangan, ketepatan, dan jarak untuk menjatuhkan musuh sebelum mereka mendekat.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 6>\n<Base INT: 2>\n<Base DEX: 16>\n<Base LUK: 7>\n<Base AGI: 12>\n<Base VIT: 6>\n<Class Stat Growth: +2 DEX, +1 AGI>\n",
+    "note": "<Class Tier: 2>\n<Class Icon: 102>\n<Class Change From: 39>\n<Class Description>\nPemanah terlatih yang mengandalkan ketenangan, ketepatan, dan jarak untuk menjatuhkan musuh sebelum mereka mendekat.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 2>\n<Base INT: 1>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 4>\n<Base VIT: 2>\n<Class Stat Growth: DEX +1.2, AGI +0.8>\n",
     "params": [
       [
         0,
@@ -36613,7 +36613,7 @@
       }
     ],
     "name": "Thief",
-    "note": "<Class Tier: 2>\n<Class Icon: 97>\n<Class Change From: 39>\n<Class Description>\nPetualang licin yang hidup dari kelincahan, tipu daya, dan kemampuan mengambil kesempatan saat orang lain lengah.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 6>\n<Base INT: 2>\n<Base DEX: 12>\n<Base LUK: 10>\n<Base AGI: 16>\n<Base VIT: 5>\n<Class Stat Growth: +2 AGI, +1 DEX>\n",
+    "note": "<Class Tier: 2>\n<Class Icon: 97>\n<Class Change From: 39>\n<Class Description>\nPetualang licin yang hidup dari kelincahan, tipu daya, dan kemampuan mengambil kesempatan saat orang lain lengah.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 2>\n<Base INT: 1>\n<Base DEX: 4>\n<Base LUK: 4>\n<Base AGI: 6>\n<Base VIT: 1>\n<Class Stat Growth: AGI +1.2, DEX +0.8, LUK +0.8>\n",
     "params": [
       [
         0,
@@ -37516,7 +37516,7 @@
       }
     ],
     "name": "Ranger",
-    "note": "<Class Tier: 3>\n<Class Icon: 102>\n<Class Change From: 40>\n<Class Description>\nPengelana alam liar yang memahami jejak, medan, cuaca, dan kebiasaan makhluk yang menghuni Nusvanir.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 12>\n<Base INT: 4>\n<Base DEX: 34>\n<Base LUK: 12>\n<Base AGI: 24>\n<Base VIT: 14>\n<Class Stat Growth: +2 DEX, +1 AGI, +1 VIT>\n",
+    "note": "<Class Tier: 3>\n<Class Icon: 102>\n<Class Change From: 40>\n<Class Description>\nPengelana alam liar yang memahami jejak, medan, cuaca, dan kebiasaan makhluk yang menghuni Nusvanir.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 3>\n<Base INT: 1>\n<Base DEX: 8>\n<Base LUK: 3>\n<Base AGI: 6>\n<Base VIT: 4>\n<Class Stat Growth: DEX +1.6, AGI +1.2>\n",
     "params": [
       [
         0,
@@ -38414,7 +38414,7 @@
       }
     ],
     "name": "Rogue",
-    "note": "<Class Tier: 3>\n<Class Icon: 97>\n<Class Change From: 41>\n<Class Description>\nPetualang oportunis yang mengandalkan kelicikan, kecepatan, dan serangan tepat untuk memenangkan pertarungan dengan caranya sendiri.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 12>\n<Base INT: 4>\n<Base DEX: 24>\n<Base LUK: 18>\n<Base AGI: 32>\n<Base VIT: 10>\n<Class Stat Growth: +2 AGI, +1 DEX, +1 LUK>\n",
+    "note": "<Class Tier: 3>\n<Class Icon: 97>\n<Class Change From: 41>\n<Class Description>\nPetualang oportunis yang mengandalkan kelicikan, kecepatan, dan serangan tepat untuk memenangkan pertarungan dengan caranya sendiri.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 3>\n<Base INT: 1>\n<Base DEX: 6>\n<Base LUK: 5>\n<Base AGI: 8>\n<Base VIT: 2>\n<Class Stat Growth: AGI +1.6, DEX +1.2, LUK +1.0>\n",
     "params": [
       [
         0,
@@ -39322,7 +39322,7 @@
       }
     ],
     "name": "Sniper",
-    "note": "<Class Tier: 4>\n<Class Icon: 102>\n<Class Change From: 42>\n<Class Description>\nPenembak ahli yang sabar menunggu satu kesempatan sempurna sebelum melepaskan tembakan yang menentukan.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 18>\n<Base INT: 6>\n<Base DEX: 64>\n<Base LUK: 20>\n<Base AGI: 35>\n<Base VIT: 20>\n<Class Stat Growth: +3 DEX, +1 AGI, +1 LUK>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 102>\n<Class Change From: 42>\n<Class Description>\nPenembak ahli yang sabar menunggu satu kesempatan sempurna sebelum melepaskan tembakan yang menentukan.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 4>\n<Base INT: 2>\n<Base DEX: 9>\n<Base LUK: 6>\n<Base AGI: 7>\n<Base VIT: 4>\n<Class Stat Growth: DEX +1.8, AGI +1.4, LUK +1.2>\n",
     "params": [
       [
         0,
@@ -40230,7 +40230,7 @@
       }
     ],
     "name": "Assassin",
-    "note": "<Class Tier: 4>\n<Class Icon: 97>\n<Class Change From: 43>\n<Class Description>\nPembunuh terlatih yang menjadikan kesunyian, ketepatan, dan kejutan sebagai bagian utama dari setiap tugasnya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Base STR: 20>\n<Base INT: 6>\n<Base DEX: 40>\n<Base LUK: 32>\n<Base AGI: 52>\n<Base VIT: 16>\n<Class Stat Growth: +2 AGI, +2 DEX, +1 LUK>\n",
+    "note": "<Class Tier: 4>\n<Class Icon: 97>\n<Class Change From: 43>\n<Class Description>\nPembunuh terlatih yang menjadikan kesunyian, ketepatan, dan kejutan sebagai bagian utama dari setiap tugasnya.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 4>\n<Base INT: 2>\n<Base DEX: 8>\n<Base LUK: 6>\n<Base AGI: 9>\n<Base VIT: 3>\n<Class Stat Growth: AGI +1.8, DEX +1.6, LUK +1.2>\n",
     "params": [
       [
         0,
@@ -41143,7 +41143,7 @@
       }
     ],
     "name": "Beastmaster",
-    "note": "<Class Tier: 5>\n<Class Icon: 110>\n<Class Change From: 42>\n<Class Description>\nPenjinak makhluk yang membangun ikatan dengan binatang liar dan menjadikan kepercayaan sebagai kekuatan dalam pertempuran.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 110>\n<Class Change From: 42>\n<Class Description>\nPenjinak makhluk yang membangun ikatan dengan binatang liar dan menjadikan kepercayaan sebagai kekuatan dalam pertempuran.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 7>\n<Base INT: 3>\n<Base DEX: 9>\n<Base LUK: 5>\n<Base AGI: 6>\n<Base VIT: 9>\n<Class Stat Growth: DEX +1.8, VIT +1.8, STR +1.4>\n",
     "params": [
       [
         0,
@@ -42071,7 +42071,7 @@
       }
     ],
     "name": "Shadow Walker",
-    "note": "<Class Tier: 5>\n<Class Icon: 97>\n<Class Change From: 45>\n<Class Description>\nPengelana bayangan yang menguasai gerak senyap, penyamaran, dan cara bergerak tanpa meninggalkan jejak.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 97>\n<Class Change From: 45>\n<Class Description>\nPengelana bayangan yang menguasai gerak senyap, penyamaran, dan cara bergerak tanpa meninggalkan jejak.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 5>\n<Base INT: 2>\n<Base DEX: 8>\n<Base LUK: 7>\n<Base AGI: 10>\n<Base VIT: 4>\n<Class Stat Growth: AGI +2.0, DEX +1.6, LUK +1.4>\n",
     "params": [
       [
         0,
@@ -42989,7 +42989,7 @@
       }
     ],
     "name": "Windrunner",
-    "note": "<Class Tier: 5>\n<Class Icon: 102>\n<Class Change From: 44>\n<Class Description>\nPemanah lincah yang memanfaatkan kecepatan, medan terbuka, dan hembusan angin untuk selalu selangkah di depan lawan.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 5>\n<Class Icon: 102>\n<Class Change From: 44>\n<Class Description>\nPemanah lincah yang memanfaatkan kecepatan, medan terbuka, dan hembusan angin untuk selalu selangkah di depan lawan.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 5>\n<Base INT: 2>\n<Base DEX: 10>\n<Base LUK: 6>\n<Base AGI: 9>\n<Base VIT: 4>\n<Class Stat Growth: DEX +2.0, AGI +1.8>\n",
     "params": [
       [
         0,
@@ -43942,7 +43942,7 @@
       }
     ],
     "name": "Chronomancer",
-    "note": "<Class Tier: 6>\n<Class Icon: 144>\n<Class Change From: 34>\n<Class Description>\nPenyihir langka yang mempelajari aliran waktu dan berani mengutak-atik urutan peristiwa yang seharusnya tidak disentuh.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 6>\n<Class Icon: 144>\n<Class Change From: 34>\n<Class Description>\nPenyihir langka yang mempelajari aliran waktu dan berani mengutak-atik urutan peristiwa yang seharusnya tidak disentuh.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 70>\n<Base STR: 3>\n<Base INT: 10>\n<Base DEX: 8>\n<Base LUK: 5>\n<Base AGI: 10>\n<Base VIT: 6>\n<Class Stat Growth: INT +2.0, AGI +2.0, DEX +1.6>\n",
     "params": [
       [
         0,
@@ -44905,7 +44905,7 @@
       }
     ],
     "name": "Void Incarnate",
-    "note": "<Class Tier: 6>\n<Class Icon: 80>\n<Class Change From: 36>\n<Class Description>\nSosok yang telah menyatu dengan kekuatan Void, menjadi keberadaan asing yang sulit lagi disebut sepenuhnya fana.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>",
+    "note": "<Class Tier: 6>\n<Class Icon: 80>\n<Class Change From: 36>\n<Class Description>\nSosok yang telah menyatu dengan kekuatan Void, menjadi keberadaan asing yang sulit lagi disebut sepenuhnya fana.\n</Class Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 70>\n<Base STR: 4>\n<Base INT: 10>\n<Base DEX: 7>\n<Base LUK: 10>\n<Base AGI: 5>\n<Base VIT: 8>\n<Class Stat Growth: INT +2.0, LUK +2.0, VIT +1.6>\n",
     "params": [
       [
         0,
