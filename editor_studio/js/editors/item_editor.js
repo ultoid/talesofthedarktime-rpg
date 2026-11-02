@@ -260,7 +260,7 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
                         </select>
                     </div>
                     <div class="form-group">
-                        <label title="Tambahan poin stamina/TP saat item digunakan">TP Gain</label>
+                        <label title="Tambahan poin stamina (SP) saat item digunakan">SP Gain (Stamina)</label>
                         <input type="number" min="0" max="100" class="form-control" value="${item.tpGain || 0}" onchange="item.tpGain=parseInt(this.value,10); setUnsaved(true);">
                     </div>
                 </div>

@@ -311,7 +311,7 @@ const TRAIT_TAB_DEFS = {
 const EFFECT_CATEGORIES = {
     11: { cat: 'Recover', name: 'Recover HP (Pemulihan HP)', isHpRecover: true },
     12: { cat: 'Recover', name: 'Recover MP (Pemulihan MP)', isMpRecover: true },
-    13: { cat: 'Recover', name: 'Gain TP / SP (Poin Stamina / Energi)', isTpGain: true },
+    13: { cat: 'Recover', name: 'Gain SP (Pemulihan Stamina Point)', isTpGain: true },
     21: { cat: 'State', name: 'Add State (Berikan Status Efek)', hasState: true },
     22: { cat: 'State', name: 'Remove State (Hapus Status Efek)', hasState: true },
     31: { cat: 'Param', name: 'Add Buff (Tingkatkan Stat Sementara)', hasParam: true },

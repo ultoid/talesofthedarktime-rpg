@@ -413,7 +413,14 @@
       "variance": 15
     },
     "description": "Memicu teriakan tempur: Meningkatkan ATK sebesar 20% selama 3 turn.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 30,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -540,7 +547,20 @@
       "variance": 15
     },
     "description": "Raungan tempur: Meningkatkan ATK dan DEF sebesar 15% (3 turn).",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 30,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 32,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -808,7 +828,20 @@
       "variance": 15
     },
     "description": "Wibawa sang raja: Meningkatkan ATK & DEF party sebesar 20% (3 turn).",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 30,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 32,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -965,7 +998,14 @@
       "variance": 15
     },
     "description": "Pengorbanan darah: Korbankan 20% HP -> ATK +50% selama 3 turn.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 50,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -1269,6 +1309,12 @@
         "dataId": 20,
         "value1": 1.0,
         "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 32,
+        "value1": 1.0,
+        "value2": 0
       }
     ],
     "hitType": 0,
@@ -1401,6 +1447,12 @@
       {
         "code": 21,
         "dataId": 20,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 32,
         "value1": 1.0,
         "value2": 0
       }
@@ -1717,6 +1769,12 @@
         "dataId": 20,
         "value1": 1.0,
         "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 31,
+        "value1": 1.0,
+        "value2": 0
       }
     ],
     "hitType": 0,
@@ -1898,7 +1956,20 @@
       "variance": 15
     },
     "description": "Sisik pelindung naga: Kebal efek status buruk + DEF +30%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 32,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 41,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 81,
     "message1": " melancarkan ",
@@ -2078,7 +2149,20 @@
       "variance": 15
     },
     "description": "Kebangkitan raja langit: Kecepatan (AGI) +40% dan Critical +30%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 38,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 39,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -2295,7 +2379,14 @@
       "variance": 15
     },
     "description": "Kuda-kuda naga: ATK +25%, AGI +20%, Counter Rate +30%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 51,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -2422,7 +2513,14 @@
       "variance": 15
     },
     "description": "Pelepasan chi batin: Memulihkan 40% SP + Imun debuff (2 turn).",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 55,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -2579,7 +2677,14 @@
       "variance": 15
     },
     "description": "Kondisi nirwana: Memulihkan 100% SP + Kebal semua status (3 turn).",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 54,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -2713,7 +2818,7 @@
     "message2": "!",
     "mpCost": 5,
     "name": "Arcane Bolt",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 1 - Novice\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Apprentice   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #458)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage\n\n<Skill Tier: 1>\n<Class Movepool: Apprentice   (Lv 1)>\n<Scroll Item: 458>\n<Scroll Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage>\n<TM Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage>\n<Learn Class: Apprentice>\n<Learn Level: 1>\n<Learn JP: 20>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 1 - Novice\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Apprentice   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #458)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage\n\n<Skill Tier: 1>\n<Class Movepool: Apprentice   (Lv 1)>\n<Scroll Item: 458>\n<Scroll Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage, Elementalist - Pyromancer, Elementalist - Hydromancer, Elementalist - Geomancer, Elementalist - Aeromancer, Elementalist - Electromancer, Elementalist - Cryomancer, Elementalist - Ferromancer, Elementalist - Echomancer, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer>\n<TM Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage, Elementalist - Pyromancer, Elementalist - Hydromancer, Elementalist - Geomancer, Elementalist - Aeromancer, Elementalist - Electromancer, Elementalist - Cryomancer, Elementalist - Ferromancer, Elementalist - Echomancer, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer>\n<Learn Class: Apprentice>\n<Learn Level: 1>\n<Learn JP: 20>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -2750,7 +2855,7 @@
     "message2": "!",
     "mpCost": 6,
     "name": "Cinder Spark",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 1 - Novice\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Apprentice   (Level 3)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #459)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage\n\n<Skill Tier: 1>\n<Class Movepool: Apprentice   (Lv 3)>\n<Scroll Item: 459>\n<Scroll Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage>\n<TM Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage>\n<Learn Class: Apprentice>\n<Learn Level: 3>\n<Learn JP: 20>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 1 - Novice\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Apprentice   (Level 3)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #459)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage\n\n<Skill Tier: 1>\n<Class Movepool: Apprentice   (Lv 3)>\n<Scroll Item: 459>\n<Scroll Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage, Elementalist - Pyromancer, Elementalist - Hydromancer, Elementalist - Geomancer, Elementalist - Aeromancer, Elementalist - Electromancer, Elementalist - Cryomancer, Elementalist - Ferromancer, Elementalist - Echomancer, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer>\n<TM Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage, Elementalist - Pyromancer, Elementalist - Hydromancer, Elementalist - Geomancer, Elementalist - Aeromancer, Elementalist - Electromancer, Elementalist - Cryomancer, Elementalist - Ferromancer, Elementalist - Echomancer, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer>\n<Learn Class: Apprentice>\n<Learn Level: 3>\n<Learn JP: 20>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -2787,7 +2892,7 @@
     "message2": "!",
     "mpCost": 6,
     "name": "Frost Touch",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 1 - Novice\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Apprentice   (Level 5)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #460)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage\n\n<Skill Tier: 1>\n<Class Movepool: Apprentice   (Lv 5)>\n<Scroll Item: 460>\n<Scroll Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage>\n<TM Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage>\n<Learn Class: Apprentice>\n<Learn Level: 5>\n<Learn JP: 20>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 1 - Novice\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Apprentice   (Level 5)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #460)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage\n\n<Skill Tier: 1>\n<Class Movepool: Apprentice   (Lv 5)>\n<Scroll Item: 460>\n<Scroll Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage, Elementalist - Pyromancer, Elementalist - Hydromancer, Elementalist - Geomancer, Elementalist - Aeromancer, Elementalist - Electromancer, Elementalist - Cryomancer, Elementalist - Ferromancer, Elementalist - Echomancer, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer>\n<TM Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage, Elementalist - Pyromancer, Elementalist - Hydromancer, Elementalist - Geomancer, Elementalist - Aeromancer, Elementalist - Electromancer, Elementalist - Cryomancer, Elementalist - Ferromancer, Elementalist - Echomancer, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer>\n<Learn Class: Apprentice>\n<Learn Level: 5>\n<Learn JP: 20>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -2817,7 +2922,7 @@
     "message2": "!",
     "mpCost": 10,
     "name": "Mana Barrier",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 1 - Novice\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Apprentice   (Level 7)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #461)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage\n\n<Skill Tier: 1>\n<Class Movepool: Apprentice   (Lv 7)>\n<Scroll Item: 461>\n<Scroll Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage>\n<TM Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage>\n<Learn Class: Apprentice>\n<Learn Level: 7>\n<Learn JP: 20>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 1 - Novice\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Apprentice   (Level 7)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #461)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage\n\n<Skill Tier: 1>\n<Class Movepool: Apprentice   (Lv 7)>\n<Scroll Item: 461>\n<Scroll Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage, Elementalist - Pyromancer, Elementalist - Hydromancer, Elementalist - Geomancer, Elementalist - Aeromancer, Elementalist - Electromancer, Elementalist - Cryomancer, Elementalist - Ferromancer, Elementalist - Echomancer, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer>\n<TM Compatible: Apprentice, Magician, Acolyte, Occultist, Mage, Cleric, Cultist, Archmage, Elementalist - Pyromancer, Elementalist - Hydromancer, Elementalist - Geomancer, Elementalist - Aeromancer, Elementalist - Electromancer, Elementalist - Cryomancer, Elementalist - Ferromancer, Elementalist - Echomancer, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer>\n<Learn Class: Apprentice>\n<Learn Level: 7>\n<Learn JP: 20>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -2854,7 +2959,7 @@
     "message2": "!",
     "mpCost": 14,
     "name": "Flame Burst",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 2 - Basic\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Magician   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #462)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 2>\n<Class Movepool: Magician   (Lv 1)>\n<Scroll Item: 462>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Magician>\n<Learn Level: 1>\n<Learn JP: 45>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 2 - Basic\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Magician   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #462)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 2>\n<Class Movepool: Magician   (Lv 1)>\n<Scroll Item: 462>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Magician>\n<Learn Level: 1>\n<Learn JP: 45>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -2891,7 +2996,7 @@
     "message2": "!",
     "mpCost": 14,
     "name": "Glacial Spike",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 2 - Basic\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Magician   (Level 5)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #463)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 2>\n<Class Movepool: Magician   (Lv 5)>\n<Scroll Item: 463>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Magician>\n<Learn Level: 5>\n<Learn JP: 45>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 2 - Basic\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Magician   (Level 5)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #463)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 2>\n<Class Movepool: Magician   (Lv 5)>\n<Scroll Item: 463>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Magician>\n<Learn Level: 5>\n<Learn JP: 45>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -2928,7 +3033,7 @@
     "message2": "!",
     "mpCost": 14,
     "name": "Lightning Bolt",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 2 - Basic\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Magician   (Level 10)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #464)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 2>\n<Class Movepool: Magician   (Lv 10)>\n<Scroll Item: 464>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Magician>\n<Learn Level: 10>\n<Learn JP: 45>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 2 - Basic\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Magician   (Level 10)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #464)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 2>\n<Class Movepool: Magician   (Lv 10)>\n<Scroll Item: 464>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Magician>\n<Learn Level: 10>\n<Learn JP: 45>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -2958,7 +3063,7 @@
     "message2": "!",
     "mpCost": 20,
     "name": "Aether Ward",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 2 - Basic\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Magician   (Level 18)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #465)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 2>\n<Class Movepool: Magician   (Lv 18)>\n<Scroll Item: 465>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Magician>\n<Learn Level: 18>\n<Learn JP: 45>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 2 - Basic\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Magician   (Level 18)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #465)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 2>\n<Class Movepool: Magician   (Lv 18)>\n<Scroll Item: 465>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Magician>\n<Learn Level: 18>\n<Learn JP: 45>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -2995,7 +3100,7 @@
     "message2": "!",
     "mpCost": 28,
     "name": "Blazing Surge",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 3 - Intermediate\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Mage   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #466)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 3>\n<Class Movepool: Mage   (Lv 1)>\n<Scroll Item: 466>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Mage>\n<Learn Level: 1>\n<Learn JP: 75>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 3 - Intermediate\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Mage   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #466)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 3>\n<Class Movepool: Mage   (Lv 1)>\n<Scroll Item: 466>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Mage>\n<Learn Level: 1>\n<Learn JP: 75>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3032,7 +3137,7 @@
     "message2": "!",
     "mpCost": 28,
     "name": "Permafrost Lance",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 3 - Intermediate\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Mage   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #467)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 3>\n<Class Movepool: Mage   (Lv 6)>\n<Scroll Item: 467>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Mage>\n<Learn Level: 6>\n<Learn JP: 75>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 3 - Intermediate\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Mage   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #467)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 3>\n<Class Movepool: Mage   (Lv 6)>\n<Scroll Item: 467>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Mage>\n<Learn Level: 6>\n<Learn JP: 75>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3069,7 +3174,7 @@
     "message2": "!",
     "mpCost": 28,
     "name": "Thunderclap Surge",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 3 - Intermediate\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Mage   (Level 12)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #468)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 3>\n<Class Movepool: Mage   (Lv 12)>\n<Scroll Item: 468>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Mage>\n<Learn Level: 12>\n<Learn JP: 75>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 3 - Intermediate\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Mage   (Level 12)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #468)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 3>\n<Class Movepool: Mage   (Lv 12)>\n<Scroll Item: 468>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Mage>\n<Learn Level: 12>\n<Learn JP: 75>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3099,7 +3204,7 @@
     "message2": "!",
     "mpCost": 38,
     "name": "Elemental Storm",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 3 - Intermediate\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Mage   (Level 22)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #469)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 3>\n<Class Movepool: Mage   (Lv 22)>\n<Scroll Item: 469>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Mage>\n<Learn Level: 22>\n<Learn JP: 75>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 3 - Intermediate\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Mage   (Level 22)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #469)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 3>\n<Class Movepool: Mage   (Lv 22)>\n<Scroll Item: 469>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Mage>\n<Learn Level: 22>\n<Learn JP: 75>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3136,7 +3241,7 @@
     "message2": "!",
     "mpCost": 45,
     "name": "Inferno Pillar",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Pyromancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #470)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Pyromancer   (Lv 1)>\n<Scroll Item: 470>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Pyromancer>\n<Learn Level: 1>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Pyromancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #470)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Pyromancer   (Lv 1)>\n<Scroll Item: 470>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Pyromancer>\n<Learn Level: 1>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3166,7 +3271,7 @@
     "message2": "!",
     "mpCost": 35,
     "name": "Scorching Wave",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Pyromancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #471)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Pyromancer   (Lv 6)>\n<Scroll Item: 471>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Pyromancer>\n<Learn Level: 6>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Pyromancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #471)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Pyromancer   (Lv 6)>\n<Scroll Item: 471>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Pyromancer>\n<Learn Level: 6>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3196,7 +3301,7 @@
     "message2": "!",
     "mpCost": 30,
     "name": "Flame Shield",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Pyromancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #472)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Pyromancer   (Lv 15)>\n<Scroll Item: 472>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Pyromancer>\n<Learn Level: 15>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Pyromancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #472)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Pyromancer   (Lv 15)>\n<Scroll Item: 472>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Pyromancer>\n<Learn Level: 15>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3226,7 +3331,7 @@
     "message2": "!",
     "mpCost": 55,
     "name": "Hellfire Flare",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Pyromancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #473)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Pyromancer   (Lv 25)>\n<Scroll Item: 473>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Pyromancer>\n<Learn Level: 25>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Pyromancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #473)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Pyromancer   (Lv 25)>\n<Scroll Item: 473>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Pyromancer>\n<Learn Level: 25>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3256,7 +3361,7 @@
     "message2": "!",
     "mpCost": 42,
     "name": "Tidal Torrent",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Hydromancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #474)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Hydromancer   (Lv 1)>\n<Scroll Item: 474>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Hydromancer>\n<Learn Level: 1>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Hydromancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #474)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Hydromancer   (Lv 1)>\n<Scroll Item: 474>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Hydromancer>\n<Learn Level: 1>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3286,7 +3391,7 @@
     "message2": "!",
     "mpCost": 32,
     "name": "Aqua Jet",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Hydromancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #475)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Hydromancer   (Lv 6)>\n<Scroll Item: 475>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Hydromancer>\n<Learn Level: 6>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Hydromancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #475)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Hydromancer   (Lv 6)>\n<Scroll Item: 475>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Hydromancer>\n<Learn Level: 6>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3316,7 +3421,7 @@
     "message2": "!",
     "mpCost": 35,
     "name": "Cleansing Mist",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Hydromancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #476)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Hydromancer   (Lv 15)>\n<Scroll Item: 476>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Hydromancer>\n<Learn Level: 15>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Hydromancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #476)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Hydromancer   (Lv 15)>\n<Scroll Item: 476>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Hydromancer>\n<Learn Level: 15>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3346,7 +3451,7 @@
     "message2": "!",
     "mpCost": 55,
     "name": "Abyssal Deluge",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Hydromancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #477)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Hydromancer   (Lv 25)>\n<Scroll Item: 477>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Hydromancer>\n<Learn Level: 25>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Hydromancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #477)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Hydromancer   (Lv 25)>\n<Scroll Item: 477>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Hydromancer>\n<Learn Level: 25>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3383,7 +3488,7 @@
     "message2": "!",
     "mpCost": 42,
     "name": "Earth Shatter",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Geomancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #478)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Geomancer   (Lv 1)>\n<Scroll Item: 478>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Geomancer>\n<Learn Level: 1>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Geomancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #478)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Geomancer   (Lv 1)>\n<Scroll Item: 478>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Geomancer>\n<Learn Level: 1>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3413,7 +3518,7 @@
     "message2": "!",
     "mpCost": 35,
     "name": "Stone Spire",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Geomancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #479)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Geomancer   (Lv 6)>\n<Scroll Item: 479>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Geomancer>\n<Learn Level: 6>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Geomancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #479)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Geomancer   (Lv 6)>\n<Scroll Item: 479>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Geomancer>\n<Learn Level: 6>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3436,14 +3541,27 @@
       "variance": 15
     },
     "description": "Dinding granit: Meningkatkan DEF dan MDF seluruh party +35%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 32,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 36,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 81,
     "message1": " merapal ",
     "message2": "!",
     "mpCost": 30,
     "name": "Granite Wall",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Geomancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #480)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Geomancer   (Lv 15)>\n<Scroll Item: 480>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Geomancer>\n<Learn Level: 15>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Geomancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #480)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Geomancer   (Lv 15)>\n<Scroll Item: 480>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Geomancer>\n<Learn Level: 15>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3473,7 +3591,7 @@
     "message2": "!",
     "mpCost": 55,
     "name": "Cataclysm Quake",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Geomancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #481)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Geomancer   (Lv 25)>\n<Scroll Item: 481>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Geomancer>\n<Learn Level: 25>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Geomancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #481)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Geomancer   (Lv 25)>\n<Scroll Item: 481>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Geomancer>\n<Learn Level: 25>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3510,7 +3628,7 @@
     "message2": "!",
     "mpCost": 42,
     "name": "Gale Tempest",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Aeromancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #482)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Aeromancer   (Lv 1)>\n<Scroll Item: 482>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Aeromancer>\n<Learn Level: 1>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Aeromancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #482)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Aeromancer   (Lv 1)>\n<Scroll Item: 482>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Aeromancer>\n<Learn Level: 1>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3540,7 +3658,7 @@
     "message2": "!",
     "mpCost": 32,
     "name": "Zephyr Slice",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Aeromancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #483)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Aeromancer   (Lv 6)>\n<Scroll Item: 483>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Aeromancer>\n<Learn Level: 6>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Aeromancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #483)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Aeromancer   (Lv 6)>\n<Scroll Item: 483>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Aeromancer>\n<Learn Level: 6>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3563,14 +3681,27 @@
       "variance": 15
     },
     "description": "Aura angin buritan: Meningkatkan AGI dan Evasion party +30%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 38,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 40,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 69,
     "message1": " merapal ",
     "message2": "!",
     "mpCost": 28,
     "name": "Tailwind Aura",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Aeromancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #484)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Aeromancer   (Lv 15)>\n<Scroll Item: 484>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Aeromancer>\n<Learn Level: 15>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Aeromancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #484)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Aeromancer   (Lv 15)>\n<Scroll Item: 484>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Aeromancer>\n<Learn Level: 15>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3600,7 +3731,7 @@
     "message2": "!",
     "mpCost": 55,
     "name": "Cyclone Cataclysm",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Aeromancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #485)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Aeromancer   (Lv 25)>\n<Scroll Item: 485>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Aeromancer>\n<Learn Level: 25>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Aeromancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #485)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Aeromancer   (Lv 25)>\n<Scroll Item: 485>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Aeromancer>\n<Learn Level: 25>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3637,7 +3768,7 @@
     "message2": "!",
     "mpCost": 45,
     "name": "Heaven's Fulmination",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Electromancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #486)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Electromancer   (Lv 1)>\n<Scroll Item: 486>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Electromancer>\n<Learn Level: 1>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Electromancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #486)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Electromancer   (Lv 1)>\n<Scroll Item: 486>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Electromancer>\n<Learn Level: 1>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3674,7 +3805,7 @@
     "message2": "!",
     "mpCost": 34,
     "name": "Thunder Spear",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Electromancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #487)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Electromancer   (Lv 6)>\n<Scroll Item: 487>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Electromancer>\n<Learn Level: 6>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Electromancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #487)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Electromancer   (Lv 6)>\n<Scroll Item: 487>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Electromancer>\n<Learn Level: 6>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3697,14 +3828,21 @@
       "variance": 15
     },
     "description": "Medan tegangan tinggi: Kecepatan casting dan AGI +35%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 38,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 66,
     "message1": " merapal ",
     "message2": "!",
     "mpCost": 30,
     "name": "Voltage Arc",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Electromancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #488)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Electromancer   (Lv 15)>\n<Scroll Item: 488>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Electromancer>\n<Learn Level: 15>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Electromancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #488)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Electromancer   (Lv 15)>\n<Scroll Item: 488>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Electromancer>\n<Learn Level: 15>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3734,7 +3872,7 @@
     "message2": "!",
     "mpCost": 55,
     "name": "Judgement Storm",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Electromancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #489)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Electromancer   (Lv 25)>\n<Scroll Item: 489>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Electromancer>\n<Learn Level: 25>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Electromancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #489)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Electromancer   (Lv 25)>\n<Scroll Item: 489>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Electromancer>\n<Learn Level: 25>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3771,7 +3909,7 @@
     "message2": "!",
     "mpCost": 45,
     "name": "Blizzard Tempest",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Cryomancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #490)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Cryomancer   (Lv 1)>\n<Scroll Item: 490>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Cryomancer>\n<Learn Level: 1>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Cryomancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #490)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Cryomancer   (Lv 1)>\n<Scroll Item: 490>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Cryomancer>\n<Learn Level: 1>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3794,14 +3932,27 @@
       "variance": 15
     },
     "description": "Zirah es kristal: DEF/MDF +30% + Membekukan penyerang.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 32,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 36,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 65,
     "message1": " merapal ",
     "message2": "!",
     "mpCost": 30,
     "name": "Frost Armor",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Cryomancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #491)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Cryomancer   (Lv 6)>\n<Scroll Item: 491>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Cryomancer>\n<Learn Level: 6>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Cryomancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #491)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Cryomancer   (Lv 6)>\n<Scroll Item: 491>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Cryomancer>\n<Learn Level: 6>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3831,7 +3982,7 @@
     "message2": "!",
     "mpCost": 32,
     "name": "Ice Mirror",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Cryomancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #492)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Cryomancer   (Lv 15)>\n<Scroll Item: 492>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Cryomancer>\n<Learn Level: 15>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Cryomancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #492)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Cryomancer   (Lv 15)>\n<Scroll Item: 492>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Cryomancer>\n<Learn Level: 15>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3854,14 +4005,21 @@
       "variance": 15
     },
     "description": "Bencana gletser purba membekukan seisi ruangan.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 13,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 2,
     "iconIndex": 65,
     "message1": " merapal ",
     "message2": "!",
     "mpCost": 55,
     "name": "Glacial Cataclysm",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Cryomancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #493)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Cryomancer   (Lv 25)>\n<Scroll Item: 493>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Cryomancer>\n<Learn Level: 25>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Cryomancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #493)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Cryomancer   (Lv 25)>\n<Scroll Item: 493>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Cryomancer>\n<Learn Level: 25>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3898,7 +4056,7 @@
     "message2": "!",
     "mpCost": 42,
     "name": "Iron Spikes",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Ferromancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #494)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Ferromancer   (Lv 1)>\n<Scroll Item: 494>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Ferromancer>\n<Learn Level: 1>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Ferromancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #494)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Ferromancer   (Lv 1)>\n<Scroll Item: 494>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Ferromancer>\n<Learn Level: 1>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3921,14 +4079,21 @@
       "variance": 15
     },
     "description": "Tolakan magnetis: Evasion terhadap serangan fisik +40%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 40,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 70,
     "message1": " merapal ",
     "message2": "!",
     "mpCost": 30,
     "name": "Magnetic Repulsion",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Ferromancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #495)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Ferromancer   (Lv 6)>\n<Scroll Item: 495>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Ferromancer>\n<Learn Level: 6>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Ferromancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #495)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Ferromancer   (Lv 6)>\n<Scroll Item: 495>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Ferromancer>\n<Learn Level: 6>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3958,7 +4123,7 @@
     "message2": "!",
     "mpCost": 35,
     "name": "Steel Fortress",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Ferromancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #496)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Ferromancer   (Lv 15)>\n<Scroll Item: 496>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Ferromancer>\n<Learn Level: 15>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Ferromancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #496)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Ferromancer   (Lv 15)>\n<Scroll Item: 496>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Ferromancer>\n<Learn Level: 15>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -3988,7 +4153,7 @@
     "message2": "!",
     "mpCost": 55,
     "name": "Polar Collision",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Ferromancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #497)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Ferromancer   (Lv 25)>\n<Scroll Item: 497>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Ferromancer>\n<Learn Level: 25>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Ferromancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #497)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Ferromancer   (Lv 25)>\n<Scroll Item: 497>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Ferromancer>\n<Learn Level: 25>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -4025,7 +4190,7 @@
     "message2": "!",
     "mpCost": 40,
     "name": "Ultrasonic Pulse",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Echomancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #498)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Echomancer   (Lv 1)>\n<Scroll Item: 498>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Echomancer>\n<Learn Level: 1>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Elementalist - Echomancer   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #498)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Echomancer   (Lv 1)>\n<Scroll Item: 498>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Echomancer>\n<Learn Level: 1>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -4062,7 +4227,7 @@
     "message2": "!",
     "mpCost": 32,
     "name": "Sonic Screech",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Echomancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #499)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Echomancer   (Lv 6)>\n<Scroll Item: 499>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Echomancer>\n<Learn Level: 6>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Elementalist - Echomancer   (Level 6)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #499)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Echomancer   (Lv 6)>\n<Scroll Item: 499>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Echomancer>\n<Learn Level: 6>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -4099,7 +4264,7 @@
     "message2": "!",
     "mpCost": 28,
     "name": "Infrasonic Mute",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Echomancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #500)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Echomancer   (Lv 15)>\n<Scroll Item: 500>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Echomancer>\n<Learn Level: 15>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Elementalist - Echomancer   (Level 15)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #500)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Echomancer   (Lv 15)>\n<Scroll Item: 500>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Echomancer>\n<Learn Level: 15>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -4129,7 +4294,7 @@
     "message2": "!",
     "mpCost": 55,
     "name": "Vibrational Burst",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Echomancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #501)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Echomancer   (Lv 25)>\n<Scroll Item: 501>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Echomancer>\n<Learn Level: 25>\n<Learn JP: 120>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 4 - Advanced Promoted\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Elementalist - Echomancer   (Level 25)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #501)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 4>\n<Class Movepool: Elementalist - Echomancer   (Lv 25)>\n<Scroll Item: 501>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Elementalist - Echomancer>\n<Learn Level: 25>\n<Learn JP: 120>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -4270,7 +4435,7 @@
     "message2": "!",
     "mpCost": 45,
     "name": "Aegis of the Archmage",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 5 - Master Specialist\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Archmage   (Level 45)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #502)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 5>\n<Class Movepool: Archmage   (Lv 45)>\n<Scroll Item: 502>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Archmage>\n<Learn Level: 45>\n<Learn JP: 180>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 5 - Master Specialist\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Archmage   (Level 45)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #502)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 5>\n<Class Movepool: Archmage   (Lv 45)>\n<Scroll Item: 502>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Archmage>\n<Learn Level: 45>\n<Learn JP: 180>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -4337,7 +4502,7 @@
     "message2": "!",
     "mpCost": 45,
     "name": "Draconic Roar",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 5 - Master Specialist\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Dragon Aspect   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #503)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 5>\n<Class Movepool: Dragon Aspect   (Lv 1)>\n<Scroll Item: 503>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Dragon Aspect>\n<Learn Level: 1>\n<Learn JP: 180>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 5 - Master Specialist\n[Kategori Kit]: Pillar 1: Single Target Finisher\n[Dikuasai Alami]: Dragon Aspect   (Level 1)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #503)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 5>\n<Class Movepool: Dragon Aspect   (Lv 1)>\n<Scroll Item: 503>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Dragon Aspect>\n<Learn Level: 1>\n<Learn JP: 180>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -4374,7 +4539,7 @@
     "message2": "!",
     "mpCost": 50,
     "name": "Primordial Breath",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 5 - Master Specialist\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Dragon Aspect   (Level 8)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #504)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 5>\n<Class Movepool: Dragon Aspect   (Lv 8)>\n<Scroll Item: 504>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Dragon Aspect>\n<Learn Level: 8>\n<Learn JP: 180>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 5 - Master Specialist\n[Kategori Kit]: Pillar 2: Utility / Buff / Stance\n[Dikuasai Alami]: Dragon Aspect   (Level 8)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #504)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 5>\n<Class Movepool: Dragon Aspect   (Lv 8)>\n<Scroll Item: 504>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Dragon Aspect>\n<Learn Level: 8>\n<Learn JP: 180>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -4404,7 +4569,7 @@
     "message2": "!",
     "mpCost": 40,
     "name": "Dragon Wings Ward",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 5 - Master Specialist\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Dragon Aspect   (Level 32)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #505)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 5>\n<Class Movepool: Dragon Aspect   (Lv 32)>\n<Scroll Item: 505>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Dragon Aspect>\n<Learn Level: 32>\n<Learn JP: 180>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 5 - Master Specialist\n[Kategori Kit]: Pillar 3: Multi-Target AoE\n[Dikuasai Alami]: Dragon Aspect   (Level 32)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #505)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 5>\n<Class Movepool: Dragon Aspect   (Lv 32)>\n<Scroll Item: 505>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Dragon Aspect>\n<Learn Level: 32>\n<Learn JP: 180>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -4434,7 +4599,7 @@
     "message2": "!",
     "mpCost": 50,
     "name": "Draconic Awakening",
-    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 5 - Master Specialist\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Dragon Aspect   (Level 45)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #506)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 5>\n<Class Movepool: Dragon Aspect   (Lv 45)>\n<Scroll Item: 506>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Dragon Aspect>\n<Learn Level: 45>\n<Learn JP: 180>",
+    "note": "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===\n[Tahapan / Tier]: Tier 5 - Master Specialist\n[Kategori Kit]: Pillar 4: Breaker / Status Infliction\n[Dikuasai Alami]: Dragon Aspect   (Level 45)\n[Syarat Senjata]: Bebas / Tanpa Syarat Senjata\n[Status Scroll]: Kompatibel via Scroll Jurus (Item #506)\n[Dapat Dikuasai Oleh]:\n  - Apprentice, Magician, Mage, Pyromancer, Hydromancer, Geomancer, Aeromancer, Electromancer, Cryomancer, Ferromancer, Echomancer, Archmage, Dragon Aspect, Chronomancer\n\n<Skill Tier: 5>\n<Class Movepool: Dragon Aspect   (Lv 45)>\n<Scroll Item: 506>\n<Scroll Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<TM Compatible: Apprentice, Magician, Mage, Pyromancer, Elementalist - Pyromancer, Hydromancer, Elementalist - Hydromancer, Geomancer, Elementalist - Geomancer, Aeromancer, Elementalist - Aeromancer, Electromancer, Elementalist - Electromancer, Cryomancer, Elementalist - Cryomancer, Ferromancer, Elementalist - Ferromancer, Echomancer, Elementalist - Echomancer, Archmage, Dragon Aspect, Chronomancer>\n<Learn Class: Dragon Aspect>\n<Learn Level: 45>\n<Learn JP: 180>",
     "occasion": 0,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -4524,7 +4689,20 @@
       "variance": 15
     },
     "description": "Mempercepat waktu party: AGI +50% selama 3 turn.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 19,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 38,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 46,
     "message1": " merapal ",
@@ -4651,7 +4829,74 @@
       "variance": 15
     },
     "description": "Menghapus 1 efek status buruk pada kawan.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 22,
+        "dataId": 4,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 22,
+        "dataId": 5,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 22,
+        "dataId": 6,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 22,
+        "dataId": 7,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 22,
+        "dataId": 8,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 22,
+        "dataId": 9,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 22,
+        "dataId": 10,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 22,
+        "dataId": 11,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 22,
+        "dataId": 12,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 22,
+        "dataId": 14,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 22,
+        "dataId": 16,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 72,
     "message1": " merapal ",
@@ -4711,7 +4956,14 @@
       "variance": 15
     },
     "description": "Perisai doa: Meningkatkan MDF seluruh party +25%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 36,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 72,
     "message1": " merapal ",
@@ -5235,7 +5487,14 @@
       "variance": 15
     },
     "description": "Perlindungan arwah leluhur: Menolak 1 serangan fatal.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 56,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 68,
     "message1": " merapal ",
@@ -6228,7 +6487,14 @@
       "variance": 15
     },
     "description": "Fokus bidik: Hit Rate +30% & Critical Rate +20% (3 turn).",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 39,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -6288,7 +6554,20 @@
       "variance": 15
     },
     "description": "Presisi mata elang: Critical Damage +30% & AGI +20%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 38,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 39,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -6415,7 +6694,14 @@
       "variance": 15
     },
     "description": "Konsentrasi penuh: Serangan berikutnya dijamin Critical.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 39,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -6445,7 +6731,14 @@
       "variance": 15
     },
     "description": "Tembakan sniper mematikan ke titik vital, +40% Critical Rate.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 39,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 1,
     "iconIndex": 78,
     "message1": " melancarkan ",
@@ -6646,7 +6939,20 @@
       "variance": 15
     },
     "description": "Aura keliaran alam: Meningkatkan ATK dan AGI party +25%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 30,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 38,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -6796,7 +7102,20 @@
       "variance": 15
     },
     "description": "Langkah topan: Evasion +50% dan Kecepatan AGI +40%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 38,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 40,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 82,
     "message1": " melancarkan ",
@@ -7087,7 +7406,14 @@
       "variance": 15
     },
     "description": "Masuk mode Stealth: Evasion +60%, tidak dapat ditarget (1 turn).",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 52,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 79,
     "message1": " melancarkan ",
@@ -7184,7 +7510,14 @@
       "variance": 15
     },
     "description": "Bayangan ilusi: Menghindar 100% dari serangan musuh berikutnya.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 40,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 79,
     "message1": " melancarkan ",
@@ -7385,7 +7718,20 @@
       "variance": 15
     },
     "description": "Langkah hantu: Kecepatan (AGI) +50% dan Critical +40%.",
-    "effects": [],
+    "effects": [
+      {
+        "code": 21,
+        "dataId": 38,
+        "value1": 1.0,
+        "value2": 0
+      },
+      {
+        "code": 21,
+        "dataId": 39,
+        "value1": 1.0,
+        "value2": 0
+      }
+    ],
     "hitType": 0,
     "iconIndex": 79,
     "message1": " melancarkan ",
@@ -7475,14 +7821,7 @@
       "variance": 0
     },
     "description": "Menyalurkan energi pemulih untuk menopang sekutu di tengah pertarungan.",
-    "effects": [
-      {
-        "code": 21,
-        "dataId": 99,
-        "value1": 1,
-        "value2": 0
-      }
-    ],
+    "effects": [],
     "hitType": 2,
     "iconIndex": 0,
     "message1": "",
@@ -7512,14 +7851,7 @@
       "variance": 0
     },
     "description": "Menggunakan teknik Resurrection untuk menekan lawan atau membantu jalannya pertarungan.",
-    "effects": [
-      {
-        "code": 21,
-        "dataId": 100,
-        "value1": 1,
-        "value2": 0
-      }
-    ],
+    "effects": [],
     "hitType": 2,
     "iconIndex": 0,
     "message1": "",
@@ -7549,14 +7881,7 @@
       "variance": 0
     },
     "description": "Menyalurkan cahaya suci untuk membalikkan keadaan di medan tempur.",
-    "effects": [
-      {
-        "code": 21,
-        "dataId": 101,
-        "value1": 1,
-        "value2": 0
-      }
-    ],
+    "effects": [],
     "hitType": 0,
     "iconIndex": 0,
     "message1": "",
@@ -7593,7 +7918,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Covenant of Demon Commanders (Luciferus)",
-    "note": "<Passive State: 181>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -7623,7 +7948,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Covenant of Demon Commanders (Mamon)",
-    "note": "<Passive State: 182>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -7653,7 +7978,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Covenant of Demon Commanders (Vraka)",
-    "note": "<Passive State: 183>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -7683,7 +8008,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Covenant of Demon Commanders (Asmodea)",
-    "note": "<Passive State: 184>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -7713,7 +8038,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Covenant of Demon Commanders (Beelzebub)",
-    "note": "<Passive State: 185>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -7743,7 +8068,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Covenant of Demon Commanders (Belphegor)",
-    "note": "<Passive State: 186>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -7773,7 +8098,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Covenant of Demon Commanders (Leviathanus)",
-    "note": "<Passive State: 187>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -7826,14 +8151,7 @@
       "variance": 0
     },
     "description": "Menggunakan teknik Life Sacrifice untuk menekan lawan atau membantu jalannya pertarungan.",
-    "effects": [
-      {
-        "code": 21,
-        "dataId": 102,
-        "value1": 1,
-        "value2": 0
-      }
-    ],
+    "effects": [],
     "hitType": 2,
     "iconIndex": 0,
     "message1": "",
@@ -7863,14 +8181,7 @@
       "variance": 0
     },
     "description": "Memanggil kekuatan kelam untuk mengganggu dan menekan lawan.",
-    "effects": [
-      {
-        "code": 21,
-        "dataId": 103,
-        "value1": 1,
-        "value2": 0
-      }
-    ],
+    "effects": [],
     "hitType": 2,
     "iconIndex": 0,
     "message1": "",
@@ -7930,14 +8241,7 @@
       "variance": 0
     },
     "description": "Memanggil kekuatan kelam untuk mengganggu dan menekan lawan.",
-    "effects": [
-      {
-        "code": 21,
-        "dataId": 104,
-        "value1": 1,
-        "value2": 0
-      }
-    ],
+    "effects": [],
     "hitType": 2,
     "iconIndex": 0,
     "message1": "",
@@ -8094,7 +8398,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Necrotic Mastery",
-    "note": "<Passive State: 188>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -8154,14 +8458,7 @@
       "variance": 0
     },
     "description": "Menyalurkan energi pemulih untuk menopang sekutu di tengah pertarungan.",
-    "effects": [
-      {
-        "code": 21,
-        "dataId": 105,
-        "value1": 1,
-        "value2": 0
-      }
-    ],
+    "effects": [],
     "hitType": 2,
     "iconIndex": 0,
     "message1": "",
@@ -8272,7 +8569,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Dual Demon Commander Contract",
-    "note": "[CUSTOM SCOPE] Self / Field\n<Passive State: 189>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[CUSTOM SCOPE] Self / Field\n\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -8436,7 +8733,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Combat Mastery",
-    "note": "<Passive State: 117>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -8462,8 +8759,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 34,
-        "value1": 1,
+        "dataId": 30,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -8533,7 +8830,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Iron Discipline",
-    "note": "<Passive State: 118>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -8589,8 +8886,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 35,
-        "value1": 1,
+        "dataId": 32,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -8704,7 +9001,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Guardian Armor",
-    "note": "<Passive State: 119>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -8730,8 +9027,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 36,
-        "value1": 1,
+        "dataId": 41,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -8767,8 +9064,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 37,
-        "value1": 1,
+        "dataId": 32,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -8834,8 +9131,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 38,
-        "value1": 1,
+        "dataId": 31,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -8875,7 +9172,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Unyielding Guard",
-    "note": "<Passive State: 120>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -8901,8 +9198,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 39,
-        "value1": 1,
+        "dataId": 32,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -8972,7 +9269,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Muscle Training",
-    "note": "<Passive State: 121>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -8998,8 +9295,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 40,
-        "value1": 1,
+        "dataId": 34,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -9035,8 +9332,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 41,
-        "value1": 1,
+        "dataId": 12,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -9076,7 +9373,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Adrenaline Rush",
-    "note": "<Passive State: 122>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -9102,8 +9399,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 42,
-        "value1": 1,
+        "dataId": 32,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -9143,7 +9440,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Iron Fist",
-    "note": "<Passive State: 123>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -9233,7 +9530,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Bloodlust",
-    "note": "<Passive State: 124>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -9360,7 +9657,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Unstoppable Force",
-    "note": "<Passive State: 125>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -9386,8 +9683,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 43,
-        "value1": 1,
+        "dataId": 50,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -9457,7 +9754,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Desperate Fury",
-    "note": "<Passive State: 126>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -9554,7 +9851,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Fortified Guardian Armor",
-    "note": "<Passive State: 127>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -9580,14 +9877,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 20,
-        "value1": 1,
-        "value2": 0
-      },
-      {
-        "code": 21,
-        "dataId": 44,
-        "value1": 1,
+        "dataId": 30,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -9623,8 +9914,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 45,
-        "value1": 1,
+        "dataId": 41,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -9664,7 +9955,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Shield Parry",
-    "note": "<Passive State: 128>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -9720,8 +10011,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 46,
-        "value1": 1,
+        "dataId": 41,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -9761,7 +10052,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Will of Iron",
-    "note": "<Passive State: 129>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -9851,7 +10142,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Agile Footwork",
-    "note": "<Passive State: 130>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -9971,7 +10262,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Mind's Eye",
-    "note": "<Passive State: 131>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -9997,8 +10288,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 47,
-        "value1": 1,
+        "dataId": 51,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -10068,7 +10359,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Feral Instinct",
-    "note": "<Passive State: 132>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -10128,7 +10419,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Dragon Hunter's Instinct",
-    "note": "<Passive State: 133>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -10218,7 +10509,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Scale Hardening",
-    "note": "<Passive State: 134>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -10274,8 +10565,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 48,
-        "value1": 1,
+        "dataId": 51,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -10341,8 +10632,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 49,
-        "value1": 1,
+        "dataId": 30,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -10382,7 +10673,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Dragon's Wrath",
-    "note": "<Passive State: 135>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -10472,7 +10763,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Royal Vanguard Discipline",
-    "note": "<Passive State: 136>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -10528,8 +10819,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 50,
-        "value1": 1,
+        "dataId": 30,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -10569,7 +10860,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Unrelenting Offense",
-    "note": "<Passive State: 137>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -10685,8 +10976,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 50,
-        "value1": 1,
+        "dataId": 38,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -10726,7 +11017,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Savage Triumph",
-    "note": "<Passive State: 138>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -10782,8 +11073,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 51,
-        "value1": 1,
+        "dataId": 50,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -10853,7 +11144,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Guardian of Nusvanir",
-    "note": "<Passive State: 139>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -10916,8 +11207,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 52,
-        "value1": 1,
+        "dataId": 41,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -10957,7 +11248,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Guardian's Resonating Vow",
-    "note": "<Passive State: 140>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -10983,8 +11274,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 53,
-        "value1": 1,
+        "dataId": 32,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -11050,8 +11341,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 54,
-        "value1": 1,
+        "dataId": 41,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -11121,7 +11412,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Absolute Fortitude",
-    "note": "<Passive State: 141>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -11147,8 +11438,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 55,
-        "value1": 1,
+        "dataId": 41,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -11184,8 +11475,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 56,
-        "value1": 1,
+        "dataId": 53,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -11255,7 +11546,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Sang Hyang Blessing",
-    "note": "<Passive State: 142>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -11345,7 +11636,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Chi Mastery",
-    "note": "<Passive State: 143>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -11405,7 +11696,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Temple Blessing: Four Paths",
-    "note": "<Passive State: 144>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -11431,8 +11722,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 57,
-        "value1": 1,
+        "dataId": 55,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -11498,8 +11789,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 58,
-        "value1": 1,
+        "dataId": 32,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -11569,7 +11860,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Chi Reflex",
-    "note": "<Passive State: 145>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
+    "note": "[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nImplement as passive State applied while the skill/class condition is met.",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -11632,8 +11923,8 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 59,
-        "value1": 1,
+        "dataId": 55,
+        "value1": 1.0,
         "value2": 0
       }
     ],
@@ -14844,7 +15135,7 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 29,
+        "dataId": 23,
         "value1": 0.35,
         "value2": 0
       }
@@ -17703,7 +17994,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Iron Skin",
-    "note": "<Passive State: 211>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\n<NUSV Tier: 1>",
+    "note": "<Passive State: 60>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\n<NUSV Tier: 1>",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -17836,7 +18127,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Mind Focus",
-    "note": "<Passive State: 212>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\n<NUSV Tier: 1>",
+    "note": "<Passive State: 61>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\n<NUSV Tier: 1>",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -17862,7 +18153,7 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 45,
+        "dataId": 41,
         "value1": 1.0,
         "value2": 0
       }
@@ -17970,7 +18261,7 @@
     "message2": "",
     "mpCost": 0,
     "name": "Fleet Footed",
-    "note": "<Passive State: 213>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\n<NUSV Tier: 1>",
+    "note": "<Passive State: 62>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\n<NUSV Tier: 1>",
     "occasion": 3,
     "repeats": 1,
     "requiredWtypeId1": 0,
@@ -18033,7 +18324,7 @@
     "effects": [
       {
         "code": 21,
-        "dataId": 106,
+        "dataId": 52,
         "value1": 1.0,
         "value2": 0
       }

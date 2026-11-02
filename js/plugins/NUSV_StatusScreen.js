@@ -2430,11 +2430,11 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var xnames = [
             'Hit Rate', 'Evasion Rate', 'Critical Rate', 'Critical Evade',
             'Magic Evade', 'Magic Reflect', 'Counter Attack',
-            'HP Regen', 'MP Regen', 'TP Regen'
+            'HP Regen', 'MP Regen', 'SP Regen'
         ];
         var snames = [
             'Target Rate', 'Guard Effect', 'Recovery Effect', 'Pharmacology',
-            'MP Cost', 'TP Charge Rate', 'Phys Dmg Taken',
+            'MP Cost', 'SP Charge Rate', 'Phys Dmg Taken',
             'Mag Dmg Taken', 'Floor Damage', 'EXP Rate'
         ];
 
@@ -4484,7 +4484,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             if (actor.mp < actor.skillMpCost(skill)) {
                 this.showToast('MP tidak cukup! (Butuh ' + actor.skillMpCost(skill) + ' MP)');
             } else if (actor.tp < actor.skillTpCost(skill)) {
-                this.showToast('SP/TP tidak mencukupi!');
+                this.showToast('SP (Stamina) tidak mencukupi!');
             } else {
                 this.showToast('Skill tidak dapat digunakan saat ini!');
             }

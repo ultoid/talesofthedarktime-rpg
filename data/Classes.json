@@ -93,7 +93,7 @@
       }
     ],
     "name": "Fighter",
-    "note": "<Class Tier: 1>\n<Class Icon: 96>\n<Class Description>\nPetarung yang mengandalkan keberanian, latihan dasar, dan naluri tempur untuk menghadapi bahaya Nusvanir.\n</Class Description>\n<Class Ability: Battle Spirit>\n<Class Ability Description>\nMeningkatkan P.ATK sebesar +8%. Saat HP berada di bawah 50%, memulihkan +2 SP ekstra pada setiap awal giliran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 10>\n<Base STR: 4>\n<Base INT: 1>\n<Base DEX: 2>\n<Base LUK: 1>\n<Base AGI: 2>\n<Base VIT: 3>\n<Class Stat Growth: STR +0.8, VIT +0.6>",
+    "note": "<Class Tier: 1>\n<Class Icon: 96>\n<Class Description>\nPetarung yang mengandalkan keberanian, latihan dasar, dan naluri tempur untuk menghadapi bahaya Nusvanir.\n</Class Description>\n<Class Ability: Battle Spirit>\n<Class Ability Description>\nMeningkatkan P.ATK sebesar +8%. Saat HP berada di bawah 50%, memulihkan +2 SP ekstra pada setiap awal giliran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 10>\n<Base STR: 4>\n<Base INT: 1>\n<Base DEX: 2>\n<Base LUK: 1>\n<Base AGI: 2>\n<Base VIT: 3>\n<Class Stat Growth: STR +0.8, VIT +0.6>\n<Passive State: 226>",
     "params": [
       [
         0,
@@ -1006,7 +1006,7 @@
       }
     ],
     "name": "Warrior",
-    "note": "<Class Tier: 2>\n<Class Icon: 99>\n<Class Change From: 1>\n<Class Description>\nPrajurit tangguh yang menempuh hidup di garis depan, mengandalkan kekuatan, daya tahan, dan keberanian dalam pertempuran.\n</Class Description>\n<Class Ability: Heavy Impact>\n<Class Ability Description>\nMeningkatkan P.ATK sebesar +12% dan mengabaikan 10% DEF target. Serangan fisik memiliki 5% peluang menyebabkan Stun.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 6>\n<Base INT: 1>\n<Base DEX: 2>\n<Base LUK: 1>\n<Base AGI: 3>\n<Base VIT: 5>\n<Class Stat Growth: STR +1.2, VIT +1.0>",
+    "note": "<Class Tier: 2>\n<Class Icon: 99>\n<Class Change From: 1>\n<Class Description>\nPrajurit tangguh yang menempuh hidup di garis depan, mengandalkan kekuatan, daya tahan, dan keberanian dalam pertempuran.\n</Class Description>\n<Class Ability: Heavy Impact>\n<Class Ability Description>\nMeningkatkan P.ATK sebesar +12% dan mengabaikan 10% DEF target. Serangan fisik memiliki 5% peluang menyebabkan Stun.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 6>\n<Base INT: 1>\n<Base DEX: 2>\n<Base LUK: 1>\n<Base AGI: 3>\n<Base VIT: 5>\n<Class Stat Growth: STR +1.2, VIT +1.0>\n<Passive State: 227>",
     "params": [
       [
         0,
@@ -1914,7 +1914,7 @@
       }
     ],
     "name": "Squire",
-    "note": "<Class Tier: 2>\n<Class Icon: 128>\n<Class Change From: 1>\n<Class Description>\nCalon kesatria yang belajar disiplin, tata tempur, dan nilai kehormatan sebelum layak mengangkat sumpahnya sendiri.\n</Class Description>\n<Class Ability: Vanguard Aegis>\n<Class Ability Description>\nMeningkatkan P.DEF sebesar +15% dan efisiensi Guard (GRD +20%). Saat berada di Baris Depan, mengurangi kerusakan fisik yang diterima kawan baris belakang sebesar 5%.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 4>\n<Base INT: 1>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 2>\n<Base VIT: 6>\n<Class Stat Growth: VIT +1.2, STR +0.8>",
+    "note": "<Class Tier: 2>\n<Class Icon: 128>\n<Class Change From: 1>\n<Class Description>\nCalon kesatria yang belajar disiplin, tata tempur, dan nilai kehormatan sebelum layak mengangkat sumpahnya sendiri.\n</Class Description>\n<Class Ability: Vanguard Aegis>\n<Class Ability Description>\nMeningkatkan P.DEF sebesar +15% dan efisiensi Guard (GRD +20%). Saat berada di Baris Depan, mengurangi kerusakan fisik yang diterima kawan baris belakang sebesar 5%.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 4>\n<Base INT: 1>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 2>\n<Base VIT: 6>\n<Class Stat Growth: VIT +1.2, STR +0.8>\n<Passive State: 228>",
     "params": [
       [
         0,
@@ -2817,7 +2817,7 @@
       }
     ],
     "name": "Brawler",
-    "note": "<Class Tier: 2>\n<Class Icon: 104>\n<Class Change From: 1>\n<Class Description>\nPetarung keras yang mengandalkan tinju, refleks, dan ketangguhan tubuh untuk menaklukkan lawan dari jarak dekat.\n</Class Description>\n<Class Ability: Rhythm Striker>\n<Class Ability Description>\nMeningkatkan Action Speed sebesar +15%. Setiap kali melancarkan skill fisik, memulihkan +5 SP secara instan.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 5>\n<Base INT: 1>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 5>\n<Base VIT: 3>\n<Class Stat Growth: STR +1.0, AGI +1.0>",
+    "note": "<Class Tier: 2>\n<Class Icon: 104>\n<Class Change From: 1>\n<Class Description>\nPetarung keras yang mengandalkan tinju, refleks, dan ketangguhan tubuh untuk menaklukkan lawan dari jarak dekat.\n</Class Description>\n<Class Ability: Rhythm Striker>\n<Class Ability Description>\nMeningkatkan Action Speed sebesar +15%. Setiap kali melancarkan skill fisik, memulihkan +5 SP secara instan.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 5>\n<Base INT: 1>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 5>\n<Base VIT: 3>\n<Class Stat Growth: STR +1.0, AGI +1.0>\n<Passive State: 229>",
     "params": [
       [
         0,
@@ -3725,7 +3725,7 @@
       }
     ],
     "name": "Mercenary",
-    "note": "<Class Tier: 3>\n<Class Icon: 96>\n<Class Change From: 2>\n<Class Description>\nPrajurit bayaran berpengalaman yang hidup dari kontrak, perang, dan kemampuan beradaptasi di medan yang tak menentu.\n</Class Description>\n<Class Ability: Veteran Resolve>\n<Class Ability Description>\nMeningkatkan P.ATK +15% dan menembus 15% DEF musuh. Setiap kali menumbangkan musuh, memulihkan 15% Max HP dan mendapat buff ATK +10% selama 2 giliran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 8>\n<Base INT: 1>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 3>\n<Base VIT: 6>\n<Class Stat Growth: STR +1.6, VIT +1.2>",
+    "note": "<Class Tier: 3>\n<Class Icon: 96>\n<Class Change From: 2>\n<Class Description>\nPrajurit bayaran berpengalaman yang hidup dari kontrak, perang, dan kemampuan beradaptasi di medan yang tak menentu.\n</Class Description>\n<Class Ability: Veteran Resolve>\n<Class Ability Description>\nMeningkatkan P.ATK +15% dan menembus 15% DEF musuh. Setiap kali menumbangkan musuh, memulihkan 15% Max HP dan mendapat buff ATK +10% selama 2 giliran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 8>\n<Base INT: 1>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 3>\n<Base VIT: 6>\n<Class Stat Growth: STR +1.6, VIT +1.2>\n<Passive State: 230>",
     "params": [
       [
         0,
@@ -4628,7 +4628,7 @@
       }
     ],
     "name": "Knight",
-    "note": "<Class Tier: 3>\n<Class Icon: 128>\n<Class Change From: 3>\n<Class Description>\nKesatria terlatih yang menjunjung sumpah, kehormatan, dan kewajiban untuk berdiri teguh di hadapan ancaman.\n</Class Description>\n<Class Ability: Fortress Bastion>\n<Class Ability Description>\nMeningkatkan P.DEF & M.MDF +20%, serta efisiensi Guard (GRD +25%). Otomatis menahan 30% kerusakan yang mengarah ke kawan dengan sisa HP terendah.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 6>\n<Base INT: 2>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 3>\n<Base VIT: 8>\n<Class Stat Growth: VIT +1.6, STR +1.2>",
+    "note": "<Class Tier: 3>\n<Class Icon: 128>\n<Class Change From: 3>\n<Class Description>\nKesatria terlatih yang menjunjung sumpah, kehormatan, dan kewajiban untuk berdiri teguh di hadapan ancaman.\n</Class Description>\n<Class Ability: Fortress Bastion>\n<Class Ability Description>\nMeningkatkan P.DEF & M.MDF +20%, serta efisiensi Guard (GRD +25%). Otomatis menahan 30% kerusakan yang mengarah ke kawan dengan sisa HP terendah.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 6>\n<Base INT: 2>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 3>\n<Base VIT: 8>\n<Class Stat Growth: VIT +1.6, STR +1.2>\n<Passive State: 231>",
     "params": [
       [
         0,
@@ -5536,7 +5536,7 @@
       }
     ],
     "name": "Martial Artist",
-    "note": "<Class Tier: 3>\n<Class Icon: 104>\n<Class Change From: 4>\n<Class Description>\nPendekar yang mengasah tubuh dan teknik melalui disiplin panjang hingga setiap geraknya menjadi senjata.\n</Class Description>\n<Class Ability: Flowing Stance>\n<Class Ability Description>\nAction Speed +20% dan memulihkan +8 SP tiap serangan fisik. Jika menyerang 2 giliran berturut-turut, serangan berikutnya dipastikan 100% Critical Hit.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 7>\n<Base INT: 2>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 7>\n<Base VIT: 4>\n<Class Stat Growth: AGI +1.4, STR +1.4>",
+    "note": "<Class Tier: 3>\n<Class Icon: 104>\n<Class Change From: 4>\n<Class Description>\nPendekar yang mengasah tubuh dan teknik melalui disiplin panjang hingga setiap geraknya menjadi senjata.\n</Class Description>\n<Class Ability: Flowing Stance>\n<Class Ability Description>\nAction Speed +20% dan memulihkan +8 SP tiap serangan fisik. Jika menyerang 2 giliran berturut-turut, serangan berikutnya dipastikan 100% Critical Hit.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 7>\n<Base INT: 2>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 7>\n<Base VIT: 4>\n<Class Stat Growth: AGI +1.4, STR +1.4>\n<Passive State: 232>",
     "params": [
       [
         0,
@@ -6449,7 +6449,7 @@
       }
     ],
     "name": "Champion",
-    "note": "<Class Tier: 4>\n<Class Icon: 99>\n<Class Change From: 5>\n<Class Description>\nPejuang unggulan yang dikenal karena keberanian, ketangguhan, dan kemenangan yang ditempa dari banyak pertempuran.\n</Class Description>\n<Class Ability: Unyielding Dominance>\n<Class Ability Description>\nP.ATK +20% dan kebal terhadap efek Stun & Knockdown. Kerusakan fisik meningkat hingga +30% seiring berkurangnya sisa target musuh di arena.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 9>\n<Base INT: 2>\n<Base DEX: 5>\n<Base LUK: 2>\n<Base AGI: 4>\n<Base VIT: 8>\n<Class Stat Growth: STR +1.8, VIT +1.6>",
+    "note": "<Class Tier: 4>\n<Class Icon: 99>\n<Class Change From: 5>\n<Class Description>\nPejuang unggulan yang dikenal karena keberanian, ketangguhan, dan kemenangan yang ditempa dari banyak pertempuran.\n</Class Description>\n<Class Ability: Unyielding Dominance>\n<Class Ability Description>\nP.ATK +20% dan kebal terhadap efek Stun & Knockdown. Kerusakan fisik meningkat hingga +30% seiring berkurangnya sisa target musuh di arena.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 9>\n<Base INT: 2>\n<Base DEX: 5>\n<Base LUK: 2>\n<Base AGI: 4>\n<Base VIT: 8>\n<Class Stat Growth: STR +1.8, VIT +1.6>\n<Passive State: 233>",
     "params": [
       [
         0,
@@ -7357,7 +7357,7 @@
       }
     ],
     "name": "Dragoon",
-    "note": "<Class Tier: 4>\n<Class Icon: 101>\n<Class Change From: 6>\n<Class Description>\nPrajurit tombak yang menguasai lompatan dan serangan dari atas, meniru keganasan makhluk bersayap dan naga.\n</Class Description>\n<Class Ability: Dragonfang Skystrike>\n<Class Ability Description>\nKerusakan jurus lompat dan tombak +25% serta mengabaikan 20% DEF. Serangan dari udara menghasilkan gelombang kejut berdaya rusak area (AoE).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 9>\n<Base INT: 2>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 8>\n<Base VIT: 6>\n<Class Stat Growth: STR +1.8, AGI +1.6>",
+    "note": "<Class Tier: 4>\n<Class Icon: 101>\n<Class Change From: 6>\n<Class Description>\nPrajurit tombak yang menguasai lompatan dan serangan dari atas, meniru keganasan makhluk bersayap dan naga.\n</Class Description>\n<Class Ability: Dragonfang Skystrike>\n<Class Ability Description>\nKerusakan jurus lompat dan tombak +25% serta mengabaikan 20% DEF. Serangan dari udara menghasilkan gelombang kejut berdaya rusak area (AoE).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 9>\n<Base INT: 2>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 8>\n<Base VIT: 6>\n<Class Stat Growth: STR +1.8, AGI +1.6>\n<Passive State: 234>",
     "params": [
       [
         0,
@@ -8270,7 +8270,7 @@
       }
     ],
     "name": "Paladin",
-    "note": "<Class Tier: 4>\n<Class Icon: 96>\n<Class Change From: 6>\n<Class Description>\nKesatria suci yang memadukan kekuatan senjata dengan keyakinan, sumpah, dan perlindungan terhadap mereka yang lemah.\n</Class Description>\n<Class Ability: Aegis of Sanctuary>\n<Class Ability Description>\nP.DEF & M.MDF +25%. Seluruh sekutu di baris yang sama menerima pengurangan kerusakan 15% dan kebal terhadap status Fear & Blind.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 7>\n<Base INT: 5>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 3>\n<Base VIT: 9>\n<Class Stat Growth: VIT +1.8, STR +1.4, INT +1.0>",
+    "note": "<Class Tier: 4>\n<Class Icon: 96>\n<Class Change From: 6>\n<Class Description>\nKesatria suci yang memadukan kekuatan senjata dengan keyakinan, sumpah, dan perlindungan terhadap mereka yang lemah.\n</Class Description>\n<Class Ability: Aegis of Sanctuary>\n<Class Ability Description>\nP.DEF & M.MDF +25%. Seluruh sekutu di baris yang sama menerima pengurangan kerusakan 15% dan kebal terhadap status Fear & Blind.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 7>\n<Base INT: 5>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 3>\n<Base VIT: 9>\n<Class Stat Growth: VIT +1.8, STR +1.4, INT +1.0>\n<Passive State: 235>",
     "params": [
       [
         0,
@@ -9183,7 +9183,7 @@
       }
     ],
     "name": "Monk",
-    "note": "<Class Tier: 4>\n<Class Icon: 104>\n<Class Change From: 7>\n<Class Description>\nPertapa tempur yang menyelaraskan tubuh, pikiran, dan napas untuk melampaui batas kekuatan manusia biasa.\n</Class Description>\n<Class Ability: Asura Meridian>\n<Class Ability Description>\nSerangan fisik tanpa senjata mendapatkan bonus P.ATK +25% dan CRI +15%. Serangan kritis memiliki 20% peluang menyegel skill lawan (Silence) selama 1 turn.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 8>\n<Base INT: 4>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 9>\n<Base VIT: 5>\n<Class Stat Growth: AGI +1.8, STR +1.6>",
+    "note": "<Class Tier: 4>\n<Class Icon: 104>\n<Class Change From: 7>\n<Class Description>\nPertapa tempur yang menyelaraskan tubuh, pikiran, dan napas untuk melampaui batas kekuatan manusia biasa.\n</Class Description>\n<Class Ability: Asura Meridian>\n<Class Ability Description>\nSerangan fisik tanpa senjata mendapatkan bonus P.ATK +25% dan CRI +15%. Serangan kritis memiliki 20% peluang menyegel skill lawan (Silence) selama 1 turn.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 8>\n<Base INT: 4>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 9>\n<Base VIT: 5>\n<Class Stat Growth: AGI +1.8, STR +1.6>\n<Passive State: 236>",
     "params": [
       [
         0,
@@ -10121,7 +10121,7 @@
       }
     ],
     "name": "Berserker",
-    "note": "<Class Tier: 5>\n<Class Icon: 99>\n<Class Change From: 8>\n<Class Description>\nPejuang ganas yang membiarkan amarah dan insting perang mendorong tubuhnya melewati rasa sakit dan rasa takut.\n</Class Description>\n<Class Ability: Bloodrage Immortality>\n<Class Ability Description>\nSaat HP di bawah 30%, P.ATK +50% dan CDMG +40%. Karakter tidak dapat gugur (kebal kematian mutlak) selama 1 giliran saat HP menyentuh angka 1.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 10>\n<Base INT: 2>\n<Base DEX: 5>\n<Base LUK: 3>\n<Base AGI: 5>\n<Base VIT: 8>\n<Class Stat Growth: STR +2.0, VIT +1.6>",
+    "note": "<Class Tier: 5>\n<Class Icon: 99>\n<Class Change From: 8>\n<Class Description>\nPejuang ganas yang membiarkan amarah dan insting perang mendorong tubuhnya melewati rasa sakit dan rasa takut.\n</Class Description>\n<Class Ability: Bloodrage Immortality>\n<Class Ability Description>\nSaat HP di bawah 30%, P.ATK +50% dan CDMG +40%. Karakter tidak dapat gugur (kebal kematian mutlak) selama 1 giliran saat HP menyentuh angka 1.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 10>\n<Base INT: 2>\n<Base DEX: 5>\n<Base LUK: 3>\n<Base AGI: 5>\n<Base VIT: 8>\n<Class Stat Growth: STR +2.0, VIT +1.6>\n<Passive State: 237>",
     "params": [
       [
         0,
@@ -11049,7 +11049,7 @@
       }
     ],
     "name": "Death Knight",
-    "note": "<Class Tier: 5>\n<Class Icon: 135>\n<Class Change From: 10>\n<Class Description>\nKesatria kelam yang membawa jejak kematian dalam zirah dan senjatanya, ditakuti bahkan oleh sesama prajurit.\n</Class Description>\n<Class Ability: Abyssal Despair>\n<Class Ability Description>\nP.DEF & M.MDF +30%. Aura kegelapan mengurangi ATK & MAT seluruh lawan sebesar 15%; menyerap 20% dari seluruh kerusakan yang dihasilkan sebagai HP.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 8>\n<Base INT: 6>\n<Base DEX: 4>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 10>\n<Class Stat Growth: VIT +2.0, STR +1.6, INT +1.2>",
+    "note": "<Class Tier: 5>\n<Class Icon: 135>\n<Class Change From: 10>\n<Class Description>\nKesatria kelam yang membawa jejak kematian dalam zirah dan senjatanya, ditakuti bahkan oleh sesama prajurit.\n</Class Description>\n<Class Ability: Abyssal Despair>\n<Class Ability Description>\nP.DEF & M.MDF +30%. Aura kegelapan mengurangi ATK & MAT seluruh lawan sebesar 15%; menyerap 20% dari seluruh kerusakan yang dihasilkan sebagai HP.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 8>\n<Base INT: 6>\n<Base DEX: 4>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 10>\n<Class Stat Growth: VIT +2.0, STR +1.6, INT +1.2>\n<Passive State: 238>",
     "params": [
       [
         0,
@@ -11982,7 +11982,7 @@
       }
     ],
     "name": "Holy Knight",
-    "note": "<Class Tier: 5>\n<Class Icon: 128>\n<Class Change From: 10>\n<Class Description>\nKesatria agung yang mengabdikan hidupnya pada kekuatan suci dan bertarung sebagai perisai bagi cahaya.\n</Class Description>\n<Class Ability: Aegis of Radiance>\n<Class Ability Description>\nMenahan 50% kerusakan yang mengarah ke seluruh anggota party. Serangan suci memulihkan HP party sebesar 20% dari total kerusakan yang ditimpakan.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 7>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 10>\n<Class Stat Growth: VIT +2.0, INT +1.6, STR +1.4>",
+    "note": "<Class Tier: 5>\n<Class Icon: 128>\n<Class Change From: 10>\n<Class Description>\nKesatria agung yang mengabdikan hidupnya pada kekuatan suci dan bertarung sebagai perisai bagi cahaya.\n</Class Description>\n<Class Ability: Aegis of Radiance>\n<Class Ability Description>\nMenahan 50% kerusakan yang mengarah ke seluruh anggota party. Serangan suci memulihkan HP party sebesar 20% dari total kerusakan yang ditimpakan.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 7>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 10>\n<Class Stat Growth: VIT +2.0, INT +1.6, STR +1.4>\n<Passive State: 239>",
     "params": [
       [
         0,
@@ -12900,7 +12900,7 @@
       }
     ],
     "name": "Brahma",
-    "note": "<Class Tier: 5>\n<Class Icon: 104>\n<Class Change From: 11>\n<Class Description>\nMahaguru bela diri yang telah menempuh disiplin tertinggi hingga tenaga batinnya mampu menandingi kekuatan senjata.\n</Class Description>\n<Class Ability: Meridian Annihilation>\n<Class Ability Description>\nAction Speed +35% dan seluruh serangan fisik menembus 40% DEF lawan. Setiap serangan beruntun meningkatkan output kerusakan sebesar +15% tanpa batas.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 8>\n<Base INT: 4>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 10>\n<Base VIT: 5>\n<Class Stat Growth: AGI +2.0, STR +1.6, DEX +1.2>",
+    "note": "<Class Tier: 5>\n<Class Icon: 104>\n<Class Change From: 11>\n<Class Description>\nMahaguru bela diri yang telah menempuh disiplin tertinggi hingga tenaga batinnya mampu menandingi kekuatan senjata.\n</Class Description>\n<Class Ability: Meridian Annihilation>\n<Class Ability Description>\nAction Speed +35% dan seluruh serangan fisik menembus 40% DEF lawan. Setiap serangan beruntun meningkatkan output kerusakan sebesar +15% tanpa batas.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 8>\n<Base INT: 4>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 10>\n<Base VIT: 5>\n<Class Stat Growth: AGI +2.0, STR +1.6, DEX +1.2>\n<Passive State: 240>",
     "params": [
       [
         0,
@@ -13813,7 +13813,7 @@
       }
     ],
     "name": "Sky Sovereign",
-    "note": "<Class Tier: 5>\n<Class Icon: 101>\n<Class Change From: 9>\n<Class Description>\nAhli tombak legendaris yang menguasai langit dan medan tinggi seolah keduanya merupakan bagian dari tubuhnya sendiri.\n</Class Description>\n<Class Ability: Celestial Skystrike>\n<Class Ability Description>\nKerusakan jurus udara +50%. Menghujamkan badai langit ke seluruh arena pada giliran pertama, menyebabkan Stun dan menurunkan DEF musuh sebesar 25%.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 10>\n<Base INT: 2>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 9>\n<Base VIT: 5>\n<Class Stat Growth: STR +2.0, AGI +1.8>",
+    "note": "<Class Tier: 5>\n<Class Icon: 101>\n<Class Change From: 9>\n<Class Description>\nAhli tombak legendaris yang menguasai langit dan medan tinggi seolah keduanya merupakan bagian dari tubuhnya sendiri.\n</Class Description>\n<Class Ability: Celestial Skystrike>\n<Class Ability Description>\nKerusakan jurus udara +50%. Menghujamkan badai langit ke seluruh arena pada giliran pertama, menyebabkan Stun dan menurunkan DEF musuh sebesar 25%.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 10>\n<Base INT: 2>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 9>\n<Base VIT: 5>\n<Class Stat Growth: STR +2.0, AGI +1.8>\n<Passive State: 241>",
     "params": [
       [
         0,
@@ -14711,7 +14711,7 @@
       }
     ],
     "name": "Apprentice",
-    "note": "<Class Tier: 1>\n<Class Icon: 100>\n<Class Description>\nPemula dalam seni sihir yang baru mempelajari cara memahami mana, mantra, dan aturan dasar kekuatan gaib.\n</Class Description>\n<Class Ability: Mana Attunement>\n<Class Ability Description>\nMeningkatkan M.ATK sebesar +8% dan mengurangi konsumsi MP seluruh mantra sihir sebesar 10%.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 10>\n<Base STR: 1>\n<Base INT: 4>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 2>\n<Base VIT: 2>\n<Class Stat Growth: INT +0.8, DEX +0.6>",
+    "note": "<Class Tier: 1>\n<Class Icon: 100>\n<Class Description>\nPemula dalam seni sihir yang baru mempelajari cara memahami mana, mantra, dan aturan dasar kekuatan gaib.\n</Class Description>\n<Class Ability: Mana Attunement>\n<Class Ability Description>\nMeningkatkan M.ATK sebesar +8% dan mengurangi konsumsi MP seluruh mantra sihir sebesar 10%.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 10>\n<Base STR: 1>\n<Base INT: 4>\n<Base DEX: 3>\n<Base LUK: 2>\n<Base AGI: 2>\n<Base VIT: 2>\n<Class Stat Growth: INT +0.8, DEX +0.6>\n<Passive State: 242>",
     "params": [
       [
         0,
@@ -15619,7 +15619,7 @@
       }
     ],
     "name": "Magician",
-    "note": "<Class Tier: 2>\n<Class Icon: 64>\n<Class Change From: 17>\n<Class Description>\nPenyihir terlatih yang mengubah pengetahuan arcane menjadi mantra untuk menyerang, bertahan, atau mengendalikan keadaan.\n</Class Description>\n<Class Ability: Elemental Overload>\n<Class Ability Description>\nMeningkatkan M.ATK sebesar +15%. Serangan yang mengenai kelemahan elemen musuh menghasilkan tambahan kerusakan sebesar +25%.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 1>\n<Base INT: 6>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 2>\n<Class Stat Growth: INT +1.2, DEX +0.8>",
+    "note": "<Class Tier: 2>\n<Class Icon: 64>\n<Class Change From: 17>\n<Class Description>\nPenyihir terlatih yang mengubah pengetahuan arcane menjadi mantra untuk menyerang, bertahan, atau mengendalikan keadaan.\n</Class Description>\n<Class Ability: Elemental Overload>\n<Class Ability Description>\nMeningkatkan M.ATK sebesar +15%. Serangan yang mengenai kelemahan elemen musuh menghasilkan tambahan kerusakan sebesar +25%.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 1>\n<Base INT: 6>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 2>\n<Class Stat Growth: INT +1.2, DEX +0.8>\n<Passive State: 243>",
     "params": [
       [
         0,
@@ -16522,7 +16522,7 @@
       }
     ],
     "name": "Acolyte",
-    "note": "<Class Tier: 2>\n<Class Icon: 72>\n<Class Change From: 17>\n<Class Description>\nPelayan muda jalan suci yang belajar menyalurkan doa, pemulihan, dan perlindungan melalui keyakinannya.\n</Class Description>\n<Class Ability: Divine Grace>\n<Class Ability Description>\nMeningkatkan efektivitas skill penyembuhan sebesar +20% (Recovery Effect), serta memulihkan 2% Max MP otomatis setiap akhir giliran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 1>\n<Base INT: 5>\n<Base DEX: 2>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 5>\n<Class Stat Growth: INT +1.0, VIT +1.0>",
+    "note": "<Class Tier: 2>\n<Class Icon: 72>\n<Class Change From: 17>\n<Class Description>\nPelayan muda jalan suci yang belajar menyalurkan doa, pemulihan, dan perlindungan melalui keyakinannya.\n</Class Description>\n<Class Ability: Divine Grace>\n<Class Ability Description>\nMeningkatkan efektivitas skill penyembuhan sebesar +20% (Recovery Effect), serta memulihkan 2% Max MP otomatis setiap akhir giliran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 1>\n<Base INT: 5>\n<Base DEX: 2>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 5>\n<Class Stat Growth: INT +1.0, VIT +1.0>\n<Passive State: 244>",
     "params": [
       [
         0,
@@ -17435,7 +17435,7 @@
       }
     ],
     "name": "Occultist",
-    "note": "<Class Tier: 2>\n<Class Icon: 71>\n<Class Change From: 17>\n<Class Description>\nPraktisi ilmu terlarang yang mencari kekuatan dari ritual, rahasia kuno, dan pengetahuan yang dihindari kebanyakan orang.\n</Class Description>\n<Class Ability: Nether Siphon>\n<Class Ability Description>\nKerusakan sihir berelemen Dark meningkat +15%. Menyerap 5% Max HP musuh setiap kali berhasil menimpakan status buruk (Debuff / Poison / Curse).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 1>\n<Base INT: 5>\n<Base DEX: 3>\n<Base LUK: 5>\n<Base AGI: 2>\n<Base VIT: 2>\n<Class Stat Growth: INT +1.0, LUK +1.0>",
+    "note": "<Class Tier: 2>\n<Class Icon: 71>\n<Class Change From: 17>\n<Class Description>\nPraktisi ilmu terlarang yang mencari kekuatan dari ritual, rahasia kuno, dan pengetahuan yang dihindari kebanyakan orang.\n</Class Description>\n<Class Ability: Nether Siphon>\n<Class Ability Description>\nKerusakan sihir berelemen Dark meningkat +15%. Menyerap 5% Max HP musuh setiap kali berhasil menimpakan status buruk (Debuff / Poison / Curse).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 1>\n<Base INT: 5>\n<Base DEX: 3>\n<Base LUK: 5>\n<Base AGI: 2>\n<Base VIT: 2>\n<Class Stat Growth: INT +1.0, LUK +1.0>\n<Passive State: 245>",
     "params": [
       [
         0,
@@ -18348,7 +18348,7 @@
       }
     ],
     "name": "Mage",
-    "note": "<Class Tier: 3>\n<Class Icon: 65>\n<Class Change From: 18>\n<Class Description>\nPenyihir berpengalaman yang memahami arus mana dan mampu membentuknya menjadi sihir yang jauh lebih kuat dan rumit.\n</Class Description>\n<Class Ability: Arcane Amplification>\n<Class Ability Description>\nMeningkatkan M.ATK +20%. Setiap kali melancarkan mantra sihir, meningkatkan kerusakan sihir elemen berikutnya sebesar +10% (dapat ditumpuk hingga 3 lapis / +30%).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 1>\n<Base INT: 8>\n<Base DEX: 5>\n<Base LUK: 3>\n<Base AGI: 3>\n<Base VIT: 4>\n<Class Stat Growth: INT +1.6, DEX +1.0>",
+    "note": "<Class Tier: 3>\n<Class Icon: 65>\n<Class Change From: 18>\n<Class Description>\nPenyihir berpengalaman yang memahami arus mana dan mampu membentuknya menjadi sihir yang jauh lebih kuat dan rumit.\n</Class Description>\n<Class Ability: Arcane Amplification>\n<Class Ability Description>\nMeningkatkan M.ATK +20%. Setiap kali melancarkan mantra sihir, meningkatkan kerusakan sihir elemen berikutnya sebesar +10% (dapat ditumpuk hingga 3 lapis / +30%).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 1>\n<Base INT: 8>\n<Base DEX: 5>\n<Base LUK: 3>\n<Base AGI: 3>\n<Base VIT: 4>\n<Class Stat Growth: INT +1.6, DEX +1.0>\n<Passive State: 246>",
     "params": [
       [
         0,
@@ -19261,7 +19261,7 @@
       }
     ],
     "name": "Cleric",
-    "note": "<Class Tier: 3>\n<Class Icon: 73>\n<Class Change From: 19>\n<Class Description>\nRohaniwan pengembara yang membawa penyembuhan, doa, dan perlindungan bagi mereka yang berjuang di sisinya.\n</Class Description>\n<Class Ability: Sanctified Aura>\n<Class Ability Description>\nEfektivitas pemulihan (Recovery Effect) +25%. Seluruh anggota party menerima regenerasi HP otomatis sebesar 3% Max HP tiap giliran dan kebal efek Curse.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 2>\n<Base INT: 7>\n<Base DEX: 3>\n<Base LUK: 4>\n<Base AGI: 2>\n<Base VIT: 7>\n<Class Stat Growth: INT +1.4, VIT +1.4>",
+    "note": "<Class Tier: 3>\n<Class Icon: 73>\n<Class Change From: 19>\n<Class Description>\nRohaniwan pengembara yang membawa penyembuhan, doa, dan perlindungan bagi mereka yang berjuang di sisinya.\n</Class Description>\n<Class Ability: Sanctified Aura>\n<Class Ability Description>\nEfektivitas pemulihan (Recovery Effect) +25%. Seluruh anggota party menerima regenerasi HP otomatis sebesar 3% Max HP tiap giliran dan kebal efek Curse.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 2>\n<Base INT: 7>\n<Base DEX: 3>\n<Base LUK: 4>\n<Base AGI: 2>\n<Base VIT: 7>\n<Class Stat Growth: INT +1.4, VIT +1.4>\n<Passive State: 247>",
     "params": [
       [
         0,
@@ -20174,7 +20174,7 @@
       }
     ],
     "name": "Cultist",
-    "note": "<Class Tier: 3>\n<Class Icon: 80>\n<Class Change From: 20>\n<Class Description>\nPengikut ajaran terlarang yang menukar batas moral dengan pengetahuan, ritual, dan kekuatan dari sumber yang berbahaya.\n</Class Description>\n<Class Ability: Soul Harvester>\n<Class Ability Description>\nKerusakan sihir Dark +20%. Setiap kali ada unit yang tumbang di medan tempur (kawan maupun lawan), menyerap 10% MP & SP mereka untuk memperkuat mantra berikutnya.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 2>\n<Base INT: 7>\n<Base DEX: 4>\n<Base LUK: 7>\n<Base AGI: 2>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.4, LUK +1.4>",
+    "note": "<Class Tier: 3>\n<Class Icon: 80>\n<Class Change From: 20>\n<Class Description>\nPengikut ajaran terlarang yang menukar batas moral dengan pengetahuan, ritual, dan kekuatan dari sumber yang berbahaya.\n</Class Description>\n<Class Ability: Soul Harvester>\n<Class Ability Description>\nKerusakan sihir Dark +20%. Setiap kali ada unit yang tumbang di medan tempur (kawan maupun lawan), menyerap 10% MP & SP mereka untuk memperkuat mantra berikutnya.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 2>\n<Base INT: 7>\n<Base DEX: 4>\n<Base LUK: 7>\n<Base AGI: 2>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.4, LUK +1.4>\n<Passive State: 248>",
     "params": [
       [
         0,
@@ -21082,7 +21082,7 @@
       }
     ],
     "name": "Elementalist - Pyromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 64>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur api yang membentuk bara, panas, dan ledakan menjadi senjata di medan pertempuran.\n</Class Description>\n<Class Ability: Blazing Conflagration>\n<Class Ability Description>\nKerusakan sihir Api +25%. Musuh yang terkena Burn menerima kerusakan bertingkat dan menyebarkan kobaran api ke musuh di sekitarnya saat terkena hit.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 5>\n<Base VIT: 4>\n<Class Stat Growth: INT +1.8, DEX +1.2>",
+    "note": "<Class Tier: 4>\n<Class Icon: 64>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur api yang membentuk bara, panas, dan ledakan menjadi senjata di medan pertempuran.\n</Class Description>\n<Class Ability: Blazing Conflagration>\n<Class Ability Description>\nKerusakan sihir Api +25%. Musuh yang terkena Burn menerima kerusakan bertingkat dan menyebarkan kobaran api ke musuh di sekitarnya saat terkena hit.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 5>\n<Base VIT: 4>\n<Class Stat Growth: INT +1.8, DEX +1.2>\n<Passive State: 249>",
     "params": [
       [
         0,
@@ -21995,7 +21995,7 @@
       }
     ],
     "name": "Elementalist - Hydromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 67>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur air yang menguasai aliran, tekanan, dan sifat pemulihan dari kekuatan Tirta.\n</Class Description>\n<Class Ability: Tidal Resonance>\n<Class Ability Description>\nKerusakan sihir Air +25%. Setiap kali mantra mengenai target basah (Soaked), memulihkan 5% Max MP dan meningkatkan pertahanan MDF +20% selama 2 turn.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 7>\n<Class Stat Growth: INT +1.8, VIT +1.4>",
+    "note": "<Class Tier: 4>\n<Class Icon: 67>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur air yang menguasai aliran, tekanan, dan sifat pemulihan dari kekuatan Tirta.\n</Class Description>\n<Class Ability: Tidal Resonance>\n<Class Ability Description>\nKerusakan sihir Air +25%. Setiap kali mantra mengenai target basah (Soaked), memulihkan 5% Max MP dan meningkatkan pertahanan MDF +20% selama 2 turn.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 7>\n<Class Stat Growth: INT +1.8, VIT +1.4>\n<Passive State: 250>",
     "params": [
       [
         0,
@@ -22908,7 +22908,7 @@
       }
     ],
     "name": "Elementalist - Geomancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 68>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur bumi yang memanggil batu, tanah, dan kekuatan daratan untuk melindungi atau menghancurkan.\n</Class Description>\n<Class Ability: Tectonic Bulwark>\n<Class Ability Description>\nKerusakan sihir Tanah +25%. Menghasilkan perisai batu (Shield) sebesar 15% Max HP setiap kali melancarkan skill berelemen Earth.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 5>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.6, VIT +1.6>",
+    "note": "<Class Tier: 4>\n<Class Icon: 68>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur bumi yang memanggil batu, tanah, dan kekuatan daratan untuk melindungi atau menghancurkan.\n</Class Description>\n<Class Ability: Tectonic Bulwark>\n<Class Ability Description>\nKerusakan sihir Tanah +25%. Menghasilkan perisai batu (Shield) sebesar 15% Max HP setiap kali melancarkan skill berelemen Earth.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 5>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.6, VIT +1.6>\n<Passive State: 251>",
     "params": [
       [
         0,
@@ -23821,7 +23821,7 @@
       }
     ],
     "name": "Elementalist - Aeromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 69>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur angin yang memanfaatkan arus udara, kecepatan, dan tekanan untuk mengubah jalannya pertempuran.\n</Class Description>\n<Class Ability: Tempest Grace>\n<Class Ability Description>\nKerusakan sihir Angin +25% dan EVA +15%. Kecepatan gerak bertindak meningkat drastis; memiliki 20% peluang bertindak dua kali dalam satu giliran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 3>\n<Base AGI: 8>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.8, AGI +1.6>",
+    "note": "<Class Tier: 4>\n<Class Icon: 69>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur angin yang memanfaatkan arus udara, kecepatan, dan tekanan untuk mengubah jalannya pertempuran.\n</Class Description>\n<Class Ability: Tempest Grace>\n<Class Ability Description>\nKerusakan sihir Angin +25% dan EVA +15%. Kecepatan gerak bertindak meningkat drastis; memiliki 20% peluang bertindak dua kali dalam satu giliran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 3>\n<Base AGI: 8>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.8, AGI +1.6>\n<Passive State: 252>",
     "params": [
       [
         0,
@@ -24734,7 +24734,7 @@
       }
     ],
     "name": "Elementalist - Electromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 66>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur petir yang menyalurkan kilat dan muatan listrik menjadi serangan cepat dan berbahaya.\n</Class Description>\n<Class Ability: High-Voltage Surge>\n<Class Ability Description>\nKerusakan sihir Petir +25%. Serangan petir memiliki 25% peluang memicu loncatan listrik (Chain Lightning) ke 2 target musuh lain di sekitarnya.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 7>\n<Base LUK: 4>\n<Base AGI: 5>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.8, DEX +1.4>",
+    "note": "<Class Tier: 4>\n<Class Icon: 66>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur petir yang menyalurkan kilat dan muatan listrik menjadi serangan cepat dan berbahaya.\n</Class Description>\n<Class Ability: High-Voltage Surge>\n<Class Ability Description>\nKerusakan sihir Petir +25%. Serangan petir memiliki 25% peluang memicu loncatan listrik (Chain Lightning) ke 2 target musuh lain di sekitarnya.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 7>\n<Base LUK: 4>\n<Base AGI: 5>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.8, DEX +1.4>\n<Passive State: 253>",
     "params": [
       [
         0,
@@ -25647,7 +25647,7 @@
       }
     ],
     "name": "Elementalist - Cryomancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 65>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur es yang mengendalikan dingin, embun beku, dan kristal untuk melemahkan atau membekukan lawan.\n</Class Description>\n<Class Ability: Glacial Subzero>\n<Class Ability Description>\nKerusakan sihir Es +25%. Serangan sihir es menembus 25% MDF dan memperlambat AGI musuh sebesar 20%; musuh beku (Freeze) menerima +35% shatter damage.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 7>\n<Class Stat Growth: INT +1.8, VIT +1.4>",
+    "note": "<Class Tier: 4>\n<Class Icon: 65>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur es yang mengendalikan dingin, embun beku, dan kristal untuk melemahkan atau membekukan lawan.\n</Class Description>\n<Class Ability: Glacial Subzero>\n<Class Ability Description>\nKerusakan sihir Es +25%. Serangan sihir es menembus 25% MDF dan memperlambat AGI musuh sebesar 20%; musuh beku (Freeze) menerima +35% shatter damage.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 4>\n<Base AGI: 3>\n<Base VIT: 7>\n<Class Stat Growth: INT +1.8, VIT +1.4>\n<Passive State: 254>",
     "params": [
       [
         0,
@@ -26555,7 +26555,7 @@
       }
     ],
     "name": "Elementalist - Ferromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 70>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur logam yang mampu memengaruhi besi, baja, dan logam lain melalui kendali mana yang terlatih.\n</Class Description>\n<Class Ability: Magnetic Polarization>\n<Class Ability Description>\nKerusakan sihir Logam +25% dan P.DEF +20%. Mengalihkan proyektil fisik musuh dan mengubah 10% damage yang diterima menjadi amunisi pecahan besi pembalas.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 6>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.6, VIT +1.6, STR +1.2>",
+    "note": "<Class Tier: 4>\n<Class Icon: 70>\n<Class Change From: 21>\n<Class Description>\nPenyihir unsur logam yang mampu memengaruhi besi, baja, dan logam lain melalui kendali mana yang terlatih.\n</Class Description>\n<Class Ability: Magnetic Polarization>\n<Class Ability Description>\nKerusakan sihir Logam +25% dan P.DEF +20%. Mengalihkan proyektil fisik musuh dan mengubah 10% damage yang diterima menjadi amunisi pecahan besi pembalas.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 6>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 3>\n<Base AGI: 2>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.6, VIT +1.6, STR +1.2>\n<Passive State: 255>",
     "params": [
       [
         0,
@@ -27468,7 +27468,7 @@
       }
     ],
     "name": "Elementalist - Echomancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 76>\n<Class Change From: 21>\n<Class Description>\nPenyihir gema yang menjadikan suara, resonansi, dan getaran sebagai medium untuk sihir yang tidak biasa.\n</Class Description>\n<Class Ability: Resonance Fracture>\n<Class Ability Description>\nKerusakan sihir Suara +25%. Mengabaikan seluruh DEF & MDF musuh bertipe armor berat/batu; getaran suara memiliki peluang 25% membatalkan charge skill musuh.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 6>\n<Base LUK: 4>\n<Base AGI: 6>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.8, DEX +1.2, AGI +1.2>",
+    "note": "<Class Tier: 4>\n<Class Icon: 76>\n<Class Change From: 21>\n<Class Description>\nPenyihir gema yang menjadikan suara, resonansi, dan getaran sebagai medium untuk sihir yang tidak biasa.\n</Class Description>\n<Class Ability: Resonance Fracture>\n<Class Ability Description>\nKerusakan sihir Suara +25%. Mengabaikan seluruh DEF & MDF musuh bertipe armor berat/batu; getaran suara memiliki peluang 25% membatalkan charge skill musuh.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 6>\n<Base LUK: 4>\n<Base AGI: 6>\n<Base VIT: 3>\n<Class Stat Growth: INT +1.8, DEX +1.2, AGI +1.2>\n<Passive State: 256>",
     "params": [
       [
         0,
@@ -28391,7 +28391,7 @@
       }
     ],
     "name": "Priest",
-    "note": "<Class Tier: 4>\n<Class Icon: 74>\n<Class Change From: 22>\n<Class Description>\nRohaniwan tinggi yang menguasai doa dan mukjizat untuk menyembuhkan, melindungi, dan menuntun para pengikutnya.\n</Class Description>\n<Class Ability: Grace of Rebirth>\n<Class Ability Description>\nEfektivitas pemulihan +30%. Anggota party yang gugur dapat dibangkitkan otomatis 1x per battle dengan 30% Max HP tanpa menghabiskan item.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 5>\n<Base AGI: 3>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.6, VIT +1.6, LUK +1.0>",
+    "note": "<Class Tier: 4>\n<Class Icon: 74>\n<Class Change From: 22>\n<Class Description>\nRohaniwan tinggi yang menguasai doa dan mukjizat untuk menyembuhkan, melindungi, dan menuntun para pengikutnya.\n</Class Description>\n<Class Ability: Grace of Rebirth>\n<Class Ability Description>\nEfektivitas pemulihan +30%. Anggota party yang gugur dapat dibangkitkan otomatis 1x per battle dengan 30% Max HP tanpa menghabiskan item.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 8>\n<Base DEX: 4>\n<Base LUK: 5>\n<Base AGI: 3>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.6, VIT +1.6, LUK +1.0>\n<Passive State: 257>",
     "params": [
       [
         0,
@@ -29309,7 +29309,7 @@
       }
     ],
     "name": "Necromancer",
-    "note": "<Class Tier: 4>\n<Class Icon: 80>\n<Class Change From: 23>\n<Class Description>\nPenyihir kematian yang mempelajari jiwa, jasad, dan ikatan antara kehidupan serta dunia setelah kematian.\n</Class Description>\n<Class Ability: Grave Mastery>\n<Class Ability Description>\nKerusakan kutukan & racun +25%. Setiap kali musuh gugur, otomatis membangkitkan satu minion mayat hidup untuk menyerang dan menyerap damage party.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 4>\n<Base LUK: 8>\n<Base AGI: 3>\n<Base VIT: 5>\n<Class Stat Growth: INT +1.8, LUK +1.6>",
+    "note": "<Class Tier: 4>\n<Class Icon: 80>\n<Class Change From: 23>\n<Class Description>\nPenyihir kematian yang mempelajari jiwa, jasad, dan ikatan antara kehidupan serta dunia setelah kematian.\n</Class Description>\n<Class Ability: Grave Mastery>\n<Class Ability Description>\nKerusakan kutukan & racun +25%. Setiap kali musuh gugur, otomatis membangkitkan satu minion mayat hidup untuk menyerang dan menyerap damage party.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 4>\n<Base LUK: 8>\n<Base AGI: 3>\n<Base VIT: 5>\n<Class Stat Growth: INT +1.8, LUK +1.6>\n<Passive State: 258>",
     "params": [
       [
         0,
@@ -30232,7 +30232,7 @@
       }
     ],
     "name": "Archmage",
-    "note": "<Class Tier: 5>\n<Class Icon: 79>\n<Class Change From: 21>\n<Class Description>\nPenyihir agung yang telah menguasai cabang-cabang sihir tingkat tinggi dan memahami teori arcane yang jarang diketahui.\n</Class Description>\n<Class Ability: Archon Dual-Cast>\n<Class Ability Description>\nM.ATK +35%. Setiap melancarkan sihir offensive, memiliki 30% peluang untuk melancarkan mantra sihir tersebut sekali lagi secara instan tanpa konsumsi MP tambahan.\n</Class Ability Description>\n[PENDING TRAIT] Equip Weapon: Ultimate\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 2>\n<Base INT: 10>\n<Base DEX: 7>\n<Base LUK: 4>\n<Base AGI: 6>\n<Base VIT: 5>\n<Class Stat Growth: INT +2.0, DEX +1.4>",
+    "note": "<Class Tier: 5>\n<Class Icon: 79>\n<Class Change From: 21>\n<Class Description>\nPenyihir agung yang telah menguasai cabang-cabang sihir tingkat tinggi dan memahami teori arcane yang jarang diketahui.\n</Class Description>\n<Class Ability: Archon Dual-Cast>\n<Class Ability Description>\nM.ATK +35%. Setiap melancarkan sihir offensive, memiliki 30% peluang untuk melancarkan mantra sihir tersebut sekali lagi secara instan tanpa konsumsi MP tambahan.\n</Class Ability Description>\n[PENDING TRAIT] Equip Weapon: Ultimate\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 2>\n<Base INT: 10>\n<Base DEX: 7>\n<Base LUK: 4>\n<Base AGI: 6>\n<Base VIT: 5>\n<Class Stat Growth: INT +2.0, DEX +1.4>\n<Passive State: 259>",
     "params": [
       [
         0,
@@ -31145,7 +31145,7 @@
       }
     ],
     "name": "High Priest",
-    "note": "<Class Tier: 5>\n<Class Icon: 74>\n<Class Change From: 32>\n<Class Description>\nPemuka suci yang dihormati karena kedalaman iman, kekuatan mukjizat, dan pengaruhnya di kalangan umat.\n</Class Description>\n<Class Ability: Supreme Miracle>\n<Class Ability Description>\nSeluruh mantra pemulihan menyembuhkan 50% lebih besar dan memberi perisai suci sebesar 20% Max HP; memberikan kekebalan total terhadap seluruh status debuff.\n</Class Ability Description>\n[PENDING TRAIT] State Resist: All Bad States\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 6>\n<Base AGI: 3>\n<Base VIT: 10>\n<Class Stat Growth: VIT +2.0, INT +1.8>",
+    "note": "<Class Tier: 5>\n<Class Icon: 74>\n<Class Change From: 32>\n<Class Description>\nPemuka suci yang dihormati karena kedalaman iman, kekuatan mukjizat, dan pengaruhnya di kalangan umat.\n</Class Description>\n<Class Ability: Supreme Miracle>\n<Class Ability Description>\nSeluruh mantra pemulihan menyembuhkan 50% lebih besar dan memberi perisai suci sebesar 20% Max HP; memberikan kekebalan total terhadap seluruh status debuff.\n</Class Ability Description>\n[PENDING TRAIT] State Resist: All Bad States\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 2>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 6>\n<Base AGI: 3>\n<Base VIT: 10>\n<Class Stat Growth: VIT +2.0, INT +1.8>\n<Passive State: 260>",
     "params": [
       [
         0,
@@ -32078,7 +32078,7 @@
       }
     ],
     "name": "Warlock",
-    "note": "<Class Tier: 5>\n<Class Icon: 71>\n<Class Change From: 33>\n<Class Description>\nPenyihir yang memperoleh kekuatan melalui perjanjian dan sumber gaib yang menuntut harga lebih besar daripada sihir biasa.\n</Class Description>\n<Class Ability: Calamity Singularity>\n<Class Ability Description>\nSetiap efek status buruk (Debuff / Poison / Burn / Curse) pada lawan melipatgandakan seluruh damage sihir Warlock sebesar +10% per status (maksimal +50%).\n</Class Ability Description>\n[PENDING TRAIT] Attack State: Corruption 100%\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 2>\n<Base INT: 10>\n<Base DEX: 6>\n<Base LUK: 8>\n<Base AGI: 4>\n<Base VIT: 5>\n<Class Stat Growth: INT +2.0, LUK +1.6>",
+    "note": "<Class Tier: 5>\n<Class Icon: 71>\n<Class Change From: 33>\n<Class Description>\nPenyihir yang memperoleh kekuatan melalui perjanjian dan sumber gaib yang menuntut harga lebih besar daripada sihir biasa.\n</Class Description>\n<Class Ability: Calamity Singularity>\n<Class Ability Description>\nSetiap efek status buruk (Debuff / Poison / Burn / Curse) pada lawan melipatgandakan seluruh damage sihir Warlock sebesar +10% per status (maksimal +50%).\n</Class Ability Description>\n[PENDING TRAIT] Attack State: Corruption 100%\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 2>\n<Base INT: 10>\n<Base DEX: 6>\n<Base LUK: 8>\n<Base AGI: 4>\n<Base VIT: 5>\n<Class Stat Growth: INT +2.0, LUK +1.6>\n<Passive State: 261>",
     "params": [
       [
         0,
@@ -33006,7 +33006,7 @@
       }
     ],
     "name": "Shaman",
-    "note": "<Class Tier: 5>\n<Class Icon: 68>\n<Class Change From: 22>\n<Class Description>\nPenuntun roh yang berhubungan dengan leluhur, alam, dan makhluk gaib melalui ritual serta tradisi kuno.\n</Class Description>\n<Class Ability: Ancestral Dominion>\n<Class Ability Description>\nMemanggil roh leluhur primal yang memberikan regenerasi HP, MP, dan SP sebesar 5% setiap giliran kepada seluruh anggota tim dan kebal terhadap elemen api dan petir.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 4>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 7>\n<Base AGI: 3>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.8, VIT +1.6, LUK +1.4>",
+    "note": "<Class Tier: 5>\n<Class Icon: 68>\n<Class Change From: 22>\n<Class Description>\nPenuntun roh yang berhubungan dengan leluhur, alam, dan makhluk gaib melalui ritual serta tradisi kuno.\n</Class Description>\n<Class Ability: Ancestral Dominion>\n<Class Ability Description>\nMemanggil roh leluhur primal yang memberikan regenerasi HP, MP, dan SP sebesar 5% setiap giliran kepada seluruh anggota tim dan kebal terhadap elemen api dan petir.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 4>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 7>\n<Base AGI: 3>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.8, VIT +1.6, LUK +1.4>\n<Passive State: 262>",
     "params": [
       [
         0,
@@ -33934,7 +33934,7 @@
       }
     ],
     "name": "Dragon Aspect",
-    "note": "<Class Tier: 5>\n<Class Icon: 64>\n<Class Change From: 21>\n<Class Description>\nPengguna kekuatan drakonik yang membangkitkan sifat dan daya naga hingga batas antara manusia dan Nagarasven menjadi samar.\n</Class Description>\n<Class Ability: Primordial Dragon Awakening>\n<Class Ability Description>\nM.ATK +35% dan P.ATK +25%. Mengubah seluruh serangan menjadi berelemen Dragon Flame yang menembus 30% MDF dan mengabaikan resistensi elemen musuh.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 8>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 4>\n<Base AGI: 4>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.8, STR +1.6, VIT +1.6>",
+    "note": "<Class Tier: 5>\n<Class Icon: 64>\n<Class Change From: 21>\n<Class Description>\nPengguna kekuatan drakonik yang membangkitkan sifat dan daya naga hingga batas antara manusia dan Nagarasven menjadi samar.\n</Class Description>\n<Class Ability: Primordial Dragon Awakening>\n<Class Ability Description>\nM.ATK +35% dan P.ATK +25%. Mengubah seluruh serangan menjadi berelemen Dragon Flame yang menembus 30% MDF dan mengabaikan resistensi elemen musuh.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 8>\n<Base INT: 9>\n<Base DEX: 5>\n<Base LUK: 4>\n<Base AGI: 4>\n<Base VIT: 8>\n<Class Stat Growth: INT +1.8, STR +1.6, VIT +1.6>\n<Passive State: 263>",
     "params": [
       [
         0,
@@ -34827,7 +34827,7 @@
       }
     ],
     "name": "Scout",
-    "note": "<Class Tier: 1>\n<Class Icon: 102>\n<Class Description>\nPenjelajah cekatan yang mengandalkan pengamatan, gerak cepat, dan kemampuan membaca medan untuk menghindari bahaya.\n</Class Description>\n<Class Ability: Swift Ambush>\n<Class Ability Description>\nMeningkatkan EVA +5% dan HIT +5%. Karakter selalu mendapatkan prioritas giliran bertindak paling awal pada giliran pertama pertempuran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 10>\n<Base STR: 2>\n<Base INT: 1>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 4>\n<Base VIT: 2>\n<Class Stat Growth: DEX +0.8, AGI +0.8>",
+    "note": "<Class Tier: 1>\n<Class Icon: 102>\n<Class Description>\nPenjelajah cekatan yang mengandalkan pengamatan, gerak cepat, dan kemampuan membaca medan untuk menghindari bahaya.\n</Class Description>\n<Class Ability: Swift Ambush>\n<Class Ability Description>\nMeningkatkan EVA +5% dan HIT +5%. Karakter selalu mendapatkan prioritas giliran bertindak paling awal pada giliran pertama pertempuran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 10>\n<Base STR: 2>\n<Base INT: 1>\n<Base DEX: 4>\n<Base LUK: 2>\n<Base AGI: 4>\n<Base VIT: 2>\n<Class Stat Growth: DEX +0.8, AGI +0.8>\n<Passive State: 264>",
     "params": [
       [
         0,
@@ -35720,7 +35720,7 @@
       }
     ],
     "name": "Archer",
-    "note": "<Class Tier: 2>\n<Class Icon: 102>\n<Class Change From: 39>\n<Class Description>\nPemanah terlatih yang mengandalkan ketenangan, ketepatan, dan jarak untuk menjatuhkan musuh sebelum mereka mendekat.\n</Class Description>\n<Class Ability: Eagle Eye>\n<Class Ability Description>\nMeningkatkan HIT +10% (serangan fisik tidak dapat meleset pada musuh terbang). Serangan dari Baris Belakang mendapatkan bonus +15% Critical Damage (CDMG).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 2>\n<Base INT: 1>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 4>\n<Base VIT: 2>\n<Class Stat Growth: DEX +1.2, AGI +0.8>",
+    "note": "<Class Tier: 2>\n<Class Icon: 102>\n<Class Change From: 39>\n<Class Description>\nPemanah terlatih yang mengandalkan ketenangan, ketepatan, dan jarak untuk menjatuhkan musuh sebelum mereka mendekat.\n</Class Description>\n<Class Ability: Eagle Eye>\n<Class Ability Description>\nMeningkatkan HIT +10% (serangan fisik tidak dapat meleset pada musuh terbang). Serangan dari Baris Belakang mendapatkan bonus +15% Critical Damage (CDMG).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 2>\n<Base INT: 1>\n<Base DEX: 6>\n<Base LUK: 3>\n<Base AGI: 4>\n<Base VIT: 2>\n<Class Stat Growth: DEX +1.2, AGI +0.8>\n<Passive State: 265>",
     "params": [
       [
         0,
@@ -36613,7 +36613,7 @@
       }
     ],
     "name": "Thief",
-    "note": "<Class Tier: 2>\n<Class Icon: 97>\n<Class Change From: 39>\n<Class Description>\nPetualang licin yang hidup dari kelincahan, tipu daya, dan kemampuan mengambil kesempatan saat orang lain lengah.\n</Class Description>\n<Class Ability: Shadow Celerity>\n<Class Ability Description>\nMeningkatkan peluang serangan kritis (CRI +8%). Serangan kritikal memiliki 15% peluang mencuri item atau uang otomatis dan menambah +10 SP.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 2>\n<Base INT: 1>\n<Base DEX: 4>\n<Base LUK: 4>\n<Base AGI: 6>\n<Base VIT: 1>\n<Class Stat Growth: AGI +1.2, DEX +0.8, LUK +0.8>",
+    "note": "<Class Tier: 2>\n<Class Icon: 97>\n<Class Change From: 39>\n<Class Description>\nPetualang licin yang hidup dari kelincahan, tipu daya, dan kemampuan mengambil kesempatan saat orang lain lengah.\n</Class Description>\n<Class Ability: Shadow Celerity>\n<Class Ability Description>\nMeningkatkan peluang serangan kritis (CRI +8%). Serangan kritikal memiliki 15% peluang mencuri item atau uang otomatis dan menambah +10 SP.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 30>\n<Base STR: 2>\n<Base INT: 1>\n<Base DEX: 4>\n<Base LUK: 4>\n<Base AGI: 6>\n<Base VIT: 1>\n<Class Stat Growth: AGI +1.2, DEX +0.8, LUK +0.8>\n<Passive State: 266>",
     "params": [
       [
         0,
@@ -37516,7 +37516,7 @@
       }
     ],
     "name": "Ranger",
-    "note": "<Class Tier: 3>\n<Class Icon: 102>\n<Class Change From: 40>\n<Class Description>\nPengelana alam liar yang memahami jejak, medan, cuaca, dan kebiasaan makhluk yang menghuni Nusvanir.\n</Class Description>\n<Class Ability: Predator Instinct>\n<Class Ability Description>\nAkurasi HIT +15% dan CDMG +20%. Memberikan bonus +25% damage terhadap musuh bertipe Beast/Monster atau musuh yang terkena status Slow/Bleed.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 3>\n<Base INT: 1>\n<Base DEX: 8>\n<Base LUK: 3>\n<Base AGI: 6>\n<Base VIT: 4>\n<Class Stat Growth: DEX +1.6, AGI +1.2>",
+    "note": "<Class Tier: 3>\n<Class Icon: 102>\n<Class Change From: 40>\n<Class Description>\nPengelana alam liar yang memahami jejak, medan, cuaca, dan kebiasaan makhluk yang menghuni Nusvanir.\n</Class Description>\n<Class Ability: Predator Instinct>\n<Class Ability Description>\nAkurasi HIT +15% dan CDMG +20%. Memberikan bonus +25% damage terhadap musuh bertipe Beast/Monster atau musuh yang terkena status Slow/Bleed.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 3>\n<Base INT: 1>\n<Base DEX: 8>\n<Base LUK: 3>\n<Base AGI: 6>\n<Base VIT: 4>\n<Class Stat Growth: DEX +1.6, AGI +1.2>\n<Passive State: 267>",
     "params": [
       [
         0,
@@ -38414,7 +38414,7 @@
       }
     ],
     "name": "Rogue",
-    "note": "<Class Tier: 3>\n<Class Icon: 97>\n<Class Change From: 41>\n<Class Description>\nPetualang oportunis yang mengandalkan kelicikan, kecepatan, dan serangan tepat untuk memenangkan pertarungan dengan caranya sendiri.\n</Class Description>\n<Class Ability: Lethal Ambush>\n<Class Ability Description>\nPeluang Kritis (CRI +12%) dan Evasion (EVA +10%). Serangan terhadap musuh yang belum sempat bertindak di ronde tersebut menghasilkan 100% Kritis Mutlak.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 3>\n<Base INT: 1>\n<Base DEX: 6>\n<Base LUK: 5>\n<Base AGI: 8>\n<Base VIT: 2>\n<Class Stat Growth: AGI +1.6, DEX +1.2, LUK +1.0>",
+    "note": "<Class Tier: 3>\n<Class Icon: 97>\n<Class Change From: 41>\n<Class Description>\nPetualang oportunis yang mengandalkan kelicikan, kecepatan, dan serangan tepat untuk memenangkan pertarungan dengan caranya sendiri.\n</Class Description>\n<Class Ability: Lethal Ambush>\n<Class Ability Description>\nPeluang Kritis (CRI +12%) dan Evasion (EVA +10%). Serangan terhadap musuh yang belum sempat bertindak di ronde tersebut menghasilkan 100% Kritis Mutlak.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 40>\n<Base STR: 3>\n<Base INT: 1>\n<Base DEX: 6>\n<Base LUK: 5>\n<Base AGI: 8>\n<Base VIT: 2>\n<Class Stat Growth: AGI +1.6, DEX +1.2, LUK +1.0>\n<Passive State: 268>",
     "params": [
       [
         0,
@@ -39322,7 +39322,7 @@
       }
     ],
     "name": "Sniper",
-    "note": "<Class Tier: 4>\n<Class Icon: 102>\n<Class Change From: 42>\n<Class Description>\nPenembak ahli yang sabar menunggu satu kesempatan sempurna sebelum melepaskan tembakan yang menentukan.\n</Class Description>\n<Class Ability: Deadly Piercing>\n<Class Ability Description>\nJarak serang tak terbatas, HIT +25%, dan mengabaikan 30% DEF. Serangan dari Baris Belakang pada target ber-HP di atas 80% menghasilkan bonus +40% CDMG.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 4>\n<Base INT: 2>\n<Base DEX: 9>\n<Base LUK: 6>\n<Base AGI: 7>\n<Base VIT: 4>\n<Class Stat Growth: DEX +1.8, AGI +1.4, LUK +1.2>",
+    "note": "<Class Tier: 4>\n<Class Icon: 102>\n<Class Change From: 42>\n<Class Description>\nPenembak ahli yang sabar menunggu satu kesempatan sempurna sebelum melepaskan tembakan yang menentukan.\n</Class Description>\n<Class Ability: Deadly Piercing>\n<Class Ability Description>\nJarak serang tak terbatas, HIT +25%, dan mengabaikan 30% DEF. Serangan dari Baris Belakang pada target ber-HP di atas 80% menghasilkan bonus +40% CDMG.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 4>\n<Base INT: 2>\n<Base DEX: 9>\n<Base LUK: 6>\n<Base AGI: 7>\n<Base VIT: 4>\n<Class Stat Growth: DEX +1.8, AGI +1.4, LUK +1.2>\n<Passive State: 269>",
     "params": [
       [
         0,
@@ -40230,7 +40230,7 @@
       }
     ],
     "name": "Assassin",
-    "note": "<Class Tier: 4>\n<Class Icon: 97>\n<Class Change From: 43>\n<Class Description>\nPembunuh terlatih yang menjadikan kesunyian, ketepatan, dan kejutan sebagai bagian utama dari setiap tugasnya.\n</Class Description>\n<Class Ability: Viper Assassination>\n<Class Ability Description>\nCRI +20% dan CDMG +30%. Serangan dari bayangan memiliki peluang 10% mengeksekusi musuh non-boss secara instan jika HP mereka di bawah 30%.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 4>\n<Base INT: 2>\n<Base DEX: 8>\n<Base LUK: 6>\n<Base AGI: 9>\n<Base VIT: 3>\n<Class Stat Growth: AGI +1.8, DEX +1.6, LUK +1.2>",
+    "note": "<Class Tier: 4>\n<Class Icon: 97>\n<Class Change From: 43>\n<Class Description>\nPembunuh terlatih yang menjadikan kesunyian, ketepatan, dan kejutan sebagai bagian utama dari setiap tugasnya.\n</Class Description>\n<Class Ability: Viper Assassination>\n<Class Ability Description>\nCRI +20% dan CDMG +30%. Serangan dari bayangan memiliki peluang 10% mengeksekusi musuh non-boss secara instan jika HP mereka di bawah 30%.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 50>\n<Base STR: 4>\n<Base INT: 2>\n<Base DEX: 8>\n<Base LUK: 6>\n<Base AGI: 9>\n<Base VIT: 3>\n<Class Stat Growth: AGI +1.8, DEX +1.6, LUK +1.2>\n<Passive State: 270>",
     "params": [
       [
         0,
@@ -41143,7 +41143,7 @@
       }
     ],
     "name": "Beastmaster",
-    "note": "<Class Tier: 5>\n<Class Icon: 110>\n<Class Change From: 42>\n<Class Description>\nPenjinak makhluk yang membangun ikatan dengan binatang liar dan menjadikan kepercayaan sebagai kekuatan dalam pertempuran.\n</Class Description>\n<Class Ability: Behemoth Packbond>\n<Class Ability Description>\nMeningkatkan seluruh parameter sekutu dan hewan panggilan sebesar +25%. Setiap serangan kawan memicu serangan susulan instan dari Beastmaster.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 7>\n<Base INT: 3>\n<Base DEX: 9>\n<Base LUK: 5>\n<Base AGI: 6>\n<Base VIT: 9>\n<Class Stat Growth: DEX +1.8, VIT +1.8, STR +1.4>",
+    "note": "<Class Tier: 5>\n<Class Icon: 110>\n<Class Change From: 42>\n<Class Description>\nPenjinak makhluk yang membangun ikatan dengan binatang liar dan menjadikan kepercayaan sebagai kekuatan dalam pertempuran.\n</Class Description>\n<Class Ability: Behemoth Packbond>\n<Class Ability Description>\nMeningkatkan seluruh parameter sekutu dan hewan panggilan sebesar +25%. Setiap serangan kawan memicu serangan susulan instan dari Beastmaster.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 7>\n<Base INT: 3>\n<Base DEX: 9>\n<Base LUK: 5>\n<Base AGI: 6>\n<Base VIT: 9>\n<Class Stat Growth: DEX +1.8, VIT +1.8, STR +1.4>\n<Passive State: 271>",
     "params": [
       [
         0,
@@ -42071,7 +42071,7 @@
       }
     ],
     "name": "Shadow Walker",
-    "note": "<Class Tier: 5>\n<Class Icon: 97>\n<Class Change From: 45>\n<Class Description>\nPengelana bayangan yang menguasai gerak senyap, penyamaran, dan cara bergerak tanpa meninggalkan jejak.\n</Class Description>\n<Class Ability: Eclipse Phantom>\n<Class Ability Description>\nEVA +25% dan CRI +25%. Karakter selalu bergerak dalam mode bayangan; serangan tidak dapat ditangkis atau dihindari oleh musuh (100% Unavoidable).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 5>\n<Base INT: 2>\n<Base DEX: 8>\n<Base LUK: 7>\n<Base AGI: 10>\n<Base VIT: 4>\n<Class Stat Growth: AGI +2.0, DEX +1.6, LUK +1.4>",
+    "note": "<Class Tier: 5>\n<Class Icon: 97>\n<Class Change From: 45>\n<Class Description>\nPengelana bayangan yang menguasai gerak senyap, penyamaran, dan cara bergerak tanpa meninggalkan jejak.\n</Class Description>\n<Class Ability: Eclipse Phantom>\n<Class Ability Description>\nEVA +25% dan CRI +25%. Karakter selalu bergerak dalam mode bayangan; serangan tidak dapat ditangkis atau dihindari oleh musuh (100% Unavoidable).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 5>\n<Base INT: 2>\n<Base DEX: 8>\n<Base LUK: 7>\n<Base AGI: 10>\n<Base VIT: 4>\n<Class Stat Growth: AGI +2.0, DEX +1.6, LUK +1.4>\n<Passive State: 272>",
     "params": [
       [
         0,
@@ -42989,7 +42989,7 @@
       }
     ],
     "name": "Windrunner",
-    "note": "<Class Tier: 5>\n<Class Icon: 102>\n<Class Change From: 44>\n<Class Description>\nPemanah lincah yang memanfaatkan kecepatan, medan terbuka, dan hembusan angin untuk selalu selangkah di depan lawan.\n</Class Description>\n<Class Ability: Sonic Tempest>\n<Class Ability Description>\nAction Speed +50% dan selalu bertindak pertama di tiap giliran. Setiap langkah gerakan meningkatkan akurasi dan menambah serangan ganda pada target musuh.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 5>\n<Base INT: 2>\n<Base DEX: 10>\n<Base LUK: 6>\n<Base AGI: 9>\n<Base VIT: 4>\n<Class Stat Growth: DEX +2.0, AGI +1.8>",
+    "note": "<Class Tier: 5>\n<Class Icon: 102>\n<Class Change From: 44>\n<Class Description>\nPemanah lincah yang memanfaatkan kecepatan, medan terbuka, dan hembusan angin untuk selalu selangkah di depan lawan.\n</Class Description>\n<Class Ability: Sonic Tempest>\n<Class Ability Description>\nAction Speed +50% dan selalu bertindak pertama di tiap giliran. Setiap langkah gerakan meningkatkan akurasi dan menambah serangan ganda pada target musuh.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 60>\n<Base STR: 5>\n<Base INT: 2>\n<Base DEX: 10>\n<Base LUK: 6>\n<Base AGI: 9>\n<Base VIT: 4>\n<Class Stat Growth: DEX +2.0, AGI +1.8>\n<Passive State: 273>",
     "params": [
       [
         0,
@@ -43942,7 +43942,7 @@
       }
     ],
     "name": "Chronomancer",
-    "note": "<Class Tier: 6>\n<Class Icon: 144>\n<Class Change From: 34>\n<Class Description>\nPenyihir langka yang mempelajari aliran waktu dan berani mengutak-atik urutan peristiwa yang seharusnya tidak disentuh.\n</Class Description>\n<Class Ability: Temporal Overwrite>\n<Class Ability Description>\nMemiliki 15% peluang membatalkan giliran musuh secara instan. Saat menerima serangan mematikan, waktu berputar balik: HP dan MP kembali ke giliran sebelumnya (1x per battle).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 70>\n<Base STR: 3>\n<Base INT: 10>\n<Base DEX: 8>\n<Base LUK: 5>\n<Base AGI: 10>\n<Base VIT: 6>\n<Class Stat Growth: INT +2.0, AGI +2.0, DEX +1.6>",
+    "note": "<Class Tier: 6>\n<Class Icon: 144>\n<Class Change From: 34>\n<Class Description>\nPenyihir langka yang mempelajari aliran waktu dan berani mengutak-atik urutan peristiwa yang seharusnya tidak disentuh.\n</Class Description>\n<Class Ability: Temporal Overwrite>\n<Class Ability Description>\nMemiliki 15% peluang membatalkan giliran musuh secara instan. Saat menerima serangan mematikan, waktu berputar balik: HP dan MP kembali ke giliran sebelumnya (1x per battle).\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 70>\n<Base STR: 3>\n<Base INT: 10>\n<Base DEX: 8>\n<Base LUK: 5>\n<Base AGI: 10>\n<Base VIT: 6>\n<Class Stat Growth: INT +2.0, AGI +2.0, DEX +1.6>\n<Passive State: 274>",
     "params": [
       [
         0,
@@ -44905,7 +44905,7 @@
       }
     ],
     "name": "Void Incarnate",
-    "note": "<Class Tier: 6>\n<Class Icon: 80>\n<Class Change From: 36>\n<Class Description>\nSosok yang telah menyatu dengan kekuatan Void, menjadi keberadaan asing yang sulit lagi disebut sepenuhnya fana.\n</Class Description>\n<Class Ability: Entropy Collapse>\n<Class Ability Description>\nSeluruh serangan mengabaikan 100% DEF & MDF lawan secara mutlak. Serangan menghanguskan 5% Max MP & SP musuh secara permanen pada setiap giliran pertempuran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 70>\n<Base STR: 4>\n<Base INT: 10>\n<Base DEX: 7>\n<Base LUK: 10>\n<Base AGI: 5>\n<Base VIT: 8>\n<Class Stat Growth: INT +2.0, LUK +2.0, VIT +1.6>",
+    "note": "<Class Tier: 6>\n<Class Icon: 80>\n<Class Change From: 36>\n<Class Description>\nSosok yang telah menyatu dengan kekuatan Void, menjadi keberadaan asing yang sulit lagi disebut sepenuhnya fana.\n</Class Description>\n<Class Ability: Entropy Collapse>\n<Class Ability Description>\nSeluruh serangan mengabaikan 100% DEF & MDF lawan secara mutlak. Serangan menghanguskan 5% Max MP & SP musuh secara permanen pada setiap giliran pertempuran.\n</Class Ability Description>\n<Equip Slot: 1, 2, 3, 4, 5, 6, 6, 7>\n<Class Max Level: 70>\n<Base STR: 4>\n<Base INT: 10>\n<Base DEX: 7>\n<Base LUK: 10>\n<Base AGI: 5>\n<Base VIT: 8>\n<Class Stat Growth: INT +2.0, LUK +2.0, VIT +1.6>\n<Passive State: 275>",
     "params": [
       [
         0,

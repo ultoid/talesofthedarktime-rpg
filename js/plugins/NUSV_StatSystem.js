@@ -434,6 +434,12 @@ NUSV.StatSystem = NUSV.StatSystem || {};
                 flatBonus += parseMetaBonus(equips[i].meta, 'Max SP');
             }
         }
+        var states = this.states ? this.states() : [];
+        for (var j = 0; j < states.length; j++) {
+            if (states[j] && states[j].meta) {
+                flatBonus += parseMetaBonus(states[j].meta, 'Max SP');
+            }
+        }
         var baseSp = BASE_SP_VALUE + (this.vit * 5) + (this.str * 2);
         return Math.max(10, Math.round(baseSp + flatBonus));
     };
@@ -525,19 +531,29 @@ NUSV.StatSystem = NUSV.StatSystem || {};
     };
 
     Game_Actor.prototype.criticalMultiplier = function() {
-        var equipBonus = 0;
+        var bonus = 0;
         var equips = this.equips ? this.equips() : [];
         for (var i = 0; i < equips.length; i++) {
             if (equips[i] && equips[i].meta) {
                 var cMeta = equips[i].meta['Critical Damage'];
                 if (cMeta) {
                     var strVal = String(cMeta).replace('%', '').trim();
-                    equipBonus += (Number(strVal) || 0) * 0.01;
+                    bonus += (Number(strVal) || 0) * 0.01;
+                }
+            }
+        }
+        var states = this.states ? this.states() : [];
+        for (var j = 0; j < states.length; j++) {
+            if (states[j] && states[j].meta) {
+                var csMeta = states[j].meta['Critical Damage'];
+                if (csMeta) {
+                    var sVal = String(csMeta).replace('%', '').trim();
+                    bonus += (Number(sVal) || 0) * 0.01;
                 }
             }
         }
         var statBonus = (this.str * 0.003) + (this.dex * 0.002);
-        return BASE_CRIT_DMG + statBonus + equipBonus;
+        return BASE_CRIT_DMG + statBonus + bonus;
     };
 
     // -------------------------------------------------------------------------

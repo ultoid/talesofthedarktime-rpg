@@ -498,51 +498,53 @@ function renderSidebar() {
             renderEditor();
         };
 
-        let extraTag = '';
+        let mainBadge = '';
+        let subBadges = [];
+
         if (State.currentTab === 'classes') {
             const t = getTagVal(item.note, 'Class Tier', '1');
             const ab = getTagVal(item.note, 'Class Ability', '');
-            extraTag = `<span class="list-badge">T${t}</span>${ab ? `<span class="list-badge" style="color:#fbbf24; border-color:rgba(245,158,11,0.3); font-size:0.65rem;" title="Class Ability: ${escapeHtml(ab)}">✨</span>` : ''}`;
+            mainBadge = `<span class="list-badge">T${t}</span>`;
+            if (ab) {
+                subBadges.push(`<span class="list-badge" style="color:#fbbf24; border-color:rgba(245,158,11,0.3); font-size:0.65rem;" title="Class Ability: ${escapeHtml(ab)}">✨ ${escapeHtml(ab)}</span>`);
+            }
         } else if (State.currentTab === 'weapons') {
             const wtypes = (State.system && State.system.weaponTypes) ? State.system.weaponTypes : [];
             const wtName = wtypes[item.wtypeId] || '';
-            if (wtName) extraTag = `<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3);">${escapeHtml(wtName)}</span>`;
+            if (wtName) subBadges.push(`<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3);">${escapeHtml(wtName)}</span>`);
         } else if (State.currentTab === 'armors') {
             const slotNames = { 2: 'Shield', 3: 'Helm', 4: 'Armor', 5: 'Boots', 6: 'Accessory', 7: 'Relic' };
             const sName = slotNames[item.etypeId] || '';
-            if (sName) extraTag = `<span class="list-badge" style="color:#94a3b8; border-color:rgba(148,163,184,0.3);">${escapeHtml(sName)}</span>`;
+            if (sName) subBadges.push(`<span class="list-badge" style="color:#94a3b8; border-color:rgba(148,163,184,0.3);">${escapeHtml(sName)}</span>`);
         } else if (State.currentTab === 'skills') {
             const tier = getSkillTier(item);
             const classIds = getSkillClassIds(item.id);
             const tmClasses = getSkillTmCompatibleClasses(item);
             const isExclusive = isSkillExclusive(item);
 
-            let badges = [];
             if (tier > 0) {
-                badges.push(`<span class="list-badge" style="color:#f59e0b; border-color:rgba(245,158,11,0.3); font-weight:700;">T${tier}</span>`);
+                mainBadge = `<span class="list-badge" style="color:#f59e0b; border-color:rgba(245,158,11,0.3); font-weight:700;">T${tier}</span>`;
             }
             if (classIds.length > 0) {
                 const clsName = State.classes[classIds[0]]?.name || `Cls #${classIds[0]}`;
-                badges.push(`<span class="list-badge" style="color:#a78bfa; border-color:rgba(167,139,250,0.3);">${escapeHtml(clsName)}</span>`);
+                subBadges.push(`<span class="list-badge" style="color:#a78bfa; border-color:rgba(167,139,250,0.3);">${escapeHtml(clsName)}</span>`);
             }
             if (isExclusive) {
-                badges.push(`<span class="list-badge" style="color:#ef4444; border-color:rgba(239,68,68,0.3); font-weight:700;">★ Ult</span>`);
+                subBadges.push(`<span class="list-badge" style="color:#ef4444; border-color:rgba(239,68,68,0.3); font-weight:700;">★ Ult</span>`);
             } else if (tmClasses.length > 0) {
-                badges.push(`<span class="list-badge" style="color:#10b981; border-color:rgba(16,185,129,0.3);" title="Kompatibel TM: ${escapeHtml(tmClasses.join(', '))}">+${tmClasses.length} TM</span>`);
+                subBadges.push(`<span class="list-badge" style="color:#10b981; border-color:rgba(16,185,129,0.3);" title="Kompatibel TM: ${escapeHtml(tmClasses.join(', '))}">+${tmClasses.length} TM</span>`);
             }
-
-            extraTag = badges.join(' ');
         } else if (State.currentTab === 'items') {
             const cat = getItemCategory(item);
-            if (cat) extraTag = `<span class="list-badge" style="color:#fbbf24; border-color:rgba(251,191,36,0.3);">${escapeHtml(cat)}</span>`;
+            if (cat) subBadges.push(`<span class="list-badge" style="color:#fbbf24; border-color:rgba(251,191,36,0.3);">${escapeHtml(cat)}</span>`);
         } else if (State.currentTab === 'states') {
             const cat = getStateCategory(item);
             if (cat === 'Passive') {
-                extraTag = `<span class="list-badge" style="color:#c084fc; border-color:rgba(192,132,252,0.3);">Passive</span>`;
+                subBadges.push(`<span class="list-badge" style="color:#c084fc; border-color:rgba(192,132,252,0.3);">Passive</span>`);
             } else if (cat === 'Status Effect') {
-                extraTag = `<span class="list-badge" style="color:#f87171; border-color:rgba(248,113,113,0.3);">Status Effect</span>`;
+                subBadges.push(`<span class="list-badge" style="color:#f87171; border-color:rgba(248,113,113,0.3);">Status Effect</span>`);
             } else if (cat === 'Skill Effect') {
-                extraTag = `<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3);">Skill Effect</span>`;
+                subBadges.push(`<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3);">Skill Effect</span>`);
             }
         } else if (State.currentTab === 'races') {
             const grp = item.group || '';
@@ -553,13 +555,18 @@ function renderSidebar() {
                 'Drahkthar': '#a855f7'
             };
             const col = grpColors[grp] || '#94a3b8';
-            extraTag = `<span class="list-badge" style="color:${col}; border-color:${col}40;">${escapeHtml(grp)}</span>`;
+            subBadges.push(`<span class="list-badge" style="color:${col}; border-color:${col}40;">${escapeHtml(grp)}</span>`);
         }
 
+        const subRowHtml = subBadges.length > 0 ? `<div class="list-sub-row">${subBadges.join('')}</div>` : '';
+
         div.innerHTML = `
-            <span class="list-id">#${item.id}</span>
-            <span class="list-name">${escapeHtml(item.name || '(Empty)')}</span>
-            ${extraTag}
+            <div class="list-main-row">
+                <span class="list-id">#${item.id}</span>
+                <span class="list-name" title="${escapeHtml(item.name || '')}">${escapeHtml(item.name || '(Empty)')}</span>
+                ${mainBadge}
+            </div>
+            ${subRowHtml}
         `;
         listEl.appendChild(div);
     });

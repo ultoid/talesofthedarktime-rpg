@@ -3223,11 +3223,11 @@ HTML_CONTENT = r'''<!DOCTYPE html>
                                 <div style="font-size:1.1rem; font-weight:700; color:#60a5fa;">${skill.mpCost || 0}</div>
                             </div>
                             <div class="stat-card-input" style="padding:6px 8px; border-left:2px solid #eab308;">
-                                <div style="font-size:0.7rem; color:var(--text-muted);">TP Cost</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);">SP Cost</div>
                                 <div style="font-size:1.1rem; font-weight:700; color:#eab308;">${skill.tpCost || 0}</div>
                             </div>
                             <div class="stat-card-input" style="padding:6px 8px; border-left:2px solid #f87171;">
-                                <div style="font-size:0.7rem; color:var(--text-muted);">TP Gain</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);">SP Gain</div>
                                 <div style="font-size:1.1rem; font-weight:700; color:#f87171;">+${skill.tpGain || 0}</div>
                             </div>
                         </div>
@@ -4105,7 +4105,7 @@ HTML_CONTENT = r'''<!DOCTYPE html>
                                         <input type="number" min="0" class="form-control" value="${skill.mpCost || 0}" onchange="skill.mpCost=parseInt(this.value,10); setUnsaved(true);">
                                     </div>
                                     <div class="form-group">
-                                        <label title="Jumlah Stamina Points (SP) atau TP yang dibutuhkan untuk menggunakan skill">SP / TP Cost</label>
+                                        <label title="Jumlah Stamina Points (SP) atau TP yang dibutuhkan untuk menggunakan skill">SP Cost (Stamina)</label>
                                         <input type="number" min="0" class="form-control" value="${skill.tpCost || 0}" onchange="skill.tpCost=parseInt(this.value,10); setUnsaved(true);">
                                     </div>
                                 </div>

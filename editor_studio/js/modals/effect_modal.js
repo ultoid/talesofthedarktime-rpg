@@ -98,7 +98,7 @@ function onEffectCodeChange() {
     } else if (def.isTpGain) {
         html += `
             <div class="form-group">
-                <label>Jumlah TP yang Didapat (Poin)</label>
+                <label>Jumlah SP (Stamina Points) yang Didapat</label>
                 <input type="number" min="0" max="100" id="effVal1" class="form-control" value="${eff.value1 || 10}">
             </div>
         `;

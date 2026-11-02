@@ -185,7 +185,7 @@
 
         /* Left Sidebar (Item List) */
         .sidebar {
-            width: 290px;
+            width: 330px;
             background: var(--sidebar-bg);
             border-right: 1px solid var(--border-color);
             display: flex;
@@ -248,15 +248,15 @@
         }
 
         .list-item {
-            padding: 8px 10px;
+            padding: 7px 10px;
             border-radius: 6px;
             cursor: pointer;
             display: flex;
-            align-items: center;
-            gap: 8px;
+            flex-direction: column;
+            gap: 4px;
             transition: background 0.15s ease;
             font-size: 0.85rem;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
         .list-item:hover {
@@ -266,14 +266,25 @@
         .list-item.active {
             background: var(--card-bg);
             border-left: 3px solid var(--accent);
+        }
+
+        .list-item.active .list-name {
             font-weight: 600;
+            color: #ffffff;
+        }
+
+        .list-main-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
         }
 
         .list-id {
             color: var(--text-muted);
             font-size: 0.75rem;
             font-family: monospace;
-            width: 32px;
+            width: 34px;
             flex-shrink: 0;
         }
 
@@ -282,15 +293,27 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             flex: 1;
+            min-width: 0;
+            font-weight: 500;
+        }
+
+        .list-sub-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding-left: 42px;
+            flex-wrap: wrap;
         }
 
         .list-badge {
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             padding: 1px 6px;
             border-radius: 4px;
             background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             color: var(--text-muted);
             flex-shrink: 0;
+            line-height: 1.3;
         }
 
         /* Workspace Content (Middle Column: Form Edit) */

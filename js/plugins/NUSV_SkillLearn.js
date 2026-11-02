@@ -426,16 +426,28 @@ NUSV.SkillLearn = NUSV.SkillLearn || {};
             return s.trim().toLowerCase();
         });
 
+        var isClassAllowed = function(cName) {
+            if (!cName) return false;
+            var low = cName.toLowerCase();
+            var short = low.replace(/^elementalist\s*-\s*/i, '');
+            if (allowedList.indexOf(low) !== -1 || allowedList.indexOf(short) !== -1 || allowedList.indexOf('all') !== -1) {
+                return true;
+            }
+            for (var i = 0; i < allowedList.length; i++) {
+                if (allowedList[i].replace(/^elementalist\s*-\s*/i, '') === short) return true;
+            }
+            return false;
+        };
+
         // 1. Check current active class
         var curClass = $dataClasses[this._classId];
-        var curClassName = curClass ? curClass.name.toLowerCase() : '';
-        if (allowedList.indexOf(curClassName) !== -1) return true;
+        if (curClass && isClassAllowed(curClass.name)) return true;
 
         // 2. Check any unlocked/mastered classes (NUSV_ClassChange integration)
         var unlocked = this.nusvUnlockedClasses ? this.nusvUnlockedClasses() : {};
         for (var cid in unlocked) {
             if (unlocked[cid] && $dataClasses[cid]) {
-                if (allowedList.indexOf($dataClasses[cid].name.toLowerCase()) !== -1) {
+                if (isClassAllowed($dataClasses[cid].name)) {
                     return true;
                 }
             }

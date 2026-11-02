@@ -376,7 +376,7 @@ function formatEffect(eff) {
     if (!def.name && !def.cat) return `Effect #${eff.code} (Data: ${eff.dataId}, V1: ${eff.value1}, V2: ${eff.value2})`;
     if (def.isHpRecover) return `Pulihkan HP: <strong style="color:#22c55e;">${Math.round(eff.value1 * 100)}%</strong> + <strong style="color:#22c55e;">${eff.value2} Poin</strong>`;
     if (def.isMpRecover) return `Pulihkan MP: <strong style="color:#38bdf8;">${Math.round(eff.value1 * 100)}%</strong> + <strong style="color:#38bdf8;">${eff.value2} Poin</strong>`;
-    if (def.isTpGain) return `Tambahkan TP/SP: <strong style="color:#eab308;">${eff.value1} Poin</strong>`;
+    if (def.isTpGain) return `Tambahkan SP (Stamina): <strong style="color:#eab308;">${eff.value1} Poin</strong>`;
     if (eff.code === 21) {
         const s = State.states[eff.dataId];
         return `Beri Status: <strong>#${eff.dataId} ${s ? escapeHtml(s.name) : 'State'}</strong> (${Math.round(eff.value1 * 100)}% Peluang)`;
@@ -561,6 +561,7 @@ function renderIconInline(iconIndex, size = 24) {
 function getClassCompatibleScrollItems(className) {
     if (!className || !State.items) return [];
     const target = className.trim().toLowerCase();
+    const shortTarget = target.replace(/^elementalist\s*-\s*/i, '');
     const list = [];
     const seenSkillIds = new Set();
     
@@ -569,7 +570,11 @@ function getClassCompatibleScrollItems(className) {
         const m = it.note.match(/<(?:Scroll|TM) Compatible:\s*([^>]+)>/i);
         if (!m) continue;
         const classes = m[1].split(',').map(s => s.trim().toLowerCase());
-        if (classes.includes(target)) {
+        const isCompat = classes.includes(target) || 
+                         classes.includes(shortTarget) || 
+                         classes.some(c => c.replace(/^elementalist\s*-\s*/i, '') === shortTarget) ||
+                         classes.includes('all');
+        if (isCompat) {
             const eff = (it.effects || []).find(e => e.code === 43);
             const skillId = eff ? eff.dataId : 0;
             if (skillId && !seenSkillIds.has(skillId)) {

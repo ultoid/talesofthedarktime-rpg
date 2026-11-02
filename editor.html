@@ -193,7 +193,7 @@
 
         /* Left Sidebar (Item List) */
         .sidebar {
-            width: 290px;
+            width: 330px;
             background: var(--sidebar-bg);
             border-right: 1px solid var(--border-color);
             display: flex;
@@ -256,15 +256,15 @@
         }
 
         .list-item {
-            padding: 8px 10px;
+            padding: 7px 10px;
             border-radius: 6px;
             cursor: pointer;
             display: flex;
-            align-items: center;
-            gap: 8px;
+            flex-direction: column;
+            gap: 4px;
             transition: background 0.15s ease;
             font-size: 0.85rem;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
         .list-item:hover {
@@ -274,14 +274,25 @@
         .list-item.active {
             background: var(--card-bg);
             border-left: 3px solid var(--accent);
+        }
+
+        .list-item.active .list-name {
             font-weight: 600;
+            color: #ffffff;
+        }
+
+        .list-main-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
         }
 
         .list-id {
             color: var(--text-muted);
             font-size: 0.75rem;
             font-family: monospace;
-            width: 32px;
+            width: 34px;
             flex-shrink: 0;
         }
 
@@ -290,15 +301,27 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             flex: 1;
+            min-width: 0;
+            font-weight: 500;
+        }
+
+        .list-sub-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding-left: 42px;
+            flex-wrap: wrap;
         }
 
         .list-badge {
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             padding: 1px 6px;
             border-radius: 4px;
             background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             color: var(--text-muted);
             flex-shrink: 0;
+            line-height: 1.3;
         }
 
         /* Workspace Content (Middle Column: Form Edit) */
@@ -1596,7 +1619,7 @@ const TRAIT_TAB_DEFS = {
 const EFFECT_CATEGORIES = {
     11: { cat: 'Recover', name: 'Recover HP (Pemulihan HP)', isHpRecover: true },
     12: { cat: 'Recover', name: 'Recover MP (Pemulihan MP)', isMpRecover: true },
-    13: { cat: 'Recover', name: 'Gain TP / SP (Poin Stamina / Energi)', isTpGain: true },
+    13: { cat: 'Recover', name: 'Gain SP (Pemulihan Stamina Point)', isTpGain: true },
     21: { cat: 'State', name: 'Add State (Berikan Status Efek)', hasState: true },
     22: { cat: 'State', name: 'Remove State (Hapus Status Efek)', hasState: true },
     31: { cat: 'Param', name: 'Add Buff (Tingkatkan Stat Sementara)', hasParam: true },
@@ -2079,7 +2102,7 @@ function formatEffect(eff) {
     if (!def.name && !def.cat) return `Effect #${eff.code} (Data: ${eff.dataId}, V1: ${eff.value1}, V2: ${eff.value2})`;
     if (def.isHpRecover) return `Pulihkan HP: <strong style="color:#22c55e;">${Math.round(eff.value1 * 100)}%</strong> + <strong style="color:#22c55e;">${eff.value2} Poin</strong>`;
     if (def.isMpRecover) return `Pulihkan MP: <strong style="color:#38bdf8;">${Math.round(eff.value1 * 100)}%</strong> + <strong style="color:#38bdf8;">${eff.value2} Poin</strong>`;
-    if (def.isTpGain) return `Tambahkan TP/SP: <strong style="color:#eab308;">${eff.value1} Poin</strong>`;
+    if (def.isTpGain) return `Tambahkan SP (Stamina): <strong style="color:#eab308;">${eff.value1} Poin</strong>`;
     if (eff.code === 21) {
         const s = State.states[eff.dataId];
         return `Beri Status: <strong>#${eff.dataId} ${s ? escapeHtml(s.name) : 'State'}</strong> (${Math.round(eff.value1 * 100)}% Peluang)`;
@@ -2264,6 +2287,7 @@ function renderIconInline(iconIndex, size = 24) {
 function getClassCompatibleScrollItems(className) {
     if (!className || !State.items) return [];
     const target = className.trim().toLowerCase();
+    const shortTarget = target.replace(/^elementalist\s*-\s*/i, '');
     const list = [];
     const seenSkillIds = new Set();
     
@@ -2272,7 +2296,11 @@ function getClassCompatibleScrollItems(className) {
         const m = it.note.match(/<(?:Scroll|TM) Compatible:\s*([^>]+)>/i);
         if (!m) continue;
         const classes = m[1].split(',').map(s => s.trim().toLowerCase());
-        if (classes.includes(target)) {
+        const isCompat = classes.includes(target) || 
+                         classes.includes(shortTarget) || 
+                         classes.some(c => c.replace(/^elementalist\s*-\s*/i, '') === shortTarget) ||
+                         classes.includes('all');
+        if (isCompat) {
             const eff = (it.effects || []).find(e => e.code === 43);
             const skillId = eff ? eff.dataId : 0;
             if (skillId && !seenSkillIds.has(skillId)) {
@@ -2990,51 +3018,53 @@ function renderSidebar() {
             renderEditor();
         };
 
-        let extraTag = '';
+        let mainBadge = '';
+        let subBadges = [];
+
         if (State.currentTab === 'classes') {
             const t = getTagVal(item.note, 'Class Tier', '1');
             const ab = getTagVal(item.note, 'Class Ability', '');
-            extraTag = `<span class="list-badge">T${t}</span>${ab ? `<span class="list-badge" style="color:#fbbf24; border-color:rgba(245,158,11,0.3); font-size:0.65rem;" title="Class Ability: ${escapeHtml(ab)}">✨</span>` : ''}`;
+            mainBadge = `<span class="list-badge">T${t}</span>`;
+            if (ab) {
+                subBadges.push(`<span class="list-badge" style="color:#fbbf24; border-color:rgba(245,158,11,0.3); font-size:0.65rem;" title="Class Ability: ${escapeHtml(ab)}">✨ ${escapeHtml(ab)}</span>`);
+            }
         } else if (State.currentTab === 'weapons') {
             const wtypes = (State.system && State.system.weaponTypes) ? State.system.weaponTypes : [];
             const wtName = wtypes[item.wtypeId] || '';
-            if (wtName) extraTag = `<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3);">${escapeHtml(wtName)}</span>`;
+            if (wtName) subBadges.push(`<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3);">${escapeHtml(wtName)}</span>`);
         } else if (State.currentTab === 'armors') {
             const slotNames = { 2: 'Shield', 3: 'Helm', 4: 'Armor', 5: 'Boots', 6: 'Accessory', 7: 'Relic' };
             const sName = slotNames[item.etypeId] || '';
-            if (sName) extraTag = `<span class="list-badge" style="color:#94a3b8; border-color:rgba(148,163,184,0.3);">${escapeHtml(sName)}</span>`;
+            if (sName) subBadges.push(`<span class="list-badge" style="color:#94a3b8; border-color:rgba(148,163,184,0.3);">${escapeHtml(sName)}</span>`);
         } else if (State.currentTab === 'skills') {
             const tier = getSkillTier(item);
             const classIds = getSkillClassIds(item.id);
             const tmClasses = getSkillTmCompatibleClasses(item);
             const isExclusive = isSkillExclusive(item);
 
-            let badges = [];
             if (tier > 0) {
-                badges.push(`<span class="list-badge" style="color:#f59e0b; border-color:rgba(245,158,11,0.3); font-weight:700;">T${tier}</span>`);
+                mainBadge = `<span class="list-badge" style="color:#f59e0b; border-color:rgba(245,158,11,0.3); font-weight:700;">T${tier}</span>`;
             }
             if (classIds.length > 0) {
                 const clsName = State.classes[classIds[0]]?.name || `Cls #${classIds[0]}`;
-                badges.push(`<span class="list-badge" style="color:#a78bfa; border-color:rgba(167,139,250,0.3);">${escapeHtml(clsName)}</span>`);
+                subBadges.push(`<span class="list-badge" style="color:#a78bfa; border-color:rgba(167,139,250,0.3);">${escapeHtml(clsName)}</span>`);
             }
             if (isExclusive) {
-                badges.push(`<span class="list-badge" style="color:#ef4444; border-color:rgba(239,68,68,0.3); font-weight:700;">★ Ult</span>`);
+                subBadges.push(`<span class="list-badge" style="color:#ef4444; border-color:rgba(239,68,68,0.3); font-weight:700;">★ Ult</span>`);
             } else if (tmClasses.length > 0) {
-                badges.push(`<span class="list-badge" style="color:#10b981; border-color:rgba(16,185,129,0.3);" title="Kompatibel TM: ${escapeHtml(tmClasses.join(', '))}">+${tmClasses.length} TM</span>`);
+                subBadges.push(`<span class="list-badge" style="color:#10b981; border-color:rgba(16,185,129,0.3);" title="Kompatibel TM: ${escapeHtml(tmClasses.join(', '))}">+${tmClasses.length} TM</span>`);
             }
-
-            extraTag = badges.join(' ');
         } else if (State.currentTab === 'items') {
             const cat = getItemCategory(item);
-            if (cat) extraTag = `<span class="list-badge" style="color:#fbbf24; border-color:rgba(251,191,36,0.3);">${escapeHtml(cat)}</span>`;
+            if (cat) subBadges.push(`<span class="list-badge" style="color:#fbbf24; border-color:rgba(251,191,36,0.3);">${escapeHtml(cat)}</span>`);
         } else if (State.currentTab === 'states') {
             const cat = getStateCategory(item);
             if (cat === 'Passive') {
-                extraTag = `<span class="list-badge" style="color:#c084fc; border-color:rgba(192,132,252,0.3);">Passive</span>`;
+                subBadges.push(`<span class="list-badge" style="color:#c084fc; border-color:rgba(192,132,252,0.3);">Passive</span>`);
             } else if (cat === 'Status Effect') {
-                extraTag = `<span class="list-badge" style="color:#f87171; border-color:rgba(248,113,113,0.3);">Status Effect</span>`;
+                subBadges.push(`<span class="list-badge" style="color:#f87171; border-color:rgba(248,113,113,0.3);">Status Effect</span>`);
             } else if (cat === 'Skill Effect') {
-                extraTag = `<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3);">Skill Effect</span>`;
+                subBadges.push(`<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3);">Skill Effect</span>`);
             }
         } else if (State.currentTab === 'races') {
             const grp = item.group || '';
@@ -3045,13 +3075,18 @@ function renderSidebar() {
                 'Drahkthar': '#a855f7'
             };
             const col = grpColors[grp] || '#94a3b8';
-            extraTag = `<span class="list-badge" style="color:${col}; border-color:${col}40;">${escapeHtml(grp)}</span>`;
+            subBadges.push(`<span class="list-badge" style="color:${col}; border-color:${col}40;">${escapeHtml(grp)}</span>`);
         }
 
+        const subRowHtml = subBadges.length > 0 ? `<div class="list-sub-row">${subBadges.join('')}</div>` : '';
+
         div.innerHTML = `
-            <span class="list-id">#${item.id}</span>
-            <span class="list-name">${escapeHtml(item.name || '(Empty)')}</span>
-            ${extraTag}
+            <div class="list-main-row">
+                <span class="list-id">#${item.id}</span>
+                <span class="list-name" title="${escapeHtml(item.name || '')}">${escapeHtml(item.name || '(Empty)')}</span>
+                ${mainBadge}
+            </div>
+            ${subRowHtml}
         `;
         listEl.appendChild(div);
     });
@@ -3967,7 +4002,7 @@ function onEffectCodeChange() {
     } else if (def.isTpGain) {
         html += `
             <div class="form-group">
-                <label>Jumlah TP yang Didapat (Poin)</label>
+                <label>Jumlah SP (Stamina Points) yang Didapat</label>
                 <input type="number" min="0" max="100" id="effVal1" class="form-control" value="${eff.value1 || 10}">
             </div>
         `;
@@ -8060,11 +8095,11 @@ function renderSkillStatPreview(container, skill) {
                         <div style="font-size:1.1rem; font-weight:700; color:#60a5fa;">${skill.mpCost || 0}</div>
                     </div>
                     <div class="stat-card-input" style="padding:6px 8px; border-left:2px solid #eab308;">
-                        <div style="font-size:0.7rem; color:var(--text-muted);">TP Cost</div>
+                        <div style="font-size:0.7rem; color:var(--text-muted);">SP Cost</div>
                         <div style="font-size:1.1rem; font-weight:700; color:#eab308;">${skill.tpCost || 0}</div>
                     </div>
                     <div class="stat-card-input" style="padding:6px 8px; border-left:2px solid #f87171;">
-                        <div style="font-size:0.7rem; color:var(--text-muted);">TP Gain</div>
+                        <div style="font-size:0.7rem; color:var(--text-muted);">SP Gain</div>
                         <div style="font-size:1.1rem; font-weight:700; color:#f87171;">+${skill.tpGain || 0}</div>
                     </div>
                 </div>
@@ -8235,7 +8270,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                                 <input type="number" min="0" class="form-control" value="${skill.mpCost || 0}" onchange="skill.mpCost=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                             <div class="form-group">
-                                <label title="Jumlah Stamina Points (SP) atau TP yang dibutuhkan untuk menggunakan skill">SP / TP Cost</label>
+                                <label title="Jumlah Stamina Points (SP) yang dibutuhkan untuk menggunakan skill">SP Cost (Stamina)</label>
                                 <input type="number" min="0" class="form-control" value="${skill.tpCost || 0}" onchange="skill.tpCost=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                         </div>
@@ -8751,7 +8786,7 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
                         </select>
                     </div>
                     <div class="form-group">
-                        <label title="Tambahan poin stamina/TP saat item digunakan">TP Gain</label>
+                        <label title="Tambahan poin stamina (SP) saat item digunakan">SP Gain (Stamina)</label>
                         <input type="number" min="0" max="100" class="form-control" value="${item.tpGain || 0}" onchange="item.tpGain=parseInt(this.value,10); setUnsaved(true);">
                     </div>
                 </div>
