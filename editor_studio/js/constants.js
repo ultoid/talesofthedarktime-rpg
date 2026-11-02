@@ -181,9 +181,9 @@ const SCOPE_NAMES = {
 
 
 const OCCASION_NAMES = {
-    0: 'Selalu (Battle & Menu)',
-    1: 'Battle Only',
-    2: 'Menu Only',
+    0: 'Selalu (Battle & Luar Battle / Grimoire)',
+    1: 'Battle Only (Tempur Saja)',
+    2: 'Menu Only (Luar Battle / Grimoire Utility)',
     3: 'Never'
 };
 

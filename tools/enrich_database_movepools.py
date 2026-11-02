@@ -199,30 +199,30 @@ for sid in range(12, 233):
     compat_str = ', '.join(compat_list)
     
     if is_ultimate:
-        tm_status_label = "Eksklusif (Jurus Pamungkas - Tidak dapat diajarkan via TM)"
-        tm_tag = "<TM Status: Exclusive>\n<Skill Type: Ultimate>"
+        scroll_status_label = "Eksklusif (Jurus Pamungkas - Tidak dapat diajarkan via Scroll)"
+        scroll_tag = "<Scroll Status: Exclusive>\n<TM Status: Exclusive>\n<Skill Type: Ultimate>"
     else:
-        tm_id = tm_item['id'] if tm_item else 0
-        tm_status_label = f"Kompatibel via Kitab/Gulungan Jurus (Item #{tm_id})"
-        tm_tag = f"<TM Item: {tm_id}>\n<TM Compatible: {compat_str}>"
+        scroll_id = tm_item['id'] if tm_item else 0
+        scroll_status_label = f"Kompatibel via Scroll Jurus (Item #{scroll_id})"
+        scroll_tag = f"<Scroll Item: {scroll_id}>\n<Scroll Compatible: {compat_str}>\n<TM Compatible: {compat_str}>"
 
     p_label = pillar_names.get(pidx, f"Pillar {pidx}")
     t_label = tier_labels.get(tier, f"Tier {tier}")
 
     # Build note
     note_lines = [
-        "=== RANCANGAN MOVEPOOL & TM NUSVANIR ===",
+        "=== RANCANGAN SISTEM SKILL & SCROLL NUSVANIR ===",
         f"[Tahapan / Tier]: {t_label}",
         f"[Kategori Kit]: {p_label}",
         f"[Dikuasai Alami]: {cname} (Level {lvl})",
         f"[Syarat Senjata]: {w_label}",
-        f"[Status TM]: {tm_status_label}",
+        f"[Status Scroll]: {scroll_status_label}",
         f"[Dapat Dikuasai Oleh]:",
         f"  - {compat_str}",
         "",
         f"<Skill Tier: {tier}>",
         f"<Class Movepool: {cname} (Lv {lvl})>",
-        tm_tag,
+        scroll_tag,
         f"<Learn Class: {cname}>",
         f"<Learn Level: {lvl}>",
         f"<Learn JP: {jp}>"
@@ -279,12 +279,13 @@ for it in items:
     compat_str = ', '.join(compat_list)
     short_compat = ', '.join(compat_list[:4]) + ("..." if len(compat_list) > 4 else "")
     
-    is_magic = s.get('stypeId') in (1, 2)
-    doc_type = "Kitab" if is_magic else "Gulungan"
-    it['description'] = f"[{doc_type} Tier {tier}] Mengajarkan jurus [{sname}] secara permanen. Kompatibel: {short_compat}"
+    it['name'] = f"Scroll: {sname}"
+    it['consumable'] = True
+    it['occasion'] = 2
+    it['description'] = f"[Scroll Tier {tier}] Mengajarkan jurus [{sname}] secara permanen. Scroll akan hilang setelah dipelajari. Kompatibel: {short_compat}"
     it['note'] = '\n'.join([
         "<Skill Scroll>",
-        "<TM Item>",
+        "<Scroll Item>",
         f"<Learn Skill: {sid}>",
         f"<Skill Tier: {tier}>",
         f"<Original Class: {cname}>",
@@ -295,7 +296,7 @@ for it in items:
     ])
     updated_tms += 1
 
-print(f"Successfully enriched {updated_tms} TM items in data/Items.json!")
+print(f"Successfully enriched {updated_tms} Scroll items in data/Items.json!")
 
 # Save all
 with open('data/Skills.json', 'w', encoding='utf-8') as f:

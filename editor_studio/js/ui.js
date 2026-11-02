@@ -313,7 +313,7 @@ function renderSidebar() {
             filterContainer.innerHTML = `
                 <select class="form-control" onchange="setSkillClassFilter(this.value)" title="Filter skill berdasarkan kategori, tier, atau profesi">
                     <option value="all" ${f === 'all' ? 'selected' : ''}>✨ Semua Skill (${totalCount})</option>
-                    <option value="tm_available" ${f === 'tm_available' ? 'selected' : ''}>📜 Memiliki Kitab / Gulungan (${tmCount})</option>
+                    <option value="tm_available" ${f === 'tm_available' ? 'selected' : ''}>📜 Memiliki Scroll (${tmCount})</option>
                     <option value="exclusive_ult" ${f === 'exclusive_ult' ? 'selected' : ''}>👑 Jurus Pamungkas Eksklusif (${ultCount})</option>
                     <optgroup label="--- Filter Berdasarkan Tier ---">
                         <option value="tier_1" ${f === 'tier_1' ? 'selected' : ''}>Tier 1 - Novice</option>
@@ -326,7 +326,7 @@ function renderSidebar() {
                     <optgroup label="--- Dikuasai Alami (Level-Up) ---">
                         ${classLearnOptions}
                     </optgroup>
-                    <optgroup label="--- Kompatibel TM (Movepool Lengkap) ---">
+                    <optgroup label="--- Kompatibel Scroll (Jurus Tambahan) ---">
                         ${classCompatOptions}
                     </optgroup>
                 </select>

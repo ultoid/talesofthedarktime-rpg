@@ -98,7 +98,7 @@ for s in tm_candidates:
     stype = s.get('stypeId')
     
     is_magic = stype in (1, 2)
-    prefix = "Kitab: " if is_magic else "Gulungan: "
+    prefix = "Scroll: "
     icon_id = 190 if is_magic else 187
     price = 500 if s['tpCost'] <= 15 and s['mpCost'] <= 10 else (1200 if s['tpCost'] <= 25 and s['mpCost'] <= 20 else 2500)
     
@@ -107,13 +107,13 @@ for s in tm_candidates:
         "animationId": 41,
         "consumable": True,
         "damage": {"critical": False, "elementId": 0, "formula": "0", "type": 0, "variance": 20},
-        "description": f"Kitab/Gulungan jurus kuno (TM). Mengajarkan jurus [{sk_name}] secara permanen ke satu karakter.",
+        "description": f"[Scroll] Mengajarkan jurus [{sk_name}] secara permanen. Scroll akan hilang setelah dipelajari.",
         "effects": [{"code": 43, "dataId": sk_id, "value1": 0, "value2": 0}],
         "hitType": 0,
         "iconIndex": icon_id,
         "itypeId": 1, # Regular Item
         "name": f"{prefix}{sk_name}",
-        "note": "<TM Item>\n<Item Category: Skill Scroll>",
+        "note": "<Scroll Item>\n<Skill Scroll>\n<Item Category: Skill Scroll>",
         "occasion": 2, # Menu Only
         "price": price,
         "repeats": 1,
