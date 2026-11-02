@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 rebalance_class_learn_levels.py
-Rebalances all skill learning levels across all 50 classes according to
-Normalized Class Level Progression (Option 1).
+Rebalances skill learning levels with Mid-Progression Ultimate (Option A):
+- Tier 4 Ultimate at Lv. 15
+- Tier 5 Ultimate at Lv. 20
+- Tier 6 Ultimate at Lv. 25
 """
 
 import json
@@ -15,43 +17,19 @@ from pathlib import Path
 WORKSPACE_ROOT = Path('/mnt/DC9EA2C29EA29494/Project/Tales of The Dark Time/Tales of The Dark Time')
 DATA_DIR = WORKSPACE_ROOT / 'data'
 
-# Backup first
-for f in ['Classes.json', 'Skills.json']:
-    bak = DATA_DIR / f"{f}.backup_rebalance.json"
-    if not bak.exists():
-        shutil.copyfile(DATA_DIR / f, bak)
-        print(f"Created backup: {bak}")
-
 with open(DATA_DIR / 'Classes.json', 'r', encoding='utf-8') as fp:
     classes = json.load(fp)
 
 with open(DATA_DIR / 'Skills.json', 'r', encoding='utf-8') as fp:
     skills = json.load(fp)
 
-# Normalized progression schedules per Tier & Skill Count
-PROGRESSION_TEMPLATES = {
-    # Tier 1 (Cap 10)
-    (1, 4): [1, 3, 5, 7],
-    # Tier 2 (Cap 30)
-    (2, 4): [1, 5, 10, 18],
-    # Tier 3 (Cap 40)
-    (3, 4): [1, 6, 12, 22],
-    (3, 5): [1, 5, 10, 18, 28], # Cleric
-    # Tier 4 (Cap 50)
-    (4, 4): [1, 8, 18, 30],     # Elementalist & Necromancer
-    (4, 5): [1, 8, 16, 25, 35], # Champion, Dragoon, Paladin, Monk, Priest, Sniper, Assassin
-    # Tier 5 (Cap 60)
-    (5, 5): [1, 10, 20, 32, 45],
-    # Tier 6 (Cap 70)
-    (6, 4): [1, 15, 30, 50]
-}
+# Level assignment maps based on class definition index
+# Note: In original definition order:
+# 5-skill classes: [Skill1, Skill2, Skill3, Skill4, Ultimate]
+# For Tier 4 (Cap 50): Skill1=1, Skill2=6, Ultimate=15, Skill3=25, Skill4=35
+# For Tier 5 (Cap 60): Skill1=1, Skill2=8, Ultimate=20, Skill3=32, Skill4=45
+# For Tier 6 (Cap 70): Skill1=1, Skill2=10, Ultimate=25, Skill3=40 (Definition order was Skill1, Skill2, Skill3, Ultimate)
 
-# Special override for Scout (T1 with 2 starter skills)
-SPECIAL_OVERRIDES = {
-    39: [1, 1, 4, 6] # Scout (Quick Shot & Quick Stab both at Lv 1)
-}
-
-# Tier mapping for all 50 classes
 tier_map = {}
 for cid in range(1, 17): # Jalur Fisik
     if cid == 1: tier_map[cid] = 1
@@ -88,33 +66,68 @@ for c in classes:
     if count == 0:
         continue
 
-    if cid in SPECIAL_OVERRIDES:
-        target_levels = SPECIAL_OVERRIDES[cid]
-    else:
-        target_levels = PROGRESSION_TEMPLATES.get((tier, count))
-        if not target_levels:
-            # Fallback
-            target_levels = [1 + i * 8 for i in range(count)]
-
+    # Determine level for each skill based on its original index or role
     for idx, l in enumerate(learnings):
-        old_lv = l['level']
-        new_lv = target_levels[idx]
+        sid = l['skillId']
+        s = skills[sid] if sid < len(skills) and skills[sid] else None
+        is_ultimate = (s and s.get('stypeId') == 5)
+
+        new_lv = 1
+        if tier == 1:
+            if cid == 39: # Scout
+                new_lv = [1, 1, 4, 6][idx]
+            else:
+                new_lv = [1, 3, 5, 7][idx]
+        elif tier == 2:
+            new_lv = [1, 5, 10, 18][idx]
+        elif tier == 3:
+            if count == 5: # Cleric
+                new_lv = [1, 5, 10, 18, 28][idx]
+            else:
+                new_lv = [1, 6, 12, 22][idx]
+        elif tier == 4:
+            if count == 5:
+                # 5 skills: Finisher, Buff, AoE, Breaker, Ultimate
+                # Identify by is_ultimate or index
+                if is_ultimate: new_lv = 15 # Ultimate at Mid-Level!
+                elif idx == 0: new_lv = 1
+                elif idx == 1: new_lv = 6
+                elif idx == 2: new_lv = 25 # AoE
+                elif idx == 3: new_lv = 35 # Breaker
+                else: new_lv = 15
+            else:
+                # 4 skills: Elementalist, Necromancer
+                new_lv = [1, 6, 15, 25][idx]
+        elif tier == 5:
+            # 5 skills: Finisher, Buff, AoE, Breaker, Ultimate
+            if is_ultimate: new_lv = 20 # Ultimate at Mid-Level!
+            elif idx == 0: new_lv = 1
+            elif idx == 1: new_lv = 8
+            elif idx == 2: new_lv = 32 # AoE
+            elif idx == 3: new_lv = 45 # Breaker
+            else: new_lv = 20
+        elif tier == 6:
+            # 4 skills: Starter, Utility, AoE/Reset, Ultimate
+            if is_ultimate: new_lv = 25 # Ultimate at Mid-Level!
+            elif idx == 0: new_lv = 1
+            elif idx == 1: new_lv = 10
+            elif idx == 2: new_lv = 40
+            else: new_lv = 25
+
         l['level'] = new_lv
         updated_learnings_count += 1
 
-        # Also update skill note tag in Skills.json
-        sid = l['skillId']
-        s = skills[sid] if sid < len(skills) and skills[sid] else None
+        # Update note tag in Skills.json
         if s:
             note = s.get('note', '')
-            # Update <Learn Level: X>
             note = re.sub(r'<Learn Level:\s*\d+>', f'<Learn Level: {new_lv}>', note)
-            # Update <Class Movepool: Name (Lv X)>
             note = re.sub(r'<Class Movepool:\s*([^\(]+)\s*\(Lv\s*\d+\)>', rf'<Class Movepool: \1 (Lv {new_lv})>', note)
-            # Update [Dikuasai Alami]: Name (Level X)
             note = re.sub(r'\[Dikuasai Alami\]:\s*([^\(]+)\s*\(Level\s*\d+\)', rf'[Dikuasai Alami]: \1 (Level {new_lv})', note)
             s['note'] = note
             updated_skills_count += 1
+
+    # Sort learnings by level so they appear in chronological order in menus and databases
+    c['learnings'] = sorted(learnings, key=lambda x: x['level'])
 
 # Save updated Classes.json
 with open(DATA_DIR / 'Classes.json', 'w', encoding='utf-8') as fp:
@@ -124,5 +137,5 @@ with open(DATA_DIR / 'Classes.json', 'w', encoding='utf-8') as fp:
 with open(DATA_DIR / 'Skills.json', 'w', encoding='utf-8') as fp:
     json.dump(skills, fp, indent=2, ensure_ascii=False)
 
-print(f"Successfully rebalanced {updated_learnings_count} class learnings across 50 classes!")
+print(f"Successfully rebalanced {updated_learnings_count} class learnings across 50 classes with Mid-Progression Ultimate (Option A)!")
 print(f"Successfully updated {updated_skills_count} skill notes in Skills.json!")

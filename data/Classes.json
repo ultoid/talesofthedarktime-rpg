@@ -6428,24 +6428,24 @@
         "skillId": 24
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - King's Dominion",
         "skillId": 25
       },
       {
-        "level": 16,
+        "level": 15,
+        "note": "[Tier 4] Pillar 5: Ultimate - Mandala Execution",
+        "skillId": 28
+      },
+      {
+        "level": 25,
         "note": "[Tier 4] Pillar 3: AoE - Kingdom's Wrath",
         "skillId": 26
       },
       {
-        "level": 25,
+        "level": 35,
         "note": "[Tier 4] Pillar 4: Breaker - Colossus Shatter",
         "skillId": 27
-      },
-      {
-        "level": 35,
-        "note": "[Tier 4] Pillar 5: Ultimate - Mandala Execution",
-        "skillId": 28
       }
     ],
     "name": "Champion",
@@ -7336,24 +7336,24 @@
         "skillId": 57
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Draconic Thrust",
         "skillId": 58
       },
       {
-        "level": 16,
+        "level": 15,
+        "note": "[Tier 4] Pillar 5: Ultimate - Dragon King Roar",
+        "skillId": 61
+      },
+      {
+        "level": 25,
         "note": "[Tier 4] Pillar 3: AoE - Dragon Scale Guard",
         "skillId": 59
       },
       {
-        "level": 25,
+        "level": 35,
         "note": "[Tier 4] Pillar 4: Breaker - Wyvern Dive",
         "skillId": 60
-      },
-      {
-        "level": 35,
-        "note": "[Tier 4] Pillar 5: Ultimate - Dragon King Roar",
-        "skillId": 61
       }
     ],
     "name": "Dragoon",
@@ -8249,24 +8249,24 @@
         "skillId": 42
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Divine Provocation",
         "skillId": 43
       },
       {
-        "level": 16,
+        "level": 15,
+        "note": "[Tier 4] Pillar 5: Ultimate - Garuda's Judgment",
+        "skillId": 46
+      },
+      {
+        "level": 25,
         "note": "[Tier 4] Pillar 3: AoE - Bulwark of Light",
         "skillId": 44
       },
       {
-        "level": 25,
+        "level": 35,
         "note": "[Tier 4] Pillar 4: Breaker - Aegis Retribution",
         "skillId": 45
-      },
-      {
-        "level": 35,
-        "note": "[Tier 4] Pillar 5: Ultimate - Garuda's Judgment",
-        "skillId": 46
       }
     ],
     "name": "Paladin",
@@ -9162,24 +9162,24 @@
         "skillId": 75
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Chi Hyper-Burst",
         "skillId": 76
       },
       {
-        "level": 16,
+        "level": 15,
+        "note": "[Tier 4] Pillar 5: Ultimate - Asura Lotus Wrath",
+        "skillId": 79
+      },
+      {
+        "level": 25,
         "note": "[Tier 4] Pillar 3: AoE - Buddha's Palm",
         "skillId": 77
       },
       {
-        "level": 25,
+        "level": 35,
         "note": "[Tier 4] Pillar 4: Breaker - Sixty-Four Palms",
         "skillId": 78
-      },
-      {
-        "level": 35,
-        "note": "[Tier 4] Pillar 5: Ultimate - Asura Lotus Wrath",
-        "skillId": 79
       }
     ],
     "name": "Monk",
@@ -10100,24 +10100,24 @@
         "skillId": 29
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Berserker Frenzy",
         "skillId": 30
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Ragnarok World-Breaker",
+        "skillId": 33
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Armor Sundering",
         "skillId": 31
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Cataclysm Tempest",
         "skillId": 32
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Ragnarok World-Breaker",
-        "skillId": 33
       }
     ],
     "name": "Berserker",
@@ -11028,24 +11028,24 @@
         "skillId": 52
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Dread Provocation",
         "skillId": 53
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Apocalypse Unholy Wall",
+        "skillId": 56
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Dark Bastion",
         "skillId": 54
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Soul Harvest Strike",
         "skillId": 55
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Apocalypse Unholy Wall",
-        "skillId": 56
       }
     ],
     "name": "Death Knight",
@@ -11961,24 +11961,24 @@
         "skillId": 47
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Holy Citadel Challenge",
         "skillId": 48
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Avatar of Light Fortress",
+        "skillId": 51
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Divine Sanctuary",
         "skillId": 49
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Guardian Vow of Light",
         "skillId": 50
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Avatar of Light Fortress",
-        "skillId": 51
       }
     ],
     "name": "Holy Knight",
@@ -12879,24 +12879,24 @@
         "skillId": 80
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - State of Nirvana",
         "skillId": 81
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Supreme Chi Void",
+        "skillId": 84
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Asura Wrath Wave",
         "skillId": 82
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Meridian Annihilation",
         "skillId": 83
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Supreme Chi Void",
-        "skillId": 84
       }
     ],
     "name": "Brahma",
@@ -13792,24 +13792,24 @@
         "skillId": 62
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Gale Impalement",
         "skillId": 63
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Heavenly Dragon Descent",
+        "skillId": 66
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Sovereign Dive",
         "skillId": 64
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Dragon King Awakening",
         "skillId": 65
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Heavenly Dragon Descent",
-        "skillId": 66
       }
     ],
     "name": "Sky Sovereign",
@@ -21066,17 +21066,17 @@
         "skillId": 97
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Scorching Wave",
         "skillId": 98
       },
       {
-        "level": 18,
+        "level": 15,
         "note": "[Tier 4] Pillar 3: AoE - Flame Shield",
         "skillId": 99
       },
       {
-        "level": 30,
+        "level": 25,
         "note": "[Tier 4] Pillar 4: Breaker - Hellfire Flare",
         "skillId": 100
       }
@@ -21979,17 +21979,17 @@
         "skillId": 101
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Aqua Jet",
         "skillId": 102
       },
       {
-        "level": 18,
+        "level": 15,
         "note": "[Tier 4] Pillar 3: AoE - Cleansing Mist",
         "skillId": 103
       },
       {
-        "level": 30,
+        "level": 25,
         "note": "[Tier 4] Pillar 4: Breaker - Abyssal Deluge",
         "skillId": 104
       }
@@ -22892,17 +22892,17 @@
         "skillId": 105
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Stone Spire",
         "skillId": 106
       },
       {
-        "level": 18,
+        "level": 15,
         "note": "[Tier 4] Pillar 3: AoE - Granite Wall",
         "skillId": 107
       },
       {
-        "level": 30,
+        "level": 25,
         "note": "[Tier 4] Pillar 4: Breaker - Cataclysm Quake",
         "skillId": 108
       }
@@ -23805,17 +23805,17 @@
         "skillId": 109
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Zephyr Slice",
         "skillId": 110
       },
       {
-        "level": 18,
+        "level": 15,
         "note": "[Tier 4] Pillar 3: AoE - Tailwind Aura",
         "skillId": 111
       },
       {
-        "level": 30,
+        "level": 25,
         "note": "[Tier 4] Pillar 4: Breaker - Cyclone Cataclysm",
         "skillId": 112
       }
@@ -24718,17 +24718,17 @@
         "skillId": 113
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Thunder Spear",
         "skillId": 114
       },
       {
-        "level": 18,
+        "level": 15,
         "note": "[Tier 4] Pillar 3: AoE - Voltage Arc",
         "skillId": 115
       },
       {
-        "level": 30,
+        "level": 25,
         "note": "[Tier 4] Pillar 4: Breaker - Judgement Storm",
         "skillId": 116
       }
@@ -25631,17 +25631,17 @@
         "skillId": 117
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Frost Armor",
         "skillId": 118
       },
       {
-        "level": 18,
+        "level": 15,
         "note": "[Tier 4] Pillar 3: AoE - Ice Mirror",
         "skillId": 119
       },
       {
-        "level": 30,
+        "level": 25,
         "note": "[Tier 4] Pillar 4: Breaker - Glacial Cataclysm",
         "skillId": 120
       }
@@ -26539,17 +26539,17 @@
         "skillId": 121
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Magnetic Repulsion",
         "skillId": 122
       },
       {
-        "level": 18,
+        "level": 15,
         "note": "[Tier 4] Pillar 3: AoE - Steel Fortress",
         "skillId": 123
       },
       {
-        "level": 30,
+        "level": 25,
         "note": "[Tier 4] Pillar 4: Breaker - Polar Collision",
         "skillId": 124
       }
@@ -27452,17 +27452,17 @@
         "skillId": 125
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Sonic Screech",
         "skillId": 126
       },
       {
-        "level": 18,
+        "level": 15,
         "note": "[Tier 4] Pillar 3: AoE - Infrasonic Mute",
         "skillId": 127
       },
       {
-        "level": 30,
+        "level": 25,
         "note": "[Tier 4] Pillar 4: Breaker - Vibrational Burst",
         "skillId": 128
       }
@@ -28370,24 +28370,24 @@
         "skillId": 152
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Radiant Salvation",
         "skillId": 153
       },
       {
-        "level": 16,
+        "level": 15,
+        "note": "[Tier 4] Pillar 5: Ultimate - Arise",
+        "skillId": 156
+      },
+      {
+        "level": 25,
         "note": "[Tier 4] Pillar 3: AoE - Holy Mute",
         "skillId": 154
       },
       {
-        "level": 25,
+        "level": 35,
         "note": "[Tier 4] Pillar 4: Breaker - Sanctified Absolution",
         "skillId": 155
-      },
-      {
-        "level": 35,
-        "note": "[Tier 4] Pillar 5: Ultimate - Arise",
-        "skillId": 156
       }
     ],
     "name": "Priest",
@@ -29293,17 +29293,17 @@
         "skillId": 175
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Abyssal Harvest",
         "skillId": 176
       },
       {
-        "level": 18,
+        "level": 15,
         "note": "[Tier 4] Pillar 3: AoE - Blood Pact: Commander",
         "skillId": 177
       },
       {
-        "level": 30,
+        "level": 25,
         "note": "[Tier 4] Pillar 4: Breaker - Corpse Explosion",
         "skillId": 178
       }
@@ -30211,24 +30211,24 @@
         "skillId": 129
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Absolute Zero",
         "skillId": 130
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Apocalypse Meteorfall",
+        "skillId": 133
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Judgement Thunderstorm",
         "skillId": 131
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Aegis of the Archmage",
         "skillId": 132
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Apocalypse Meteorfall",
-        "skillId": 133
       }
     ],
     "name": "Archmage",
@@ -31124,24 +31124,24 @@
         "skillId": 157
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Grace of Sang Hyang",
         "skillId": 158
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Miracle of Rebirth",
+        "skillId": 161
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Divine Exorcism",
         "skillId": 159
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Mass Resurrection",
         "skillId": 160
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Miracle of Rebirth",
-        "skillId": 161
       }
     ],
     "name": "High Priest",
@@ -32057,24 +32057,24 @@
         "skillId": 179
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Void Singularity",
         "skillId": 180
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Calamity of the Netherworld",
+        "skillId": 183
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Avatar of Demon Lord",
         "skillId": 181
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Netherworld Grasp",
         "skillId": 182
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Calamity of the Netherworld",
-        "skillId": 183
       }
     ],
     "name": "Warlock",
@@ -32985,24 +32985,24 @@
         "skillId": 162
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Ancestral Spirit Ward",
         "skillId": 163
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Totemic Communion of Ancestors",
+        "skillId": 166
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Nature's Wrath Shock",
         "skillId": 164
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Blood Transfusion",
         "skillId": 165
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Totemic Communion of Ancestors",
-        "skillId": 166
       }
     ],
     "name": "Shaman",
@@ -33913,24 +33913,24 @@
         "skillId": 134
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Primordial Breath",
         "skillId": 135
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Breath of the Ancient Dragon",
+        "skillId": 138
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Dragon Wings Ward",
         "skillId": 136
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Draconic Awakening",
         "skillId": 137
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Breath of the Ancient Dragon",
-        "skillId": 138
       }
     ],
     "name": "Dragon Aspect",
@@ -39301,24 +39301,24 @@
         "skillId": 200
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Dead Eye Shot",
         "skillId": 201
       },
       {
-        "level": 16,
+        "level": 15,
+        "note": "[Tier 4] Pillar 5: Ultimate - Ballista Impact",
+        "skillId": 204
+      },
+      {
+        "level": 25,
         "note": "[Tier 4] Pillar 3: AoE - Tendon Sever",
         "skillId": 202
       },
       {
-        "level": 25,
+        "level": 35,
         "note": "[Tier 4] Pillar 4: Breaker - Storm of Arrows",
         "skillId": 203
-      },
-      {
-        "level": 35,
-        "note": "[Tier 4] Pillar 5: Ultimate - Ballista Impact",
-        "skillId": 204
       }
     ],
     "name": "Sniper",
@@ -40209,24 +40209,24 @@
         "skillId": 223
       },
       {
-        "level": 8,
+        "level": 6,
         "note": "[Tier 4] Pillar 2: Buff/Utility - Shadow Clone Trick",
         "skillId": 224
       },
       {
-        "level": 16,
+        "level": 15,
+        "note": "[Tier 4] Pillar 5: Ultimate - Omnislash Shadow Dance",
+        "skillId": 227
+      },
+      {
+        "level": 25,
         "note": "[Tier 4] Pillar 3: AoE - Abyssal Plague",
         "skillId": 225
       },
       {
-        "level": 25,
+        "level": 35,
         "note": "[Tier 4] Pillar 4: Breaker - Toxic Fog",
         "skillId": 226
-      },
-      {
-        "level": 35,
-        "note": "[Tier 4] Pillar 5: Ultimate - Omnislash Shadow Dance",
-        "skillId": 227
       }
     ],
     "name": "Assassin",
@@ -41122,24 +41122,24 @@
         "skillId": 205
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Falcon Strike",
         "skillId": 206
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Wrath of the Wild Primordial",
+        "skillId": 209
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Wild Stride Aura",
         "skillId": 207
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Behemoth Command",
         "skillId": 208
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Wrath of the Wild Primordial",
-        "skillId": 209
       }
     ],
     "name": "Beastmaster",
@@ -42050,24 +42050,24 @@
         "skillId": 228
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Shadow Eclipse",
         "skillId": 229
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Thousand Blades of Death",
+        "skillId": 232
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Phantom Step",
         "skillId": 230
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Death Mark Extraction",
         "skillId": 231
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Thousand Blades of Death",
-        "skillId": 232
       }
     ],
     "name": "Shadow Walker",
@@ -42968,24 +42968,24 @@
         "skillId": 210
       },
       {
-        "level": 10,
+        "level": 8,
         "note": "[Tier 5] Pillar 2: Buff/Utility - Tempest Volley",
         "skillId": 211
       },
       {
         "level": 20,
+        "note": "[Tier 5] Pillar 5: Ultimate - Celestial Ballista Impact",
+        "skillId": 214
+      },
+      {
+        "level": 32,
         "note": "[Tier 5] Pillar 3: AoE - Gale Step",
         "skillId": 212
       },
       {
-        "level": 32,
+        "level": 45,
         "note": "[Tier 5] Pillar 4: Breaker - Sonic Gale Destruction",
         "skillId": 213
-      },
-      {
-        "level": 45,
-        "note": "[Tier 5] Pillar 5: Ultimate - Celestial Ballista Impact",
-        "skillId": 214
       }
     ],
     "name": "Windrunner",
@@ -43926,19 +43926,19 @@
         "skillId": 139
       },
       {
-        "level": 15,
+        "level": 10,
         "note": "[Tier 6] Pillar 2: Buff/Utility - Grand Haste",
         "skillId": 140
       },
       {
-        "level": 30,
-        "note": "[Tier 6] Pillar 3: AoE - Rewind Fate",
-        "skillId": 141
-      },
-      {
-        "level": 50,
+        "level": 25,
         "note": "[Tier 6] Pillar 4: Breaker - Chronos Apocalypse: Time Stop",
         "skillId": 142
+      },
+      {
+        "level": 40,
+        "note": "[Tier 6] Pillar 3: AoE - Rewind Fate",
+        "skillId": 141
       }
     ],
     "name": "Chronomancer",
@@ -44889,19 +44889,19 @@
         "skillId": 184
       },
       {
-        "level": 15,
+        "level": 10,
         "note": "[Tier 6] Pillar 2: Buff/Utility - Nihility Rupture",
         "skillId": 185
       },
       {
-        "level": 30,
-        "note": "[Tier 6] Pillar 3: AoE - Black Hole Collapse",
-        "skillId": 186
-      },
-      {
-        "level": 50,
+        "level": 25,
         "note": "[Tier 6] Pillar 4: Breaker - Void Annihilation: Absolute Zero Matter",
         "skillId": 187
+      },
+      {
+        "level": 40,
+        "note": "[Tier 6] Pillar 3: AoE - Black Hole Collapse",
+        "skillId": 186
       }
     ],
     "name": "Void Incarnate",
