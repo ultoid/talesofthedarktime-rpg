@@ -45,6 +45,9 @@ class NUSVEditorHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE, HEAD")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
         self.send_header("Access-Control-Allow-Private-Network", "true")
+        self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
         super().end_headers()
 
     def log_message(self, format, *args):
@@ -121,9 +124,20 @@ class NUSVEditorHandler(http.server.SimpleHTTPRequestHandler):
                     self.wfile.write(b'{"error": "File not found"}')
             return
 
-        # 3. Root path serves editor.html
-        if self.path in ("/", "/index.html", "/editor"):
+        # 3. Root path and editor endpoints serve fresh editor.html
+        clean_path = self.path.split('?')[0]
+        if clean_path in ("/", "/index.html", "/editor", "/editor.html"):
             editor_path = GAME_DIR / "editor.html"
+            if editor_path.exists():
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.end_headers()
+                if not is_head:
+                    with open(editor_path, "rb") as f:
+                        self.wfile.write(f.read())
+                return
+        elif clean_path == "/editor.bundled.html":
+            editor_path = GAME_DIR / "editor.bundled.html"
             if editor_path.exists():
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html; charset=utf-8")
