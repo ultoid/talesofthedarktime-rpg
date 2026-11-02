@@ -527,18 +527,78 @@ function getSkillTier(skill) {
 
 function getSkillTmCompatibleClasses(skill) {
     if (!skill || !skill.note) return [];
-    const m = skill.note.match(/<TM Compatible:\s*([^>]+)>/i);
+    const m = skill.note.match(/<(?:Scroll|TM) Compatible:\s*([^>]+)>/i);
     if (!m) return [];
     return m[1].split(',').map(s => s.trim()).filter(Boolean);
 }
 
 function isSkillExclusive(skill) {
     if (!skill || !skill.note) return false;
-    return /<TM Status:\s*Exclusive>/i.test(skill.note) ||
+    return /<(?:Scroll|TM) Status:\s*Exclusive>/i.test(skill.note) ||
            /<Skill Type:\s*Ultimate>/i.test(skill.note);
 }
 
 function getSkillTmItem(skillId) {
     if (!State.items) return null;
     return State.items.find(it => it && it.effects && it.effects.some(e => e.code === 43 && e.dataId === skillId)) || null;
+}
+
+function renderIconInline(iconIndex, size = 24) {
+    const safeIdx = parseInt(iconIndex, 10) || 0;
+    const col = safeIdx % 16;
+    const row = Math.floor(safeIdx / 16);
+    const bgX = -col * 32;
+    const bgY = -row * 32;
+    const scale = size / 32;
+    return `
+        <div style="width:${size}px; height:${size}px; overflow:hidden; display:inline-block; vertical-align:middle; flex-shrink:0; border-radius:4px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.08);">
+            <div class="icon-preview-sheet" style="background-position: ${bgX}px ${bgY}px; transform: scale(${scale}); transform-origin: 0 0; width:32px; height:32px;"></div>
+        </div>
+    `;
+}
+
+function getClassCompatibleScrollItems(className) {
+    if (!className || !State.items) return [];
+    const target = className.trim().toLowerCase();
+    const list = [];
+    const seenSkillIds = new Set();
+    
+    for (const it of State.items) {
+        if (!it || !it.note) continue;
+        const m = it.note.match(/<(?:Scroll|TM) Compatible:\s*([^>]+)>/i);
+        if (!m) continue;
+        const classes = m[1].split(',').map(s => s.trim().toLowerCase());
+        if (classes.includes(target)) {
+            const eff = (it.effects || []).find(e => e.code === 43);
+            const skillId = eff ? eff.dataId : 0;
+            if (skillId && !seenSkillIds.has(skillId)) {
+                seenSkillIds.add(skillId);
+                const skill = State.skills ? State.skills[skillId] : null;
+                list.push({ item: it, skill: skill });
+            }
+        }
+    }
+    return list;
+}
+
+function navigateToSkill(skillId) {
+    if (!skillId) return;
+    if (typeof switchTab === 'function') {
+        switchTab('skills');
+        State.selectedIndex = skillId;
+        if (typeof renderSidebar === 'function') renderSidebar();
+        if (typeof renderEditor === 'function') renderEditor();
+        showToast(`Membuka Skill #${skillId}`, 'info');
+    }
+}
+
+function navigateToItem(itemId) {
+    if (!itemId) return;
+    if (typeof switchTab === 'function') {
+        switchTab('items');
+        State.selectedIndex = itemId;
+        if (typeof renderSidebar === 'function') renderSidebar();
+        if (typeof renderEditor === 'function') renderEditor();
+        showToast(`Membuka Item #${itemId}`, 'info');
+    }
 }

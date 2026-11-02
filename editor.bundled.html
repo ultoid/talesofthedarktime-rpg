@@ -2225,20 +2225,80 @@ function getSkillTier(skill) {
 
 function getSkillTmCompatibleClasses(skill) {
     if (!skill || !skill.note) return [];
-    const m = skill.note.match(/<TM Compatible:\s*([^>]+)>/i);
+    const m = skill.note.match(/<(?:Scroll|TM) Compatible:\s*([^>]+)>/i);
     if (!m) return [];
     return m[1].split(',').map(s => s.trim()).filter(Boolean);
 }
 
 function isSkillExclusive(skill) {
     if (!skill || !skill.note) return false;
-    return /<TM Status:\s*Exclusive>/i.test(skill.note) ||
+    return /<(?:Scroll|TM) Status:\s*Exclusive>/i.test(skill.note) ||
            /<Skill Type:\s*Ultimate>/i.test(skill.note);
 }
 
 function getSkillTmItem(skillId) {
     if (!State.items) return null;
     return State.items.find(it => it && it.effects && it.effects.some(e => e.code === 43 && e.dataId === skillId)) || null;
+}
+
+function renderIconInline(iconIndex, size = 24) {
+    const safeIdx = parseInt(iconIndex, 10) || 0;
+    const col = safeIdx % 16;
+    const row = Math.floor(safeIdx / 16);
+    const bgX = -col * 32;
+    const bgY = -row * 32;
+    const scale = size / 32;
+    return `
+        <div style="width:${size}px; height:${size}px; overflow:hidden; display:inline-block; vertical-align:middle; flex-shrink:0; border-radius:4px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.08);">
+            <div class="icon-preview-sheet" style="background-position: ${bgX}px ${bgY}px; transform: scale(${scale}); transform-origin: 0 0; width:32px; height:32px;"></div>
+        </div>
+    `;
+}
+
+function getClassCompatibleScrollItems(className) {
+    if (!className || !State.items) return [];
+    const target = className.trim().toLowerCase();
+    const list = [];
+    const seenSkillIds = new Set();
+    
+    for (const it of State.items) {
+        if (!it || !it.note) continue;
+        const m = it.note.match(/<(?:Scroll|TM) Compatible:\s*([^>]+)>/i);
+        if (!m) continue;
+        const classes = m[1].split(',').map(s => s.trim().toLowerCase());
+        if (classes.includes(target)) {
+            const eff = (it.effects || []).find(e => e.code === 43);
+            const skillId = eff ? eff.dataId : 0;
+            if (skillId && !seenSkillIds.has(skillId)) {
+                seenSkillIds.add(skillId);
+                const skill = State.skills ? State.skills[skillId] : null;
+                list.push({ item: it, skill: skill });
+            }
+        }
+    }
+    return list;
+}
+
+function navigateToSkill(skillId) {
+    if (!skillId) return;
+    if (typeof switchTab === 'function') {
+        switchTab('skills');
+        State.selectedIndex = skillId;
+        if (typeof renderSidebar === 'function') renderSidebar();
+        if (typeof renderEditor === 'function') renderEditor();
+        showToast(`Membuka Skill #${skillId}`, 'info');
+    }
+}
+
+function navigateToItem(itemId) {
+    if (!itemId) return;
+    if (typeof switchTab === 'function') {
+        switchTab('items');
+        State.selectedIndex = itemId;
+        if (typeof renderSidebar === 'function') renderSidebar();
+        if (typeof renderEditor === 'function') renderEditor();
+        showToast(`Membuka Item #${itemId}`, 'info');
+    }
 }
 
 
@@ -5386,7 +5446,241 @@ function onClassSimLevelChange(lvl) {
     updateClassSimulationLive();
 }
 
+function onClassRightTabChange(tab) {
+    State.classRightTab = tab;
+    const badge = document.getElementById('classRightTabBadge');
+    const tabTreeBtn = document.getElementById('classRightTabTreeBtn');
+    const tabScrollBtn = document.getElementById('classRightTabScrollBtn');
+    const cls = State.classes[State.selectedIndex];
+    const lvl = State.classTabSimLevel || 1;
+    const compats = cls ? getClassCompatibleScrollItems(cls.name) : [];
 
+    if (tabTreeBtn) {
+        tabTreeBtn.className = `btn btn-sm ${tab !== 'scrolls' ? 'btn-primary' : 'btn-secondary'}`;
+    }
+    if (tabScrollBtn) {
+        tabScrollBtn.className = `btn btn-sm ${tab === 'scrolls' ? 'btn-primary' : 'btn-secondary'}`;
+    }
+    if (badge) {
+        badge.innerText = tab === 'scrolls' ? `Kompatibel (${compats.length})` : `Job Lv 1 - ${lvl}`;
+    }
+    updateClassSimulationLive();
+}
+
+let currentRightScrollQuery = '';
+
+function onFilterRightScrolls(query) {
+    currentRightScrollQuery = (query || '').toLowerCase().trim();
+    const cls = State.classes[State.selectedIndex];
+    if (!cls) return;
+    const compats = getClassCompatibleScrollItems(cls.name);
+    renderClassRightScrollItems(compats);
+}
+
+function renderClassRightTreeList(cls, lvl) {
+    const container = document.getElementById('cls-sim-skills-container');
+    if (!container) return;
+    const learnings = (cls.learnings || []).slice().sort((a, b) => a.level - b.level);
+    if (learnings.length === 0) {
+        container.innerHTML = `<div style="font-size:0.75rem; color:var(--text-muted); padding:12px; text-align:center;">(Belum ada jurus yang terdaftar di kelas ini)</div>`;
+        return;
+    }
+
+    container.innerHTML = learnings.map(l => {
+        const isUnlocked = l.level <= lvl;
+        const sk = State.skills ? State.skills[l.skillId] : null;
+        const name = sk ? sk.name : `Skill #${l.skillId}`;
+        const iconIdx = sk ? sk.iconIndex : 0;
+        const costParts = [];
+        if (sk && sk.mpCost > 0) costParts.push(`${sk.mpCost} MP`);
+        if (sk && sk.tpCost > 0) costParts.push(`${sk.tpCost} SP`);
+        const costStr = costParts.length > 0 ? costParts.join(' / ') : '0 Cost';
+        const noteText = l.note || (sk ? sk.description : '');
+
+        return `
+            <div style="background:${isUnlocked ? 'rgba(16,185,129,0.08)' : 'rgba(0,0,0,0.3)'}; border:1px solid ${isUnlocked ? 'rgba(16,185,129,0.35)' : 'rgba(255,255,255,0.08)'}; border-radius:8px; padding:6px 8px; margin-bottom:6px; transition:all 0.15s; ${isUnlocked ? '' : 'opacity:0.65;'}">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span class="badge" style="background:${isUnlocked ? '#10b98133' : 'rgba(148,163,184,0.15)'}; color:${isUnlocked ? '#34d399' : '#94a3b8'}; border:1px solid ${isUnlocked ? '#10b98155' : 'rgba(148,163,184,0.3)'}; font-weight:700; font-size:0.7rem; padding:1px 6px;">
+                            ${isUnlocked ? `✔ Lv ${l.level}` : `🔒 Lv ${l.level}`}
+                        </span>
+                        ${renderIconInline(iconIdx, 22)}
+                        <span style="font-weight:700; font-size:0.8rem; color:${isUnlocked ? '#38bdf8' : '#cbd5e1'}; cursor:pointer; text-decoration:underline;" onclick="navigateToSkill(${l.skillId})" title="Klik untuk membuka Skill #${l.skillId} di Skill Editor">
+                            ${escapeHtml(name)}
+                        </span>
+                    </div>
+                    <span style="font-size:0.7rem; font-weight:700; color:#f59e0b;">${costStr}</span>
+                </div>
+                ${noteText ? `<div style="font-size:0.68rem; color:var(--text-muted); margin-left:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(noteText)}</div>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+function renderClassRightScrollsList(compats) {
+    const container = document.getElementById('cls-sim-skills-container');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div style="margin-bottom:8px;">
+            <input type="text" id="cls-right-scroll-search" placeholder="🔍 Cari kitab/gulungan..." class="form-control" 
+                   style="padding:4px 8px; font-size:0.75rem; width:100%; border-radius:6px;" 
+                   value="${escapeHtml(currentRightScrollQuery)}" oninput="onFilterRightScrolls(this.value)">
+        </div>
+        <div id="cls-right-scrolls-items" style="max-height:220px; overflow-y:auto;"></div>
+    `;
+    renderClassRightScrollItems(compats);
+}
+
+function renderClassRightScrollItems(compats) {
+    const itemsEl = document.getElementById('cls-right-scrolls-items');
+    if (!itemsEl) return;
+    const cls = State.classes[State.selectedIndex];
+    const naturalSkillIds = new Set((cls ? cls.learnings || [] : []).map(l => l.skillId));
+    
+    const query = currentRightScrollQuery;
+    const filtered = compats.filter(({ item, skill }) => {
+        if (!query) return true;
+        const itName = (item.name || '').toLowerCase();
+        const skName = skill ? (skill.name || '').toLowerCase() : '';
+        const desc = (item.description || '').toLowerCase();
+        return itName.includes(query) || skName.includes(query) || desc.includes(query);
+    });
+
+    if (filtered.length === 0) {
+        itemsEl.innerHTML = `<div style="font-size:0.75rem; color:var(--text-muted); padding:10px; text-align:center;">Tidak ada jurus yang cocok "${escapeHtml(query)}"</div>`;
+        return;
+    }
+
+    itemsEl.innerHTML = filtered.map(({ item, skill }) => {
+        const isNatural = skill && naturalSkillIds.has(skill.id);
+        const costParts = [];
+        if (skill && skill.mpCost > 0) costParts.push(`${skill.mpCost} MP`);
+        if (skill && skill.tpCost > 0) costParts.push(`${skill.tpCost} SP`);
+        const costStr = costParts.length > 0 ? costParts.join(' / ') : '0 Cost';
+        const isMagic = skill ? (skill.stypeId === 1 || skill.stypeId === 2) : item.name.includes('Kitab');
+        const origClass = getTagVal(item.note || '', 'Original Class', '');
+
+        return `
+            <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:6px 8px; margin-bottom:5px; font-size:0.78rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px;">
+                    <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+                        ${renderIconInline(item.iconIndex, 22)}
+                        <span style="font-weight:700; color:${isMagic ? '#c4b5fd' : '#38bdf8'}; cursor:pointer; text-decoration:underline;" onclick="navigateToItem(${item.id})" title="Klik untuk membuka Item #${item.id} di Item Editor">
+                            ${escapeHtml(item.name)}
+                        </span>
+                    </div>
+                    <span style="font-size:0.7rem; font-weight:700; color:#f59e0b; flex-shrink:0;">${costStr}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.68rem; color:var(--text-muted);">
+                    <span>${origClass ? `Asal: <strong style="color:#cbd5e1;">${escapeHtml(origClass)}</strong>` : (skill ? escapeHtml(skill.name) : '')}</span>
+                    <span class="badge" style="background:${isNatural ? '#10b98122' : '#3b82f622'}; color:${isNatural ? '#34d399' : '#60a5fa'}; border:1px solid ${isNatural ? '#10b98144' : '#3b82f644'}; font-size:0.65rem; padding:1px 5px;">
+                        ${isNatural ? 'Alami' : 'Lintas Profesi'}
+                    </span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+let classMainScrollQuery = '';
+let classMainScrollCategory = 'all';
+
+function onClassMainScrollSearch(val) {
+    classMainScrollQuery = (val || '').toLowerCase().trim();
+    renderClassMainScrollGrid();
+}
+
+function onClassMainScrollCategory(val) {
+    classMainScrollCategory = val || 'all';
+    const allBtn = document.getElementById('clsMainScrollCatAll');
+    const physBtn = document.getElementById('clsMainScrollCatPhys');
+    const magicBtn = document.getElementById('clsMainScrollCatMagic');
+    if (allBtn) allBtn.className = `btn btn-sm ${classMainScrollCategory === 'all' ? 'btn-primary' : 'btn-secondary'}`;
+    if (physBtn) physBtn.className = `btn btn-sm ${classMainScrollCategory === 'phys' ? 'btn-primary' : 'btn-secondary'}`;
+    if (magicBtn) magicBtn.className = `btn btn-sm ${classMainScrollCategory === 'magic' ? 'btn-primary' : 'btn-secondary'}`;
+    renderClassMainScrollGrid();
+}
+
+function renderClassMainScrollGrid() {
+    const grid = document.getElementById('classScrollMainGrid');
+    if (!grid) return;
+    const cls = State.classes[State.selectedIndex];
+    if (!cls) return;
+    const compats = getClassCompatibleScrollItems(cls.name);
+    const naturalSkillIds = new Set((cls.learnings || []).map(l => l.skillId));
+
+    const q = classMainScrollQuery;
+    const cat = classMainScrollCategory;
+
+    const filtered = compats.filter(({ item, skill }) => {
+        const isMagic = skill ? (skill.stypeId === 1 || skill.stypeId === 2) : item.name.includes('Kitab');
+        if (cat === 'phys' && isMagic) return false;
+        if (cat === 'magic' && !isMagic) return false;
+        if (!q) return true;
+        const itName = (item.name || '').toLowerCase();
+        const skName = skill ? (skill.name || '').toLowerCase() : '';
+        const desc = (item.description || '').toLowerCase();
+        return itName.includes(q) || skName.includes(q) || desc.includes(q);
+    });
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; color:var(--text-muted); padding:24px;">Tidak ditemukan kitab atau gulungan yang cocok dengan pencarian.</div>`;
+        return;
+    }
+
+    grid.innerHTML = filtered.map(({ item, skill }) => {
+        const isNatural = skill && naturalSkillIds.has(skill.id);
+        const costParts = [];
+        if (skill && skill.mpCost > 0) costParts.push(`${skill.mpCost} MP`);
+        if (skill && skill.tpCost > 0) costParts.push(`${skill.tpCost} SP`);
+        const costStr = costParts.length > 0 ? costParts.join(' / ') : '0 Cost';
+        const isMagic = skill ? (skill.stypeId === 1 || skill.stypeId === 2) : item.name.includes('Kitab');
+        const origClass = getTagVal(item.note || '', 'Original Class', '');
+        const tier = getTagVal(item.note || '', 'Skill Tier', '1');
+
+        return `
+            <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:10px; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.2s;" onmouseenter="this.style.borderColor='rgba(139,92,246,0.5)'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.08)'">
+                <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span class="badge" style="background:${isMagic ? '#8b5cf622' : '#3b82f622'}; color:${isMagic ? '#c4b5fd' : '#60a5fa'}; border:1px solid ${isMagic ? '#8b5cf644' : '#3b82f644'}; font-size:0.7rem; font-weight:700;">
+                            ${isMagic ? '📖 Kitab Sihir' : '📜 Gulungan Fisik'} • Tier ${tier}
+                        </span>
+                        <span class="badge" style="background:${isNatural ? '#10b98122' : '#f59e0b22'}; color:${isNatural ? '#34d399' : '#fbbf24'}; border:1px solid ${isNatural ? '#10b98144' : '#f59e0b44'}; font-size:0.65rem;">
+                            ${isNatural ? 'Bawaan Alami' : 'Lintas Profesi'}
+                        </span>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        ${renderIconInline(item.iconIndex, 28)}
+                        <div style="overflow:hidden;">
+                            <div style="font-weight:700; font-size:0.85rem; color:#f8fafc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                ${escapeHtml(item.name)}
+                            </div>
+                            <div style="font-size:0.72rem; color:#f59e0b; font-weight:600;">
+                                ${skill ? `${escapeHtml(skill.name)} (${costStr})` : costStr}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="font-size:0.72rem; color:var(--text-muted); line-height:1.3; margin-bottom:8px; max-height:36px; overflow:hidden; text-overflow:ellipsis;">
+                        ${escapeHtml(item.description || '')}
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.06); padding-top:6px; margin-top:4px;">
+                    <span style="font-size:0.68rem; color:#94a3b8;">
+                        ${origClass ? `Asal: <strong style="color:#cbd5e1;">${escapeHtml(origClass)}</strong>` : ''}
+                    </span>
+                    <div style="display:flex; gap:4px;">
+                        ${skill ? `<button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px; font-size:0.7rem;" onclick="navigateToSkill(${skill.id})" title="Buka skill ini di Skill Editor">⚡ Skill</button>` : ''}
+                        <button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px; font-size:0.7rem;" onclick="navigateToItem(${item.id})" title="Buka item ini di Item Editor">📜 Item</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
 
 function updateClassSimulationLive() {
     const cls = State.classes[State.selectedIndex];
@@ -5428,7 +5722,7 @@ function updateClassSimulationLive() {
         const el = document.getElementById(`cls-sim-${attr.code}`);
         if (el) el.innerText = total;
 
-                const elCard = document.getElementById(`cls-sim-${attr.code}-card`);
+        const elCard = document.getElementById(`cls-sim-${attr.code}-card`);
         if (elCard) {
             elCard.title = `Bonus Stat dari Profesi: ${attr.name} (${attr.code})
 Rumus: Class IV Rating + Growth × (JobLv - 1)
@@ -5445,31 +5739,74 @@ Rincian: IV ${iv} (Grade ${ivInfo.grade}, +${rate}/Lv) + Pertumbuhan ${growth} (
     const defEl = document.getElementById('cls-sim-def');
     if (defEl) defEl.innerText = (cls.params && cls.params[3] && cls.params[3][lvl]) ? cls.params[3][lvl] : '15';
 
-    // Update Unlocked Skills list
-    const skillsContainer = document.getElementById('cls-sim-skills-container');
-    if (skillsContainer) {
-        const learnings = (cls.learnings || []).filter(l => l.level <= lvl);
-        if (learnings.length === 0) {
-            skillsContainer.innerHTML = `<span style="font-size:0.75rem; color:var(--text-muted);">(Tidak ada skill yang terbuka di Lv ${lvl})</span>`;
-        } else {
-            skillsContainer.innerHTML = learnings.map(l => {
-                const sk = State.skills[l.skillId];
-                const name = sk ? sk.name : `Skill #${l.skillId}`;
-                return `
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:6px; padding:4px 8px; margin-bottom:4px; font-size:0.78rem;">
-                        <div style="display:flex; align-items:center; gap:6px;">
-                            <span style="font-weight:700; color:#38bdf8;">Lv ${l.level}</span>
-                            <span>${escapeHtml(name)}</span>
-                        </div>
-                        <span style="font-size:0.7rem; color:var(--text-muted);">${escapeHtml(l.note || '')}</span>
-                    </div>
-                `;
-            }).join('');
-        }
+    // Update Right Column Content (Tree or Scrolls)
+    const isScrolls = State.classRightTab === 'scrolls';
+    if (isScrolls) {
+        const compats = getClassCompatibleScrollItems(cls.name);
+        renderClassRightScrollsList(compats);
+    } else {
+        renderClassRightTreeList(cls, lvl);
     }
 }
 
 
+
+function renderClassSkillTreeRoadmap(cls) {
+    const learnings = (cls.learnings || []).slice().sort((a, b) => a.level - b.level);
+    if (learnings.length === 0) {
+        return `
+            <div style="background:rgba(0,0,0,0.25); border:1px dashed rgba(255,255,255,0.15); border-radius:8px; padding:16px; text-align:center; color:var(--text-muted); font-size:0.8rem;">
+                Belum ada alur skill tree yang didaftarkan untuk kelas ini. Klik "➕ Add Skill Learning" di bawah untuk menambahkan.
+            </div>
+        `;
+    }
+
+    const nodesHtml = learnings.map((l, idx) => {
+        const sk = State.skills ? State.skills[l.skillId] : null;
+        const name = sk ? sk.name : `Skill #${l.skillId}`;
+        const iconIdx = sk ? sk.iconIndex : 0;
+        const costParts = [];
+        if (sk && sk.mpCost > 0) costParts.push(`${sk.mpCost} MP`);
+        if (sk && sk.tpCost > 0) costParts.push(`${sk.tpCost} SP`);
+        const costStr = costParts.length > 0 ? costParts.join(' / ') : '0 Cost';
+        const tier = sk ? getTagVal(sk.note || '', 'Skill Tier', '1') : '1';
+        const isLast = idx === learnings.length - 1;
+
+        return `
+            <div style="display:flex; align-items:center;">
+                <div style="background:rgba(15, 23, 42, 0.85); border:1px solid rgba(56, 189, 248, 0.35); border-radius:10px; padding:10px 14px; min-width:185px; box-shadow:0 4px 12px rgba(0,0,0,0.3); transition:all 0.2s;" onmouseenter="this.style.borderColor='#38bdf8'; this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='rgba(56, 189, 248, 0.35)'; this.style.transform='none'">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span class="badge" style="background:#10b98122; color:#34d399; border:1px solid #10b98144; font-weight:700; font-size:0.72rem;">
+                            Lv ${l.level}
+                        </span>
+                        <span style="font-size:0.68rem; color:#94a3b8; font-weight:600;">Tier ${tier}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        ${renderIconInline(iconIdx, 26)}
+                        <div style="overflow:hidden;">
+                            <div style="font-weight:700; font-size:0.83rem; color:#f8fafc; cursor:pointer; text-decoration:underline; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" onclick="navigateToSkill(${l.skillId})" title="Buka Skill #${l.skillId} di Skill Editor">
+                                ${escapeHtml(name)}
+                            </div>
+                            <div style="font-size:0.7rem; color:#f59e0b; font-weight:600;">${costStr}</div>
+                        </div>
+                    </div>
+                    ${l.note ? `<div style="font-size:0.68rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(l.note)}">${escapeHtml(l.note)}</div>` : ''}
+                </div>
+                ${!isLast ? `
+                    <div style="display:flex; align-items:center; justify-content:center; padding:0 8px; color:#38bdf8; font-size:1.2rem; font-weight:bold; flex-shrink:0;">
+                        ➔
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }).join('');
+
+    return `
+        <div style="overflow-x:auto; padding:10px 4px 14px 4px; display:flex; align-items:center; gap:2px; margin-bottom:14px; scrollbar-width:thin;">
+            ${nodesHtml}
+        </div>
+    `;
+}
 
 function renderClassEditor(container, cls) {
     ensureClassParams(cls);
@@ -5637,13 +5974,20 @@ function renderClassEditor(container, cls) {
             </div>
         </div>
 
-        <!-- DAFTAR SKILL YANG DIPELAJARI (LEARNINGS) -->
+        <!-- 🌳 CLASS SKILL TREE & LEVEL PROGRESSION -->
         <div class="card">
-            <div class="card-header">
-                <h2 title="Daftar kemampuan dan jurus yang dipelajari kelas ini berdasarkan level">📖 Class Skill Learnings</h2>
+            <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h2 title="Alur Skill Tree dan pohon keahlian profesi yang terbuka seiring kenaikan level">🌳 Class Skill Tree &amp; Level Progression</h2>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">Peta alur jurus yang otomatis dipelajari saat mencapai level tertentu</div>
+                </div>
                 <button class="btn btn-secondary btn-sm" onclick="addClassLearning();" title="Tambah skill baru yang dipelajari pada level tertentu">➕ Add Skill Learning</button>
             </div>
             <div class="card-body">
+                <div style="font-size:0.8rem; font-weight:700; color:#38bdf8; margin-bottom:4px;">🗺️ Visual Skill Tree Roadmap:</div>
+                ${renderClassSkillTreeRoadmap(cls)}
+
+                <div style="font-size:0.8rem; font-weight:700; color:#cbd5e1; margin-bottom:8px; margin-top:10px;">📋 Tabel Level Belajar (Editable):</div>
                 <div style="overflow-x:auto;">
                     <table class="stat-table">
                         <thead>
@@ -5655,14 +5999,14 @@ function renderClassEditor(container, cls) {
                             </tr>
                         </thead>
                         <tbody>
-                            ${cls.learnings.length === 0 ? `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:16px;">No skills learned yet. Click "+ Add Skill Learning" above.</td></tr>` : ''}
+                            ${cls.learnings.length === 0 ? `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:16px;">Belum ada skill yang dipelajari. Klik "+ Add Skill Learning" di atas.</td></tr>` : ''}
                             ${cls.learnings.map((l, i) => `
                                 <tr>
                                     <td>
-                                        <input type="number" min="1" max="99" class="form-control" style="padding:4px 8px; font-size:0.85rem;" value="${l.level || 1}" onchange="cls.learnings[${i}].level=parseInt(this.value,10); setUnsaved(true);">
+                                        <input type="number" min="1" max="99" class="form-control" style="padding:4px 8px; font-size:0.85rem;" value="${l.level || 1}" onchange="cls.learnings[${i}].level=parseInt(this.value,10); setUnsaved(true); renderEditor();">
                                     </td>
                                     <td>
-                                        <select class="form-control" style="padding:4px 8px; font-size:0.85rem;" onchange="cls.learnings[${i}].skillId=parseInt(this.value,10); setUnsaved(true);">
+                                        <select class="form-control" style="padding:4px 8px; font-size:0.85rem;" onchange="cls.learnings[${i}].skillId=parseInt(this.value,10); setUnsaved(true); renderEditor();">
                                             ${State.skills.filter(s => s).map(s => `<option value="${s.id}" ${l.skillId === s.id ? 'selected' : ''}>#${s.id} ${escapeHtml(s.name)}</option>`).join('')}
                                         </select>
                                     </td>
@@ -5676,6 +6020,37 @@ function renderClassEditor(container, cls) {
                             `).join('')}
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📜 KITAB & GULUNGAN PUSAKA KOMPATIBEL (SCROLL / TOME / GRIMOIRE) -->
+        <div class="card" style="margin-top:16px; border: 1px solid rgba(139, 92, 246, 0.4); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);">
+            <div class="card-header" style="background: linear-gradient(90deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <h2 title="Daftar Kitab Sihir &amp; Gulungan Fisik yang dapat dipelajari oleh kelas ini">📜 Kitab &amp; Gulungan Pusaka Kompatibel (Scroll / Tome / Grimoire)</h2>
+                        <span class="badge" style="background:rgba(139,92,246,0.2); color:#c4b5fd; border:1px solid rgba(139,92,246,0.4); font-size:0.75rem;" id="classScrollCountBadge">
+                            ${(getClassCompatibleScrollItems(cls.name) || []).length} Jurus Tersedia
+                        </span>
+                    </div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+                        Jurus tambahan yang dapat dipelajari secara permanen oleh <strong>${escapeHtml(cls.name)}</strong> melalui Kitab Sihir atau Gulungan Fisik.
+                    </div>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <div style="display:flex; gap:4px;">
+                        <button type="button" id="clsMainScrollCatAll" class="btn btn-sm ${classMainScrollCategory === 'all' ? 'btn-primary' : 'btn-secondary'}" onclick="onClassMainScrollCategory('all')" style="font-size:0.75rem; padding:3px 8px;">Semua</button>
+                        <button type="button" id="clsMainScrollCatPhys" class="btn btn-sm ${classMainScrollCategory === 'phys' ? 'btn-primary' : 'btn-secondary'}" onclick="onClassMainScrollCategory('phys')" style="font-size:0.75rem; padding:3px 8px;">📜 Gulungan Fisik</button>
+                        <button type="button" id="clsMainScrollCatMagic" class="btn btn-sm ${classMainScrollCategory === 'magic' ? 'btn-primary' : 'btn-secondary'}" onclick="onClassMainScrollCategory('magic')" style="font-size:0.75rem; padding:3px 8px;">📖 Kitab Sihir</button>
+                    </div>
+                    <input type="text" class="form-control" style="width:180px; font-size:0.75rem; padding:4px 8px;" placeholder="🔍 Filter nama / jurus..." value="${escapeHtml(classMainScrollQuery)}" oninput="onClassMainScrollSearch(this.value)">
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="classScrollMainGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; max-height:480px; overflow-y:auto; padding-right:4px;">
+                    <!-- Populated dynamically by renderClassMainScrollGrid -->
                 </div>
             </div>
         </div>
@@ -5859,7 +6234,9 @@ function renderClassEditor(container, cls) {
         </div>
     `;
 
-    setTimeout(updateClassSimulationLive, 10); setTimeout(drawExpCurveGraph, 20);
+    setTimeout(updateClassSimulationLive, 10);
+    setTimeout(renderClassMainScrollGrid, 15);
+    setTimeout(drawExpCurveGraph, 20);
 }
 
 
@@ -5897,6 +6274,9 @@ function renderClassStatPreview(container, cls) {
     const classMaxLvl = parseInt(getTagVal(note, 'Class Max Level', ''), 10) || defaultMaxLvl;
     State.classTabSimLevel = Math.max(1, Math.min(State.classTabSimLevel || 1, classMaxLvl));
     const simLvl = State.classTabSimLevel;
+    State.classRightTab = State.classRightTab || 'tree';
+    const compats = typeof getClassCompatibleScrollItems === 'function' ? getClassCompatibleScrollItems(cls.name) : [];
+    const isScrolls = State.classRightTab === 'scrolls';
 
     container.innerHTML = `
         <!-- 1. JOB LEVEL SIMULATOR -->
@@ -5962,12 +6342,25 @@ function renderClassStatPreview(container, cls) {
             </div>
         </div>
 
-        <!-- 4. SKILLS UNLOCKED AT OR BELOW THIS LEVEL -->
+        <!-- 4. SKILL TREE & KITAB / GULUNGAN KOMPATIBEL -->
         <div class="card" style="margin-bottom:0;">
-            <div class="card-header" style="padding:8px 14px;">
-                <h2 style="font-size:0.85rem; margin:0; color:#eab308;">✨ Skills Unlocked (Job Lv 1 - ${simLvl})</h2>
+            <div class="card-header" style="padding:8px 12px; display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2 style="font-size:0.85rem; margin:0; color:#eab308;">🌟 Jurus &amp; Kemampuan Kelas</h2>
+                    <span id="classRightTabBadge" class="badge-sub" style="font-size:0.75rem; font-weight:700;">
+                        ${isScrolls ? `Kompatibel (${compats.length})` : `Job Lv 1 - ${simLvl}`}
+                    </span>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <button type="button" id="classRightTabTreeBtn" class="btn btn-sm ${!isScrolls ? 'btn-primary' : 'btn-secondary'}" style="flex:1; font-size:0.72rem; padding:4px 6px;" onclick="onClassRightTabChange('tree')" title="Lihat alur Skill Tree alami yang dipelajari saat naik Job Level">
+                        🌳 Skill Tree (${(cls.learnings || []).length})
+                    </button>
+                    <button type="button" id="classRightTabScrollBtn" class="btn btn-sm ${isScrolls ? 'btn-primary' : 'btn-secondary'}" style="flex:1; font-size:0.72rem; padding:4px 6px;" onclick="onClassRightTabChange('scrolls')" title="Lihat Kitab Sihir &amp; Gulungan Fisik yang bisa dipelajari kelas ini">
+                        📜 Kitab / Gulungan (${compats.length})
+                    </button>
+                </div>
             </div>
-            <div class="card-body" style="padding:8px 14px; max-height:220px; overflow-y:auto;" id="cls-sim-skills-container">
+            <div class="card-body" style="padding:8px 12px; max-height:260px; overflow-y:auto;" id="cls-sim-skills-container">
                 <!-- Populated dynamically by updateClassSimulationLive -->
             </div>
         </div>
