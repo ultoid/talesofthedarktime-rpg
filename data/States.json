@@ -94,13 +94,78 @@
     "maxTurns": 3,
     "message1": " terkena Poison!",
     "message2": " terkena Poison!",
-    "message3": " menderita efek Poison!",
+    "message3": " tersiksa oleh Poison!",
     "message4": " sembuh dari Poison!",
     "minTurns": 3,
     "motion": 1,
     "name": "Poison",
-    "note": "State ini memberikan efek: Regenerasi HP -4% Max HP/turn. | Boss: Boss dapat memakai State Rate yang lebih rendah jika diperlukan untuk balancing.\n\n<HRG Plus: -4%>",
+    "note": "<HRG Plus: -5%>\nState dasar racun murni. Mengurangi 5% Max HP setiap turn selama 3 turn.",
     "overlay": 1,
+    "priority": 60,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 7,
+        "value": -0.05
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 64,
+    "maxTurns": 3,
+    "message1": " terkena luka bakar Burn!",
+    "message2": " terkena luka bakar Burn!",
+    "message3": " terbakar oleh Burn!",
+    "message4": " pulih dari luka bakar Burn!",
+    "minTurns": 3,
+    "motion": 1,
+    "name": "Burn",
+    "note": "<HRG Plus: -4%>\nState luka bakar. Mengurangi 4% Max HP setiap turn dan melemahkan Serangan Fisik (ATK -20%) selama 3 turn.",
+    "overlay": 0,
+    "priority": 60,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 7,
+        "value": -0.04
+      },
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 0.8
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 11,
+    "maxTurns": 3,
+    "message1": " mengalami pendarahan Bleed!",
+    "message2": " mengalami pendarahan Bleed!",
+    "message3": " mengeluarkan darah akibat Bleed!",
+    "message4": " pendarahan Bleed telah berhenti!",
+    "minTurns": 3,
+    "motion": 1,
+    "name": "Bleed",
+    "note": "<HRG Plus: -4%>\nState pendarahan akibat luka senjata tajam. Mengurangi 4% Max HP setiap turn selama 3 turn.",
+    "overlay": 0,
     "priority": 60,
     "removeAtBattleEnd": true,
     "removeByDamage": false,
@@ -117,88 +182,39 @@
     ]
   },
   {
-    "id": 5,
-    "autoRemovalTiming": 2,
-    "chanceByDamage": 100,
-    "iconIndex": 64,
-    "maxTurns": 3,
-    "message1": " terkena Burn!",
-    "message2": " terkena Burn!",
-    "message3": " terbakar oleh Burn!",
-    "message4": " pulih dari Burn!",
-    "minTurns": 3,
-    "motion": 1,
-    "name": "Burn",
-    "note": "State ini memberikan efek: Regenerasi HP -2% Max HP/turn. | Boss: Boss menggunakan State Rate normal; jangan tambahkan efek Instant Death.\n\n<HRG Plus: -2%>",
-    "overlay": 0,
-    "priority": 60,
-    "removeAtBattleEnd": true,
-    "removeByDamage": false,
-    "removeByRestriction": false,
-    "removeByWalking": false,
-    "restriction": 0,
-    "stepsToRemove": 100,
-    "traits": [
-      {
-        "code": 22,
-        "dataId": 7,
-        "value": -0.02
-      }
-    ]
-  },
-  {
-    "id": 6,
-    "autoRemovalTiming": 2,
-    "chanceByDamage": 100,
-    "iconIndex": 11,
-    "maxTurns": 3,
-    "message1": " mengalami Bleed!",
-    "message2": " mengalami Bleed!",
-    "message3": " kehilangan HP akibat Bleed!",
-    "message4": " pulih dari Bleed!",
-    "minTurns": 3,
-    "motion": 1,
-    "name": "Bleed",
-    "note": "State ini memberikan efek: Regenerasi HP -3% Max HP/turn. | Boss: Boss dapat memakai State Rate yang lebih rendah jika diperlukan untuk balancing.\n\n<HRG Plus: -3%>",
-    "overlay": 0,
-    "priority": 60,
-    "removeAtBattleEnd": true,
-    "removeByDamage": false,
-    "removeByRestriction": false,
-    "removeByWalking": false,
-    "restriction": 0,
-    "stepsToRemove": 100,
-    "traits": [
-      {
-        "code": 22,
-        "dataId": 7,
-        "value": -0.03
-      }
-    ]
-  },
-  {
     "id": 7,
     "autoRemovalTiming": 2,
     "chanceByDamage": 100,
     "iconIndex": 9,
-    "maxTurns": 1,
-    "message1": " terkena Paralyze!",
-    "message2": " terkena Paralyze!",
-    "message3": " lumpuh akibat Paralyze!",
-    "message4": " sembuh dari Paralyze!",
-    "minTurns": 1,
+    "maxTurns": 3,
+    "message1": " terkena kelumpuhan Paralyze!",
+    "message2": " terkena kelumpuhan Paralyze!",
+    "message3": " gemetar lumpuh akibat Paralyze!",
+    "message4": " pulih dari kelumpuhan Paralyze!",
+    "minTurns": 3,
     "motion": 1,
     "name": "Paralyze",
-    "note": "State ini memberikan efek: Tidak dapat bertindak. | Boss: Disarankan State Rate Boss 50%.",
+    "note": "<Custom Action Start Effect>\nif (Math.random() < 0.30) {\n  user.clearActions();\n  var msg = user.name() + \" lumpuh dan tidak dapat bergerak!\";\n  $gameMessage.add(msg);\n}\n</Custom Action Start Effect>\nState kelumpuhan (Paralyze). Mengurangi Kecepatan (AGI) sebesar 50% dan memiliki peluang 30% gagal bertindak setiap aksi.",
     "overlay": 8,
     "priority": 80,
     "removeAtBattleEnd": true,
     "removeByDamage": false,
     "removeByRestriction": false,
     "removeByWalking": false,
-    "restriction": 4,
+    "restriction": 0,
     "stepsToRemove": 100,
-    "traits": []
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 0.5
+      },
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": -0.2
+      }
+    ]
   },
   {
     "id": 8,
@@ -208,22 +224,22 @@
       {
         "code": 22,
         "dataId": 1,
-        "value": -1
+        "value": -1.0
       }
     ],
     "iconIndex": 8,
-    "maxTurns": 5,
-    "message1": " terkena Sleep!",
-    "message2": " terkena Sleep!",
-    "message3": " sedang dalam kondisi Sleep...",
-    "message4": " terbangun dari Sleep!",
-    "minTurns": 1,
+    "maxTurns": 3,
+    "message1": " tertidur lelap!",
+    "message2": " tertidur lelap!",
+    "message3": " sedang tertidur!",
+    "message4": " terbangun dari tidur!",
+    "minTurns": 2,
     "motion": 2,
     "name": "Sleep",
-    "note": "Tidak bisa bergerak (Cannot Move), 1-5 turn, lepas jika kena damage",
-    "overlay": 7,
+    "note": "State tidur lelap (Sleep). Target tidak dapat bergerak, tetapi akan langsung terbangun jika menerima serangan fisik (100% chance).",
+    "overlay": 5,
     "priority": 90,
-    "removeAtBattleEnd": false,
+    "removeAtBattleEnd": true,
     "removeByDamage": true,
     "removeByRestriction": false,
     "removeByWalking": false,
@@ -236,16 +252,16 @@
     "chanceByDamage": 50,
     "traits": [],
     "iconIndex": 6,
-    "maxTurns": 4,
-    "message1": " terkena Confuse!",
-    "message2": " terkena Confuse!",
-    "message3": " berada dalam kondisi Confuse!",
-    "message4": " pulih dari Confuse!",
+    "maxTurns": 3,
+    "message1": " menjadi bingung!",
+    "message2": " menjadi bingung!",
+    "message3": " bertingkah bingung!",
+    "message4": " tersadar dari kebingungan!",
     "minTurns": 2,
     "motion": 1,
     "name": "Confuse",
-    "note": "Menyerang teman/acak, lepas jika kena damage",
-    "overlay": 5,
+    "note": "State kebingungan (Confuse). Target menyerang kawan atau lawan secara acak. 50% peluang pulih jika terkena serangan.",
+    "overlay": 6,
     "priority": 75,
     "removeAtBattleEnd": true,
     "removeByDamage": true,
@@ -260,14 +276,14 @@
     "chanceByDamage": 100,
     "iconIndex": 10,
     "maxTurns": 3,
-    "message1": " terkena Curse!",
-    "message2": " terkena Curse!",
-    "message3": " tersiksa oleh Curse!",
-    "message4": " terbebas dari Curse!",
+    "message1": " terkena kutukan Curse!",
+    "message2": " terkena kutukan Curse!",
+    "message3": " tersiksa oleh kutukan Curse!",
+    "message4": " terbebas dari kutukan Curse!",
     "minTurns": 3,
     "motion": 1,
     "name": "Curse",
-    "note": "State ini memberikan efek: ATK ×90%; MAT ×90%. | Boss: Boss dapat terkena state ini dengan resistance normal.",
+    "note": "<REC Rate: 0%>\nState kutukan hitam (Curse). Memblokir seluruh pemulihan HP (Anti-Heal) dan mengurangi Magic Attack sebesar 15% selama 3 turn.",
     "overlay": 9,
     "priority": 55,
     "removeAtBattleEnd": true,
@@ -278,14 +294,14 @@
     "stepsToRemove": 100,
     "traits": [
       {
-        "code": 21,
+        "code": 23,
         "dataId": 2,
-        "value": 0.9
+        "value": 0.0
       },
       {
         "code": 21,
         "dataId": 4,
-        "value": 0.9
+        "value": 0.85
       }
     ]
   },
@@ -295,14 +311,14 @@
     "chanceByDamage": 100,
     "iconIndex": 22,
     "maxTurns": 1,
-    "message1": " terkena Stun!",
-    "message2": " terkena Stun!",
-    "message3": " tidak dapat bergerak karena Stun!",
-    "message4": " pulih dari Stun!",
+    "message1": " pusing terkena Stun!",
+    "message2": " pusing terkena Stun!",
+    "message3": " tertegun oleh Stun!",
+    "message4": " pulih dari pusing Stun!",
     "minTurns": 1,
     "motion": 1,
     "name": "Stun",
-    "note": "State ini memberikan efek: Tidak dapat bertindak. | Boss: Disarankan State Rate Boss 35%.",
+    "note": "State pusing/tersentak (Stun). Target kehilangan giliran bertindak selama tepat 1 turn.",
     "overlay": 8,
     "priority": 90,
     "removeAtBattleEnd": true,
@@ -318,15 +334,15 @@
     "autoRemovalTiming": 2,
     "chanceByDamage": 100,
     "iconIndex": 65,
-    "maxTurns": 2,
-    "message1": " terkena Chill!",
-    "message2": " terkena Chill!",
-    "message3": " menggigil oleh Chill!",
-    "message4": " pulih dari Chill!",
-    "minTurns": 2,
+    "maxTurns": 3,
+    "message1": " gerakannya melambat oleh Slow!",
+    "message2": " gerakannya melambat oleh Slow!",
+    "message3": " bergerak lambat oleh Slow!",
+    "message4": " kecepatan kembali normal!",
+    "minTurns": 3,
     "motion": 1,
-    "name": "Chill",
-    "note": "State ini memberikan efek: AGI ×85%; EVA ×90%. | Boss: Boss dapat terkena Chill secara normal.",
+    "name": "Slow",
+    "note": "State perlambatan (Slow). Mengurangi Kecepatan (AGI) sebesar 30% dan Evasion sebesar 10% selama 3 turn.",
     "overlay": 0,
     "priority": 55,
     "removeAtBattleEnd": true,
@@ -339,48 +355,59 @@
       {
         "code": 21,
         "dataId": 6,
-        "value": 0.85
+        "value": 0.7
+      },
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": -0.1
       }
     ]
   },
   {
     "id": 13,
     "autoRemovalTiming": 2,
-    "chanceByDamage": 50,
+    "chanceByDamage": 100,
     "iconIndex": 65,
-    "maxTurns": 1,
-    "message1": " terkena Freeze!",
-    "message2": " terkena Freeze!",
-    "message3": " membeku dalam kondisi Freeze!",
-    "message4": " mencair dan lepas dari Freeze!",
-    "minTurns": 1,
+    "maxTurns": 2,
+    "message1": " membeku dalam Freeze!",
+    "message2": " membeku dalam Freeze!",
+    "message3": " membeku kaku oleh Freeze!",
+    "message4": " mencair dari es Freeze!",
+    "minTurns": 2,
     "motion": 1,
     "name": "Freeze",
-    "note": "State ini memberikan efek: Tidak dapat bertindak; dapat hilang saat terkena damage 50%. | Boss: Disarankan State Rate Boss 35%.",
+    "note": "<Custom React Effect>\nif (this.isDamage() && this.getItemElements().contains(2)) {\n  target.removeState(13);\n  var msg = target.name() + \" mencair dari pembekuan es akibat panas api!\";\n  $gameMessage.add(msg);\n}\n</Custom React Effect>\nState pembekuan es (Freeze). Target tidak dapat bergerak selama 2 turn. Jika terkena serangan berelemen Api (Fire), es akan langsung mencair!",
     "overlay": 0,
     "priority": 80,
     "removeAtBattleEnd": true,
-    "removeByDamage": true,
+    "removeByDamage": false,
     "removeByRestriction": false,
     "removeByWalking": false,
     "restriction": 4,
     "stepsToRemove": 100,
-    "traits": []
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": -1.0
+      }
+    ]
   },
   {
     "id": 14,
     "autoRemovalTiming": 2,
     "chanceByDamage": 100,
     "iconIndex": 3,
-    "maxTurns": 2,
-    "message1": " terkena Blind!",
-    "message2": " terkena Blind!",
-    "message3": " terganggu oleh Blind!",
-    "message4": " sembuh dari Blind!",
-    "minTurns": 2,
+    "maxTurns": 3,
+    "message1": " pandangannya dibutakan oleh Blind!",
+    "message2": " pandangannya dibutakan oleh Blind!",
+    "message3": " terhalang pandangannya oleh Blind!",
+    "message4": " pandangannya kembali jernih!",
+    "minTurns": 3,
     "motion": 1,
     "name": "Blind",
-    "note": "State ini memberikan efek: HIT ×50%. | Boss: Boss dapat terkena state ini dengan State Rate yang dikurangi.\n\n<HIT Rate: 50%>\n\n[PENDING MAPPING]\nCustom: HIT ×50%",
+    "note": "<HIT Plus: -50%>\nState kebutaan (Blind). Menurunkan akurasi serangan fisik (HIT) sebesar 50% selama 3 turn.",
     "overlay": 2,
     "priority": 60,
     "removeAtBattleEnd": true,
@@ -389,7 +416,13 @@
     "removeByWalking": false,
     "restriction": 0,
     "stepsToRemove": 100,
-    "traits": []
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 0,
+        "value": -0.5
+      }
+    ]
   },
   {
     "id": 15,
@@ -431,15 +464,15 @@
     "autoRemovalTiming": 2,
     "chanceByDamage": 100,
     "iconIndex": 4,
-    "maxTurns": 2,
-    "message1": " terkena Silence!",
-    "message2": " terkena Silence!",
-    "message3": " terkunci oleh Silence!",
-    "message4": " bebas dari Silence!",
-    "minTurns": 2,
+    "maxTurns": 3,
+    "message1": " terbungkam oleh Silence!",
+    "message2": " terbungkam oleh Silence!",
+    "message3": " tidak dapat mengucapkan mantra!",
+    "message4": " sihir kembali dapat dirapalkan!",
+    "minTurns": 3,
     "motion": 1,
     "name": "Silence",
-    "note": "State ini memberikan efek: Seal Skill Types: Black Magic, White Magic, Dark Magic. | Boss: Untuk Boss, disarankan Silence State Rate 25–50%.\n\n[PENDING MAPPING]\nSeal Skill Type: Dark Magic",
+    "note": "State pembungkaman (Silence). Menyegel penggunaan sihir White Magic dan Black Magic selama 3 turn.",
     "overlay": 3,
     "priority": 70,
     "removeAtBattleEnd": true,
@@ -497,26 +530,26 @@
     "chanceByDamage": 100,
     "traits": [
       {
-        "code": 21,
-        "dataId": 3,
-        "value": 0.5
+        "code": 23,
+        "dataId": 6,
+        "value": 1.3
       },
       {
-        "code": 21,
-        "dataId": 5,
-        "value": 0.5
+        "code": 23,
+        "dataId": 7,
+        "value": 1.3
       }
     ],
     "iconIndex": 77,
-    "maxTurns": 3,
-    "message1": " terkena Vulnerable!",
-    "message2": " terkena Vulnerable!",
-    "message3": " berada dalam kondisi Vulnerable!",
-    "message4": " pulih dari Vulnerable!",
-    "minTurns": 1,
+    "maxTurns": 2,
+    "message1": " pertahanannya jebol (Vulnerable)!",
+    "message2": " pertahanannya jebol (Vulnerable)!",
+    "message3": " rentan terhadap serangan!",
+    "message4": " pertahanan kembali kokoh!",
+    "minTurns": 2,
     "motion": 1,
     "name": "Vulnerable",
-    "note": "DEF dan MDF berkurang 50% selama 1-3 turn",
+    "note": "State zirah rapuh (Vulnerable). Meningkatkan seluruh kerusakan fisik dan sihir yang diterima target sebesar 30% selama 2 turn.",
     "overlay": 0,
     "priority": 50,
     "removeAtBattleEnd": true,
@@ -562,14 +595,14 @@
     "chanceByDamage": 100,
     "iconIndex": 5,
     "maxTurns": 2,
-    "message1": " terkena Taunt!",
-    "message2": " terkena Taunt!",
-    "message3": " terprovokasi oleh Taunt!",
-    "message4": " bebas dari efek Taunt!",
+    "message1": " memancing kemarahan musuh (Taunt)!",
+    "message2": " terprovokasi oleh Taunt!",
+    "message3": " mengunci target serangan!",
+    "message4": " efek provokasi telah hilang!",
     "minTurns": 2,
     "motion": 1,
     "name": "Taunt",
-    "note": "State ini memberikan efek: Forced/weighted targeting toward caster. | Boss: menggunakan taunt/aggro plugin atau custom BattleManager target hook.\n\n[PENDING MAPPING]\nCustom: Forced/weighted targeting toward caster",
+    "note": "State provokasi (Taunt). Menarik fokus serangan seluruh musuh ke pengguna (TGR 1000%) selama 2 turn.",
     "overlay": 4,
     "priority": 70,
     "removeAtBattleEnd": true,
@@ -580,36 +613,26 @@
     "stepsToRemove": 100,
     "traits": [
       {
-        "code": 42,
-        "dataId": 1,
-        "value": 0
-      },
-      {
-        "code": 42,
-        "dataId": 4,
-        "value": 0
-      },
-      {
-        "code": 42,
-        "dataId": 5,
-        "value": 0
+        "code": 23,
+        "dataId": 0,
+        "value": 10.0
       }
     ]
   },
   {
     "id": 21,
-    "autoRemovalTiming": 2,
+    "autoRemovalTiming": 0,
     "chanceByDamage": 100,
     "iconIndex": 0,
-    "maxTurns": 2,
+    "maxTurns": 1,
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": "",
-    "minTurns": 2,
+    "minTurns": 1,
     "motion": 0,
-    "name": "Severe Burn",
-    "note": "State ini memberikan efek: Regenerasi HP -4% Max HP/turn; Healing yang diterima -20%. | Boss: Boss dapat menahan state ini; pengurangan healing membutuhkan custom logic.\n\n<HRG Plus: -4%>\n<REC Rate: 80%>",
+    "name": "",
+    "note": "",
     "overlay": 0,
     "priority": 70,
     "removeAtBattleEnd": true,
@@ -618,18 +641,7 @@
     "removeByWalking": false,
     "restriction": 0,
     "stepsToRemove": 100,
-    "traits": [
-      {
-        "code": 22,
-        "dataId": 7,
-        "value": -0.04
-      },
-      {
-        "code": 23,
-        "dataId": 2,
-        "value": 0.8
-      }
-    ]
+    "traits": []
   },
   {
     "id": 22,
@@ -663,66 +675,7 @@
   },
   {
     "id": 23,
-    "autoRemovalTiming": 2,
-    "chanceByDamage": 100,
-    "iconIndex": 0,
-    "maxTurns": 2,
-    "message1": "",
-    "message2": "",
-    "message3": "",
-    "message4": "",
-    "minTurns": 2,
-    "motion": 0,
-    "name": "Confusion",
-    "note": "State ini memberikan efek: Restriction: Attack Anyone. | Boss: Disarankan State Rate Boss 25%.",
-    "overlay": 0,
-    "priority": 75,
-    "removeAtBattleEnd": true,
-    "removeByDamage": true,
-    "removeByRestriction": false,
-    "removeByWalking": false,
-    "restriction": 2,
-    "stepsToRemove": 100,
-    "traits": []
-  },
-  {
-    "id": 24,
-    "autoRemovalTiming": 2,
-    "chanceByDamage": 100,
-    "iconIndex": 0,
-    "maxTurns": 2,
-    "message1": "",
-    "message2": "",
-    "message3": "",
-    "message4": "",
-    "minTurns": 2,
-    "motion": 0,
-    "name": "Vulnerable 30%",
-    "note": "State ini memberikan efek: Damage fisik yang diterima 130%; Damage magic yang diterima 130%. | Boss: Boss dapat terkena secara normal, kecuali desain encounter menentukan lain.",
-    "overlay": 0,
-    "priority": 70,
-    "removeAtBattleEnd": true,
-    "removeByDamage": false,
-    "removeByRestriction": false,
-    "removeByWalking": false,
-    "restriction": 0,
-    "stepsToRemove": 100,
-    "traits": [
-      {
-        "code": 23,
-        "dataId": 6,
-        "value": 1.3
-      },
-      {
-        "code": 23,
-        "dataId": 7,
-        "value": 1.3
-      }
-    ]
-  },
-  {
-    "id": 25,
-    "autoRemovalTiming": 2,
+    "autoRemovalTiming": 0,
     "chanceByDamage": 100,
     "iconIndex": 0,
     "maxTurns": 1,
@@ -732,8 +685,56 @@
     "message4": "",
     "minTurns": 1,
     "motion": 0,
-    "name": "Vulnerable 60%",
-    "note": "State ini memberikan efek: Damage fisik yang diterima 160%; Damage magic yang diterima 160%. | Boss: Untuk Boss, pertimbangkan State Rate 50%.",
+    "name": "",
+    "note": "",
+    "overlay": 0,
+    "priority": 75,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 24,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 0,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "",
+    "note": "",
+    "overlay": 0,
+    "priority": 70,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 25,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 0,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "",
+    "note": "",
     "overlay": 0,
     "priority": 80,
     "removeAtBattleEnd": true,
@@ -742,33 +743,22 @@
     "removeByWalking": false,
     "restriction": 0,
     "stepsToRemove": 100,
-    "traits": [
-      {
-        "code": 23,
-        "dataId": 6,
-        "value": 1.6
-      },
-      {
-        "code": 23,
-        "dataId": 7,
-        "value": 1.6
-      }
-    ]
+    "traits": []
   },
   {
     "id": 26,
-    "autoRemovalTiming": 2,
+    "autoRemovalTiming": 0,
     "chanceByDamage": 100,
     "iconIndex": 0,
-    "maxTurns": 2,
+    "maxTurns": 1,
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": "",
-    "minTurns": 2,
+    "minTurns": 1,
     "motion": 0,
-    "name": "Vulnerable 100%",
-    "note": "State ini memberikan efek: Damage fisik yang diterima 200%; Damage magic yang diterima 200%. | Boss: Untuk Boss, disarankan State Rate 25% atau downgrade melalui script.",
+    "name": "",
+    "note": "",
     "overlay": 0,
     "priority": 90,
     "removeAtBattleEnd": true,
@@ -777,18 +767,7 @@
     "removeByWalking": false,
     "restriction": 0,
     "stepsToRemove": 100,
-    "traits": [
-      {
-        "code": 23,
-        "dataId": 6,
-        "value": 2
-      },
-      {
-        "code": 23,
-        "dataId": 7,
-        "value": 2
-      }
-    ]
+    "traits": []
   },
   {
     "id": 27,

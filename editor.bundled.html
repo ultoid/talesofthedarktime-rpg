@@ -2217,6 +2217,30 @@ function getRarityColor(rarity) {
     }
 }
 
+function getSkillTier(skill) {
+    if (!skill || !skill.note) return 0;
+    const m = skill.note.match(/<Skill Tier:\s*(\d+)>/i);
+    return m ? parseInt(m[1], 10) : 0;
+}
+
+function getSkillTmCompatibleClasses(skill) {
+    if (!skill || !skill.note) return [];
+    const m = skill.note.match(/<TM Compatible:\s*([^>]+)>/i);
+    if (!m) return [];
+    return m[1].split(',').map(s => s.trim()).filter(Boolean);
+}
+
+function isSkillExclusive(skill) {
+    if (!skill || !skill.note) return false;
+    return /<TM Status:\s*Exclusive>/i.test(skill.note) ||
+           /<Skill Type:\s*Ultimate>/i.test(skill.note);
+}
+
+function getSkillTmItem(skillId) {
+    if (!State.items) return null;
+    return State.items.find(it => it && it.effects && it.effects.some(e => e.code === 43 && e.dataId === skillId)) || null;
+}
+
 
 /* Inlined from editor_studio/js/api.js */
 /**
@@ -2494,22 +2518,48 @@ function setArmorSlotFilter(filterVal) {
     renderSidebar();
 }
 
+function skillMatchesFilter(skill, filterVal) {
+    if (!skill) return false;
+    if (!filterVal || filterVal === 'all') return true;
+    if (filterVal === 'basic') {
+        return !State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === skill.id));
+    }
+    if (filterVal === 'tm_available') {
+        return !isSkillExclusive(skill) && getSkillTmCompatibleClasses(skill).length > 0;
+    }
+    if (filterVal === 'exclusive_ult') {
+        return isSkillExclusive(skill);
+    }
+    if (filterVal.startsWith('tier_')) {
+        const t = parseInt(filterVal.replace('tier_', ''), 10);
+        return getSkillTier(skill) === t;
+    }
+    if (filterVal.startsWith('cls_')) {
+        const cid = parseInt(filterVal.replace('cls_', ''), 10);
+        const cls = State.classes[cid];
+        return cls && cls.learnings && cls.learnings.some(l => l.skillId === skill.id);
+    }
+    if (filterVal.startsWith('compat_')) {
+        const cname = filterVal.replace('compat_', '').toLowerCase();
+        const tmClasses = getSkillTmCompatibleClasses(skill);
+        const isLearned = State.classes.some(c => c && c.name.toLowerCase() === cname && c.learnings && c.learnings.some(l => l.skillId === skill.id));
+        return isLearned || tmClasses.some(tc => tc.toLowerCase() === cname);
+    }
+    // Fallback old numeric class ID
+    const cid = parseInt(filterVal, 10);
+    if (!isNaN(cid) && cid > 0) {
+        const cls = State.classes[cid];
+        return cls && cls.learnings && cls.learnings.some(l => l.skillId === skill.id);
+    }
+    return true;
+}
+
 function setSkillClassFilter(filterVal) {
     State.skillClassFilter = filterVal;
     if (filterVal !== 'all') {
         const currentSkill = State.skills[State.selectedIndex];
-        const isMatch = (skill) => {
-            if (!skill) return false;
-            if (filterVal === 'basic') {
-                return !State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === skill.id));
-            }
-            const cid = parseInt(filterVal, 10);
-            const cls = State.classes[cid];
-            return cls && cls.learnings && cls.learnings.some(l => l.skillId === skill.id);
-        };
-
-        if (!isMatch(currentSkill)) {
-            const firstMatch = State.skills.findIndex((s, idx) => idx > 0 && isMatch(s));
+        if (!skillMatchesFilter(currentSkill, filterVal)) {
+            const firstMatch = State.skills.findIndex((s, idx) => idx > 0 && skillMatchesFilter(s, filterVal));
             if (firstMatch !== -1) {
                 State.selectedIndex = firstMatch;
                 State.selectedIndices = State.selectedIndices || {};
@@ -2664,21 +2714,43 @@ function renderSidebar() {
             filterContainer.style.display = 'flex';
             const f = State.skillClassFilter || 'all';
             const totalCount = State.skills.filter(s => s).length;
-            const basicCount = State.skills.filter(s => s && !State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === s.id))).length;
+            const tmCount = State.skills.filter(s => s && !isSkillExclusive(s) && getSkillTmCompatibleClasses(s).length > 0).length;
+            const ultCount = State.skills.filter(s => s && isSkillExclusive(s)).length;
 
-            let classOptions = '';
+            let classLearnOptions = '';
+            let classCompatOptions = '';
             (State.classes || []).forEach(c => {
                 if (!c) return;
                 const learnedCount = (c.learnings || []).length;
                 const tier = getTagVal(c.note, 'Class Tier', '1');
-                classOptions += `<option value="${c.id}" ${String(f) === String(c.id) ? 'selected' : ''}>#${c.id} ${escapeHtml(c.name)} (T${tier}) (${learnedCount})</option>`;
+                const valCls = `cls_${c.id}`;
+                classLearnOptions += `<option value="${valCls}" ${f === valCls || f === String(c.id) ? 'selected' : ''}>#${c.id} ${escapeHtml(c.name)} (T${tier}) (${learnedCount})</option>`;
+
+                const cnameLower = c.name.toLowerCase();
+                const compatCount = State.skills.filter(s => s && skillMatchesFilter(s, `compat_${cnameLower}`)).length;
+                const valCompat = `compat_${cnameLower}`;
+                classCompatOptions += `<option value="${valCompat}" ${f === valCompat ? 'selected' : ''}>${escapeHtml(c.name)} (${compatCount} Jurus)</option>`;
             });
 
             filterContainer.innerHTML = `
-                <select class="form-control" onchange="setSkillClassFilter(this.value)" title="Filter skill berdasarkan profesi / kelas yang mempelajarinya">
-                    <option value="all" ${f === 'all' ? 'selected' : ''}>✨ Semua Kelas (All Skills) (${totalCount})</option>
-                    <option value="basic" ${f === 'basic' ? 'selected' : ''}>🌐 Skill Dasar / Universal (${basicCount})</option>
-                    ${classOptions}
+                <select class="form-control" onchange="setSkillClassFilter(this.value)" title="Filter skill berdasarkan kategori, tier, atau profesi">
+                    <option value="all" ${f === 'all' ? 'selected' : ''}>✨ Semua Skill (${totalCount})</option>
+                    <option value="tm_available" ${f === 'tm_available' ? 'selected' : ''}>📜 Memiliki Gulungan TM (${tmCount})</option>
+                    <option value="exclusive_ult" ${f === 'exclusive_ult' ? 'selected' : ''}>👑 Jurus Pamungkas Eksklusif (${ultCount})</option>
+                    <optgroup label="--- Filter Berdasarkan Tier ---">
+                        <option value="tier_1" ${f === 'tier_1' ? 'selected' : ''}>Tier 1 - Novice</option>
+                        <option value="tier_2" ${f === 'tier_2' ? 'selected' : ''}>Tier 2 - Basic</option>
+                        <option value="tier_3" ${f === 'tier_3' ? 'selected' : ''}>Tier 3 - Intermediate</option>
+                        <option value="tier_4" ${f === 'tier_4' ? 'selected' : ''}>Tier 4 - Advanced Promoted</option>
+                        <option value="tier_5" ${f === 'tier_5' ? 'selected' : ''}>Tier 5 - Master Specialist</option>
+                        <option value="tier_6" ${f === 'tier_6' ? 'selected' : ''}>Tier 6 - Transcendent Legend</option>
+                    </optgroup>
+                    <optgroup label="--- Dikuasai Alami (Level-Up) ---">
+                        ${classLearnOptions}
+                    </optgroup>
+                    <optgroup label="--- Kompatibel TM (Movepool Lengkap) ---">
+                        ${classCompatOptions}
+                    </optgroup>
                 </select>
             `;
         } else if (State.currentTab === 'items') {
@@ -2741,15 +2813,7 @@ function renderSidebar() {
             if (String(item.wtypeId) !== String(State.weaponTypeFilter)) return;
         }
         if (State.currentTab === 'skills' && State.skillClassFilter && State.skillClassFilter !== 'all') {
-            if (State.skillClassFilter === 'basic') {
-                const isLearned = State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === item.id));
-                if (isLearned) return;
-            } else {
-                const targetClassId = parseInt(State.skillClassFilter, 10);
-                const cls = State.classes[targetClassId];
-                const hasSkill = cls && cls.learnings && cls.learnings.some(l => l.skillId === item.id);
-                if (!hasSkill) return;
-            }
+            if (!skillMatchesFilter(item, State.skillClassFilter)) return;
         }
         if (State.currentTab === 'items' && State.itemCategoryFilter && State.itemCategoryFilter !== 'all') {
             if (getItemCategory(item) !== State.itemCategoryFilter) return;
@@ -2784,12 +2848,26 @@ function renderSidebar() {
             const sName = slotNames[item.etypeId] || '';
             if (sName) extraTag = `<span class="list-badge" style="color:#94a3b8; border-color:rgba(148,163,184,0.3);">${escapeHtml(sName)}</span>`;
         } else if (State.currentTab === 'skills') {
+            const tier = getSkillTier(item);
             const classIds = getSkillClassIds(item.id);
+            const tmClasses = getSkillTmCompatibleClasses(item);
+            const isExclusive = isSkillExclusive(item);
+
+            let badges = [];
+            if (tier > 0) {
+                badges.push(`<span class="list-badge" style="color:#f59e0b; border-color:rgba(245,158,11,0.3); font-weight:700;">T${tier}</span>`);
+            }
             if (classIds.length > 0) {
                 const clsName = State.classes[classIds[0]]?.name || `Cls #${classIds[0]}`;
-                const more = classIds.length > 1 ? ` +${classIds.length - 1}` : '';
-                extraTag = `<span class="list-badge" style="color:#a78bfa; border-color:rgba(167,139,250,0.3);">${escapeHtml(clsName)}${more}</span>`;
+                badges.push(`<span class="list-badge" style="color:#a78bfa; border-color:rgba(167,139,250,0.3);">${escapeHtml(clsName)}</span>`);
             }
+            if (isExclusive) {
+                badges.push(`<span class="list-badge" style="color:#ef4444; border-color:rgba(239,68,68,0.3); font-weight:700;">★ Ult</span>`);
+            } else if (tmClasses.length > 0) {
+                badges.push(`<span class="list-badge" style="color:#10b981; border-color:rgba(16,185,129,0.3);" title="Kompatibel TM: ${escapeHtml(tmClasses.join(', '))}">+${tmClasses.length} TM</span>`);
+            }
+
+            extraTag = badges.join(' ');
         } else if (State.currentTab === 'items') {
             const cat = getItemCategory(item);
             if (cat) extraTag = `<span class="list-badge" style="color:#fbbf24; border-color:rgba(251,191,36,0.3);">${escapeHtml(cat)}</span>`;
@@ -7078,6 +7156,19 @@ function renderSkillEditor(container, skill) {
     const learnJp = getTagVal(note, 'Learn JP', '');
     const learnGold = getTagVal(note, 'Learn Gold', '');
     const learnClass = getTagVal(note, 'Learn Class', '');
+    const tier = getSkillTier(skill);
+    const tmClasses = getSkillTmCompatibleClasses(skill);
+    const isExclusive = isSkillExclusive(skill);
+    const tmItem = getSkillTmItem(skill.id);
+    const movepoolClass = getTagVal(note, 'Class Movepool', '');
+    const tierLabels = {
+        1: 'Tier 1 - Novice',
+        2: 'Tier 2 - Basic',
+        3: 'Tier 3 - Intermediate',
+        4: 'Tier 4 - Advanced Promoted',
+        5: 'Tier 5 - Master Specialist',
+        6: 'Tier 6 - Transcendent Legend'
+    };
     const learnItem = getTagVal(note, 'Learn Item', '');
     const learnSwitch = getTagVal(note, 'Learn Switch', '');
     const hideIfLearned = hasTag(note, 'Hide If Learned');
@@ -7096,6 +7187,50 @@ function renderSkillEditor(container, skill) {
     const elements = State.system.elements || [];
 
     container.innerHTML = `
+        <!-- NUSVANIR MOVEPOOL & TM SYSTEM CARD -->
+        <div class="card" style="border:1px solid #8b5cf655; background:linear-gradient(180deg, rgba(30,27,75,0.45) 0%, rgba(15,23,42,0.6) 100%); margin-bottom:16px;">
+            <div class="card-header" style="border-bottom:1px solid #8b5cf633; display:flex; justify-content:space-between; align-items:center;">
+                <h2 style="color:#c4b5fd; font-size:1.05rem; display:flex; align-items:center; gap:8px;">
+                    <span>🌟</span> Nusvanir Movepool &amp; Pokémon TM System
+                </h2>
+                <span class="badge" style="background:#8b5cf622; color:#c4b5fd; border:1px solid #8b5cf655; font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:9999px;">
+                    ${tierLabels[tier] || 'Tier ' + (tier || 1)}
+                </span>
+            </div>
+            <div class="card-body" style="padding:14px;">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-bottom:12px;">
+                    <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:10px;">
+                        <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">DIKUASAI ALAMI (LEVEL UP)</div>
+                        <div style="font-size:0.95rem; font-weight:700; color:#38bdf8; margin-top:3px;">
+                            ${escapeHtml(movepoolClass || learnClass || 'Universal')}
+                        </div>
+                    </div>
+                    <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:10px;">
+                        <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">STATUS GULUNGAN TM</div>
+                        <div style="font-size:0.95rem; font-weight:700; color:${isExclusive ? '#f87171' : '#34d399'}; margin-top:3px;">
+                            ${isExclusive ? '★ Eksklusif (Signature Move)' : (tmItem ? `Item #${tmItem.id} (${escapeHtml(tmItem.name)})` : 'Tersedia via Gulungan TM')}
+                        </div>
+                    </div>
+                    <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:10px;">
+                        <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">SYARAT SENJATA</div>
+                        <div style="font-size:0.95rem; font-weight:700; color:#fbbf24; margin-top:3px;">
+                            ${(skill.requiredWtypeId1 === 0 && skill.requiredWtypeId2 === 0) ? 'Bebas / Tanpa Syarat Senjata' : ((State.system.weaponTypes[skill.requiredWtypeId1] || 'Senjata') + (skill.requiredWtypeId2 > 0 ? ' / ' + State.system.weaponTypes[skill.requiredWtypeId2] : ''))}
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; margin-bottom:6px;">
+                        ${isExclusive ? '👑 HANYA DIKUASAI OLEH:' : `📜 KELAS YANG BISA MEMPELAJARI VIA TM (${tmClasses.length} KELAS):`}
+                    </div>
+                    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                        ${isExclusive ? `<span class="badge" style="background:#ef444422; color:#f87171; border:1px solid #ef444455; padding:4px 10px; font-weight:600;">Khusus ${escapeHtml(learnClass || 'Master')} (Jurus Pamungkas)</span>` : 
+                        (tmClasses.length > 0 ? tmClasses.map(c => `<span class="badge" style="background:#10b98122; color:#34d399; border:1px solid #10b98155; padding:3px 9px; font-size:0.8rem; font-weight:600;">${escapeHtml(c)}</span>`).join('') : '<span style="color:var(--text-muted); font-size:0.85rem;">Semua kelas yang kompatibel</span>')}
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- IDENTITAS & PENGGUNAAN SKILL -->
         <div class="card">
             <div class="card-header">
@@ -7265,7 +7400,10 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                             <label title="Kelas tertentu yang disyaratkan untuk mempelajari skill ini">Prerequisite Class</label>
                             <select class="form-control" onchange="setTagVal(skill, 'Learn Class', this.value);">
                                 <option value="" title="Dapat dipelajari oleh kelas apa pun">(Any Class)</option>
-                                ${State.classes.filter(c => c).map(c => `<option value="${c.id}" ${learnClass === String(c.id) ? 'selected' : ''}>#${c.id} ${escapeHtml(c.name)}</option>`).join('')}
+                                ${State.classes.filter(c => c).map(c => {
+                                    const isSel = (learnClass === String(c.id) || (learnClass && c.name.toLowerCase() === learnClass.toLowerCase()));
+                                    return `<option value="${c.id}" ${isSel ? 'selected' : ''}>#${c.id} ${escapeHtml(c.name)}</option>`;
+                                }).join('')}
                             </select>
                         </div>
                         <div class="form-group">

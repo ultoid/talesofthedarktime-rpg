@@ -30,6 +30,13 @@
  * @off OFF
  * @default false
  *
+ * @param Retain Learned Skills
+ * @type boolean
+ * @on ON
+ * @off OFF
+ * @default true
+ * @desc If true, actors permanently retain learned skills across class changes (Pokemon Movepool style).
+ *
  * @help
  * ============================================================================
  * NUSV_ClassChange
@@ -200,6 +207,7 @@ NUSV.ClassChange = NUSV.ClassChange || {};
     var maintainLevel = String(params['Maintain Level'] || 'true') === 'true';
     var restoreHpMp = String(params['Restore HP MP'] || 'true') === 'true';
     var allowSameClass = String(params['Allow Same Class'] || 'false') === 'true';
+    var retainSkills = String(params['Retain Learned Skills'] || 'true') === 'true';
 
     // -------------------------------------------------------------------------
     // Utilities
@@ -425,6 +433,13 @@ NUSV.ClassChange = NUSV.ClassChange || {};
     };
 
     Game_Actor.prototype.nusvForgetActiveClassLearnedSkills = function() {
+        if (retainSkills) {
+            // Nusvanir Pokemon-style Movepool System:
+            // Skills once learned/mastered are permanently retained by the actor!
+            this._nusvActiveClassLearningSkills = [];
+            return;
+        }
+
         var activeSkills = this._nusvActiveClassLearningSkills;
         if (!activeSkills) {
             var classLevel = this.nusvClassLevel ? this.nusvClassLevel(this._classId) : this.level;
@@ -435,6 +450,24 @@ NUSV.ClassChange = NUSV.ClassChange || {};
             this.forgetSkill(Number(skillId));
         }, this);
         this._nusvActiveClassLearningSkills = [];
+    };
+
+
+    // Cross-Class Movepool Support:
+    // If an actor has learned skills of types not native to their current class (e.g. via TM or previous class),
+    // automatically include those skill types so the commands appear in the battle menu!
+    var _NUSV_CC_Game_Actor_addedSkillTypes = Game_Actor.prototype.addedSkillTypes;
+    Game_Actor.prototype.addedSkillTypes = function() {
+        var types = _NUSV_CC_Game_Actor_addedSkillTypes.call(this);
+        if (retainSkills && this._skills && $dataSkills) {
+            for (var i = 0; i < this._skills.length; i++) {
+                var skill = $dataSkills[this._skills[i]];
+                if (skill && skill.stypeId > 0 && types.indexOf(skill.stypeId) === -1) {
+                    types.push(skill.stypeId);
+                }
+            }
+        }
+        return types;
     };
 
     Game_Actor.prototype.nusvRefreshClassLearnedSkills = function() {

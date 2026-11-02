@@ -403,6 +403,117 @@ NUSV.SkillLearn = NUSV.SkillLearn || {};
         return true;
     };
 
+    // -------------------------------------------------------------------------
+    // Pokemon-Style TM (Technical Machine / Gulungan Jurus) Compatibility
+    // -------------------------------------------------------------------------
+
+    Game_Actor.prototype.nusvCanLearnTmSkill = function(skillId) {
+        var skill = $dataSkills[Number(skillId)];
+        if (!skill) return false;
+        if (this.isLearnedSkill(skill.id)) return false;
+
+        // Ultimate / Signature moves cannot be taught via TM
+        if (hasTag(skill, 'TM Status: Exclusive') ||
+            (noteValue(skill, 'Skill Type') || '').toLowerCase() === 'ultimate') {
+            return false;
+        }
+
+        var compatRaw = noteValue(skill, 'TM Compatible');
+        if (!compatRaw) return true; // Universal if no restriction tag
+
+        var allowedList = compatRaw.split(',').map(function(s) {
+            return s.trim().toLowerCase();
+        });
+
+        // 1. Check current active class
+        var curClass = $dataClasses[this._classId];
+        var curClassName = curClass ? curClass.name.toLowerCase() : '';
+        if (allowedList.indexOf(curClassName) !== -1) return true;
+
+        // 2. Check any unlocked/mastered classes (NUSV_ClassChange integration)
+        var unlocked = this.nusvUnlockedClasses ? this.nusvUnlockedClasses() : {};
+        for (var cid in unlocked) {
+            if (unlocked[cid] && $dataClasses[cid]) {
+                if (allowedList.indexOf($dataClasses[cid].name.toLowerCase()) !== -1) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    };
+
+    // Hook Game_Action.testItemEffect to enforce TM compatibility when using items!
+    var _NUSV_SL_Game_Action_testItemEffect = Game_Action.prototype.testItemEffect;
+    Game_Action.prototype.testItemEffect = function(target, effect) {
+        if (effect.code === Game_Action.EFFECT_LEARN_SKILL) {
+            if (!target || !target.isActor()) return false;
+            if (target.isLearnedSkill(effect.dataId)) return false;
+            return target.nusvCanLearnTmSkill(effect.dataId);
+        }
+        return _NUSV_SL_Game_Action_testItemEffect.call(this, target, effect);
+    };
+
+    // Window_MenuActor: Dim and disable actors who are unable to learn the selected TM item
+    var _NUSV_SL_Window_MenuActor_isCurrentItemEnabled = Window_MenuActor.prototype.isCurrentItemEnabled;
+    Window_MenuActor.prototype.isCurrentItemEnabled = function() {
+        if (SceneManager._scene && typeof SceneManager._scene.item === 'function') {
+            var item = SceneManager._scene.item();
+            if (item && item.effects) {
+                for (var i = 0; i < item.effects.length; i++) {
+                    if (item.effects[i].code === Game_Action.EFFECT_LEARN_SKILL) {
+                        var actor = $gameParty.members()[this.index()];
+                        if (!actor) return false;
+                        var action = new Game_Action($gameParty.menuActor() || actor);
+                        action.setItemObject(item);
+                        return action.testApply(actor);
+                    }
+                }
+            }
+        }
+        return _NUSV_SL_Window_MenuActor_isCurrentItemEnabled ? _NUSV_SL_Window_MenuActor_isCurrentItemEnabled.call(this) : true;
+    };
+
+    // Window_MenuStatus: Draw TM status badge ([BISA BELAJAR] / [Sudah Tahu] / [Tidak Kompatibel])
+    var _NUSV_SL_Window_MenuStatus_drawItemStatus = Window_MenuStatus.prototype.drawItemStatus;
+    Window_MenuStatus.prototype.drawItemStatus = function(index) {
+        _NUSV_SL_Window_MenuStatus_drawItemStatus.call(this, index);
+
+        if (SceneManager._scene && typeof SceneManager._scene.item === 'function') {
+            var item = SceneManager._scene.item();
+            if (item && item.effects) {
+                var tmSkillId = 0;
+                for (var i = 0; i < item.effects.length; i++) {
+                    if (item.effects[i].code === Game_Action.EFFECT_LEARN_SKILL) {
+                        tmSkillId = item.effects[i].dataId;
+                        break;
+                    }
+                }
+                if (tmSkillId > 0) {
+                    var actor = $gameParty.members()[index];
+                    if (actor) {
+                        var rect = this.itemRect(index);
+                        var badgeX = rect.x + rect.width - 165;
+                        var badgeY = rect.y + 4;
+                        var badgeWidth = 155;
+
+                        if (actor.isLearnedSkill(tmSkillId)) {
+                            this.changeTextColor(this.textColor(8)); // Dim grey
+                            this.drawText('✔ Sudah Tahu', badgeX, badgeY, badgeWidth, 'right');
+                        } else if (actor.nusvCanLearnTmSkill(tmSkillId)) {
+                            this.changeTextColor(this.textColor(29)); // Bright cyan/green
+                            this.drawText('★ BISA BELAJAR', badgeX, badgeY, badgeWidth, 'right');
+                        } else {
+                            this.changeTextColor(this.textColor(18)); // Dim red
+                            this.drawText('✖ Tidak Kompatibel', badgeX, badgeY, badgeWidth, 'right');
+                        }
+                        this.resetTextColor();
+                    }
+                }
+            }
+        }
+    };
+
     function Window_NUSVSkillLearnList() {
         this.initialize.apply(this, arguments);
     }
@@ -429,29 +540,38 @@ NUSV.SkillLearn = NUSV.SkillLearn || {};
         this._data = [];
         if (!this._actor) return;
 
+        var curClass = $dataClasses[this._actor._classId];
+        var curClassName = curClass ? curClass.name.toLowerCase() : '';
+        var unlocked = this._actor.nusvUnlockedClasses ? this._actor.nusvUnlockedClasses() : {};
+
         for (var i = 1; i < $dataSkills.length; ++i) {
             var skill = $dataSkills[i];
-            if (!skill) continue;
+            if (!skill || !skill.name) continue;
 
             if (hasTag(skill, 'Hide If Learned') && this._actor.isLearnedSkill(skill.id)) continue;
 
-            if (noteValue(skill, 'Learn JP') != null ||
-                noteValue(skill, 'Learn Gold') != null ||
-                noteValue(skill, 'Learn Level') != null ||
-                noteValue(skill, 'Learn Class') != null ||
-                noteValue(skill, 'Learn Race') != null ||
-                noteValue(skill, 'Learn Switch') != null ||
-                noteValue(skill, 'Learn Skill') != null ||
-                noteValue(skill, 'Learn Skill Type') != null ||
-                noteValue(skill, 'Learn Item') != null ||
-                noteValue(skill, 'Learn Weapon') != null ||
-                noteValue(skill, 'Learn Armor') != null ||
-                multiline(skill, 'Learn Requirement') ||
-                multiline(skill, 'Learn Cost Eval') ||
-                multiline(skill, 'Learn Cost Pay')) {
+            var targetClass = noteValue(skill, 'Learn Class');
+            if (!targetClass) continue;
+
+            var targetClsObj = resolveClass(targetClass);
+            var targetClsId = targetClsObj ? targetClsObj.id : 0;
+            var targetClsName = targetClass.trim().toLowerCase();
+
+            // Filter to skills belonging to current class or unlocked classes
+            var isCurrent = (targetClsId === this._actor._classId || targetClsName === curClassName);
+            var isUnlocked = !!(unlocked[targetClsId]);
+
+            if (isCurrent || isUnlocked) {
                 this._data.push(skill);
             }
         }
+
+        // Sort by Learn Level ascending, then skill ID
+        this._data.sort(function(a, b) {
+            var la = Number(noteValue(a, 'Learn Level') || 0);
+            var lb = Number(noteValue(b, 'Learn Level') || 0);
+            return la !== lb ? la - lb : a.id - b.id;
+        });
     };
 
     Window_NUSVSkillLearnList.prototype.maxItems = function() {
@@ -472,18 +592,38 @@ NUSV.SkillLearn = NUSV.SkillLearn || {};
         if (!skill || !this._actor) return;
 
         var rect = this.itemRectForText(index);
-        var enabled = this._actor.nusvCanLearnSkill(skill.id);
+        var isLearned = this._actor.isLearnedSkill(skill.id);
+        var canLearn = this._actor.nusvCanLearnSkill(skill.id);
 
-        this.changePaintOpacity(enabled);
-        this.drawItemName(skill, rect.x, rect.y, rect.width - 120);
+        this.changePaintOpacity(isLearned || canLearn);
+        this.drawItemName(skill, rect.x, rect.y, rect.width - 150);
 
-        var cost = this._actor.nusvSkillLearnCost(skill.id);
-        var text = [];
-
-        if (cost.jp > 0) text.push(cost.jp + ' JP');
-        if (cost.gold > 0) text.push(cost.gold + ' G');
-
-        this.drawText(text.join(' / '), rect.x, rect.y, rect.width, 'right');
+        if (isLearned) {
+            this.changeTextColor(this.textColor(14)); // Gold/Cyan
+            this.drawText('✔ Dikuasai', rect.x, rect.y, rect.width, 'right');
+            this.resetTextColor();
+        } else if (canLearn) {
+            var cost = this._actor.nusvSkillLearnCost(skill.id);
+            var text = [];
+            if (cost.jp > 0) text.push(cost.jp + ' JP');
+            if (cost.gold > 0) text.push(cost.gold + ' G');
+            this.changeTextColor(this.textColor(0));
+            this.drawText(text.join(' / '), rect.x, rect.y, rect.width, 'right');
+            this.resetTextColor();
+        } else {
+            // Not learned, check level requirement
+            var reqLvl = Number(noteValue(skill, 'Learn Level') || 0);
+            var curLvl = this._actor.nusvClassLevel ? this._actor.nusvClassLevel(this._actor._classId) : this._actor.level;
+            this.changePaintOpacity(false);
+            if (curLvl < reqLvl) {
+                this.changeTextColor(this.textColor(18)); // Reddish
+                this.drawText('Butuh Lv ' + reqLvl, rect.x, rect.y, rect.width, 'right');
+            } else {
+                var cost = this._actor.nusvSkillLearnCost(skill.id);
+                this.drawText(cost.jp + ' JP', rect.x, rect.y, rect.width, 'right');
+            }
+            this.resetTextColor();
+        }
         this.changePaintOpacity(true);
     };
 
@@ -496,8 +636,26 @@ NUSV.SkillLearn = NUSV.SkillLearn || {};
             return;
         }
 
-        var custom = multiline(skill, 'Learn Description');
-        this._helpWindow.setText(custom || skill.description || '');
+        var customDesc = multiline(skill, 'Learn Description');
+        var desc = customDesc || skill.description || '';
+
+        var tier = noteValue(skill, 'Skill Tier') || '';
+        var cls = noteValue(skill, 'Learn Class') || '';
+        var lvl = noteValue(skill, 'Learn Level') || '';
+
+        var costParts = [];
+        if (skill.mpCost > 0) costParts.push(skill.mpCost + ' MP');
+        if (skill.tpCost > 0) costParts.push(skill.tpCost + ' SP');
+        var hpCost = noteValue(skill, 'HP Cost');
+        if (hpCost) costParts.push(hpCost + ' HP');
+
+        var header = '';
+        if (cls) header += '[' + cls + (lvl ? ' Lv ' + lvl : '') + '] ';
+        if (tier) header += '[Tier ' + tier + '] ';
+        if (costParts.length > 0) header += '[Biaya: ' + costParts.join(' / ') + ']';
+
+        var fullText = header ? header + '\n' + desc : desc;
+        this._helpWindow.setText(fullText);
     };
 
     Window_NUSVSkillLearnList.prototype.refresh = function() {

@@ -518,3 +518,27 @@ function getRarityColor(rarity) {
         default: return '#94a3b8';         // Silver/Gray (Common)
     }
 }
+
+function getSkillTier(skill) {
+    if (!skill || !skill.note) return 0;
+    const m = skill.note.match(/<Skill Tier:\s*(\d+)>/i);
+    return m ? parseInt(m[1], 10) : 0;
+}
+
+function getSkillTmCompatibleClasses(skill) {
+    if (!skill || !skill.note) return [];
+    const m = skill.note.match(/<TM Compatible:\s*([^>]+)>/i);
+    if (!m) return [];
+    return m[1].split(',').map(s => s.trim()).filter(Boolean);
+}
+
+function isSkillExclusive(skill) {
+    if (!skill || !skill.note) return false;
+    return /<TM Status:\s*Exclusive>/i.test(skill.note) ||
+           /<Skill Type:\s*Ultimate>/i.test(skill.note);
+}
+
+function getSkillTmItem(skillId) {
+    if (!State.items) return null;
+    return State.items.find(it => it && it.effects && it.effects.some(e => e.code === 43 && e.dataId === skillId)) || null;
+}

@@ -5,7 +5,13 @@ save/
 # Automatic JSON Backups
 data/backups/
 
+# Python Cache & Temp
+__pycache__/
+*.pyc
+
 # Temporary & Extracted Directories
 talesofthedarktime-rpg/
 .gemini/
 *.bak
+*.backup*.json
+*.backup*.js

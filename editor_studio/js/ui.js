@@ -96,22 +96,48 @@ function setArmorSlotFilter(filterVal) {
     renderSidebar();
 }
 
+function skillMatchesFilter(skill, filterVal) {
+    if (!skill) return false;
+    if (!filterVal || filterVal === 'all') return true;
+    if (filterVal === 'basic') {
+        return !State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === skill.id));
+    }
+    if (filterVal === 'tm_available') {
+        return !isSkillExclusive(skill) && getSkillTmCompatibleClasses(skill).length > 0;
+    }
+    if (filterVal === 'exclusive_ult') {
+        return isSkillExclusive(skill);
+    }
+    if (filterVal.startsWith('tier_')) {
+        const t = parseInt(filterVal.replace('tier_', ''), 10);
+        return getSkillTier(skill) === t;
+    }
+    if (filterVal.startsWith('cls_')) {
+        const cid = parseInt(filterVal.replace('cls_', ''), 10);
+        const cls = State.classes[cid];
+        return cls && cls.learnings && cls.learnings.some(l => l.skillId === skill.id);
+    }
+    if (filterVal.startsWith('compat_')) {
+        const cname = filterVal.replace('compat_', '').toLowerCase();
+        const tmClasses = getSkillTmCompatibleClasses(skill);
+        const isLearned = State.classes.some(c => c && c.name.toLowerCase() === cname && c.learnings && c.learnings.some(l => l.skillId === skill.id));
+        return isLearned || tmClasses.some(tc => tc.toLowerCase() === cname);
+    }
+    // Fallback old numeric class ID
+    const cid = parseInt(filterVal, 10);
+    if (!isNaN(cid) && cid > 0) {
+        const cls = State.classes[cid];
+        return cls && cls.learnings && cls.learnings.some(l => l.skillId === skill.id);
+    }
+    return true;
+}
+
 function setSkillClassFilter(filterVal) {
     State.skillClassFilter = filterVal;
     if (filterVal !== 'all') {
         const currentSkill = State.skills[State.selectedIndex];
-        const isMatch = (skill) => {
-            if (!skill) return false;
-            if (filterVal === 'basic') {
-                return !State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === skill.id));
-            }
-            const cid = parseInt(filterVal, 10);
-            const cls = State.classes[cid];
-            return cls && cls.learnings && cls.learnings.some(l => l.skillId === skill.id);
-        };
-
-        if (!isMatch(currentSkill)) {
-            const firstMatch = State.skills.findIndex((s, idx) => idx > 0 && isMatch(s));
+        if (!skillMatchesFilter(currentSkill, filterVal)) {
+            const firstMatch = State.skills.findIndex((s, idx) => idx > 0 && skillMatchesFilter(s, filterVal));
             if (firstMatch !== -1) {
                 State.selectedIndex = firstMatch;
                 State.selectedIndices = State.selectedIndices || {};
@@ -266,21 +292,43 @@ function renderSidebar() {
             filterContainer.style.display = 'flex';
             const f = State.skillClassFilter || 'all';
             const totalCount = State.skills.filter(s => s).length;
-            const basicCount = State.skills.filter(s => s && !State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === s.id))).length;
+            const tmCount = State.skills.filter(s => s && !isSkillExclusive(s) && getSkillTmCompatibleClasses(s).length > 0).length;
+            const ultCount = State.skills.filter(s => s && isSkillExclusive(s)).length;
 
-            let classOptions = '';
+            let classLearnOptions = '';
+            let classCompatOptions = '';
             (State.classes || []).forEach(c => {
                 if (!c) return;
                 const learnedCount = (c.learnings || []).length;
                 const tier = getTagVal(c.note, 'Class Tier', '1');
-                classOptions += `<option value="${c.id}" ${String(f) === String(c.id) ? 'selected' : ''}>#${c.id} ${escapeHtml(c.name)} (T${tier}) (${learnedCount})</option>`;
+                const valCls = `cls_${c.id}`;
+                classLearnOptions += `<option value="${valCls}" ${f === valCls || f === String(c.id) ? 'selected' : ''}>#${c.id} ${escapeHtml(c.name)} (T${tier}) (${learnedCount})</option>`;
+
+                const cnameLower = c.name.toLowerCase();
+                const compatCount = State.skills.filter(s => s && skillMatchesFilter(s, `compat_${cnameLower}`)).length;
+                const valCompat = `compat_${cnameLower}`;
+                classCompatOptions += `<option value="${valCompat}" ${f === valCompat ? 'selected' : ''}>${escapeHtml(c.name)} (${compatCount} Jurus)</option>`;
             });
 
             filterContainer.innerHTML = `
-                <select class="form-control" onchange="setSkillClassFilter(this.value)" title="Filter skill berdasarkan profesi / kelas yang mempelajarinya">
-                    <option value="all" ${f === 'all' ? 'selected' : ''}>✨ Semua Kelas (All Skills) (${totalCount})</option>
-                    <option value="basic" ${f === 'basic' ? 'selected' : ''}>🌐 Skill Dasar / Universal (${basicCount})</option>
-                    ${classOptions}
+                <select class="form-control" onchange="setSkillClassFilter(this.value)" title="Filter skill berdasarkan kategori, tier, atau profesi">
+                    <option value="all" ${f === 'all' ? 'selected' : ''}>✨ Semua Skill (${totalCount})</option>
+                    <option value="tm_available" ${f === 'tm_available' ? 'selected' : ''}>📜 Memiliki Gulungan TM (${tmCount})</option>
+                    <option value="exclusive_ult" ${f === 'exclusive_ult' ? 'selected' : ''}>👑 Jurus Pamungkas Eksklusif (${ultCount})</option>
+                    <optgroup label="--- Filter Berdasarkan Tier ---">
+                        <option value="tier_1" ${f === 'tier_1' ? 'selected' : ''}>Tier 1 - Novice</option>
+                        <option value="tier_2" ${f === 'tier_2' ? 'selected' : ''}>Tier 2 - Basic</option>
+                        <option value="tier_3" ${f === 'tier_3' ? 'selected' : ''}>Tier 3 - Intermediate</option>
+                        <option value="tier_4" ${f === 'tier_4' ? 'selected' : ''}>Tier 4 - Advanced Promoted</option>
+                        <option value="tier_5" ${f === 'tier_5' ? 'selected' : ''}>Tier 5 - Master Specialist</option>
+                        <option value="tier_6" ${f === 'tier_6' ? 'selected' : ''}>Tier 6 - Transcendent Legend</option>
+                    </optgroup>
+                    <optgroup label="--- Dikuasai Alami (Level-Up) ---">
+                        ${classLearnOptions}
+                    </optgroup>
+                    <optgroup label="--- Kompatibel TM (Movepool Lengkap) ---">
+                        ${classCompatOptions}
+                    </optgroup>
                 </select>
             `;
         } else if (State.currentTab === 'items') {
@@ -343,15 +391,7 @@ function renderSidebar() {
             if (String(item.wtypeId) !== String(State.weaponTypeFilter)) return;
         }
         if (State.currentTab === 'skills' && State.skillClassFilter && State.skillClassFilter !== 'all') {
-            if (State.skillClassFilter === 'basic') {
-                const isLearned = State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === item.id));
-                if (isLearned) return;
-            } else {
-                const targetClassId = parseInt(State.skillClassFilter, 10);
-                const cls = State.classes[targetClassId];
-                const hasSkill = cls && cls.learnings && cls.learnings.some(l => l.skillId === item.id);
-                if (!hasSkill) return;
-            }
+            if (!skillMatchesFilter(item, State.skillClassFilter)) return;
         }
         if (State.currentTab === 'items' && State.itemCategoryFilter && State.itemCategoryFilter !== 'all') {
             if (getItemCategory(item) !== State.itemCategoryFilter) return;
@@ -386,12 +426,26 @@ function renderSidebar() {
             const sName = slotNames[item.etypeId] || '';
             if (sName) extraTag = `<span class="list-badge" style="color:#94a3b8; border-color:rgba(148,163,184,0.3);">${escapeHtml(sName)}</span>`;
         } else if (State.currentTab === 'skills') {
+            const tier = getSkillTier(item);
             const classIds = getSkillClassIds(item.id);
+            const tmClasses = getSkillTmCompatibleClasses(item);
+            const isExclusive = isSkillExclusive(item);
+
+            let badges = [];
+            if (tier > 0) {
+                badges.push(`<span class="list-badge" style="color:#f59e0b; border-color:rgba(245,158,11,0.3); font-weight:700;">T${tier}</span>`);
+            }
             if (classIds.length > 0) {
                 const clsName = State.classes[classIds[0]]?.name || `Cls #${classIds[0]}`;
-                const more = classIds.length > 1 ? ` +${classIds.length - 1}` : '';
-                extraTag = `<span class="list-badge" style="color:#a78bfa; border-color:rgba(167,139,250,0.3);">${escapeHtml(clsName)}${more}</span>`;
+                badges.push(`<span class="list-badge" style="color:#a78bfa; border-color:rgba(167,139,250,0.3);">${escapeHtml(clsName)}</span>`);
             }
+            if (isExclusive) {
+                badges.push(`<span class="list-badge" style="color:#ef4444; border-color:rgba(239,68,68,0.3); font-weight:700;">★ Ult</span>`);
+            } else if (tmClasses.length > 0) {
+                badges.push(`<span class="list-badge" style="color:#10b981; border-color:rgba(16,185,129,0.3);" title="Kompatibel TM: ${escapeHtml(tmClasses.join(', '))}">+${tmClasses.length} TM</span>`);
+            }
+
+            extraTag = badges.join(' ');
         } else if (State.currentTab === 'items') {
             const cat = getItemCategory(item);
             if (cat) extraTag = `<span class="list-badge" style="color:#fbbf24; border-color:rgba(251,191,36,0.3);">${escapeHtml(cat)}</span>`;
