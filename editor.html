@@ -6867,8 +6867,6 @@ function updateRaceStateSync(race) {
         `<Race: ${race.name}>`,
         `<Race Key: ${race.name.toLowerCase()}>`,
         `<Race Group: ${race.group || 'Suku Bumi'}>`,
-        `<Race Ability: ${race.abilityName || ''}>`,
-        `<Race Ability Desc: ${race.abilityDesc || ''}>`,
         `<STR Rate: ${strRate}>`,
         `<INT Rate: ${intRate}>`,
         `<DEX Rate: ${dexRate}>`,
@@ -7058,33 +7056,6 @@ function renderRaceEditor(container, race) {
             </div>
         </div>
 
-        <!-- RACIAL SIGNATURE ABILITY -->
-        <div class="card">
-            <div class="card-header">
-                <div>
-                    <h2 style="font-size:1.1rem; font-weight:700; color:#fff;">✨ Racial Innate Ability (Bakat Bawaan Ras)</h2>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">
-                        Pasif alami yang aktif otomatis di pertempuran tanpa memakan slot jurus (diimplementasikan via State Trait).
-                    </p>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label>Nama Bakat / Ability</label>
-                    <input type="text" class="form-control" style="font-size:1rem; font-weight:700; color:#38bdf8;" 
-                           value="${escapeHtml(race.abilityName || '')}" 
-                           placeholder="Contoh: Harmony of Astradipa, Versatility, Lumina Aegis"
-                           onchange="onRaceFieldChange(window.currentItem, 'abilityName', this.value)">
-                </div>
-                <div class="form-group" style="margin-top:10px;">
-                    <label>Deskripsi Mekanik Efek Pasif</label>
-                    <textarea class="form-control" rows="2" 
-                              placeholder="Jelaskan efek tempur, resistensi elemen, atau bonus mekanik pasif..."
-                              onchange="onRaceFieldChange(window.currentItem, 'abilityDesc', this.value)">${escapeHtml(race.abilityDesc || '')}</textarea>
-                </div>
-            </div>
-        </div>
-
         <!-- LORE & DESKRIPSI DUNIA NUSVANIR -->
         <div class="card">
             <div class="card-header">
@@ -7160,13 +7131,6 @@ function renderRaceStatPreview(container, race) {
                         ${neutralStats.map(s => `<span class="badge" style="background:#334155; color:#cbd5e1;">${s.icon} ${s.code}</span>`).join('')}
                     </div>
                 </div>
-            </div>
-
-            <!-- SIGNATURE ABILITY BADGE -->
-            <div style="background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.2); border-radius:6px; padding:10px; margin-bottom:12px;">
-                <div style="font-size:0.75rem; font-weight:700; color:#38bdf8; text-transform:uppercase;">Bakat Bawaan:</div>
-                <div style="font-weight:700; color:#fff; font-size:0.9rem; margin-top:2px;">${escapeHtml(race.abilityName || '—')}</div>
-                <div style="font-size:0.78rem; color:#94a3b8; margin-top:4px; line-height:1.4;">${escapeHtml(race.abilityDesc || 'Belum ada deskripsi efek.')}</div>
             </div>
 
             <!-- RPG MAKER STATE LINK -->
