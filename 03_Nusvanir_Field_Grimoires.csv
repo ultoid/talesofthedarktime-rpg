@@ -1,0 +1,5 @@
+﻿Skill ID,Nama Mantra,Item ID,Nama Kitab Grimoire,Tipe Mantra,Biaya MP,Biaya SP,Akses Menu / Occasion,Sifat Item,Fungsi Lapangan & Eksplorasi
+560,Lumos,582,Grimoire: Lumos,White Magic,5,0,Battle & Menu (occasion: 0),Key Item (Permanen),"Menerangi area gua gelap gulita, dungeon tanpa obor, dan mengusir kabut pekat."
+561,Garuda's Wings,583,Grimoire: Garuda's Wings,Skill,10,0,Menu Lapangan Saja (occasion: 2),Key Item (Permanen),Memanggil sayap spiritual Garuda untuk melakukan Fast Travel seketika menuju kota atau pos yang telah disinggahi.
+562,Trailblaze,584,Grimoire: Trailblaze,Skill,0,10,Battle & Menu (occasion: 0),Key Item (Permanen),"Menyalurkan tebasan berdaya remuk tinggi untuk menghancurkan rintangan fisik di jalan (batu besar, reruntuhan, semak berduri)."
+563,Water Strider,585,Grimoire: Water Strider,White Magic,10,0,Menu Lapangan Saja (occasion: 2),Key Item (Permanen),"Membentuk pijakan aether di bawah kaki, memungkinkan karakter berjalan melintasi permukaan air di danau/kanal dungeon."
