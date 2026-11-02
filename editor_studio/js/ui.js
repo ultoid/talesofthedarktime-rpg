@@ -25,6 +25,18 @@ function ensureNavTabs() {
             nav.appendChild(raceBtn);
         }
     }
+
+    if (typeof renderRaceEditor === 'undefined' && typeof document !== 'undefined' && document.head) {
+        const existing = document.querySelector('script[src*="race_editor.js"]');
+        if (!existing) {
+            const s = document.createElement('script');
+            s.src = 'editor_studio/js/editors/race_editor.js?t=' + Date.now();
+            s.onload = () => {
+                if (State.currentTab === 'races') renderEditor();
+            };
+            document.head.appendChild(s);
+        }
+    }
 }
 
 function switchTab(tabKey) {
@@ -608,8 +620,21 @@ function renderEditor() {
         case 'races': 
             if (statTitle) statTitle.innerHTML = '🧬 Nature Stat Modifier';
             if (statSub) statSub.innerText = 'Racial Attributes & Nature Matrix';
-            renderRaceEditor(container, item); 
-            if (previewContainer) renderRaceStatPreview(previewContainer, item);
+            if (typeof renderRaceEditor === 'function') {
+                renderRaceEditor(container, item); 
+                if (previewContainer) renderRaceStatPreview(previewContainer, item);
+            } else {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">Memuat komponen editor ras...</div>`;
+                const scriptEl = document.createElement('script');
+                scriptEl.src = 'editor_studio/js/editors/race_editor.js?t=' + Date.now();
+                scriptEl.onload = () => {
+                    if (typeof renderRaceEditor === 'function') {
+                        renderRaceEditor(container, item);
+                        if (previewContainer) renderRaceStatPreview(previewContainer, item);
+                    }
+                };
+                document.head.appendChild(scriptEl);
+            }
             break;
         case 'weapons': 
             if (statTitle) statTitle.innerHTML = '⚔️ Weapon Stat Inspector';
