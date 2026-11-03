@@ -1676,7 +1676,7 @@ const State = {
     weaponTypeFilter: 'all',
     classTierFilter: 'all',
     raceGroupFilter: 'all',
-    skillClassFilter: 'all',
+    skillClassFilter: 'player_skills',
     itemCategoryFilter: 'all',
     stateCategoryFilter: 'all'
 };
@@ -2674,6 +2674,16 @@ function setArmorSlotFilter(filterVal) {
 function skillMatchesFilter(skill, filterVal) {
     if (!skill) return false;
     if (!filterVal || filterVal === 'all') return true;
+    if (filterVal === 'player_skills') {
+        return (State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === skill.id)) || skill.id <= 2) && skill.id <= 232;
+    }
+    if (filterVal === 'enemy_skills') {
+        const isPlayer = (State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === skill.id)) || skill.id <= 2) && skill.id <= 232;
+        return !isPlayer && skill.id < 426;
+    }
+    if (filterVal === 'grimoire_skills') {
+        return skill.id >= 426;
+    }
     if (filterVal === 'basic') {
         return !State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === skill.id));
     }
@@ -2868,8 +2878,11 @@ function renderSidebar() {
             filterContainer.style.display = 'flex';
             const f = State.skillClassFilter || 'all';
             const totalCount = State.skills.filter(s => s).length;
+            const playerSkillsCount = State.skills.filter(s => s && skillMatchesFilter(s, 'player_skills')).length;
             const tmCount = State.skills.filter(s => s && !isSkillExclusive(s) && getSkillTmCompatibleClasses(s).length > 0).length;
             const ultCount = State.skills.filter(s => s && isSkillExclusive(s)).length;
+            const enemySkillsCount = State.skills.filter(s => s && skillMatchesFilter(s, 'enemy_skills')).length;
+            const grimoireCount = State.skills.filter(s => s && skillMatchesFilter(s, 'grimoire_skills')).length;
 
             let classLearnOptions = '';
             let classCompatOptions = '';
@@ -2888,9 +2901,12 @@ function renderSidebar() {
 
             filterContainer.innerHTML = `
                 <select class="form-control" onchange="setSkillClassFilter(this.value)" title="Filter skill berdasarkan kategori, tier, atau profesi">
-                    <option value="all" ${f === 'all' ? 'selected' : ''}>✨ Semua Skill (${totalCount})</option>
+                    <option value="player_skills" ${f === 'player_skills' ? 'selected' : ''}>⚔️ Skill Kelas Pemain (${playerSkillsCount})</option>
                     <option value="tm_available" ${f === 'tm_available' ? 'selected' : ''}>📜 Memiliki Scroll (${tmCount})</option>
                     <option value="exclusive_ult" ${f === 'exclusive_ult' ? 'selected' : ''}>👑 Jurus Pamungkas Eksklusif (${ultCount})</option>
+                    <option value="enemy_skills" ${f === 'enemy_skills' ? 'selected' : ''}>👾 Aksi Monster & Musuh (${enemySkillsCount})</option>
+                    <option value="grimoire_skills" ${f === 'grimoire_skills' ? 'selected' : ''}>📖 Grimoire Lapangan (${grimoireCount})</option>
+                    <option value="all" ${f === 'all' ? 'selected' : ''}>✨ Semua Skill (${totalCount})</option>
                     <optgroup label="--- Filter Berdasarkan Tier ---">
                         <option value="tier_1" ${f === 'tier_1' ? 'selected' : ''}>Tier 1 - Novice</option>
                         <option value="tier_2" ${f === 'tier_2' ? 'selected' : ''}>Tier 2 - Basic</option>

@@ -6,7 +6,7 @@
     "englishName": "Human",
     "group": "Suku Bumi",
     "iconIndex": 86,
-    "stateId": 214,
+    "stateId": 48,
     "description": "Ras manusia fana yang membentuk tulang punggung peradaban daratan utama. Sangat adaptif dan fleksibel dalam penentuan takdir.",
     "modifiers": {
       "str": 1.0,
@@ -31,7 +31,7 @@
     "englishName": "Noble Human",
     "group": "Suku Bumi",
     "iconIndex": 87,
-    "stateId": 215,
+    "stateId": 49,
     "description": "Bangsawan terdidik Mandala, penguasa birokrasi dan akademi Loka Cakra. Menguasai teori sihir dan taktik, namun fisik dimanjakan kemewahan.",
     "modifiers": {
       "str": 0.9,
@@ -56,7 +56,7 @@
     "englishName": "Elf",
     "group": "Suku Bumi",
     "iconIndex": 73,
-    "stateId": 216,
+    "stateId": 50,
     "description": "Ras Elf pelindung Hutan Suci Astradipa. Memiliki afinitas luar biasa terhadap sihir alam dan kelincahan akrobatik di dahan pohon raksasa.",
     "modifiers": {
       "str": 0.9,
@@ -81,7 +81,7 @@
     "englishName": "Demigod",
     "group": "Suku Bumi",
     "iconIndex": 74,
-    "stateId": 217,
+    "stateId": 51,
     "description": "Keturunan cahaya suci Sang Hyang di Avalerion. Membawa pendaran energi suci dan ketahanan spiritual tinggi dengan gaya tempur kokoh ortodoks.",
     "modifiers": {
       "str": 1.0,
@@ -106,7 +106,7 @@
     "englishName": "Orc",
     "group": "Wuru Loka",
     "iconIndex": 105,
-    "stateId": 218,
+    "stateId": 52,
     "description": "Raksasa berkulit hijau/merah dari Gua Garbhagiri. Tenaga otot luar biasa dan haus kehormatan perang, namun menolak ilmu akademis rumit.",
     "modifiers": {
       "str": 1.1,
@@ -131,7 +131,7 @@
     "englishName": "Avian",
     "group": "Wuru Loka",
     "iconIndex": 69,
-    "stateId": 219,
+    "stateId": 53,
     "description": "Manusia burung bersayap emas dari Nusa Sayendra. Penguasa langit dengan inisiatif kecepatan dan akurasi tukikan mematikan.",
     "modifiers": {
       "str": 0.9,
@@ -156,7 +156,7 @@
     "englishName": "Monkey Beastman",
     "group": "Wuru Loka",
     "iconIndex": 104,
-    "stateId": 220,
+    "stateId": 54,
     "description": "Kaum Beastmen kera berakal budi tinggi dari Astradipa. Diberkati kelicikan Monkey King, master penyergapan, taktik perangkap, dan kombo kilat.",
     "modifiers": {
       "str": 0.9,
@@ -181,7 +181,7 @@
     "englishName": "Dragonkin",
     "group": "Wuru Loka",
     "iconIndex": 123,
-    "stateId": 221,
+    "stateId": 55,
     "description": "Reptil purba raksasa berakal budi tinggi dari lereng vulkanik Agnitra. Bersisik karang keras dengan nafas api destruktif penjaga pusaka kuno.",
     "modifiers": {
       "str": 1.1,
@@ -206,7 +206,7 @@
     "englishName": "Dark Elf",
     "group": "Wuru Loka",
     "iconIndex": 71,
-    "stateId": 222,
+    "stateId": 56,
     "description": "Elf buangan di bawah tanah Gua Wisamaya. Menguasai sihir bayangan, cakar beracun, dan kutukan berdarah dengan mata merah menyala.",
     "modifiers": {
       "str": 0.9,
@@ -231,7 +231,7 @@
     "englishName": "Troll",
     "group": "Wuru Loka",
     "iconIndex": 134,
-    "stateId": 223,
+    "stateId": 57,
     "description": "Pandai besi raksasa dari dataran tinggi Agnigarba. Kulitnya menyatu dengan logam cair sekeras baja dengan keahlian tempa dewa, namun serakah emas.",
     "modifiers": {
       "str": 1.0,
@@ -256,7 +256,7 @@
     "englishName": "Demigod Knight",
     "group": "Arkahyan",
     "iconIndex": 128,
-    "stateId": 224,
+    "stateId": 58,
     "description": "Ksatria suci surgawi penunggang Griffin di Avalerion. Pengawal hukum dunia dengan kedisiplinan militer dan pendaran cahaya suci.",
     "modifiers": {
       "str": 1.1,
@@ -281,7 +281,7 @@
     "englishName": "Demonkin",
     "group": "Drahkthar",
     "iconIndex": 135,
-    "stateId": 225,
+    "stateId": 59,
     "description": "Iblis elit komandan perang di Raksamala. Antitesis Avesari dengan kekuatan teror brutal dan manipulasi energi kegelapan pekat Sangrahal.",
     "modifiers": {
       "str": 1.1,

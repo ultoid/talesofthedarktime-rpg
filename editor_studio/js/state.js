@@ -40,7 +40,7 @@ const State = {
     weaponTypeFilter: 'all',
     classTierFilter: 'all',
     raceGroupFilter: 'all',
-    skillClassFilter: 'all',
+    skillClassFilter: 'player_skills',
     itemCategoryFilter: 'all',
     stateCategoryFilter: 'all'
 };

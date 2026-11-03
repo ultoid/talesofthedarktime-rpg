@@ -13,18 +13,20 @@ Database State telah dirampingkan secara menyeluruh dari 275+ entri lama yang tu
   *Death (#1), Defend (#2), Poison (#4), Burn (#5), Bleed (#6), Paralyze (#7), Sleep (#8), Confuse (#9), Curse (#10), Stun (#11), Slow (#12), Freeze (#13), Blind (#14), Fear (#15), Silence (#16), Root (#17), Vulnerable (#18), Haste (#19), Taunt (#20)*.
 * **ID #21 – #25 (Penanda Taktikal & Elemen):**  
   *Soaked (#21), Shock (#22), Petrify (#23), Float (#24), Marked (#25)*.
-* **ID #30 – #41 (Universal Stat Stages / Buff & Debuff):**  
+* **ID #26 – #37 (Universal Stat Stages / Buff & Debuff):**  
   Model *stage* (+/- 1 level stat) seragam untuk seluruh 50 kelas:  
-  *ATK Up/Down (±25%), DEF Up/Down (±30%), MAT Up/Down (±25%), MDF Up/Down (±30%), Speed Up (+35%), Critical Focus (+30% CRI), Evasion Up (+25% EVA), Barrier (-30% all damage received)*.
-* **ID #50 – #56 (Mode Tempur & Stance Spesifik):**  
+  *ATK Up (#26), ATK Down (#27), DEF Up (#28), DEF Down (#29), MAT Up (#30), MAT Down (#31), MDF Up (#32), MDF Down (#33), Speed Up (#34), Critical Focus (#35), Evasion Up (#36), Barrier (#37)*.
+* **ID #38 – #44 (Mode Tempur & Stance Spesifik):**  
   Mode pertarungan khas kelas:  
-  *Berserk Mode (#50), Dragon Stance (#51), Shadow Mode (#52), Avatar of Guardian (#53), State of Nirvana (#54), Chi Hyper-Burst (#55), Ancestral Protection (#56)*.
-* **ID #60 – #62 (Pasif Universal Aksesoris):**  
-  *Pasif: Iron Skin (#60), Pasif: Mind Focus (#61), Pasif: Fleet Footed (#62)*.
-* **ID #214 – #225 (12 Pasif Alami Ras):**  
-  Bawaan ras (*Pribumi, Wahanarsa, Asrivana, Avesari, Butoraksa, Garuda, Hanorok, Nagarasven, Rakshorien, Troliogoro, Dewantara, Bhuta*).
-* **ID #226 – #275 (50 Pasif Alami Kelas):**  
-  Terkait langsung dengan notetag `<Passive State: ID>` di `Classes.json`.
+  *Berserk Mode (#38), Dragon Stance (#39), Shadow Mode (#40), Avatar of Guardian (#41), State of Nirvana (#42), Chi Hyper-Burst (#43), Ancestral Protection (#44)*.
+* **ID #45 – #47 (Pasif Universal Aksesoris):**  
+  *Pasif: Iron Skin (#45), Pasif: Mind Focus (#46), Pasif: Fleet Footed (#47)*.
+* **ID #48 – #59 (12 Pasif Alami Ras):**  
+  Bawaan ras (*Pribumi (#48), Wahanarsa (#49), Asrivana (#50), Avesari (#51), Butoraksa (#52), Garuda (#53), Hanorok (#54), Nagarasven (#55), Rakshorien (#56), Troliogoro (#57), Dewantara (#58), Bhuta (#59)*).
+* **ID #60 – #109 (50 Pasif Alami Kelas):**  
+  Terkait langsung dengan notetag `<Passive State: ID>` di `Classes.json` (ID = 59 + Class ID).
+* **Pemadatan Database (0 Empty Slots):**  
+  Seluruh slot kosong (166 entri kosong) telah dipangkas habis sehingga database State kini sepenuhnya ringkas, padat, dan kontigu dari ID #1 hingga #109.
 * **Integritas Database:** Verifikasi seluruh database membuktikan **0 issue / 0 broken reference**.
 
 ---
@@ -51,6 +53,18 @@ Database State telah dirampingkan secara menyeluruh dari 275+ entri lama yang tu
 * Memperlebar panel sidebar dari `290px` menjadi `330px`.
 * Mengadopsi tata letak 2 baris (*two-row card layout*) sehingga seluruh nama skill panjang tampil utuh tanpa terpotong elipsis (`...`).
 * Re-bundling selesai pada `editor.html` dan `editor.bundled.html`.
+
+---
+
+### 5. Pembersihan & Pemadatan Database Skill (Purge 134 Obsolete Skills)
+* **Pembersihan Skill Warisan Kelas Lama:**  
+  Menghapus total **134 entri skill usang** (122 skill lama sisa pra-perombakan kelas di rentang #233–#362 dan 12 prototype usang di rentang #548–#559).
+* **Pemadatan Database Kontigu:**  
+  * **ID #1 & #2:** Serangan Dasar (*Attack*) & Bertahan (*Guard*).
+  * **ID #12 – #232:** **221 Skill Resmi 50 Kelas** (Tier 1 s/d Tier 5) tetap 100% utuh tanpa pergeseran angka, menjaga integritas 182 Scroll TMs dan movepools kelas.
+  * **ID #233 – #425:** **193 Skill Aksi Musuh & Bos** dipadatkan secara kontigu tanpa celah kosong.
+  * **ID #426 – #429:** **4 Skill Eksplorasi Grimoire** (*Lumos, Garuda's Wings, Trailblaze, Water Strider*).
+* **Hasil:** Database Skills.json ramping dari 564 entri menjadi **429 entri padat** dengan **0 broken reference**.
 
 ---
 

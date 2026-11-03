@@ -20,7 +20,7 @@ RACES_DATA = [
         "englishName": "Human",
         "group": "Suku Bumi",
         "iconIndex": 86,
-        "stateId": 214,
+        "stateId": 48,
         "description": "Ras manusia fana yang membentuk tulang punggung peradaban daratan utama. Sangat adaptif dan fleksibel dalam penentuan takdir.",
         "abilityName": "Versatility",
         "abilityDesc": "Mendapatkan bonus +1 Poin Stat Bebas setiap naik 2 Base Level dan bonus 10% perolehan EXP.",
@@ -33,7 +33,7 @@ RACES_DATA = [
         "englishName": "Noble Human",
         "group": "Suku Bumi",
         "iconIndex": 87,
-        "stateId": 215,
+        "stateId": 49,
         "description": "Bangsawan terdidik Mandala, penguasa birokrasi dan akademi Loka Cakra. Menguasai teori sihir dan taktik, namun fisik dimanjakan kemewahan.",
         "abilityName": "Aristocratic Discipline",
         "abilityDesc": "Efisiensi konsumsi Mana berkurang 10% dan akurasi Hit Rate meningkat +5%.",
@@ -46,7 +46,7 @@ RACES_DATA = [
         "englishName": "Elf",
         "group": "Suku Bumi",
         "iconIndex": 73,
-        "stateId": 216,
+        "stateId": 50,
         "description": "Ras Elf pelindung Hutan Suci Astradipa. Memiliki afinitas luar biasa terhadap sihir alam dan kelincahan akrobatik di dahan pohon raksasa.",
         "abilityName": "Harmony of Astradipa",
         "abilityDesc": "Daya pemulihan sihir alam +20% dan regenerasi MP otomatis 3% per giliran.",
@@ -59,7 +59,7 @@ RACES_DATA = [
         "englishName": "Demigod",
         "group": "Suku Bumi",
         "iconIndex": 74,
-        "stateId": 217,
+        "stateId": 51,
         "description": "Keturunan cahaya suci Sang Hyang di Avalerion. Membawa pendaran energi suci dan ketahanan spiritual tinggi dengan gaya tempur kokoh ortodoks.",
         "abilityName": "Lumina Aegis",
         "abilityDesc": "Mengurangi kerusakan elemen Gelap sebesar 30% dan kebal terhadap status Curse.",
@@ -72,7 +72,7 @@ RACES_DATA = [
         "englishName": "Orc",
         "group": "Wuru Loka",
         "iconIndex": 105,
-        "stateId": 218,
+        "stateId": 52,
         "description": "Raksasa berkulit hijau/merah dari Gua Garbhagiri. Tenaga otot luar biasa dan haus kehormatan perang, namun menolak ilmu akademis rumit.",
         "abilityName": "Blood & Honor",
         "abilityDesc": "Saat HP di bawah 40%, Physical Attack meningkat tajam sebesar +25%.",
@@ -85,7 +85,7 @@ RACES_DATA = [
         "englishName": "Avian",
         "group": "Wuru Loka",
         "iconIndex": 69,
-        "stateId": 219,
+        "stateId": 53,
         "description": "Manusia burung bersayap emas dari Nusa Sayendra. Penguasa langit dengan inisiatif kecepatan dan akurasi tukikan mematikan.",
         "abilityName": "Golden Wings",
         "abilityDesc": "Evasion Rate terhadap serangan melee darat +15% dan Action Speed giliran +20%.",
@@ -98,7 +98,7 @@ RACES_DATA = [
         "englishName": "Monkey Beastman",
         "group": "Wuru Loka",
         "iconIndex": 104,
-        "stateId": 220,
+        "stateId": 54,
         "description": "Kaum Beastmen kera berakal budi tinggi dari Astradipa. Diberkati kelicikan Monkey King, master penyergapan, taktik perangkap, dan kombo kilat.",
         "abilityName": "Monkey King's Guile",
         "abilityDesc": "Meningkatkan Critical Rate +10% dan memiliki peluang 5% memicu serangan ekstra tanpa giliran.",
@@ -111,7 +111,7 @@ RACES_DATA = [
         "englishName": "Dragonkin",
         "group": "Wuru Loka",
         "iconIndex": 123,
-        "stateId": 221,
+        "stateId": 55,
         "description": "Reptil purba raksasa berakal budi tinggi dari lereng vulkanik Agnitra. Bersisik karang keras dengan nafas api destruktif penjaga pusaka kuno.",
         "abilityName": "Dragon Scales",
         "abilityDesc": "Mengurangi kerusakan elemen Api sebesar 50% dan serangan fisik berpeluang membakar (Burn) musuh.",
@@ -124,7 +124,7 @@ RACES_DATA = [
         "englishName": "Dark Elf",
         "group": "Wuru Loka",
         "iconIndex": 71,
-        "stateId": 222,
+        "stateId": 56,
         "description": "Elf buangan di bawah tanah Gua Wisamaya. Menguasai sihir bayangan, cakar beracun, dan kutukan berdarah dengan mata merah menyala.",
         "abilityName": "Venomous Shadow",
         "abilityDesc": "Kebal mutlak terhadap racun (Poison) dan serangan fisik berpeluang 25% menularkan racun mematikan.",
@@ -137,7 +137,7 @@ RACES_DATA = [
         "englishName": "Troll",
         "group": "Wuru Loka",
         "iconIndex": 134,
-        "stateId": 223,
+        "stateId": 57,
         "description": "Pandai besi raksasa dari dataran tinggi Agnigarba. Kulitnya menyatu dengan logam cair sekeras baja dengan keahlian tempa dewa, namun serakah emas.",
         "abilityName": "Metallic Infusion",
         "abilityDesc": "Pertahanan fisik DEF +15% dan kebal terhadap status Stun atau Bleed.",
@@ -150,7 +150,7 @@ RACES_DATA = [
         "englishName": "Demigod Knight",
         "group": "Arkahyan",
         "iconIndex": 128,
-        "stateId": 224,
+        "stateId": 58,
         "description": "Ksatria suci surgawi penunggang Griffin di Avalerion. Pengawal hukum dunia dengan kedisiplinan militer dan pendaran cahaya suci.",
         "abilityName": "Griffin Majesty",
         "abilityDesc": "Memberikan aura komando surgawi (+10% ATK dan MAT untuk seluruh barisan kawan saat pertempuran).",
@@ -163,7 +163,7 @@ RACES_DATA = [
         "englishName": "Demonkin",
         "group": "Drahkthar",
         "iconIndex": 135,
-        "stateId": 225,
+        "stateId": 59,
         "description": "Iblis elit komandan perang di Raksamala. Antitesis Avesari dengan kekuatan teror brutal dan manipulasi energi kegelapan pekat Sangrahal.",
         "abilityName": "Netherbrand",
         "abilityDesc": "Serangan mengabaikan 15% DEF musuh dan kebal terhadap status Fear atau Silence.",
@@ -183,7 +183,7 @@ def setup_races():
         states = json.load(f)
 
     # Ensure states list has enough space up to ID 225
-    while len(states) <= 225:
+    while len(states) <= 59:
         states.append(None)
 
     for r in RACES_DATA:
@@ -236,7 +236,7 @@ def setup_races():
 
     with open(STATES_FILE, 'w', encoding='utf-8') as f:
         json.dump(states, f, indent=2, ensure_ascii=False)
-    print(f"Updated: {STATES_FILE} with 12 Race States (IDs 214–225)!")
+    print(f"Updated: {STATES_FILE} with 12 Race States (IDs 48-59)!")
 
 if __name__ == '__main__':
     setup_races()

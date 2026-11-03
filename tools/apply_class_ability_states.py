@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 tools/apply_class_ability_states.py
-Creates and populates 50 Innate Class Passive States (IDs 226 - 275) in data/States.json,
+Creates and populates 50 Innate Class Passive States (IDs 60 - 109) in data/States.json,
 and links <Passive State: ID> to each class in data/Classes.json.
 """
 
@@ -522,12 +522,12 @@ def apply_to_project(proj_dir):
         classes = json.load(f)
 
     # Ensure states list has at least 276 slots (0..275)
-    while len(states) <= 275:
+    while len(states) <= 109:
         states.append(None)
 
     # Populate States 226 to 275
     for class_id, cfg in CLASS_ABILITIES_CONFIG.items():
-        state_id = 225 + class_id # 226 .. 275
+        state_id = 59 + class_id # 60 .. 109
         st_obj = states[state_id] or {}
         st_obj["id"] = state_id
         st_obj["name"] = f"Pasif: {cfg['name']}"
@@ -569,7 +569,7 @@ def apply_to_project(proj_dir):
     with open(classes_path, "w", encoding="utf-8") as f:
         json.dump(classes, f, indent=2, ensure_ascii=False)
 
-    print(f"Successfully updated 50 Class Ability States (226-275) in {proj_dir}!")
+    print(f"Successfully updated 50 Class Ability States (60-109) in {proj_dir}!")
 
 def main():
     for p in PROJECT_DIRS:
