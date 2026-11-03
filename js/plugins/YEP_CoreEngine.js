@@ -1177,6 +1177,7 @@ DataManager.isDatabaseLoaded = function() {
 DataManager.processCORENotetags1 = function(group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
+    if (!obj) continue;
     var notedata = obj.note.split(/[\r\n]+/);
 
     obj.maxItem = Yanfly.Param.MaxItem;
@@ -1188,6 +1189,7 @@ DataManager.processCORENotetags1 = function(group) {
       } else if (line.match(/<(?:MAX ITEM):[ ](\d+)>/i)) {
         obj.maxItem = Math.max(1, parseInt(RegExp.$1));
       } else if (line.match(/<(.*):[ ]([\+\-]\d+)>/i)) {
+        if (!obj.params) obj.params = [0, 0, 0, 0, 0, 0, 0, 0];
         var stat = String(RegExp.$1).toUpperCase();
         var value = parseInt(RegExp.$2);
         switch (stat) {
@@ -1239,6 +1241,7 @@ DataManager.processCORENotetags1 = function(group) {
 DataManager.processCORENotetags2 = function(group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
+    if (!obj) continue;
     var notedata = obj.note.split(/[\r\n]+/);
 
     for (var i = 0; i < notedata.length; i++) {
@@ -1298,6 +1301,7 @@ DataManager.processCORENotetags2 = function(group) {
 DataManager.processCORENotetags3 = function(group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
+    if (!obj) continue;
     var notedata = obj.note.split(/[\r\n]+/);
 
     obj.maxLevel = Yanfly.Param.MaxLevel;
@@ -1318,6 +1322,7 @@ DataManager.processCORENotetags3 = function(group) {
 DataManager.processCORENotetags4 = function(group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
+    if (!obj) continue;
     var notedata = obj.note.split(/[\r\n]+/);
 
     obj.learnings.forEach(function(learning) {

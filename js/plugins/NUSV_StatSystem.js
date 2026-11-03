@@ -155,6 +155,40 @@ NUSV.StatSystem = NUSV.StatSystem || {};
         return Number(raw) || 1.0;
     }
 
+    function parseMetaPercent(meta, key) {
+        if (!meta) return 0;
+        var keys = Array.isArray(key) ? key : [key];
+        for (var i = 0; i < keys.length; i++) {
+            var k = keys[i];
+            var val = meta[k.toUpperCase()] || meta[k.toLowerCase()] || meta[k];
+            if (val !== undefined && val !== null) {
+                if (typeof val === 'string') {
+                    val = val.replace('+', '').replace('%', '').trim();
+                }
+                var num = parseFloat(val);
+                if (!isNaN(num)) return num * 0.01;
+            }
+        }
+        return 0;
+    }
+
+    function parseMetaFlat(meta, key) {
+        if (!meta) return 0;
+        var keys = Array.isArray(key) ? key : [key];
+        for (var i = 0; i < keys.length; i++) {
+            var k = keys[i];
+            var val = meta[k.toUpperCase()] || meta[k.toLowerCase()] || meta[k];
+            if (val !== undefined && val !== null) {
+                if (typeof val === 'string') {
+                    val = val.replace('+', '').trim();
+                }
+                var num = parseFloat(val);
+                if (!isNaN(num)) return num;
+            }
+        }
+        return 0;
+    }
+
     // -------------------------------------------------------------------------
     // Game_BattlerBase - SP (Stamina) Overrides & Helpers
     // -------------------------------------------------------------------------
@@ -322,13 +356,24 @@ NUSV.StatSystem = NUSV.StatSystem || {};
             classGrowth = this.nusvClassStatBonus(k);
         }
 
-        // 4. Equipment bonus
+        // 4. Equipment bonus (including socketed items)
         var equipBonus = 0;
         var equips = this.equips ? this.equips() : [];
         for (var i = 0; i < equips.length; i++) {
             var item = equips[i];
-            if (item && item.meta) {
-                equipBonus += parseMetaBonus(item.meta, k);
+            if (item) {
+                if (item.meta) {
+                    equipBonus += parseMetaBonus(item.meta, k);
+                }
+                if (Imported.NUSV_SocketCore && NUSV.SocketCore && typeof NUSV.SocketCore.sockets === "function") {
+                    var sList = NUSV.SocketCore.sockets(item);
+                    for (var sIdx = 0; sIdx < sList.length; sIdx++) {
+                        var sockId = sList[sIdx];
+                        if (sockId > 0 && $dataItems[sockId] && $dataItems[sockId].meta) {
+                            equipBonus += parseMetaBonus($dataItems[sockId].meta, k);
+                        }
+                    }
+                }
             }
         }
 
@@ -473,7 +518,14 @@ NUSV.StatSystem = NUSV.StatSystem || {};
             case 5: // MDF (Magic Defense)
                 return Math.round(baseFromClass + (this.int * 1.2) + (this.vit * 0.8));
             case 6: // AGI (Action Speed)
-                return Math.round(baseFromClass + (this.agi * 1.5));
+                var eqSpeed = 0;
+                var equips = this.equips ? this.equips() : [];
+                for (var i = 0; i < equips.length; i++) {
+                    if (equips[i] && equips[i].meta) {
+                        eqSpeed += parseMetaFlat(equips[i].meta, ['Action Speed', 'Speed']);
+                    }
+                }
+                return Math.round(baseFromClass + (this.agi * 1.5) + eqSpeed);
             case 7: // LUK (Luck)
                 return Math.round(baseFromClass + this.luk);
             default:
@@ -487,38 +539,77 @@ NUSV.StatSystem = NUSV.StatSystem || {};
     var _Game_Actor_xparam = Game_Actor.prototype.xparam;
     Game_Actor.prototype.xparam = function(xparamId) {
         var base = _Game_Actor_xparam.call(this, xparamId);
+        var equipBonus = 0;
+        var equips = this.equips ? this.equips() : [];
+        for (var i = 0; i < equips.length; i++) {
+            var eq = equips[i];
+            if (eq && eq.meta) {
+                if (xparamId === 0) equipBonus += parseMetaPercent(eq.meta, ['Hit Rate', 'HIT']);
+                else if (xparamId === 1) equipBonus += parseMetaPercent(eq.meta, ['Evasion', 'EVA']);
+                else if (xparamId === 2) equipBonus += parseMetaPercent(eq.meta, ['Critical Rate', 'CRI']);
+                else if (xparamId === 3) equipBonus += parseMetaPercent(eq.meta, ['Critical Evasion', 'CEV']);
+                else if (xparamId === 7) equipBonus += parseMetaPercent(eq.meta, ['HRG Plus', 'HRG']);
+                else if (xparamId === 8) equipBonus += parseMetaPercent(eq.meta, ['MRG Plus', 'MRG']);
+                else if (xparamId === 9) equipBonus += parseMetaPercent(eq.meta, ['TRG Plus', 'TRG']);
+            }
+        }
 
         switch (xparamId) {
-            case 0: // HIT Rate
-                var hitVal = base + 0.85 + (this.dex * 0.002);
+            case 0: // HIT Rate (Base 85% + DEX scaling + Equip)
+                var hitVal = base + 0.85 + (this.dex * 0.002) + equipBonus;
                 return Math.min(1.0, hitVal);
-            case 1: // EVA (Evasion Rate)
-                var evaVal = base + 0.02 + (this.agi * 0.002) + (this.luk * 0.0005);
+            case 1: // EVA (Evasion Rate, Base 2% + AGI/LUK scaling + Equip)
+                var evaVal = base + 0.02 + (this.agi * 0.002) + (this.luk * 0.0005) + equipBonus;
                 return Math.min(MAX_EVA_CAP, evaVal);
-            case 2: // CRI (Critical Rate)
-                var criVal = base + 0.03 + (this.dex * 0.002) + (this.luk * 0.001);
+            case 2: // CRI (Critical Rate, Base 3% + DEX/LUK scaling + Equip)
+                var criVal = base + 0.03 + (this.dex * 0.002) + (this.luk * 0.001) + equipBonus;
                 return Math.min(MAX_CRI_CAP, criVal);
             case 3: // CEV (Critical Evasion)
-                return base + (this.luk * 0.0015) + (this.vit * 0.001);
+                return base + (this.luk * 0.0015) + (this.vit * 0.001) + equipBonus;
             case 7: // HRG (HP Regeneration)
-                return base + (this.vit * 0.0003);
+                return base + (this.vit * 0.0003) + equipBonus;
             case 8: // MRG (MP Regeneration)
-                return base + (this.int * 0.0003);
+                return base + (this.int * 0.0003) + equipBonus;
             case 9: // TRG (SP Regeneration)
-                return base + 0.03 + (this.agi * 0.0004) + (this.vit * 0.0002);
+                return base + 0.03 + (this.agi * 0.0004) + (this.vit * 0.0002) + equipBonus;
             default:
                 return base;
         }
     };
 
     // -------------------------------------------------------------------------
-    // Derived Stats (S-Params: GRD)
+    // Derived Stats (S-Params: GRD, PDR, MDR)
     // -------------------------------------------------------------------------
     var _Game_Actor_sparam = Game_Actor.prototype.sparam;
     Game_Actor.prototype.sparam = function(sparamId) {
         var base = _Game_Actor_sparam.call(this, sparamId);
+        var equips = this.equips ? this.equips() : [];
         if (sparamId === 1) { // GRD (Guard Effect Rate)
-            return base * (1.0 + (this.vit * 0.005));
+            var eqGrd = 0;
+            for (var i = 0; i < equips.length; i++) {
+                if (equips[i] && equips[i].meta) {
+                    eqGrd += parseMetaPercent(equips[i].meta, ['Guard Efficiency', 'GRD']);
+                }
+            }
+            return (base * (1.0 + (this.vit * 0.005))) + eqGrd;
+        }
+        if (sparamId === 6) { // PDR (Physical Damage Rate)
+            var eqPdr = 0;
+            for (var i = 0; i < equips.length; i++) {
+                if (equips[i] && equips[i].meta) {
+                    eqPdr += parseMetaPercent(equips[i].meta, ['Physical Damage Reduction', 'PDR']);
+                }
+            }
+            return Math.max(0.1, base * (1.0 - eqPdr));
+        }
+        if (sparamId === 7) { // MDR (Magical Damage Rate)
+            var eqMdr = 0;
+            for (var i = 0; i < equips.length; i++) {
+                if (equips[i] && equips[i].meta) {
+                    eqMdr += parseMetaPercent(equips[i].meta, ['Magic Damage Reduction', 'Magical Damage Reduction', 'MDR']);
+                }
+            }
+            return Math.max(0.1, base * (1.0 - eqMdr));
         }
         return base;
     };

@@ -28,7 +28,7 @@ const PARAM_DEFS = [
         icon: '⚔️', 
         color: '#fb923c',
         desc: 'Daya Serang Fisik Utama',
-        formula: 'Standar: Weapon ATK + (STR × 1.8) + (DEX × 0.8) + Equip | Finesse (Dagger/Bow): Weapon ATK + (DEX × 1.8) + (STR × 0.8) + Equip'
+        formula: 'Standar: Weapon ATK + (STR × 2.0) + (DEX × 0.5) + Equip | Finesse (Dagger/Bow): Weapon ATK + (DEX × 2.0) + (STR × 0.5) + Equip'
     },
     { 
         id: 3, 

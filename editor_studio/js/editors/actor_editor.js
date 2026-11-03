@@ -199,7 +199,7 @@ function calculateActorSimulation(actor, baseLevel = 1, classLevel = 1) {
     const totalMsp = Math.round(50 + (totalCore.VIT * 5) + (totalCore.STR * 2) + eqMaxSP);
 
     const mainWeap = State.weapons[actor.equips[0]];
-    const isFinesse = mainWeap && (/finesse|bow|dagger|crossbow|whip/i.test(mainWeap.note || '') || mainWeap.wtypeId === 7 || mainWeap.wtypeId === 8);
+    const isFinesse = mainWeap && (/finesse|bow|dagger|crossbow|whip/i.test(mainWeap.note || '') || mainWeap.wtypeId === 8 || mainWeap.wtypeId === 9 || mainWeap.wtypeId === 10);
 
     const classAtk = (cls.params && cls.params[2] && cls.params[2][baseLevel]) ? cls.params[2][baseLevel] : 10;
     const totalAtk = isFinesse ? Math.round(classAtk + (totalCore.DEX * 2) + (totalCore.STR * 0.5) + eqParams[2])
@@ -390,8 +390,8 @@ Rincian: Class ${res.classMmp} + INT(${res.totalCore.INT}×8=${res.totalCore.INT
     const cardMsp = document.getElementById('sim-msp-card');
     if (cardMsp) {
         cardMsp.title = `Poin Stamina Tempur Maksimal
-Rumus: Base 50 + (VIT × 1.5) + (STR × 0.5) + Bonus Equipment
-Rincian: Base 50 + VIT(${res.totalCore.VIT}×1.5=${Math.round(res.totalCore.VIT*1.5)}) + STR(${res.totalCore.STR}×0.5=${Math.round(res.totalCore.STR*0.5)}) + Eq = ${res.totalMsp.toLocaleString()}`;
+Rumus: Base 50 + (VIT × 5) + (STR × 2) + Bonus Equipment
+Rincian: Base 50 + VIT(${res.totalCore.VIT}×5=${res.totalCore.VIT*5}) + STR(${res.totalCore.STR}×2=${res.totalCore.STR*2}) + Eq = ${res.totalMsp.toLocaleString()}`;
     }
 
     CORE_ATTRIBUTES.forEach(a => {
@@ -422,12 +422,12 @@ Rincian: ${parts.join(' + ')} = ${res.totalCore[a.code]}`;
     if (cardAtk) {
         if (res.isFinesse) {
             cardAtk.title = `Daya Serang Fisik (Senjata Finesse: Dagger / Bow)
-Rumus: Weapon ATK + (DEX × 1.8) + (STR × 0.8) + Bonus Equipment
-Rincian: Base/Weap + DEX(${res.totalCore.DEX}×1.8=${Math.round(res.totalCore.DEX*1.8)}) + STR(${res.totalCore.STR}×0.8=${Math.round(res.totalCore.STR*0.8)}) + Eq = ${res.totalAtk}`;
+Rumus: Weapon ATK + (DEX × 2.0) + (STR × 0.5) + Bonus Equipment
+Rincian: Base/Weap + DEX(${res.totalCore.DEX}×2=${res.totalCore.DEX*2}) + STR(${res.totalCore.STR}×0.5=${Math.round(res.totalCore.STR*0.5)}) + Eq = ${res.totalAtk}`;
         } else {
             cardAtk.title = `Daya Serang Fisik (Senjata Standar / Melee)
-Rumus: Weapon ATK + (STR × 1.8) + (DEX × 0.8) + Bonus Equipment
-Rincian: Base/Weap + STR(${res.totalCore.STR}×1.8=${Math.round(res.totalCore.STR*1.8)}) + DEX(${res.totalCore.DEX}×0.8=${Math.round(res.totalCore.DEX*0.8)}) + Eq = ${res.totalAtk}`;
+Rumus: Weapon ATK + (STR × 2.0) + (DEX × 0.5) + Bonus Equipment
+Rincian: Base/Weap + STR(${res.totalCore.STR}×2=${res.totalCore.STR*2}) + DEX(${res.totalCore.DEX}×0.5=${Math.round(res.totalCore.DEX*0.5)}) + Eq = ${res.totalAtk}`;
         }
     }
 
@@ -1002,7 +1002,7 @@ function renderActorStatPreview(container, actor) {
             <div class="card-body" style="padding:10px 12px; display:flex; flex-direction:column; gap:10px;">
                 <!-- Primary Combat Parameters (3 columns) -->
                 <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px;">
-                    <div class="stat-card-input" id="sim-atk-card" style="border-left: 2px solid #fb923c; padding:5px 6px; cursor:help;" data-hover-name="⚔️ P.ATK (Physical Attack)" title="Daya Serang Fisik Utama&#10;Rumus: Weapon ATK + (STR × 1.8) + (DEX × 0.8) + Equip">
+                    <div class="stat-card-input" id="sim-atk-card" style="border-left: 2px solid #fb923c; padding:5px 6px; cursor:help;" data-hover-name="⚔️ P.ATK (Physical Attack)" title="Daya Serang Fisik Utama&#10;Rumus: Weapon ATK + (STR × 2.0) + (DEX × 0.5) + Equip">
                         <div style="font-size:0.68rem; color:var(--text-muted);">⚔️ P.ATK</div>
                         <div style="font-size:1.05rem; font-weight:700; color:#fb923c; line-height:1.1; margin-top:3px;" id="sim-atk">0</div>
                     </div>

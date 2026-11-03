@@ -2299,7 +2299,12 @@ Window_CTBIcon.prototype.updateBattler = function() {
     } else if (this._battler.isEnemy()) {
       if (this.isUsingSVBattler()) {
         var name = this._battler.svBattlerName();
-        this._image = ImageManager.loadSvActor(name);
+        var folder = this._battler.sideviewFolder ? this._battler.sideviewFolder() : 'sv_actors';
+        if (folder === 'sv_enemies') {
+          this._image = ImageManager.loadSvEnemy(name);
+        } else {
+          this._image = ImageManager.loadSvActor(name);
+        }
       } else {
         var battlerName = this._battler.battlerName();
         var battlerHue = this._battler.battlerHue();
