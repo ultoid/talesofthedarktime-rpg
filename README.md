@@ -1,7 +1,7 @@
 # ⚔️ Tales of The Dark Time (Nusvanir RPG Project)
 
 > **Dokumentasi Proyek, Pembaruan Sistem Terakhir, dan Rencana Pengembangan (Handover Log)**  
-> *Terakhir diperbarui: 3 November 2026*
+> *Terakhir diperbarui: 5 November 2026*
 
 ---
 
@@ -82,6 +82,65 @@ Database State telah dirampingkan secara menyeluruh dari 275+ entri lama yang tu
   193 entri drop monster pada `Enemies.json` telah diselaraskan dengan item material & valuable baru.
 * **Integritas Database:**  
   Audit menyeluruh menghasilkan **0 broken references / 0 issues**.
+
+---
+
+### 7. Skill Animation Studio & Modular Multi-Block Sequencer (CapCut-Style Timeline)
+* **Tab Khusus Baru "Skill Animator":**  
+  Menghadirkan studio visual terintegrasi penuh untuk mendesain koreografi aksi pertempuran Sideview (SV) RPG Maker MV ala editor video non-linear modern (CapCut / Premiere Pro).
+* **Arsitektur 4 Blok Aksi Modular:**  
+  Koreografi aksi dirangkai dari 4 tipe blok mandiri yang fleksibel:
+  * 🔮 **Rapalan (Cast):** Animasi pembuka/chanting, efek aura sihir, opsi *step forward* (maju sedikit), dan durasi persiapan.
+  * 🏃 **Gerak (Move):** Penentuan cara karakter mendekati target (*Melee, Behind/Belakang, Step Forward, Jump/Lompat, Teleport/Blink*). Untuk skill serangan jarak jauh (panah/sihir), blok ini dapat diabaikan agar karakter tetap diam di posisi (*Stay*).
+  * ⚔️ **Aksi / VFX (Action):** Inti benturan serangan. Mengatur motion pose karakter (*missile, swing, thrust, spell, guard*), lintasan keyframe VFX, efek audio (SE), guncangan layar (*shake*), kilatan layar (*flash*), reaksi flinch/knockback target, serta popup angka damage.
+  * ↩️ **Kembali (Return):** Gerak mundur kembali ke titik awal (*Walk, Jump, Teleport*).
+* **Fitur Manajemen Timeline:**  
+  * Mendukung penambahan multi-blok aksi (misal: combo 3x tebasan beruntun).
+  * Geser urutan blok (Tukar Kiri / Kanan), Duplikasi Blok (*Clone*), Hapus Blok, dan pengubahan durasi (Frame Duration) interaktif per blok.
+* **0-Lag Immediate Playback:**  
+  Menghapus dead-time 14 frame lama di awal/akhir timeline sehingga animasi langsung aktif seketika pada frame 0 tanpa jeda tunggu.
+
+---
+
+### 8. VFX Keyframe Trajectory, Dynamic Scaling & Easing Engine
+* **Sistem Lintasan Dua Titik (Keyframe A & B):**  
+  * 🟢 **Titik Awal (Keyframe A):** Menentukan koordinat dan skala kemunculan proyektil (misal: di busur/tangan karakter).
+  * 🔴 **Titik Akhir (Keyframe B):** Menentukan titik benturan dan skala saat mengenai sasaran (misal: di dada musuh).
+  * Pengguna dapat memilih dan menggeser titik keyframe secara visual langsung di atas canvas target (*Direct Canvas Drag & Drop*).
+* **Scaling Dinamis:**  
+  Mendukung perubahan ukuran VFX sepanjang lintasan (misal: proyektil membesar dari 75% saat ditembakkan menjadi 120% saat menabrak target).
+* **Kurva Easing Presisi:**  
+  Pilihan akselerasi lintasan (*Linear, Ease-Out [Halus], Ease-In [Akselerasi Cepat], Smooth [Ease-In-Out]*).
+* **Durasi Lintasan Mandiri (`kfDuration`):**  
+  Kecepatan terbang proyektil dapat diatur bebas (misal: 10 frame melesat di udara) tanpa harus terikat dengan durasi total blok aksi.
+* **Flip Horizontal & Vertikal:**  
+  Pilihan membalik grafis spritesheet animasi secara horizontal maupun vertikal untuk menyesuaikan arah tembakan.
+* **Dropdown Audio SE Instan:**  
+  Pilihan Sound Effect (SE) berbasis dropdown pencarian otomatis membaca seluruh file suara di direktori `audio/se/` game.
+
+---
+
+### 9. In-Game Battle Runtime Plugin (`NUSV_VFXKeyframes.js`)
+* **Plugin Engine Tempur Baru:**  
+  Dibuat dan didaftarkan di `js/plugins.js` untuk mengeksekusi metadata `<!-- NUSV_ACTION_CONFIG -->` secara *real-time* di dalam pertempuran RPG Maker MV yang sebenarnya.
+* **Vektor Lintasan Dunia Nyata (World Space Flight Path):**  
+  * Membaca koordinat nyata penyerang (`userSprite` di $X \approx 750$) dan target (`targetSprite` di $X \approx 200$).
+  * Menghitung interpolasi proyektil melintasi battlefield sepanjang ~550 pixel dari busur karakter hingga menancap di tubuh musuh (termasuk tembakan diagonal ke musuh di baris atas/bawah).
+* **Sinkronisasi Waktu Benturan Yanfly Action Sequence:**  
+  Mengotomatiskan sintaks `wait: hitDelay` sebelum baris `action effect: target`, memastikan angka damage, suara benturan (*SE*), dan kedipan musuh meledak tepat saat proyektil panah tiba di tubuh musuh.
+* **Dukungan FPS Custom:**  
+  Mendukung *playback rate* custom (60 FPS, 30 FPS, 20 FPS, 15 FPS) membebaskan animasi dari batasan kaku 15 FPS bawaan MV.
+
+---
+
+### 10. Normal Attack Senjata Kustom & One-Click Save to Game
+* **Koneksi Serangan Biasa Senjata (`NUSV_WeaponUnleash.js`):**  
+  * Memperbarui ekspresi reguler parser di `NUSV_WeaponUnleash.js` agar mendukung format `<skill_id: ID>` dan `<Attack Skill: ID>` di samping `<Unleash Skill: ID>`.
+  * Menghubungkan *Pine Longbow* (Weapon #43) ke aksi tembakan panah kustom Skill #430.
+* **Tombol One-Click Save ke Game:**  
+  Menambahkan tombol utama **`💾 Simpan ke Game (Project)`** di toolbar atas Skill Animator yang secara otomatis mengompilasi notetag sequence dan langsung menyimpan perubahan ke file database fisik di disk (`data/Skills.json` & `data/Weapons.json`).
+* **Verifikasi Integritas:**  
+  Re-bundle studio berhasil (`editor.html` & `editor.bundled.html`) dengan **33 dari 33 pemeriksaan lulus (ALL PASS)**.
 
 ---
 

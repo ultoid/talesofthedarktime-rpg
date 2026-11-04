@@ -1176,15 +1176,37 @@ function openAnimBatchShiftModal() {
  * Shortcut from Skill Editor: Open specific animation in Animation Studio
  */
 function openAnimationInEditor(animId) {
-    if (!animId) return;
-    const targetIdx = State.animations.findIndex(a => a && a.id === animId);
+    animId = parseInt(animId, 10) || 0;
+    switchTab('animations');
+    
+    let targetIdx = -1;
+    if (animId > 0 && Array.isArray(State.animations)) {
+        targetIdx = State.animations.findIndex(a => a && a.id === animId);
+    }
+    
     if (targetIdx !== -1) {
-        switchTab('animations');
         State.selectedIndex = targetIdx;
-        State.selectedIndices = State.selectedIndices || {};
+        if (!State.selectedIndices) State.selectedIndices = {};
         State.selectedIndices.animations = targetIdx;
         renderSidebar();
         renderEditor();
+        if (typeof showToast === 'function') {
+            showToast(`Membuka Animasi #${animId} di Visual Animation Studio...`, 'info');
+        }
+    } else {
+        // Fallback to first available animation
+        State.selectedIndex = 1;
+        if (!State.selectedIndices) State.selectedIndices = {};
+        State.selectedIndices.animations = 1;
+        renderSidebar();
+        renderEditor();
+        if (typeof showToast === 'function') {
+            if (animId <= 0) {
+                showToast('Skill ini belum memiliki animasi visual (Tanpa Animasi). Membuka Animation Studio #1...', 'info');
+            } else {
+                showToast(`Animasi #${animId} tidak ditemukan. Membuka Animation Studio #1...`, 'warning');
+            }
+        }
     }
 }
 

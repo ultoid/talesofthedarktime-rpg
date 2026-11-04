@@ -172,7 +172,7 @@ NUSV.WeaponUnleash = NUSV.WeaponUnleash || {};
     function parseSimpleEntries(obj) {
         var text = noteText(obj);
         var list = [];
-        var re = /<Unleash Skill:\s*(\d+)(?:\s*,\s*([+\-]?\d+(?:\.\d+)?%?))?(?:\s*,\s*([+\-]?\d+(?:\.\d+)?))?\s*>/ig;
+        var re = /<(?:Unleash Skill|Attack Skill|skill_id):\s*(\d+)(?:\s*,\s*([+\-]?\d+(?:\.\d+)?%?))?(?:\s*,\s*([+\-]?\d+(?:\.\d+)?))?\s*>/ig;
         var match;
         while ((match = re.exec(text))) {
             list.push({

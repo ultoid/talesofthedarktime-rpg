@@ -183,6 +183,16 @@ function renderWeaponEditor(container, weapon) {
     const eleName = eleMatch ? eleMatch[1] : '';
     const eleVal = eleMatch ? eleMatch[2] : '';
 
+    const skillIdMatch = note.match(/<skill_id:\s*(\d+)>/i) || note.match(/<Unleash Skill:\s*(\d+)(?:,\s*100%)?>/i);
+    const customAttackSkillId = skillIdMatch ? parseInt(skillIdMatch[1], 10) : 0;
+
+    const motionMatch = note.match(/<Weapon Motion:\s*([a-zA-Z]+)>/i);
+    const weaponMotion = motionMatch ? motionMatch[1].toLowerCase() : 'auto';
+
+    const seqMatch = note.match(/<target action>[\s\S]*?<\/target action>/i) || note.match(/<setup action>[\s\S]*?<\/finish action>/i);
+    const rawSeqText = seqMatch ? seqMatch[0] : '';
+    const hasCustomSeq = !!rawSeqText;
+
     const wtypes = State.system.weaponTypes || [];
 
     container.innerHTML = `
@@ -264,6 +274,127 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                             <div class="helper-text" title="Peluang jurus ini aktif saat karakter melancarkan serangan biasa">Triggered automatically during normal basic attacks.</div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ⚔️ PENGATURAN SERANGAN BIASA SENJATA (NORMAL ATTACK CUSTOMIZATION) -->
+        <div class="card" style="border: 1px solid rgba(56, 189, 248, 0.4); background: #070e1b; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
+            <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(56,189,248,0.2); padding-bottom:8px;">
+                <div>
+                    <h2 style="color:#38bdf8; font-size:0.95rem; display:flex; align-items:center; gap:8px; margin:0;">
+                        <span>⚔️</span> Kustomisasi Serangan Biasa Senjata (Normal Attack)
+                    </h2>
+                    <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">
+                        Tentukan skill pengganti, animasi visual, motion, dan koreografi khusus saat memilih perintah "Attack" memakai senjata ini.
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                    ${customAttackSkillId > 0 ? `
+                        <span class="list-badge" style="background:#0284c722; color:#38bdf8; border-color:#38bdf8; font-size:0.72rem; padding:2px 8px; font-weight:700;">
+                            🎯 Skill #${customAttackSkillId}: ${escapeHtml((State.skills[customAttackSkillId] || {}).name || '')}
+                        </span>
+                    ` : (hasCustomSeq ? `
+                        <span class="list-badge" style="background:#c084fc22; color:#c084fc; border-color:#c084fc; font-size:0.72rem; padding:2px 8px; font-weight:700;">
+                            🎬 Custom Action Sequence
+                        </span>
+                    ` : `
+                        <span class="list-badge" style="color:var(--text-muted); border-color:#334155; font-size:0.72rem; padding:2px 8px;">
+                            Standar (Skill #1 Attack)
+                        </span>
+                    `)}
+                </div>
+            </div>
+            <div class="card-body" style="display:flex; flex-direction:column; gap:12px;">
+                <!-- KONTROL SKILL PENGGANTI & SHORTCUT BUAT/EDIT -->
+                <div style="background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.2); border-radius:8px; padding:10px 12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                        <label style="font-size:0.78rem; font-weight:700; color:#38bdf8; margin:0;">
+                            🎯 Skill Serangan Biasa Senjata (&lt;skill_id: ID&gt;)
+                        </label>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="openSkillInAnimator(${customAttackSkillId || 1})" style="padding:3px 10px; font-size:0.72rem; font-weight:700;">
+                                🎬 Buka di Skill Animation Editor
+                            </button>
+                            ${!customAttackSkillId ? `
+                                <button type="button" class="btn btn-sm" onclick="createNewSkillForWeapon()" style="background:#10b98122; border:1px solid #10b981; color:#6ee7b7; padding:3px 10px; font-size:0.72rem; font-weight:700;" title="Otomatis duplikasi & buat skill baru khusus untuk senjata ini dan buka di Skill Animator">
+                                    + Buat Skill Khusus Senjata Ini
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; align-items:flex-end;">
+                        <div>
+                            <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:2px;">Skill yang Dipakai Saat Perintah Attack</label>
+                            <select class="form-control" style="font-size:0.8rem; padding:4px 8px; color:#38bdf8; font-weight:600;" onchange="onWeaponAttackSkillChange(this.value)">
+                                <option value="0" ${!customAttackSkillId ? 'selected' : ''}>(Default: Skill #1 - Attack standar)</option>
+                                ${State.skills.filter(s => s && s.id !== 1).map(s => `
+                                    <option value="${s.id}" ${customAttackSkillId === s.id ? 'selected' : ''}>#${s.id} ${escapeHtml(s.name)}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:2px;">Animasi Visual Serangan (VFX)</label>
+                            <div style="display:flex; gap:4px;">
+                                <select class="form-control" style="font-size:0.8rem; padding:4px 6px;" onchange="weapon.animationId=parseInt(this.value,10); setUnsaved(true); renderEditor();">
+                                    <option value="0">(Default / Sesuai Skill)</option>
+                                    ${State.animations.filter(a => a).map(a => `<option value="${a.id}" ${weapon.animationId === a.id ? 'selected' : ''}>#${a.id} ${escapeHtml(a.name)}</option>`).join('')}
+                                </select>
+                                ${weapon.animationId > 0 ? `
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimationInEditor(${weapon.animationId})" style="padding:2px 6px; font-size:0.7rem; color:#38bdf8;" title="Edit animasi ini di Animation Studio">🎨</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:2px;">Motion Aktor (&lt;Weapon Motion&gt;)</label>
+                            <select class="form-control" style="font-size:0.8rem; padding:4px 6px;" onchange="onWeaponMotionChange(this.value)">
+                                <option value="auto" ${weaponMotion === 'auto' ? 'selected' : ''}>Otomatis (Tipe Senjata)</option>
+                                <option value="swing" ${weaponMotion === 'swing' ? 'selected' : ''}>swing (Tebasan)</option>
+                                <option value="thrust" ${weaponMotion === 'thrust' ? 'selected' : ''}>thrust (Tusukan)</option>
+                                <option value="missile" ${weaponMotion === 'missile' ? 'selected' : ''}>missile (Tembakan/Jarak Jauh)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="font-size:0.68rem; color:var(--text-muted); margin-top:6px;">
+                        💡 <span style="color:#94a3b8;">Saat bertarung, karakter yang memilih <strong>Attack</strong> dengan senjata ini akan langsung menjalankan skill yang dipilih di atas (didukung plugin <code>WeaponSkill.js</code> &amp; <code>NUSV_WeaponUnleash.js</code>).</span>
+                    </div>
+                </div>
+
+                <!-- KOREOGRAFI ACTION SEQUENCE LANGSUNG DI SENJATA -->
+                <div style="background:rgba(192,132,252,0.05); border:1px solid rgba(192,132,252,0.2); border-radius:8px; padding:10px 12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                        <div>
+                            <strong style="color:#c084fc; font-size:0.78rem;">⚡ Koreografi Action Sequence Khusus pada Senjata (Yanfly Override)</strong>
+                            <div style="font-size:0.68rem; color:var(--text-muted);">Jika disetel, sequence ini langsung menimpa gaya serang Skill #1 saat senjata ini dipakai.</div>
+                        </div>
+                        <!-- 1-CLICK PRESETS -->
+                        <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('melee')" style="background:#0284c733; border:1px solid #38bdf8; color:#e0f2fe; padding:2px 8px; font-size:0.7rem;">
+                                🗡️ Melee Dash
+                            </button>
+                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('thrust')" style="background:#05966933; border:1px solid #10b981; color:#d1fae5; padding:2px 8px; font-size:0.7rem;">
+                                🏹 Thrust / Pierce
+                            </button>
+                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('ranged')" style="background:#7c3aed33; border:1px solid #c084fc; color:#ede9fe; padding:2px 8px; font-size:0.7rem;">
+                                🎯 Ranged / Bow
+                            </button>
+                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('combo')" style="background:#ea580c33; border:1px solid #fb923c; color:#ffedd5; padding:2px 8px; font-size:0.7rem;">
+                                ⚡ 2x Multi-Strike
+                            </button>
+                            ${hasCustomSeq ? `
+                                <button type="button" class="btn btn-xs btn-danger" onclick="clearWeaponActionSequence()" style="padding:2px 8px; font-size:0.7rem;">
+                                    🧹 Hapus Sequence
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                    ${hasCustomSeq ? `
+                        <textarea class="form-control" rows="5" style="font-family:monospace; font-size:0.72rem; color:#f8fafc; background:#04060c;" readonly>${escapeHtml(rawSeqText)}</textarea>
+                    ` : `
+                        <div style="font-size:0.72rem; color:var(--text-muted); font-style:italic;">
+                            Senjata ini belum memiliki Action Sequence tersendiri (mengikuti Skill #1 atau Skill khusus di atas). Klik salah satu tombol preset di atas untuk memasang koreografi langsung pada senjata ini.
+                        </div>
+                    `}
                 </div>
             </div>
         </div>
@@ -455,6 +586,222 @@ function onWeaponHandChange(type) {
         weapon.traits = weapon.traits.filter(t => !(t.code === 54 && t.dataId === 2));
     }
     renderEditor();
+}
+
+/**
+ * Normal Attack Customization Helpers for Weapons
+ */
+function openSkillInAnimator(skillId) {
+    if (!skillId) skillId = 1;
+    State.selectedIndices = State.selectedIndices || {};
+    State.selectedIndices['skill_animator'] = skillId;
+    State.selectedIndices['skills'] = skillId;
+    if (typeof switchTab === 'function') {
+        switchTab('skill_animator');
+    }
+}
+
+function onWeaponAttackSkillChange(skillId) {
+    const weapon = State.weapons[State.selectedIndex];
+    if (!weapon) return;
+    skillId = parseInt(skillId, 10) || 0;
+    let note = weapon.note || '';
+
+    // Remove existing <skill_id:...>
+    note = note.replace(/<skill_id:\s*\d+>\n?/gi, '').trim();
+
+    if (skillId > 0 && skillId !== 1) {
+        note = `<skill_id: ${skillId}>\n` + note;
+    }
+    weapon.note = note;
+    setUnsaved(true);
+    renderEditor();
+    if (typeof showToast === 'function') {
+        showToast(skillId > 0 && skillId !== 1 ? `Serangan biasa senjata diarahkan ke Skill #${skillId}` : `Serangan biasa senjata kembali ke default (Skill #1)`, 'info');
+    }
+}
+
+function onWeaponMotionChange(motion) {
+    const weapon = State.weapons[State.selectedIndex];
+    if (!weapon) return;
+    let note = weapon.note || '';
+    note = note.replace(/<Weapon Motion:\s*[a-zA-Z]+>\n?/gi, '').trim();
+    if (motion && motion !== 'auto') {
+        note = `<Weapon Motion: ${motion}>\n` + note;
+    }
+    weapon.note = note;
+    setUnsaved(true);
+    renderEditor();
+    if (typeof showToast === 'function') {
+        showToast(`Motion serangan diubah: ${motion === 'auto' ? 'Otomatis' : motion}`, 'info');
+    }
+}
+
+function createNewSkillForWeapon() {
+    const weapon = State.weapons[State.selectedIndex];
+    if (!weapon) return;
+
+    // Base template from Skill #1 or generic attack
+    const baseSkill = State.skills[1] || {
+        id: 1,
+        name: 'Attack',
+        animationId: 2,
+        damage: { type: 1, formula: 'Math.max(1, a.atk - (b.def * 0.75))', variance: 20, critical: true },
+        scope: 1,
+        occasion: 1,
+        speed: 0,
+        successRate: 100,
+        repeats: 1,
+        tpGain: 10,
+        hitType: 1
+    };
+
+    const newSkill = JSON.parse(JSON.stringify(baseSkill));
+    
+    // Find next available free ID in State.skills
+    let newId = State.skills.length;
+    while (State.skills[newId]) newId++;
+    newSkill.id = newId;
+    newSkill.name = `${weapon.name} Attack`;
+    newSkill.description = `Serangan biasa khusus menggunakan senjata ${weapon.name}.`;
+    newSkill.animationId = weapon.animationId || baseSkill.animationId || 2;
+    newSkill.stypeId = 0; // Skill Type: None (so it's never locked by seal skill type)
+
+    // Customize motion/approach based on weapon type
+    const wtypes = State.system.weaponTypes || [];
+    const wtName = (wtypes[weapon.wtypeId] || '').toLowerCase();
+    const isRanged = wtName.includes('bow') || wtName.includes('busur') || wtName.includes('gun') || wtName.includes('rune');
+    const isSpear = wtName.includes('spear') || wtName.includes('tombak') || wtName.includes('lance') || wtName.includes('dagger') || wtName.includes('belati');
+
+    const appMotion = isRanged ? 'missile' : (isSpear ? 'thrust' : 'swing');
+    const appType = isRanged ? 'ranged' : 'melee';
+
+    // Generate starter sequence for this weapon attack skill
+    const newCfg = {
+        hasCustomSeq: true,
+        cast: { enabled: false, motion: 'chant', step: false, animId: 0, duration: 15, se: '' },
+        attack: {
+            target: 'target',
+            approach: appType,
+            motion: appMotion,
+            distance: isRanged ? 0 : 50,
+            animId: newSkill.animationId,
+            posType: 'center',
+            offsetX: 0,
+            offsetY: -35,
+            repeats: 1,
+            interval: 10,
+            shake: 'light',
+            flash: 'none'
+        },
+        reaction: {
+            type: 'flinch',
+            flash: 'red',
+            popupType: 'hp_damage',
+            testValue: 0,
+            se: 'Blow1'
+        },
+        steps: [
+            ...(isRanged ? [] : [{ id: 'step_m1', type: 'move', name: '🏃 Gerak Maju', duration: 14, approach: 'melee', distance: 50 }]),
+            {
+                id: 'step_a1',
+                type: 'action',
+                name: '⚔️ Serangan',
+                duration: 18,
+                motion: appMotion,
+                target: 'target',
+                animId: newSkill.animationId,
+                offsetX: 0,
+                offsetY: -35,
+                posType: 'center',
+                se: 'Blow1',
+                shake: 'light',
+                flash: 'none',
+                reaction: 'flinch',
+                popupType: 'hp_damage'
+            },
+            ...(isRanged ? [] : [{ id: 'step_r1', type: 'return', name: '↩️ Kembali', duration: 14, approach: 'walk' }])
+        ]
+    };
+
+    if (typeof SkillAnimator !== 'undefined' && SkillAnimator.saveConfigToSkill) {
+        SkillAnimator.saveConfigToSkill(newSkill, newCfg);
+    }
+
+    State.skills[newId] = newSkill;
+
+    // Link this skill to the weapon note
+    let note = weapon.note || '';
+    note = note.replace(/<skill_id:\s*\d+>\n?/gi, '').trim();
+    note = `<skill_id: ${newId}>\n` + note;
+    weapon.note = note;
+
+    if (!State.modifiedTabs) State.modifiedTabs = new Set();
+    State.modifiedTabs.add('weapons');
+    State.modifiedTabs.add('skills');
+    State.modifiedTabs.add('skill_animator');
+    setUnsaved(true);
+
+    if (typeof showToast === 'function') {
+        showToast(`Skill #${newId} [${newSkill.name}] berhasil dibuat untuk senjata ini! Membuka di Skill Animator...`, 'success');
+    }
+
+    // Direct jump to Skill Animator
+    openSkillInAnimator(newId);
+}
+
+const WEAPON_SEQ_PRESETS = {
+    melee: {
+        name: '🗡️ Melee Dash',
+        seq: `<target action>\nmove user: target, front, 14\nwait for movement\nmotion swing: user\naction animation: target\naction effect: target\nwait for animation\n</target action>`
+    },
+    thrust: {
+        name: '🏹 Thrust / Pierce',
+        seq: `<target action>\nmove user: target, front, 12\nwait for movement\nmotion thrust: user\naction animation: target\naction effect: target\nenemy effect: targets, blink\nwait for animation\n</target action>`
+    },
+    ranged: {
+        name: '🎯 Ranged / Bow',
+        seq: `<target action>\nmotion missile: user\naction animation: target\naction effect: target\nwait for animation\n</target action>`
+    },
+    combo: {
+        name: '⚡ 2x Multi-Strike',
+        seq: `<target action>\nmove user: target, front, 14\nwait for movement\nmotion swing: user\naction animation: target\naction effect: target\nwait: 8\nmotion thrust: user\naction animation: target\naction effect: target\nwait for animation\n</target action>`
+    }
+};
+
+function applyWeaponActionSequencePreset(presetKey) {
+    const weapon = State.weapons[State.selectedIndex];
+    if (!weapon) return;
+    const p = WEAPON_SEQ_PRESETS[presetKey];
+    if (!p) return;
+
+    let note = weapon.note || '';
+    note = note.replace(/<setup action>[\s\S]*?<\/setup action>\n?/gi, '');
+    note = note.replace(/<target action>[\s\S]*?<\/target action>\n?/gi, '');
+    note = note.replace(/<finish action>[\s\S]*?<\/finish action>\n?/gi, '').trim();
+
+    note = note + '\n\n' + p.seq;
+    weapon.note = note.trim();
+    setUnsaved(true);
+    renderEditor();
+    if (typeof showToast === 'function') {
+        showToast(`Preset Action Sequence [${p.name}] diterapkan langsung pada ${weapon.name}!`, 'success');
+    }
+}
+
+function clearWeaponActionSequence() {
+    const weapon = State.weapons[State.selectedIndex];
+    if (!weapon) return;
+    let note = weapon.note || '';
+    note = note.replace(/<setup action>[\s\S]*?<\/setup action>\n?/gi, '');
+    note = note.replace(/<target action>[\s\S]*?<\/target action>\n?/gi, '');
+    note = note.replace(/<finish action>[\s\S]*?<\/finish action>\n?/gi, '').trim();
+    weapon.note = note;
+    setUnsaved(true);
+    renderEditor();
+    if (typeof showToast === 'function') {
+        showToast(`Action sequence pada ${weapon.name} dihapus (kembali ke default)`, 'info');
+    }
 }
 
 // =====================================================================

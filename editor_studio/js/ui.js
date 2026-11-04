@@ -26,6 +26,46 @@ function ensureNavTabs() {
         }
     }
 
+    const hasSkillAnim = tabBtns.some(b => {
+        const onclick = b.getAttribute('onclick') || '';
+        return onclick.includes('skill_animator');
+    });
+    if (!hasSkillAnim) {
+        const skiBtn = tabBtns.find(b => {
+            const onclick = b.getAttribute('onclick') || '';
+            return onclick.includes("'skills'") || onclick.includes('"skills"');
+        });
+        const saBtn = document.createElement('button');
+        saBtn.className = 'tab-btn' + (State.currentTab === 'skill_animator' ? ' active' : '');
+        saBtn.setAttribute('onclick', "switchTab('skill_animator')");
+        saBtn.innerHTML = '🎬 Skill Animation Editor';
+        if (skiBtn && skiBtn.nextSibling) {
+            nav.insertBefore(saBtn, skiBtn.nextSibling);
+        } else {
+            nav.appendChild(saBtn);
+        }
+    }
+
+    const hasAnim = tabBtns.some(b => {
+        const onclick = b.getAttribute('onclick') || '';
+        return onclick.includes('animations');
+    });
+    if (!hasAnim) {
+        const skiBtn = tabBtns.find(b => {
+            const onclick = b.getAttribute('onclick') || '';
+            return onclick.includes('skills');
+        });
+        const animBtn = document.createElement('button');
+        animBtn.className = 'tab-btn' + (State.currentTab === 'animations' ? ' active' : '');
+        animBtn.setAttribute('onclick', "switchTab('animations')");
+        animBtn.innerHTML = '💥 Animations';
+        if (skiBtn && skiBtn.nextSibling) {
+            nav.insertBefore(animBtn, skiBtn.nextSibling);
+        } else {
+            nav.appendChild(animBtn);
+        }
+    }
+
     if (typeof renderRaceEditor === 'undefined' && typeof document !== 'undefined' && document.head) {
         const existing = document.querySelector('script[src*="race_editor.js"]');
         if (!existing) {
@@ -33,6 +73,30 @@ function ensureNavTabs() {
             s.src = 'editor_studio/js/editors/race_editor.js?t=' + Date.now();
             s.onload = () => {
                 if (State.currentTab === 'races') renderEditor();
+            };
+            document.head.appendChild(s);
+        }
+    }
+
+    if (typeof renderAnimationEditor === 'undefined' && typeof document !== 'undefined' && document.head) {
+        const existing = document.querySelector('script[src*="animation_editor.js"]');
+        if (!existing) {
+            const s = document.createElement('script');
+            s.src = 'editor_studio/js/editors/animation_editor.js?t=' + Date.now();
+            s.onload = () => {
+                if (State.currentTab === 'animations') renderEditor();
+            };
+            document.head.appendChild(s);
+        }
+    }
+
+    if (typeof SkillAnimator === 'undefined' && typeof document !== 'undefined' && document.head) {
+        const existing = document.querySelector('script[src*="skill_animator.js"]');
+        if (!existing) {
+            const s = document.createElement('script');
+            s.src = 'editor_studio/js/editors/skill_animator.js?t=' + Date.now();
+            s.onload = () => {
+                if (State.currentTab === 'skills') renderEditor();
             };
             document.head.appendChild(s);
         }
@@ -641,6 +705,8 @@ function renderEditor() {
     window.enemy = item;
     window.state = item;
     window.race = item;
+    window.anim = item;
+    window.animation = item;
 
     if (State.currentTab !== 'enemies' && typeof stopEnemyBattlerAnimation === 'function') {
         stopEnemyBattlerAnimation();
@@ -696,6 +762,14 @@ function renderEditor() {
             renderSkillEditor(container, item); 
             if (previewContainer) renderSkillStatPreview(previewContainer, item);
             break;
+        case 'skill_animator': 
+            if (statTitle) statTitle.innerHTML = '🎬 Skill Animation Studio';
+            if (statSub) statSub.innerText = 'CapCut-Style Keyframe & VFX';
+            if (typeof SkillAnimator !== 'undefined' && typeof SkillAnimator.renderStudioTab === 'function') {
+                SkillAnimator.renderStudioTab(container, item);
+                if (previewContainer) SkillAnimator.renderStudioSidebar(previewContainer, item);
+            }
+            break;
         case 'items': 
             if (statTitle) statTitle.innerHTML = '🧪 Item Inspector';
             if (statSub) statSub.innerText = 'Effect & Value Preview';
@@ -720,6 +794,17 @@ function renderEditor() {
             if (typeof renderAnimationEditor === 'function') {
                 renderAnimationEditor(container, item);
                 if (previewContainer) renderAnimationStatPreview(previewContainer, item);
+            } else {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">Memuat komponen visual Animation Studio...</div>`;
+                const scriptEl = document.createElement('script');
+                scriptEl.src = 'editor_studio/js/editors/animation_editor.js?t=' + Date.now();
+                scriptEl.onload = () => {
+                    if (typeof renderAnimationEditor === 'function') {
+                        renderAnimationEditor(container, item);
+                        if (previewContainer) renderAnimationStatPreview(previewContainer, item);
+                    }
+                };
+                document.head.appendChild(scriptEl);
             }
             break;
     }

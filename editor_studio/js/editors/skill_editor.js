@@ -44,6 +44,29 @@ function renderSkillStatPreview(container, skill) {
                 <canvas id="svBattleCanvas" width="480" height="270" style="width:100%; height:100%; display:block; image-rendering:pixelated;"></canvas>
             </div>
 
+            <!-- Interactive Choreography Timeline Scrubber Bar -->
+            <div style="padding:6px 12px; background:rgba(2,6,23,0.95); border-bottom:1px solid var(--border-color); display:flex; flex-direction:column; gap:4px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem;">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="color:#c084fc; font-weight:700;">⏱️ Timeline:</span>
+                        <span id="svCurrentFrameText" style="color:#f8fafc; font-family:monospace; font-weight:700;">0f / 75f</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:4px;">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="stepSkillAnim(-1)" style="padding:1px 6px; font-size:0.68rem;" title="Mundur 1 Frame">⏮ -1f</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="stepSkillAnim(1)" style="padding:1px 6px; font-size:0.68rem;" title="Maju 1 Frame">+1f ⏭</button>
+                    </div>
+                </div>
+                <input type="range" id="svTimelineSlider" min="0" max="75" value="0" style="width:100%; height:6px; cursor:ew-resize; accent-color:#8b5cf6;" oninput="onSvTimelineScrub(this.value)">
+                
+                <!-- Quick Phase Click Tracks -->
+                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:3px; margin-top:2px;">
+                    <button type="button" class="btn btn-sm" onclick="jumpToSkillPhase('cast')" style="padding:2px 0; font-size:0.62rem; background:rgba(192,132,252,0.15); border:1px solid #c084fc44; color:#c084fc;" title="Lompat ke fase Casting">🔮 Cast</button>
+                    <button type="button" class="btn btn-sm" onclick="jumpToSkillPhase('approach')" style="padding:2px 0; font-size:0.62rem; background:rgba(56,189,248,0.15); border:1px solid #38bdf844; color:#38bdf8;" title="Lompat ke fase Gerak">🏃 Move</button>
+                    <button type="button" class="btn btn-sm" onclick="jumpToSkillPhase('attack')" style="padding:2px 0; font-size:0.62rem; background:rgba(248,113,113,0.15); border:1px solid #f8717144; color:#f87171;" title="Lompat ke fase Pukulan &amp; VFX">⚔️ Strike/VFX</button>
+                    <button type="button" class="btn btn-sm" onclick="jumpToSkillPhase('return')" style="padding:2px 0; font-size:0.62rem; background:rgba(250,204,21,0.15); border:1px solid #facc1544; color:#facc15;" title="Lompat ke fase Pulang">↩️ Return</button>
+                </div>
+            </div>
+
             <!-- Playback Control Toolbar -->
             <div style="padding:8px 12px; background:rgba(15,23,42,0.95); border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
                 <div style="display:flex; gap:6px; align-items:center;">
@@ -323,9 +346,9 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
 
                         <div class="form-group">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                <label style="margin:0;" title="Animasi visual yang dimainkan pada target saat skill dilancarkan">Skill Animation</label>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimationInEditor(skill.animationId)" style="padding:1px 8px; font-size:0.7rem; color:#f472b6;" title="Buka dan modifikasi animasi ini di Animation Studio">
-                                    🎨 Edit Animasi
+                                <label style="margin:0;" title="Animasi visual yang dimainkan pada target saat skill dilancarkan">Skill Animation (VFX)</label>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimationInEditor(getActiveItem() ? getActiveItem().animationId : 0)" style="padding:2px 8px; font-size:0.72rem; color:#f472b6; font-weight:600;" title="Buka dan modifikasi frame/sel animasi ini di Animation Studio (Tab Animations)">
+                                    🎨 Buka di Animation Studio
                                 </button>
                             </div>
                             <select class="form-control" onchange="skill.animationId=parseInt(this.value,10); setUnsaved(true);">

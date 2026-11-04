@@ -110,6 +110,20 @@ class NUSVEditorHandler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps(images).encode("utf-8"))
             return
 
+        # 1b. API: List audio sound files (e.g. /api/audio/se)
+        if self.path.startswith("/api/audio/"):
+            subfolder = self.path[len("/api/audio/"):].strip("/").split("?")[0]
+            folder_path = GAME_DIR / "audio" / subfolder
+            names = []
+            if folder_path.exists() and folder_path.is_dir():
+                names = sorted(list(set(f.stem for f in folder_path.iterdir() if f.suffix.lower() in ('.ogg', '.m4a', '.mp3', '.wav'))))
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.end_headers()
+            if not is_head:
+                self.wfile.write(json.dumps(names).encode("utf-8"))
+            return
+
         # 2. API: Load data file
         if self.path.startswith("/api/data/"):
             filename = self.path[len("/api/data/"):]
@@ -161,7 +175,7 @@ class NUSVEditorHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         if self.path.startswith("/api/save/"):
-            filename = self.path[len("/api/save/"):]
+            filename = self.path[len("/api/save/"):].split("?")[0]
             if not filename.endswith(".json"):
                 filename += ".json"
             filepath = DATA_DIR / filename

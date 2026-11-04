@@ -3211,9 +3211,12 @@ HTML_CONTENT = r'''<!DOCTYPE html>
             switch (State.currentTab) {
                 case 'actors': filename = 'Actors.json'; data = State.actors; break;
                 case 'classes': filename = 'Classes.json'; data = State.classes; break;
+                case 'races': filename = 'Races.json'; data = State.races; break;
                 case 'weapons': filename = 'Weapons.json'; data = State.weapons; break;
                 case 'armors': filename = 'Armors.json'; data = State.armors; break;
                 case 'skills': filename = 'Skills.json'; data = State.skills; break;
+                case 'skill_animator': filename = 'Skills.json'; data = State.skills; break;
+                case 'animations': filename = 'Animations.json'; data = State.animations; break;
                 case 'items': filename = 'Items.json'; data = State.items; break;
                 case 'enemies': filename = 'Enemies.json'; data = State.enemies; break;
                 case 'states': filename = 'States.json'; data = State.states; break;

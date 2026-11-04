@@ -54,13 +54,14 @@ async function reloadAllData() {
     showToast('Loading project database...', 'info');
     let dataLoaded = false;
     try {
-        const [pics, faces, chars, svs, enes, animPics, act, cls, wep, arm, ski, itm, ene, sta, anim, sys, ce, rce] = await Promise.all([
+        const [pics, faces, chars, svs, enes, animPics, seAudio, act, cls, wep, arm, ski, itm, ene, sta, anim, sys, ce, rce] = await Promise.all([
             fetch(getApiUrl('/api/images/pictures')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/faces')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/characters')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/sv_actors')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/sv_enemies')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/animations')).then(r => r.json()).catch(() => []),
+            fetch(getApiUrl('/api/audio/se')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/data/Actors.json')).then(r => { if (!r.ok) throw new Error('Failed to load Actors.json'); return r.json(); }),
             fetch(getApiUrl('/api/data/Classes.json')).then(r => { if (!r.ok) throw new Error('Failed to load Classes.json'); return r.json(); }),
             fetch(getApiUrl('/api/data/Weapons.json')).then(r => { if (!r.ok) throw new Error('Failed to load Weapons.json'); return r.json(); }),
@@ -82,6 +83,7 @@ async function reloadAllData() {
         State.svActors = svs || [];
         State.enemiesPics = enes || [];
         State.animationImages = animPics || [];
+        State.audioSeList = (seAudio && seAudio.length > 0) ? seAudio : (typeof RPG_DEFAULT_SE_LIST !== 'undefined' ? RPG_DEFAULT_SE_LIST : []);
 
         State.actors = act || [];
         State.classes = cls || [];
@@ -122,6 +124,22 @@ async function reloadAllData() {
 
 
 async function saveActiveDataset() {
+    // 1. Commit any currently focused input/field
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        try {
+            document.activeElement.blur();
+        } catch (_) {}
+    }
+
+    // 2. If in Skill Animator, ensure the current sequence is compiled to skill note
+    if (State.currentTab === 'skill_animator' && typeof SkillAnimator !== 'undefined' && SkillAnimator.saveCurrentStudioConfig) {
+        try {
+            SkillAnimator.saveCurrentStudioConfig();
+        } catch (e) {
+            console.warn('[saveActiveDataset] Error syncing studio config:', e);
+        }
+    }
+
     const tabMap = {
         actors: { filename: 'Actors.json', data: () => State.actors },
         classes: { filename: 'Classes.json', data: () => State.classes },
@@ -129,53 +147,77 @@ async function saveActiveDataset() {
         weapons: { filename: 'Weapons.json', data: () => State.weapons },
         armors: { filename: 'Armors.json', data: () => State.armors },
         skills: { filename: 'Skills.json', data: () => State.skills },
+        skill_animator: { filename: 'Skills.json', data: () => State.skills },
         items: { filename: 'Items.json', data: () => State.items },
         enemies: { filename: 'Enemies.json', data: () => State.enemies },
         states: { filename: 'States.json', data: () => State.states },
         animations: { filename: 'Animations.json', data: () => State.animations }
     };
 
-    // Collect all modified tabs and the current active tab
+    // Collect all tabs to save: explicitly modified tabs + current active tab
     const tabsToSave = new Set(State.modifiedTabs || []);
-    if (State.currentTab && tabMap[State.currentTab]) {
+    if (State.currentTab) {
         tabsToSave.add(State.currentTab);
     }
 
-    if (tabsToSave.size === 0) {
-        showToast('Tidak ada perubahan untuk disimpan.', 'info');
-        return;
-    }
-
-    let savedFiles = [];
+    // Map unique files to save: filename -> data
+    const filesToSave = new Map();
     for (const tab of tabsToSave) {
         const info = tabMap[tab];
         if (!info) continue;
         const filename = info.filename;
         const data = info.data();
-        if (!data) continue;
+        if (filename && data) {
+            filesToSave.set(filename, data);
+        }
+    }
 
-        showToast(`Menyimpan ${filename}...`, 'info');
-        try {
+    if (filesToSave.size === 0) {
+        showToast('Tidak ada data tab yang valid untuk disimpan.', 'warning');
+        return;
+    }
+
+    // Visual button feedback
+    const saveBtns = document.querySelectorAll('button[onclick*="saveActiveDataset"]');
+    saveBtns.forEach(btn => {
+        btn.disabled = true;
+        btn.dataset.originalHtml = btn.innerHTML;
+        btn.innerHTML = '⏳ Menyimpan...';
+    });
+
+    let savedFiles = [];
+    try {
+        for (const [filename, data] of filesToSave.entries()) {
+            showToast(`Menyimpan ${filename}...`, 'info');
             const res = await fetch(getApiUrl(`/api/save/${filename}`), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
             const result = await res.json();
-            if (result.status === 'ok') {
+            if (result && result.status === 'ok') {
                 savedFiles.push(filename);
             } else {
-                throw new Error(result.message || 'Gagal menyimpan');
+                throw new Error((result && result.message) || `Gagal menyimpan ${filename}`);
             }
-        } catch (err) {
-            console.error(err);
-            showToast(`Gagal menyimpan ${filename}: ${err.message}`, 'error');
-            return;
         }
-    }
 
-    if (savedFiles.length > 0) {
-        setUnsaved(false);
-        showToast(`Berhasil menyimpan ${savedFiles.join(', ')} (backup otomatis tersimpan)!`, 'success');
+        if (savedFiles.length > 0) {
+            setUnsaved(false);
+            showToast(`✅ Berhasil menyimpan ${savedFiles.join(', ')} ke project!`, 'success');
+        }
+    } catch (err) {
+        console.error('[saveActiveDataset Error]', err);
+        showToast(`❌ Gagal menyimpan database: ${err.message}`, 'error');
+        if (typeof showServerOfflineModal === 'function' && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError'))) {
+            showServerOfflineModal();
+        }
+    } finally {
+        saveBtns.forEach(btn => {
+            btn.disabled = false;
+            if (btn.dataset.originalHtml) {
+                btn.innerHTML = btn.dataset.originalHtml;
+            }
+        });
     }
 }

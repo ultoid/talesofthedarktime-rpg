@@ -65,6 +65,7 @@ function getActiveList() {
         case 'weapons': return State.weapons;
         case 'armors': return State.armors;
         case 'skills': return State.skills;
+        case 'skill_animator': return State.skills;
         case 'items': return State.items;
         case 'enemies': return State.enemies;
         case 'states': return State.states;
