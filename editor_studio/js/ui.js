@@ -44,6 +44,12 @@ function switchTab(tabKey) {
     if (typeof stopEnemyBattlerAnimation === 'function') {
         stopEnemyBattlerAnimation();
     }
+    if (typeof stopSkillBattleAnimation === 'function') {
+        stopSkillBattleAnimation();
+    }
+    if (typeof stopAnimationEditorLoop === 'function') {
+        stopAnimationEditorLoop();
+    }
 
     // 1. Simpan index seleksi tab sebelumnya
     if (State.currentTab) {
@@ -572,6 +578,13 @@ function renderSidebar() {
             };
             const col = grpColors[grp] || '#94a3b8';
             subBadges.push(`<span class="list-badge" style="color:${col}; border-color:${col}40;">${escapeHtml(grp)}</span>`);
+        } else if (State.currentTab === 'animations') {
+            const frameCount = (item.frames || []).length;
+            const graphicName = item.animation1Name || '';
+            mainBadge = `<span class="list-badge" style="color:#f472b6; border-color:rgba(244,114,182,0.3); font-weight:700;">${frameCount}F</span>`;
+            if (graphicName) {
+                subBadges.push(`<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3); font-size:0.65rem;">${escapeHtml(graphicName)}</span>`);
+            }
         }
 
         const subRowHtml = subBadges.length > 0 ? `<div class="list-sub-row">${subBadges.join('')}</div>` : '';
@@ -678,8 +691,8 @@ function renderEditor() {
             if (previewContainer) renderEquipmentStatPreview(previewContainer, item, 'armor');
             break;
         case 'skills': 
-            if (statTitle) statTitle.innerHTML = '📖 Skill Inspector';
-            if (statSub) statSub.innerText = 'Combat Resolution & Scope';
+            if (statTitle) statTitle.innerHTML = '⚔️ Live Battle & Skill Inspector';
+            if (statSub) statSub.innerText = 'Sideview Combat Simulation';
             renderSkillEditor(container, item); 
             if (previewContainer) renderSkillStatPreview(previewContainer, item);
             break;
@@ -700,6 +713,14 @@ function renderEditor() {
             if (statSub) statSub.innerText = 'Buff / Debuff / Passive';
             renderStateEditor(container, item); 
             if (previewContainer) renderStateStatPreview(previewContainer, item);
+            break;
+        case 'animations': 
+            if (statTitle) statTitle.innerHTML = '💥 Animation Inspector &amp; Timings';
+            if (statSub) statSub.innerText = 'SE Audio, Flashes &amp; Cells';
+            if (typeof renderAnimationEditor === 'function') {
+                renderAnimationEditor(container, item);
+                if (previewContainer) renderAnimationStatPreview(previewContainer, item);
+            }
             break;
     }
 }

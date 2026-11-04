@@ -1036,6 +1036,7 @@
             <button class="tab-btn" onclick="switchTab('weapons')">⚔️ Weapons</button>
             <button class="tab-btn" onclick="switchTab('armors')">🛡️ Armors</button>
             <button class="tab-btn" onclick="switchTab('skills')">✨ Skills</button>
+            <button class="tab-btn" onclick="switchTab('animations')">💥 Animations</button>
             <button class="tab-btn" onclick="switchTab('items')">🧪 Items</button>
             <button class="tab-btn" onclick="switchTab('enemies')">👾 Enemies</button>
             <button class="tab-btn" onclick="switchTab('states')">💫 States</button>
@@ -1645,6 +1646,7 @@ const State = {
     characters: [],
     svActors: [],
     enemiesPics: [],
+    animationImages: [],
     actors: [],
     classes: [],
     races: [],
@@ -1664,6 +1666,7 @@ const State = {
         weapons: 1,
         armors: 1,
         skills: 1,
+        animations: 1,
         items: 1,
         enemies: 1,
         states: 1
@@ -1702,6 +1705,7 @@ function getActiveList() {
         case 'items': return State.items;
         case 'enemies': return State.enemies;
         case 'states': return State.states;
+        case 'animations': return State.animations;
         default: return [];
     }
 }
@@ -2393,12 +2397,13 @@ async function reloadAllData() {
     showToast('Loading project database...', 'info');
     let dataLoaded = false;
     try {
-        const [pics, faces, chars, svs, enes, act, cls, wep, arm, ski, itm, ene, sta, anim, sys, ce, rce] = await Promise.all([
+        const [pics, faces, chars, svs, enes, animPics, act, cls, wep, arm, ski, itm, ene, sta, anim, sys, ce, rce] = await Promise.all([
             fetch(getApiUrl('/api/images/pictures')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/faces')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/characters')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/sv_actors')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/sv_enemies')).then(r => r.json()).catch(() => []),
+            fetch(getApiUrl('/api/images/animations')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/data/Actors.json')).then(r => { if (!r.ok) throw new Error('Failed to load Actors.json'); return r.json(); }),
             fetch(getApiUrl('/api/data/Classes.json')).then(r => { if (!r.ok) throw new Error('Failed to load Classes.json'); return r.json(); }),
             fetch(getApiUrl('/api/data/Weapons.json')).then(r => { if (!r.ok) throw new Error('Failed to load Weapons.json'); return r.json(); }),
@@ -2419,6 +2424,7 @@ async function reloadAllData() {
         State.characters = chars || [];
         State.svActors = svs || [];
         State.enemiesPics = enes || [];
+        State.animationImages = animPics || [];
 
         State.actors = act || [];
         State.classes = cls || [];
@@ -2468,7 +2474,8 @@ async function saveActiveDataset() {
         skills: { filename: 'Skills.json', data: () => State.skills },
         items: { filename: 'Items.json', data: () => State.items },
         enemies: { filename: 'Enemies.json', data: () => State.enemies },
-        states: { filename: 'States.json', data: () => State.states }
+        states: { filename: 'States.json', data: () => State.states },
+        animations: { filename: 'Animations.json', data: () => State.animations }
     };
 
     // Collect all modified tabs and the current active tab
@@ -2563,6 +2570,12 @@ function switchTab(tabKey) {
     ensureNavTabs();
     if (typeof stopEnemyBattlerAnimation === 'function') {
         stopEnemyBattlerAnimation();
+    }
+    if (typeof stopSkillBattleAnimation === 'function') {
+        stopSkillBattleAnimation();
+    }
+    if (typeof stopAnimationEditorLoop === 'function') {
+        stopAnimationEditorLoop();
     }
 
     // 1. Simpan index seleksi tab sebelumnya
@@ -3092,6 +3105,13 @@ function renderSidebar() {
             };
             const col = grpColors[grp] || '#94a3b8';
             subBadges.push(`<span class="list-badge" style="color:${col}; border-color:${col}40;">${escapeHtml(grp)}</span>`);
+        } else if (State.currentTab === 'animations') {
+            const frameCount = (item.frames || []).length;
+            const graphicName = item.animation1Name || '';
+            mainBadge = `<span class="list-badge" style="color:#f472b6; border-color:rgba(244,114,182,0.3); font-weight:700;">${frameCount}F</span>`;
+            if (graphicName) {
+                subBadges.push(`<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3); font-size:0.65rem;">${escapeHtml(graphicName)}</span>`);
+            }
         }
 
         const subRowHtml = subBadges.length > 0 ? `<div class="list-sub-row">${subBadges.join('')}</div>` : '';
@@ -3198,8 +3218,8 @@ function renderEditor() {
             if (previewContainer) renderEquipmentStatPreview(previewContainer, item, 'armor');
             break;
         case 'skills': 
-            if (statTitle) statTitle.innerHTML = '📖 Skill Inspector';
-            if (statSub) statSub.innerText = 'Combat Resolution & Scope';
+            if (statTitle) statTitle.innerHTML = '⚔️ Live Battle & Skill Inspector';
+            if (statSub) statSub.innerText = 'Sideview Combat Simulation';
             renderSkillEditor(container, item); 
             if (previewContainer) renderSkillStatPreview(previewContainer, item);
             break;
@@ -3220,6 +3240,14 @@ function renderEditor() {
             if (statSub) statSub.innerText = 'Buff / Debuff / Passive';
             renderStateEditor(container, item); 
             if (previewContainer) renderStateStatPreview(previewContainer, item);
+            break;
+        case 'animations': 
+            if (statTitle) statTitle.innerHTML = '💥 Animation Inspector &amp; Timings';
+            if (statSub) statSub.innerText = 'SE Audio, Flashes &amp; Cells';
+            if (typeof renderAnimationEditor === 'function') {
+                renderAnimationEditor(container, item);
+                if (previewContainer) renderAnimationStatPreview(previewContainer, item);
+            }
             break;
     }
 }
@@ -8069,6 +8097,2631 @@ function onArmorElementAmplifyChange() {
 // =====================================================================
 
 
+/* Inlined from editor_studio/js/editors/skill_animator.js */
+/**
+ * NUSV Database Studio - Skill Battle & Action Sequence Animator
+ * Sideview (SV) Real-time Battle Preview & Action Sequence Visual Editor
+ */
+
+const SkillAnimator = {
+    // Canvas & Context
+    canvas: null,
+    ctx: null,
+    rafId: null,
+
+    // Playback state
+    isPlaying: true,
+    isLooping: true,
+    speed: 1.0,
+    isMuted: false,
+    currentTick: 0,
+    totalTicks: 120,
+    lastFrameTime: 0,
+    currentPhase: 'idle', // 'idle' | 'cast' | 'approach' | 'attack' | 'reaction' | 'return'
+
+    // Scene actor & enemy configs
+    activeSkill: null,
+    selectedActorName: 'Actor1_1',
+    selectedEnemyName: 'Actor1_3',
+    selectedBattleback1: 'Cobblestones1',
+    selectedBattleback2: 'Cobblestones2',
+
+    // Asset Caches
+    images: {},
+    audioContext: null,
+    audioCache: {},
+
+    // Coordinates (Canvas 480x270 - 16:9)
+    WIDTH: 480,
+    HEIGHT: 270,
+    actorHome: { x: 380, y: 190 },
+    enemyHome: { x: 100, y: 190 },
+
+    // Dynamic runtime state during sequence
+    actorPos: { x: 380, y: 190 },
+    actorMotion: 'wait', // 'walk' | 'wait' | 'chant' | 'guard' | 'damage' | 'evade' | 'thrust' | 'swing' | 'missile' | 'skill' | 'spell'
+    actorPattern: 1, // 0, 1, 2
+    actorPatternCount: 0,
+    actorAlpha: 1.0,
+
+    enemyPos: { x: 100, y: 190 },
+    enemyFlinchOffset: { x: 0, y: 0 },
+    enemyFlashColor: null, // [r, g, b, a]
+    enemyAlpha: 1.0,
+    enemyMotion: 'idle',
+
+    // Screen effects
+    screenShake: { power: 0, duration: 0, current: 0 },
+    screenFlash: { color: [255, 255, 255, 0], duration: 0, current: 0 },
+
+    // Damage Popups
+    activePopups: [],
+
+    // Current Active Animation Overlays
+    castAnimPlayer: null,
+    targetAnimPlayers: [],
+
+    // Preset Templates
+    PRESETS: {
+        melee: {
+            name: '🗡️ Melee Strike',
+            desc: 'Maju melesat ke depan musuh, tebasan senjata fisik, flinch & mundur kembali.',
+            cast: { enabled: false, motion: 'chant', step: false, animId: 0, duration: 25, se: '' },
+            attack: { approach: 'melee', motion: 'swing', animId: 2, repeats: 1, interval: 10, shake: 'light', flash: 'none' },
+            reaction: { type: 'flinch', flash: 'red', popupType: 'hp_damage', testValue: 850, se: 'Blow1' }
+        },
+        combo: {
+            name: '⚡ Multi-Slash Combo',
+            desc: 'Melesat cepat, melancarkan 3x serangan berturut-turut, getaran layar kuat & knockback.',
+            cast: { enabled: false, motion: 'skill', step: true, animId: 0, duration: 20, se: '' },
+            attack: { approach: 'melee', motion: 'swing', animId: 2, repeats: 3, interval: 12, shake: 'heavy', flash: 'white' },
+            reaction: { type: 'knockback', flash: 'white', popupType: 'critical', testValue: 1850, se: 'Slash2' }
+        },
+        magic: {
+            name: '🔮 Elemental Spell',
+            desc: 'Fase casting dengan lingkaran sihir/aura, tetap di tempat, ledakan elemen di target & flash layar.',
+            cast: { enabled: true, motion: 'chant', step: true, animId: 56, duration: 35, se: 'Magic1' },
+            attack: { approach: 'ranged', motion: 'spell', animId: 10, repeats: 1, interval: 12, shake: 'light', flash: 'white' },
+            reaction: { type: 'knockback', flash: 'white', popupType: 'magical', testValue: 1240, se: 'Fire1' }
+        },
+        ranged: {
+            name: '🏹 Ranged Missile',
+            desc: 'Maju selangkah, pose menembak (missile), proyektil skill mengenai musuh dari jauh.',
+            cast: { enabled: false, motion: 'wait', step: true, animId: 0, duration: 15, se: '' },
+            attack: { approach: 'step', motion: 'missile', animId: 4, repeats: 1, interval: 10, shake: 'none', flash: 'none' },
+            reaction: { type: 'flinch', flash: 'red', popupType: 'hp_damage', testValue: 920, se: 'Blow1' }
+        },
+        heal: {
+            name: '✨ Support / Heal',
+            desc: 'Rancangan chant suci doa, aura cahaya pemulihan turun pada diri sendiri, pop-up angka hijau.',
+            cast: { enabled: true, motion: 'chant', step: false, animId: 45, duration: 30, se: 'Heal1' },
+            attack: { approach: 'ranged', motion: 'skill', animId: 45, repeats: 1, interval: 10, shake: 'none', flash: 'none' },
+            reaction: { type: 'none', flash: 'none', popupType: 'heal', testValue: 1500, se: 'Recovery' }
+        },
+        blink: {
+            name: '🌀 Shadow Blink Strike',
+            desc: 'Teleport kilat seketika di depan musuh, tebasan mematikan, gempa layar & knockback dahsyat.',
+            cast: { enabled: true, motion: 'skill', step: false, animId: 0, duration: 15, se: 'Teleport' },
+            attack: { approach: 'teleport', motion: 'thrust', animId: 2, repeats: 2, interval: 14, shake: 'earthquake', flash: 'white' },
+            reaction: { type: 'knockback', flash: 'white', popupType: 'critical', testValue: 3200, se: 'Blow2' }
+        }
+    }
+};
+
+/**
+ * Audio helper for SFX
+ */
+SkillAnimator.playSe = function(name, volume = 90, pitch = 100) {
+    if (this.isMuted || !name) return;
+    try {
+        const audio = new Audio(`audio/se/${encodeURIComponent(name)}.ogg`);
+        audio.volume = Math.max(0, Math.min(1, (volume / 100) * 0.7));
+        audio.playbackRate = Math.max(0.5, Math.min(2.0, pitch / 100));
+        audio.play().catch(() => {});
+    } catch (e) {
+        // Safe audio ignore
+    }
+};
+
+/**
+ * Load & Cache Image
+ */
+SkillAnimator.getImage = function(src) {
+    if (!this.images[src]) {
+        const img = new Image();
+        img.src = src;
+        this.images[src] = img;
+    }
+    return this.images[src];
+};
+
+/**
+ * Extract or generate default Action Sequence Configuration for a skill
+ */
+SkillAnimator.getConfig = function(skill) {
+    if (!skill) return JSON.parse(JSON.stringify(this.PRESETS.melee));
+
+    const note = skill.note || '';
+
+    // 1. Try reading clean embedded NUSV config
+    const match = note.match(/<!--\s*NUSV_ACTION_CONFIG:\s*([\s\S]*?)\s*-->/);
+    if (match) {
+        try {
+            const parsed = JSON.parse(match[1]);
+            parsed.hasCustomSeq = true;
+            return parsed;
+        } catch (e) {
+            console.warn('Failed to parse embedded NUSV_ACTION_CONFIG', e);
+        }
+    }
+
+    // 2. Check if skill has raw Yanfly Action Sequence tags
+    const hasYanfly = /<target action>/i.test(note) || /<setup action>/i.test(note);
+
+    // 3. Auto-detect appropriate archetype defaults based on skill properties
+    let baseArchetype = 'melee';
+    if (skill.hitType === 2 || (skill.stypeId && skill.stypeId === 1)) {
+        baseArchetype = 'magic';
+    } else if (skill.damage && skill.damage.type === 3) {
+        baseArchetype = 'heal';
+    } else if (skill.repeats > 1) {
+        baseArchetype = 'combo';
+    }
+
+    const cfg = JSON.parse(JSON.stringify(this.PRESETS[baseArchetype]));
+    cfg.hasCustomSeq = hasYanfly;
+    cfg.attack.animId = skill.animationId || cfg.attack.animId || 1;
+    cfg.attack.repeats = skill.repeats || 1;
+
+    // Check specific tags in note
+    if (/motion missile/i.test(note)) cfg.attack.motion = 'missile';
+    if (/motion thrust/i.test(note)) cfg.attack.motion = 'thrust';
+    if (/motion skill/i.test(note)) cfg.attack.motion = 'skill';
+    if (/motion spell/i.test(note)) cfg.attack.motion = 'spell';
+    if (/motion swing/i.test(note)) cfg.attack.motion = 'swing';
+
+    if (/motion chant/i.test(note)) {
+        cfg.cast.enabled = true;
+        cfg.cast.motion = 'chant';
+    }
+
+    if (/shake screen/i.test(note)) cfg.attack.shake = 'heavy';
+    if (/flash screen/i.test(note)) cfg.attack.flash = 'white';
+
+    return cfg;
+};
+
+/**
+ * Convert structured configuration into Yanfly Action Sequence blocks
+ */
+SkillAnimator.generateYanflySequence = function(cfg, skill) {
+    const lines = [];
+
+    // === SETUP ACTION ===
+    lines.push('<setup action>');
+    lines.push('clear battle log');
+    lines.push('display action');
+    lines.push('immortal: targets, true');
+    lines.push('perform start');
+
+    if (cfg.cast && cfg.cast.enabled) {
+        if (cfg.cast.step) {
+            lines.push('move user: forward, 32, 10');
+            lines.push('wait for movement');
+        }
+        lines.push(`motion ${cfg.cast.motion || 'chant'}: user`);
+        if (cfg.cast.animId > 0) {
+            lines.push(`animation ${cfg.cast.animId}: user`);
+        }
+        if (cfg.cast.se) {
+            lines.push(`se: ${cfg.cast.se}, 80, 100, 0`);
+        }
+        lines.push(`wait: ${cfg.cast.duration || 25}`);
+    } else {
+        lines.push('wait for movement');
+    }
+    lines.push('</setup action>');
+    lines.push('');
+
+    // === TARGET ACTION ===
+    lines.push('<target action>');
+    const approach = cfg.attack.approach || 'melee';
+    if (approach === 'melee') {
+        lines.push('move user: target, front, 18');
+        lines.push('wait for movement');
+    } else if (approach === 'step') {
+        lines.push('move user: forward, 32, 10');
+        lines.push('wait for movement');
+    } else if (approach === 'teleport') {
+        lines.push('opacity user: 0, 4');
+        lines.push('wait: 4');
+        lines.push('move user: target, front, 1');
+        lines.push('wait for movement');
+        lines.push('opacity user: 255, 4');
+        lines.push('wait: 4');
+    }
+
+    const repeats = Math.max(1, parseInt(cfg.attack.repeats, 10) || 1);
+    const interval = Math.max(4, parseInt(cfg.attack.interval, 10) || 10);
+    const motion = cfg.attack.motion || 'swing';
+
+    for (let r = 0; r < repeats; r++) {
+        lines.push(`motion ${motion}: user`);
+        lines.push('action animation: target');
+        lines.push('action effect: target');
+
+        if (cfg.reaction && cfg.reaction.flash === 'red') {
+            lines.push('enemy effect: targets, blink');
+        } else if (cfg.reaction && cfg.reaction.flash === 'white') {
+            lines.push('enemy effect: targets, whiten');
+        }
+
+        if (r < repeats - 1) {
+            lines.push(`wait: ${interval}`);
+        }
+    }
+
+    lines.push('wait for animation');
+
+    // Shake & Flash
+    if (cfg.attack.shake === 'light') {
+        lines.push('shake screen: 2, 5, 10');
+    } else if (cfg.attack.shake === 'heavy') {
+        lines.push('shake screen: 4, 7, 15');
+    } else if (cfg.attack.shake === 'earthquake') {
+        lines.push('shake screen: 7, 9, 25');
+    }
+
+    if (cfg.attack.flash === 'white') {
+        lines.push('flash screen: white, 10');
+    } else if (cfg.attack.flash === 'red') {
+        lines.push('flash screen: red, 12');
+    } else if (cfg.attack.flash === 'gold') {
+        lines.push('flash screen: 255, 215, 0, 180, 15');
+    }
+
+    lines.push('</target action>');
+    lines.push('');
+
+    // === FINISH ACTION ===
+    lines.push('<finish action>');
+    lines.push('immortal: targets, false');
+    if (approach === 'melee' || approach === 'step' || approach === 'teleport') {
+        lines.push('move user: home, 16');
+        lines.push('wait for movement');
+    }
+    lines.push('perform finish');
+    lines.push('clear battle log');
+    lines.push('</finish action>');
+
+    return lines.join('\n');
+};
+
+/**
+ * Apply and save configuration to skill note
+ */
+SkillAnimator.saveConfigToSkill = function(skill, cfg) {
+    if (!skill) return;
+
+    // 1. Strip existing action sequence tags and embedded config
+    let note = (skill.note || '')
+        .replace(/<!--\s*NUSV_ACTION_CONFIG:[\s\S]*?-->/g, '')
+        .replace(/<setup action>[\s\S]*?<\/setup action>/gi, '')
+        .replace(/<whole action>[\s\S]*?<\/whole action>/gi, '')
+        .replace(/<target action>[\s\S]*?<\/target action>/gi, '')
+        .replace(/<follow action>[\s\S]*?<\/follow action>/gi, '')
+        .replace(/<finish action>[\s\S]*?<\/finish action>/gi, '')
+        .trim();
+
+    // 2. Generate new sequence
+    const seqText = this.generateYanflySequence(cfg, skill);
+    const configComment = `<!-- NUSV_ACTION_CONFIG: ${JSON.stringify(cfg)} -->`;
+
+    // 3. Append to note
+    skill.note = (note ? note + '\n\n' : '') + configComment + '\n' + seqText;
+
+    // 4. Synchronize core skill fields
+    if (cfg.attack.animId !== undefined) {
+        skill.animationId = parseInt(cfg.attack.animId, 10);
+    }
+    if (cfg.attack.repeats !== undefined) {
+        skill.repeats = parseInt(cfg.attack.repeats, 10);
+    }
+
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    if (typeof showToast === 'function') {
+        showToast('Sequence aksi SV diperbarui ke Skill #' + skill.id, 'success');
+    }
+};
+
+/**
+ * Revert / Clear action sequence back to default MV flow
+ */
+SkillAnimator.clearSequenceFromSkill = function(skill) {
+    if (!skill) return;
+    let note = (skill.note || '')
+        .replace(/<!--\s*NUSV_ACTION_CONFIG:[\s\S]*?-->/g, '')
+        .replace(/<setup action>[\s\S]*?<\/setup action>/gi, '')
+        .replace(/<whole action>[\s\S]*?<\/whole action>/gi, '')
+        .replace(/<target action>[\s\S]*?<\/target action>/gi, '')
+        .replace(/<follow action>[\s\S]*?<\/follow action>/gi, '')
+        .replace(/<finish action>[\s\S]*?<\/finish action>/gi, '')
+        .trim();
+
+    skill.note = note;
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    if (typeof showToast === 'function') {
+        showToast('Action sequence dikembalikan ke default standar RPG Maker MV.', 'info');
+    }
+};
+
+/**
+ * Initialize / Start SV Battle Simulation Canvas
+ */
+SkillAnimator.initPreview = function(canvasEl, skill) {
+    if (!canvasEl) return;
+    this.canvas = canvasEl;
+    this.ctx = canvasEl.getContext('2d');
+    this.activeSkill = skill;
+
+    this.stop();
+
+    // Reset sequence ticker
+    this.currentTick = 0;
+    this.lastFrameTime = performance.now();
+    this.isPlaying = true;
+    this.activePopups = [];
+    this.castAnimPlayer = null;
+    this.targetAnimPlayers = [];
+
+    // Preload battleback and actor
+    this.getImage(`img/battlebacks1/${this.selectedBattleback1}.png`);
+    this.getImage(`img/battlebacks2/${this.selectedBattleback2}.png`);
+    this.getImage(`img/sv_actors/${this.selectedActorName}.png`);
+    this.getImage(`img/sv_enemies/${this.selectedEnemyName}.png`);
+    this.getImage(`img/enemies/${this.selectedEnemyName}.png`);
+
+    const cfg = this.getConfig(skill);
+    if (cfg.attack.animId > 0 && State.animations[cfg.attack.animId]) {
+        const a = State.animations[cfg.attack.animId];
+        if (a.animation1Name) this.getImage(`img/animations/${a.animation1Name}.png`);
+    }
+    if (cfg.cast.animId > 0 && State.animations[cfg.cast.animId]) {
+        const ca = State.animations[cfg.cast.animId];
+        if (ca.animation1Name) this.getImage(`img/animations/${ca.animation1Name}.png`);
+    }
+
+    this.startLoop();
+};
+
+/**
+ * Stop active render loop
+ */
+SkillAnimator.stop = function() {
+    if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+    }
+};
+
+/**
+ * Start 60fps RAF loop
+ */
+SkillAnimator.startLoop = function() {
+    this.stop();
+    const self = this;
+
+    function step(now) {
+        if (!self.canvas || !self.ctx) return;
+        const delta = now - self.lastFrameTime;
+        // Run roughly ~60 ticks per second modified by speed
+        const tickInterval = 1000 / (60 * (self.speed || 1.0));
+
+        if (delta >= tickInterval) {
+            self.lastFrameTime = now;
+            if (self.isPlaying) {
+                self.update();
+            }
+            self.render();
+        }
+        self.rafId = requestAnimationFrame(step);
+    }
+
+    this.rafId = requestAnimationFrame(step);
+};
+
+/**
+ * Calculate dynamic sequence choreography
+ */
+SkillAnimator.update = function() {
+    const cfg = this.getConfig(this.activeSkill);
+    const castEnabled = cfg.cast && cfg.cast.enabled;
+    const castDuration = castEnabled ? (cfg.cast.duration || 30) : 0;
+    const approach = cfg.attack.approach || 'melee';
+    const repeats = Math.max(1, parseInt(cfg.attack.repeats, 10) || 1);
+    const interval = Math.max(4, parseInt(cfg.attack.interval, 10) || 12);
+    const attackMotionDuration = 18;
+    const attackTotalDuration = (repeats - 1) * interval + attackMotionDuration;
+    const approachDuration = (approach === 'melee') ? 16 : (approach === 'teleport' ? 6 : 10);
+    const returnDuration = (approach === 'melee' || approach === 'step' || approach === 'teleport') ? 16 : 6;
+
+    // Concrete Contact / Strike Positions
+    const meleeContactX = this.enemyHome.x + 55;
+    const stepContactX = this.actorHome.x - 32;
+    const teleportContactX = this.enemyHome.x + 50;
+    const attackContactX = (approach === 'melee') ? meleeContactX :
+                           (approach === 'step') ? stepContactX :
+                           (approach === 'teleport') ? teleportContactX : this.actorHome.x;
+
+    // Timeline Boundaries
+    const tIdleStart = 0;
+    const tCastStart = tIdleStart + 8;
+    const tCastEnd = tCastStart + castDuration;
+    const tApproachStart = tCastEnd;
+    const tApproachEnd = tApproachStart + (approach === 'ranged' ? 0 : approachDuration);
+    const tAttackStart = tApproachEnd;
+    const tAttackEnd = tAttackStart + attackTotalDuration;
+    const tReturnStart = tAttackEnd; // Immediate return after attack completes
+    const tReturnEnd = tReturnStart + returnDuration;
+    const tTotalEnd = tReturnEnd + 15;
+
+    this.totalTicks = tTotalEnd;
+    const t = this.currentTick;
+
+    // === PHASE DETERMINATION & CHOREOGRAPHY ===
+    if (t < tCastStart) {
+        // --- 0. IDLE STANDBY ---
+        this.currentPhase = 'idle';
+        this.actorPos.x = this.actorHome.x;
+        this.actorPos.y = this.actorHome.y;
+        this.actorMotion = 'wait';
+        this.actorAlpha = 1.0;
+        this.enemyPos.x = this.enemyHome.x;
+        this.enemyFlinchOffset.x = 0;
+        this.enemyFlinchOffset.y = 0;
+        this.enemyFlashColor = null;
+
+    } else if (t < tCastEnd) {
+        // --- 1. CASTING PHASE ---
+        this.currentPhase = 'cast';
+        const p = (t - tCastStart) / Math.max(1, castDuration);
+        if (cfg.cast.step) {
+            this.actorPos.x = this.actorHome.x - Math.min(28, p * 28);
+        } else {
+            this.actorPos.x = this.actorHome.x;
+        }
+        this.actorMotion = cfg.cast.motion || 'chant';
+
+        if (t === tCastStart + 1 && cfg.cast.se) {
+            this.playSe(cfg.cast.se);
+        }
+
+        if (cfg.cast.animId > 0 && !this.castAnimPlayer) {
+            const anim = State.animations[cfg.cast.animId];
+            if (anim) {
+                this.castAnimPlayer = {
+                    anim: anim,
+                    img: this.getImage(`img/animations/${anim.animation1Name}.png`),
+                    frameIndex: 0,
+                    rate: 4,
+                    rateCounter: 0,
+                    target: 'user'
+                };
+            }
+        }
+
+    } else if (t < tApproachEnd) {
+        // --- 2. APPROACHING PHASE ---
+        this.currentPhase = 'approach';
+        this.castAnimPlayer = null;
+        const p = Math.max(0, Math.min(1, (t - tApproachStart) / Math.max(1, approachDuration)));
+        const startX = cfg.cast.step ? (this.actorHome.x - 28) : this.actorHome.x;
+
+        if (approach === 'melee' || approach === 'step') {
+            this.actorPos.x = startX + (attackContactX - startX) * p;
+            this.actorMotion = 'walk';
+            this.actorAlpha = 1.0;
+        } else if (approach === 'teleport') {
+            if (p < 0.5) {
+                this.actorAlpha = Math.max(0, 1 - p * 2);
+                this.actorPos.x = startX;
+            } else {
+                this.actorPos.x = attackContactX;
+                this.actorAlpha = (p - 0.5) * 2;
+            }
+            this.actorMotion = 'skill';
+        } else {
+            this.actorPos.x = this.actorHome.x;
+            this.actorMotion = 'wait';
+        }
+
+    } else if (t < tAttackEnd) {
+        // --- 3. ATTACKING / ACTION EXECUTION ---
+        this.currentPhase = 'attack';
+        this.actorMotion = cfg.attack.motion || 'swing';
+        this.actorPos.x = attackContactX; // Locked exactly at target contact position
+        this.actorAlpha = 1.0;
+
+        const relTick = t - tAttackStart;
+        for (let r = 0; r < repeats; r++) {
+            const hitFrame = r * interval;
+            if (relTick === hitFrame) {
+                const animId = cfg.attack.animId || this.activeSkill.animationId || 1;
+                const anim = State.animations[animId];
+                if (anim && anim.animation1Name) {
+                    this.targetAnimPlayers.push({
+                        anim: anim,
+                        img: this.getImage(`img/animations/${anim.animation1Name}.png`),
+                        frameIndex: 0,
+                        rate: 4,
+                        rateCounter: 0,
+                        target: 'enemy'
+                    });
+                }
+
+                if (cfg.attack.shake === 'light') {
+                    this.screenShake = { power: 3, duration: 10, current: 10 };
+                } else if (cfg.attack.shake === 'heavy') {
+                    this.screenShake = { power: 6, duration: 15, current: 15 };
+                } else if (cfg.attack.shake === 'earthquake') {
+                    this.screenShake = { power: 10, duration: 25, current: 25 };
+                }
+
+                if (cfg.attack.flash === 'white') {
+                    this.screenFlash = { color: [255, 255, 255, 0.6], duration: 10, current: 10 };
+                } else if (cfg.attack.flash === 'red') {
+                    this.screenFlash = { color: [239, 68, 68, 0.6], duration: 12, current: 12 };
+                } else if (cfg.attack.flash === 'gold') {
+                    this.screenFlash = { color: [245, 158, 11, 0.6], duration: 14, current: 14 };
+                }
+
+                this.triggerEnemyReaction(cfg);
+            }
+        }
+
+    } else if (t < tReturnEnd) {
+        // --- 4. RETURN / RECOVERY ---
+        this.currentPhase = 'return';
+        const p = Math.max(0, Math.min(1, (t - tReturnStart) / Math.max(1, returnDuration)));
+
+        if (approach === 'melee' || approach === 'step' || approach === 'teleport') {
+            // Directly returns from attackContactX back to actorHome.x with smooth interpolation
+            this.actorPos.x = attackContactX + (this.actorHome.x - attackContactX) * p;
+            this.actorMotion = 'walk';
+            this.actorAlpha = 1.0;
+        } else {
+            this.actorPos.x = this.actorHome.x;
+            this.actorMotion = 'wait';
+        }
+
+    } else {
+        // --- 5. FINISH & STANDBY ---
+        this.currentPhase = 'idle';
+        this.actorPos.x = this.actorHome.x;
+        this.actorMotion = 'wait';
+        this.actorAlpha = 1.0;
+        this.enemyFlinchOffset.x = 0;
+        this.enemyFlinchOffset.y = 0;
+        this.enemyFlashColor = null;
+    }
+
+    // Update Actor Sprite Walk Pattern Cycle
+    if (++this.actorPatternCount >= 8) {
+        this.actorPatternCount = 0;
+        this.actorPattern = (this.actorPattern + 1) % 3;
+    }
+
+    // Update Enemy Reaction Flinch Decay
+    if (this.enemyFlinchOffset.x !== 0) {
+        this.enemyFlinchOffset.x *= 0.85;
+        if (Math.abs(this.enemyFlinchOffset.x) < 0.5) this.enemyFlinchOffset.x = 0;
+    }
+
+    // Update Screen Shake & Flash Decay
+    if (this.screenShake.current > 0) this.screenShake.current--;
+    if (this.screenFlash.current > 0) this.screenFlash.current--;
+
+    // Update Popups
+    for (let i = this.activePopups.length - 1; i >= 0; i--) {
+        const pop = this.activePopups[i];
+        pop.y -= pop.vy;
+        pop.vy *= 0.92;
+        pop.opacity -= 0.02;
+        if (pop.opacity <= 0) {
+            this.activePopups.splice(i, 1);
+        }
+    }
+
+    // Update Cast Animation Player
+    if (this.castAnimPlayer) {
+        if (++this.castAnimPlayer.rateCounter >= (this.castAnimPlayer.rate || 4)) {
+            this.castAnimPlayer.rateCounter = 0;
+            this.castAnimPlayer.frameIndex++;
+            if (this.castAnimPlayer.frameIndex >= (this.castAnimPlayer.anim.frames || []).length) {
+                this.castAnimPlayer = null;
+            }
+        }
+    }
+
+    // Update Target Animation Players
+    for (let i = this.targetAnimPlayers.length - 1; i >= 0; i--) {
+        const p = this.targetAnimPlayers[i];
+        if (++p.rateCounter >= (p.rate || 4)) {
+            p.rateCounter = 0;
+            p.frameIndex++;
+
+            if (p.anim.timings) {
+                for (const tm of p.anim.timings) {
+                    if (tm.frame === p.frameIndex) {
+                        if (tm.se && tm.se.name) {
+                            this.playSe(tm.se.name, tm.se.volume, tm.se.pitch);
+                        }
+                    }
+                }
+            }
+
+            if (p.frameIndex >= (p.anim.frames || []).length) {
+                this.targetAnimPlayers.splice(i, 1);
+            }
+        }
+    }
+
+    // Increment Sequence Progress
+    this.currentTick++;
+    if (this.currentTick >= this.totalTicks) {
+        if (this.isLooping) {
+            this.currentTick = 0;
+        } else {
+            this.currentTick = this.totalTicks;
+            this.isPlaying = false;
+        }
+    }
+
+    this.updatePhaseIndicator();
+};
+
+SkillAnimator.triggerEnemyReaction = function(cfg) {
+    const rx = cfg.reaction || {};
+
+    // 1. Physical offset
+    if (rx.type === 'flinch') {
+        this.enemyFlinchOffset.x = -16;
+    } else if (rx.type === 'knockback') {
+        this.enemyFlinchOffset.x = -38;
+    } else if (rx.type === 'tremble') {
+        this.enemyFlinchOffset.x = (Math.random() > 0.5 ? 8 : -8);
+    }
+
+    // 2. Flash
+    if (rx.flash === 'red') {
+        this.enemyFlashColor = [239, 68, 68, 0.7];
+    } else if (rx.flash === 'white') {
+        this.enemyFlashColor = [255, 255, 255, 0.85];
+    }
+    setTimeout(() => { this.enemyFlashColor = null; }, 120);
+
+    // 3. Sound
+    if (rx.se) {
+        this.playSe(rx.se);
+    }
+
+    // 4. Damage Popup
+    const val = rx.testValue || 1250;
+    const isCrit = rx.popupType === 'critical';
+    const isHeal = rx.popupType === 'heal';
+    const isMagic = rx.popupType === 'magical';
+
+    let color = '#f87171'; // physical red
+    let prefix = '-';
+    if (isCrit) color = '#facc15'; // gold
+    if (isHeal) { color = '#34d399'; prefix = '+'; } // green
+    if (isMagic) color = '#67e8f9'; // cyan
+
+    this.activePopups.push({
+        text: prefix + val.toLocaleString(),
+        isCrit: isCrit,
+        x: this.enemyHome.x + (Math.random() - 0.5) * 20,
+        y: this.enemyHome.y - 70,
+        vy: 3.5,
+        opacity: 1.0,
+        color: color
+    });
+};
+
+/**
+ * Main Canvas Render Function
+ */
+SkillAnimator.render = function() {
+    const ctx = this.ctx;
+    const W = this.WIDTH;
+    const H = this.HEIGHT;
+
+    ctx.save();
+    ctx.clearRect(0, 0, W, H);
+
+    // Apply Screen Shake
+    if (this.screenShake.current > 0) {
+        const p = this.screenShake.power;
+        const ox = (Math.random() - 0.5) * p * 2;
+        const oy = (Math.random() - 0.5) * p * 2;
+        ctx.translate(ox, oy);
+    }
+
+    // 1. Draw Battle Backgrounds
+    const bb1 = this.getImage(`img/battlebacks1/${this.selectedBattleback1}.png`);
+    const bb2 = this.getImage(`img/battlebacks2/${this.selectedBattleback2}.png`);
+
+    if (bb1 && bb1.complete && bb1.naturalWidth > 0) {
+        ctx.drawImage(bb1, 0, 0, W, H);
+    } else {
+        // Fallback stylish battle arena gradient
+        const grad = ctx.createLinearGradient(0, 0, 0, H);
+        grad.addColorStop(0, '#0f172a');
+        grad.addColorStop(0.65, '#1e1b4b');
+        grad.addColorStop(1, '#090d16');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+    }
+
+    if (bb2 && bb2.complete && bb2.naturalWidth > 0) {
+        ctx.drawImage(bb2, 0, 0, W, H);
+    }
+
+    // Ground Plane Shadow line
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillRect(0, H - 45, W, 45);
+
+    // 2. Draw Battler Shadows
+    this.drawShadow(this.actorPos.x, this.actorPos.y);
+    this.drawShadow(this.enemyHome.x + this.enemyFlinchOffset.x, this.enemyHome.y);
+
+    // 3. Draw Enemy
+    this.drawEnemy(ctx);
+
+    // 4. Draw Actor (SV Battler 9x6)
+    this.drawActor(ctx);
+
+    // 5. Draw Active Cast Animation (on User)
+    if (this.castAnimPlayer) {
+        this.drawAnimationPlayer(ctx, this.castAnimPlayer, this.actorPos.x, this.actorPos.y - 25);
+    }
+
+    // 6. Draw Active Target Animations (on Enemy)
+    for (const player of this.targetAnimPlayers) {
+        this.drawAnimationPlayer(ctx, player, this.enemyHome.x + this.enemyFlinchOffset.x, this.enemyHome.y - 35);
+    }
+
+    // 7. Draw Damage Popups
+    for (const pop of this.activePopups) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, pop.opacity);
+        ctx.font = pop.isCrit ? 'bold 18px sans-serif' : 'bold 15px sans-serif';
+        ctx.textAlign = 'center';
+
+        // Dark outline
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#000000';
+        ctx.strokeText(pop.text, pop.x, pop.y);
+
+        ctx.fillStyle = pop.color;
+        ctx.fillText(pop.text, pop.x, pop.y);
+
+        if (pop.isCrit) {
+            ctx.font = 'bold 9px sans-serif';
+            ctx.fillStyle = '#fef08a';
+            ctx.strokeText('CRITICAL!', pop.x, pop.y - 14);
+            ctx.fillText('CRITICAL!', pop.x, pop.y - 14);
+        }
+        ctx.restore();
+    }
+
+    // 8. Draw Screen Flash
+    if (this.screenFlash.current > 0) {
+        const f = this.screenFlash;
+        const alpha = (f.current / f.duration) * (f.color[3] || 0.6);
+        ctx.fillStyle = `rgba(${f.color[0]}, ${f.color[1]}, ${f.color[2]}, ${alpha})`;
+        ctx.fillRect(0, 0, W, H);
+    }
+
+    ctx.restore();
+};
+
+/**
+ * Draw Ground Shadow
+ */
+SkillAnimator.drawShadow = function(x, y) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.beginPath();
+    ctx.ellipse(x, y + 2, 22, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+};
+
+/**
+ * Draw Animated SV Actor from 9x6 Spritesheet
+ */
+SkillAnimator.drawActor = function(ctx) {
+    const img = this.getImage(`img/sv_actors/${this.selectedActorName}.png`);
+    if (!img || !img.complete || img.naturalWidth === 0) return;
+
+    // Standard MV SV Battler Motion Indices
+    const MOTION_INDEX = {
+        walk: 0, wait: 1, chant: 2, guard: 3, damage: 4, evade: 5,
+        thrust: 6, swing: 7, missile: 8, skill: 9, spell: 10, item: 11,
+        escape: 12, victory: 13, dying: 14, abnormal: 15, sleep: 16, dead: 17
+    };
+
+    const motionIdx = MOTION_INDEX[this.actorMotion] !== undefined ? MOTION_INDEX[this.actorMotion] : 1;
+    const pattern = this.actorPattern; // 0, 1, 2
+
+    const cw = img.naturalWidth / 9;
+    const ch = img.naturalHeight / 6;
+    const cx = Math.floor(motionIdx / 6) * 3 + pattern;
+    const cy = motionIdx % 6;
+
+    ctx.save();
+    ctx.globalAlpha = this.actorAlpha;
+    ctx.imageSmoothingEnabled = false;
+
+    // Draw centered on anchor (x, y)
+    const drawW = cw;
+    const drawH = ch;
+    ctx.drawImage(img, cx * cw, cy * ch, cw, ch, this.actorPos.x - drawW / 2, this.actorPos.y - drawH + 4, drawW, drawH);
+
+    ctx.restore();
+};
+
+/**
+ * Draw Enemy Battler
+ */
+SkillAnimator.drawEnemy = function(ctx) {
+    let img = this.getImage(`img/sv_enemies/${this.selectedEnemyName}.png`);
+    if (!img || !img.complete || img.naturalWidth === 0) {
+        img = this.getImage(`img/enemies/${this.selectedEnemyName}.png`);
+    }
+    if (!img || !img.complete || img.naturalWidth === 0) return;
+
+    const ex = this.enemyHome.x + this.enemyFlinchOffset.x;
+    const ey = this.enemyHome.y + this.enemyFlinchOffset.y;
+
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
+
+    // Idle subtle breath float
+    const floatY = Math.sin(this.currentTick * 0.1) * 2;
+
+    let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
+
+    // If it's an SV actor sheet (9x6)
+    if (sw % 9 === 0 && sh % 6 === 0 && (sw / 9) === (sh / 6)) {
+        const cw = sw / 9;
+        const ch = sh / 6;
+        const pattern = Math.floor((this.currentTick / 10) % 3);
+        sx = pattern * cw;
+        sy = 0;
+        sw = cw;
+        sh = ch;
+    }
+
+    const drawW = Math.min(sw, 96);
+    const drawH = Math.min(sh, 96);
+
+    ctx.drawImage(img, sx, sy, sw, sh, ex - drawW / 2, ey - drawH + floatY, drawW, drawH);
+
+    // Apply Hit Flash Tint
+    if (this.enemyFlashColor) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-atop';
+        ctx.fillStyle = `rgba(${this.enemyFlashColor[0]}, ${this.enemyFlashColor[1]}, ${this.enemyFlashColor[2]}, ${this.enemyFlashColor[3]})`;
+        ctx.fillRect(ex - drawW / 2, ey - drawH + floatY, drawW, drawH);
+        ctx.restore();
+    }
+
+    ctx.restore();
+};
+
+/**
+ * Draw RPG Maker MV Animation Cell Sprites
+ */
+SkillAnimator.drawAnimationPlayer = function(ctx, player, targetX, targetY) {
+    if (!player || !player.anim || !player.img || !player.img.complete || player.img.naturalWidth === 0) return;
+
+    const frames = player.anim.frames || [];
+    if (player.frameIndex >= frames.length) return;
+
+    const frame = frames[player.frameIndex];
+    if (!frame || !Array.isArray(frame)) return;
+
+    const cellW = 192;
+    const cellH = 192;
+
+    for (const cell of frame) {
+        const pattern = cell[0];
+        if (pattern < 0) continue;
+
+        const sx = (pattern % 5) * cellW;
+        const sy = Math.floor((pattern % 100) / 5) * cellH;
+
+        const x = targetX + (cell[1] || 0);
+        const y = targetY + (cell[2] || 0);
+        const scale = ((cell[3] !== undefined ? cell[3] : 100) / 100) * 0.75;
+        const rotation = ((cell[4] || 0) * Math.PI) / 180;
+        const mirror = cell[5] ? -1 : 1;
+        const opacity = Math.max(0, Math.min(1, (cell[6] !== undefined ? cell[6] : 255) / 255));
+        const blendMode = cell[7] || 0;
+
+        ctx.save();
+        ctx.globalAlpha = opacity;
+        if (blendMode === 1) {
+            ctx.globalCompositeOperation = 'lighter'; // Additive blend for magic glow
+        } else if (blendMode === 2) {
+            ctx.globalCompositeOperation = 'multiply';
+        } else {
+            ctx.globalCompositeOperation = 'source-over';
+        }
+
+        ctx.translate(x, y);
+        if (rotation !== 0) ctx.rotate(rotation);
+        ctx.scale(scale * mirror, scale);
+
+        ctx.drawImage(player.img, sx, sy, cellW, cellH, -cellW / 2, -cellH / 2, cellW, cellH);
+        ctx.restore();
+    }
+};
+
+/**
+ * Update visual phase pill badge in toolbar
+ */
+SkillAnimator.updatePhaseIndicator = function() {
+    const badge = document.getElementById('svPhaseIndicator');
+    if (!badge) return;
+
+    const phaseNames = {
+        idle: '⏸ Standby',
+        cast: '🔮 F1: Casting',
+        approach: '🏃 F2A: Maju',
+        attack: '⚔️ F2B: Serang',
+        reaction: '💥 F3: Reaksi',
+        return: '↩️ Selesai'
+    };
+
+    const phaseColors = {
+        idle: '#94a3b8',
+        cast: '#c084fc',
+        approach: '#38bdf8',
+        attack: '#f87171',
+        reaction: '#facc15',
+        return: '#4ade80'
+    };
+
+    badge.textContent = phaseNames[this.currentPhase] || this.currentPhase;
+    badge.style.color = phaseColors[this.currentPhase] || '#f8fafc';
+    badge.style.borderColor = (phaseColors[this.currentPhase] || '#334155') + '66';
+    badge.style.whiteSpace = 'nowrap';
+    badge.style.fontSize = '0.68rem';
+    badge.style.padding = '2px 8px';
+};
+
+SkillAnimator.renderStudioPanel = function(skill) {
+    if (!skill) return '';
+    const cfg = this.getConfig(skill);
+    const yanflySeq = this.generateYanflySequence(cfg, skill);
+    const hasCustom = !!cfg.hasCustomSeq;
+
+    const animList = (State.animations || []).filter(a => a);
+
+    return `
+        <div class="card" style="border:1px solid #8b5cf655; background:linear-gradient(180deg, rgba(30,27,75,0.35) 0%, rgba(15,23,42,0.6) 100%); margin-bottom:16px;">
+            <div class="card-header" style="border-bottom:1px solid #8b5cf633; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.15rem;">⚔️</span>
+                    <div>
+                        <h2 style="font-size:1.05rem; color:#c4b5fd; margin:0;">Sideview Battle &amp; Skill Animation Studio</h2>
+                        <div style="font-size:0.72rem; color:var(--text-muted);">Konfigurasi koreografi fase casting, attacking, dan reaksi musuh (SV Flow)</div>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    ${hasCustom ? `
+                        <span class="badge" style="background:#10b98122; color:#34d399; border:1px solid #10b98155; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:9999px;">
+                            ✨ Custom Sequence Aktif
+                        </span>
+                    ` : `
+                        <span class="badge" style="background:#64748b22; color:#94a3b8; border:1px solid #64748b55; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:9999px;">
+                            Standard MV Flow
+                        </span>
+                    `}
+                </div>
+            </div>
+
+            <div class="card-body" style="padding:14px; display:flex; flex-direction:column; gap:14px;">
+                <!-- 1-CLICK PRESET TEMPLATES -->
+                <div>
+                    <div style="font-size:0.75rem; font-weight:700; color:#cbd5e1; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <span>⚡ PRESET TEMPLATE SIAP PAKAI (1-KLIK)</span>
+                        <span style="font-size:0.7rem; color:var(--text-muted); font-weight:normal;">Pilih template untuk otomatis mengatur seluruh fase koreografi</span>
+                    </div>
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:8px;">
+                        ${Object.keys(this.PRESETS).map(key => {
+                            const p = this.PRESETS[key];
+                            return `
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="applySkillPreset('${key}')" 
+                                        style="display:flex; flex-direction:column; align-items:flex-start; text-align:left; padding:8px 10px; border:1px solid var(--border-color); background:rgba(0,0,0,0.3);"
+                                        title="${escapeHtml(p.desc)}">
+                                    <strong style="color:#67e8f9; font-size:0.8rem;">${p.name}</strong>
+                                    <span style="font-size:0.68rem; color:var(--text-muted); margin-top:2px; line-height:1.2;">${escapeHtml(p.desc.slice(0, 48))}...</span>
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+
+                <!-- 3-PHASE SEQUENCER TABS / ACCORDION -->
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap:12px;">
+                    
+                    <!-- FASE 1: CASTING -->
+                    <div style="background:rgba(0,0,0,0.25); border:1px solid #c084fc44; border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #c084fc22; padding-bottom:6px;">
+                            <strong style="color:#c084fc; font-size:0.85rem; display:flex; align-items:center; gap:6px;">
+                                <span>🔮</span> FASE 1: CASTING
+                            </strong>
+                            <label class="checkbox-label" style="font-size:0.75rem; margin:0;">
+                                <input type="checkbox" id="cfgCastEnabled" ${cfg.cast.enabled ? 'checked' : ''} onchange="onSkillPhaseFieldChange()">
+                                <span>Aktifkan Rapalan</span>
+                            </label>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Motion Aktor</label>
+                                <select id="cfgCastMotion" class="form-control" style="font-size:0.8rem; padding:4px 8px;" onchange="onSkillPhaseFieldChange()">
+                                    <option value="chant" ${cfg.cast.motion === 'chant' ? 'selected' : ''}>chant (Merapal Sihir)</option>
+                                    <option value="skill" ${cfg.cast.motion === 'skill' ? 'selected' : ''}>skill (Konsentrasi Jurus)</option>
+                                    <option value="wait" ${cfg.cast.motion === 'wait' ? 'selected' : ''}>wait (Siaga Tempur)</option>
+                                    <option value="guard" ${cfg.cast.motion === 'guard' ? 'selected' : ''}>guard (Kuda-kuda Tahan)</option>
+                                    <option value="spell" ${cfg.cast.motion === 'spell' ? 'selected' : ''}>spell (Pose Mantra)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Posisi Tubuh</label>
+                                <select id="cfgCastStep" class="form-control" style="font-size:0.8rem; padding:4px 8px;" onchange="onSkillPhaseFieldChange()">
+                                    <option value="true" ${cfg.cast.step ? 'selected' : ''}>Maju 1 Langkah (32px)</option>
+                                    <option value="false" ${!cfg.cast.step ? 'selected' : ''}>Tetap di Tempat (Home)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin:0;">
+                            <label style="font-size:0.72rem;">Animasi Cast pada User (Aura / Circle)</label>
+                            <select id="cfgCastAnimId" class="form-control" style="font-size:0.8rem; padding:4px 8px;" onchange="onSkillPhaseFieldChange()">
+                                <option value="0">(Tanpa Animasi Cast)</option>
+                                ${animList.map(a => `<option value="${a.id}" ${cfg.cast.animId === a.id ? 'selected' : ''}>#${a.id} ${escapeHtml(a.name)}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Durasi Rapalan (Frames)</label>
+                                <input type="number" id="cfgCastDuration" min="10" max="90" class="form-control" style="font-size:0.8rem; padding:4px 8px;" value="${cfg.cast.duration || 25}" onchange="onSkillPhaseFieldChange()">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Sound SE Cast</label>
+                                <div style="display:flex; gap:4px;">
+                                    <input type="text" id="cfgCastSe" class="form-control" style="font-size:0.8rem; padding:4px 6px;" value="${escapeHtml(cfg.cast.se || '')}" placeholder="Magic1" onchange="onSkillPhaseFieldChange()">
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="SkillAnimator.playSe(document.getElementById('cfgCastSe').value)" style="padding:2px 8px;" title="Putar SE">🔊</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FASE 2: ATTACKING -->
+                    <div style="background:rgba(0,0,0,0.25); border:1px solid #f8717144; border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f8717122; padding-bottom:6px;">
+                            <strong style="color:#f87171; font-size:0.85rem; display:flex; align-items:center; gap:6px;">
+                                <span>⚔️</span> FASE 2: ATTACKING (AKSI JURUS)
+                            </strong>
+                            <span style="font-size:0.7rem; color:var(--text-muted);">Eksekusi Serangan</span>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Pendekatan (Approach)</label>
+                                <select id="cfgAttackApproach" class="form-control" style="font-size:0.8rem; padding:4px 8px;" onchange="onSkillPhaseFieldChange()">
+                                    <option value="melee" ${cfg.attack.approach === 'melee' ? 'selected' : ''}>Melesat ke Target (Melee)</option>
+                                    <option value="ranged" ${cfg.attack.approach === 'ranged' ? 'selected' : ''}>Tetap di Posisi (Ranged/Sihir)</option>
+                                    <option value="step" ${cfg.attack.approach === 'step' ? 'selected' : ''}>Maju Selangkah (Step)</option>
+                                    <option value="teleport" ${cfg.attack.approach === 'teleport' ? 'selected' : ''}>Teleport Blink Seketika</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Motion Serang Aktor</label>
+                                <select id="cfgAttackMotion" class="form-control" style="font-size:0.8rem; padding:4px 8px;" onchange="onSkillPhaseFieldChange()">
+                                    <option value="swing" ${cfg.attack.motion === 'swing' ? 'selected' : ''}>swing (Tebasan Senjata)</option>
+                                    <option value="thrust" ${cfg.attack.motion === 'thrust' ? 'selected' : ''}>thrust (Tusukan Tombak/Pedang)</option>
+                                    <option value="missile" ${cfg.attack.motion === 'missile' ? 'selected' : ''}>missile (Menembak Busur/Pistol)</option>
+                                    <option value="skill" ${cfg.attack.motion === 'skill' ? 'selected' : ''}>skill (Jurus Fisik/Pukulan)</option>
+                                    <option value="spell" ${cfg.attack.motion === 'spell' ? 'selected' : ''}>spell (Pelepasan Mantra Sihir)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin:0;">
+                            <label style="font-size:0.72rem;">Animasi Visual Target (Skill Animation)</label>
+                            <select id="cfgAttackAnimId" class="form-control" style="font-size:0.8rem; padding:4px 8px; color:#38bdf8;" onchange="onSkillPhaseFieldChange()">
+                                <option value="0">(Tanpa Animasi)</option>
+                                ${animList.map(a => `<option value="${a.id}" ${cfg.attack.animId === a.id ? 'selected' : ''}>#${a.id} ${escapeHtml(a.name)}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Jumlah Pukulan (Repeats)</label>
+                                <input type="number" id="cfgAttackRepeats" min="1" max="10" class="form-control" style="font-size:0.8rem; padding:4px 8px;" value="${cfg.attack.repeats || 1}" onchange="onSkillPhaseFieldChange()">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Jeda Antar Pukulan (F)</label>
+                                <input type="number" id="cfgAttackInterval" min="4" max="30" class="form-control" style="font-size:0.8rem; padding:4px 8px;" value="${cfg.attack.interval || 12}" onchange="onSkillPhaseFieldChange()">
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Screen Shake (Getar Layar)</label>
+                                <select id="cfgAttackShake" class="form-control" style="font-size:0.8rem; padding:4px 8px;" onchange="onSkillPhaseFieldChange()">
+                                    <option value="none" ${cfg.attack.shake === 'none' ? 'selected' : ''}>Tanpa Getar</option>
+                                    <option value="light" ${cfg.attack.shake === 'light' ? 'selected' : ''}>Ringan (Light 2px)</option>
+                                    <option value="heavy" ${cfg.attack.shake === 'heavy' ? 'selected' : ''}>Kuat (Heavy 6px)</option>
+                                    <option value="earthquake" ${cfg.attack.shake === 'earthquake' ? 'selected' : ''}>Gempa Dahsyat (10px)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Screen Flash (Kilat Layar)</label>
+                                <select id="cfgAttackFlash" class="form-control" style="font-size:0.8rem; padding:4px 8px;" onchange="onSkillPhaseFieldChange()">
+                                    <option value="none" ${cfg.attack.flash === 'none' ? 'selected' : ''}>Tanpa Flash</option>
+                                    <option value="white" ${cfg.attack.flash === 'white' ? 'selected' : ''}>Kilatan Putih Terang</option>
+                                    <option value="red" ${cfg.attack.flash === 'red' ? 'selected' : ''}>Kilatan Merah Darah</option>
+                                    <option value="gold" ${cfg.attack.flash === 'gold' ? 'selected' : ''}>Kilatan Emas Petir</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FASE 3: REAKSI MUSUH -->
+                    <div style="background:rgba(0,0,0,0.25); border:1px solid #facc1544; border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #facc1522; padding-bottom:6px;">
+                            <strong style="color:#facc15; font-size:0.85rem; display:flex; align-items:center; gap:6px;">
+                                <span>💥</span> FASE 3: REAKSI MUSUH (HIT)
+                            </strong>
+                            <span style="font-size:0.7rem; color:var(--text-muted);">Impact &amp; Damage</span>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Respon Fisik Musuh</label>
+                                <select id="cfgReactionType" class="form-control" style="font-size:0.8rem; padding:4px 8px;" onchange="onSkillPhaseFieldChange()">
+                                    <option value="flinch" ${cfg.reaction.type === 'flinch' ? 'selected' : ''}>Flinch Mundur (16px)</option>
+                                    <option value="knockback" ${cfg.reaction.type === 'knockback' ? 'selected' : ''}>Knockback Terpental (38px)</option>
+                                    <option value="tremble" ${cfg.reaction.type === 'tremble' ? 'selected' : ''}>Tremble Getar Hebat</option>
+                                    <option value="none" ${cfg.reaction.type === 'none' ? 'selected' : ''}>Tanpa Gerakan</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Efek Flash Musuh</label>
+                                <select id="cfgReactionFlash" class="form-control" style="font-size:0.8rem; padding:4px 8px;" onchange="onSkillPhaseFieldChange()">
+                                    <option value="red" ${cfg.reaction.flash === 'red' ? 'selected' : ''}>Blink Merah (Hit Damage)</option>
+                                    <option value="white" ${cfg.reaction.flash === 'white' ? 'selected' : ''}>Whiten Putih (Critical)</option>
+                                    <option value="none" ${cfg.reaction.flash === 'none' ? 'selected' : ''}>Tanpa Flash</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Tipe Damage Popup</label>
+                                <select id="cfgReactionPopupType" class="form-control" style="font-size:0.8rem; padding:4px 8px;" onchange="onSkillPhaseFieldChange()">
+                                    <option value="hp_damage" ${cfg.reaction.popupType === 'hp_damage' ? 'selected' : ''}>💥 Physical HP Damage (Red)</option>
+                                    <option value="magical" ${cfg.reaction.popupType === 'magical' ? 'selected' : ''}>🔮 Magical Damage (Cyan)</option>
+                                    <option value="critical" ${cfg.reaction.popupType === 'critical' ? 'selected' : ''}>⚡ Critical Hit (Gold)</option>
+                                    <option value="heal" ${cfg.reaction.popupType === 'heal' ? 'selected' : ''}>✨ HP Heal (Green)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Nilai Uji Coba Damage</label>
+                                <input type="number" id="cfgReactionTestValue" min="1" class="form-control" style="font-size:0.8rem; padding:4px 8px;" value="${cfg.reaction.testValue || 1250}" onchange="onSkillPhaseFieldChange()">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin:0;">
+                            <label style="font-size:0.72rem;">Sound SE Kena Hit (Hit Sound)</label>
+                            <div style="display:flex; gap:4px;">
+                                <input type="text" id="cfgReactionSe" class="form-control" style="font-size:0.8rem; padding:4px 6px;" value="${escapeHtml(cfg.reaction.se || '')}" placeholder="Blow1" onchange="onSkillPhaseFieldChange()">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="SkillAnimator.playSe(document.getElementById('cfgReactionSe').value)" style="padding:2px 8px;" title="Putar SE">🔊</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTIONS & CODE INSPECTOR -->
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding-top:6px; border-top:1px solid var(--border-color);">
+                    <div style="display:flex; gap:8px;">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="resetSkillSequenceToDefault()" style="color:#f87171;" title="Hapus seluruh custom action sequence dan kembali ke default MV">
+                            🔄 Reset ke Default Standar MV
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="copySkillSequenceToClipboard()" title="Salin notetag action sequence">
+                            📋 Salin Notetag Sequence
+                        </button>
+                    </div>
+
+                    <details style="width:100%; margin-top:8px;">
+                        <summary style="font-size:0.75rem; color:#a78bfa; cursor:pointer; font-weight:700;">
+                            📝 Tampilkan / Periksa Raw Yanfly Action Sequence Code (&lt;setup action&gt;, &lt;target action&gt;, &lt;finish action&gt;)
+                        </summary>
+                        <textarea id="yanflySeqPreview" readonly class="form-control" rows="8" 
+                                  style="font-family:monospace; font-size:0.75rem; color:#38bdf8; background:#080c14; margin-top:8px;">${escapeHtml(yanflySeq)}</textarea>
+                    </details>
+                </div>
+            </div>
+        </div>
+    `;
+};
+
+/**
+ * Handle field changes in the Action Studio
+ */
+function onSkillPhaseFieldChange() {
+    const skill = State.skills[State.selectedIndex];
+    if (!skill) return;
+
+    const cfg = {
+        hasCustomSeq: true,
+        cast: {
+            enabled: document.getElementById('cfgCastEnabled').checked,
+            motion: document.getElementById('cfgCastMotion').value,
+            step: document.getElementById('cfgCastStep').value === 'true',
+            animId: parseInt(document.getElementById('cfgCastAnimId').value, 10) || 0,
+            duration: parseInt(document.getElementById('cfgCastDuration').value, 10) || 25,
+            se: document.getElementById('cfgCastSe').value.trim()
+        },
+        attack: {
+            approach: document.getElementById('cfgAttackApproach').value,
+            motion: document.getElementById('cfgAttackMotion').value,
+            animId: parseInt(document.getElementById('cfgAttackAnimId').value, 10) || 0,
+            repeats: parseInt(document.getElementById('cfgAttackRepeats').value, 10) || 1,
+            interval: parseInt(document.getElementById('cfgAttackInterval').value, 10) || 12,
+            shake: document.getElementById('cfgAttackShake').value,
+            flash: document.getElementById('cfgAttackFlash').value
+        },
+        reaction: {
+            type: document.getElementById('cfgReactionType').value,
+            flash: document.getElementById('cfgReactionFlash').value,
+            popupType: document.getElementById('cfgReactionPopupType').value,
+            testValue: parseInt(document.getElementById('cfgReactionTestValue').value, 10) || 1250,
+            se: document.getElementById('cfgReactionSe').value.trim()
+        }
+    };
+
+    // Save and recompile to skill note
+    SkillAnimator.saveConfigToSkill(skill, cfg);
+
+    // Update raw textarea preview if open
+    const txt = document.getElementById('yanflySeqPreview');
+    if (txt) {
+        txt.value = SkillAnimator.generateYanflySequence(cfg, skill);
+    }
+
+    // Update Raw Note if displayed
+    const rawNote = document.getElementById('rawNoteTextarea');
+    if (rawNote) rawNote.value = skill.note || '';
+
+    // Replay preview immediately
+    SkillAnimator.currentTick = 0;
+    SkillAnimator.isPlaying = true;
+    const playBtn = document.getElementById('svPlayBtn');
+    if (playBtn) playBtn.textContent = '⏸ Pause';
+}
+
+/**
+ * Apply 1-Click Preset to Skill
+ */
+function applySkillPreset(presetKey) {
+    const skill = State.skills[State.selectedIndex];
+    if (!skill) return;
+
+    const preset = SkillAnimator.PRESETS[presetKey];
+    if (!preset) return;
+
+    const cfg = JSON.parse(JSON.stringify(preset));
+    cfg.hasCustomSeq = true;
+
+    // Preserve existing target animation if already defined
+    if (skill.animationId > 0 && presetKey !== 'heal') {
+        cfg.attack.animId = skill.animationId;
+    }
+
+    SkillAnimator.saveConfigToSkill(skill, cfg);
+
+    // Refresh Editor & Preview
+    if (typeof renderEditor === 'function') {
+        renderEditor();
+    }
+}
+
+/**
+ * Reset Sequence to Default MV
+ */
+function resetSkillSequenceToDefault() {
+    const skill = State.skills[State.selectedIndex];
+    if (!skill) return;
+    SkillAnimator.clearSequenceFromSkill(skill);
+    if (typeof renderEditor === 'function') renderEditor();
+}
+
+/**
+ * Copy Sequence notetag
+ */
+function copySkillSequenceToClipboard() {
+    const skill = State.skills[State.selectedIndex];
+    if (!skill) return;
+    const cfg = SkillAnimator.getConfig(skill);
+    const seq = SkillAnimator.generateYanflySequence(cfg, skill);
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(seq).then(() => {
+            showToast('Notetag sequence berhasil disalin ke clipboard!', 'success');
+        });
+    }
+}
+
+/**
+ * Playback Toolbar functions
+ */
+function toggleSkillAnimPlay() {
+    SkillAnimator.isPlaying = !SkillAnimator.isPlaying;
+    const btn = document.getElementById('svPlayBtn');
+    if (btn) btn.textContent = SkillAnimator.isPlaying ? '⏸ Pause' : '▶ Play';
+}
+
+function replaySkillAnim() {
+    SkillAnimator.currentTick = 0;
+    SkillAnimator.isPlaying = true;
+    const btn = document.getElementById('svPlayBtn');
+    if (btn) btn.textContent = '⏸ Pause';
+}
+
+function toggleSkillAnimLoop() {
+    SkillAnimator.isLooping = !SkillAnimator.isLooping;
+    const btn = document.getElementById('svLoopBtn');
+    if (btn) btn.textContent = SkillAnimator.isLooping ? '🔄 Loop: ON' : '🔄 Loop: OFF';
+}
+
+function setSkillAnimSpeed(val) {
+    SkillAnimator.speed = val || 1.0;
+}
+
+function toggleSkillAnimMute() {
+    SkillAnimator.isMuted = !SkillAnimator.isMuted;
+    const btn = document.getElementById('svMuteBtn');
+    if (btn) btn.textContent = SkillAnimator.isMuted ? '🔇 SE Muted' : '🔊 SE';
+}
+
+/**
+ * Clean cleanup when switching away from Skills tab
+ */
+function stopSkillBattleAnimation() {
+    SkillAnimator.stop();
+}
+
+
+if (typeof window !== 'undefined') window.SkillAnimator = SkillAnimator;
+
+
+/* Inlined from editor_studio/js/editors/animation_editor.js */
+/**
+ * NUSV Database Studio - Entity Editor: editors/animation_editor.js
+ * Visual Frame & Cell Animation Studio for RPG Maker MV (Animations.json)
+ */
+
+const AnimEditor = {
+    // Current runtime state
+    activeAnim: null,
+    currentFrameIndex: 0,
+    selectedCellIndex: 0,
+
+    // Playback state
+    isPlaying: false,
+    isLooping: true,
+    playbackSpeed: 1.0,
+    isMuted: false,
+    rafId: null,
+    tickCounter: 0,
+    ticksPerFrame: 4, // 15 FPS at 60Hz tick
+
+    // Canvas & Context
+    canvas: null,
+    ctx: null,
+    WIDTH: 540,
+    HEIGHT: 360,
+
+    // Display options
+    showOnionSkin: true,
+    targetSilhouette: 'actor', // 'actor' | 'enemy' | 'cross' | 'none'
+    showCrosshair: true,
+
+    // Drag & Drop State
+    dragState: {
+        isDragging: false,
+        startX: 0,
+        startY: 0,
+        cellStartX: 0,
+        cellStartY: 0
+    },
+
+    // Caches
+    imageCache: {},
+
+    getImage: function(src) {
+        if (!this.imageCache[src]) {
+            const img = new Image();
+            img.src = src;
+            this.imageCache[src] = img;
+        }
+        return this.imageCache[src];
+    }
+};
+
+/**
+ * Initialize / Start visual animation canvas
+ */
+AnimEditor.initCanvas = function(canvasEl, anim) {
+    if (!canvasEl) return;
+    this.canvas = canvasEl;
+    this.ctx = canvasEl.getContext('2d');
+    this.activeAnim = anim;
+
+    // Ensure frames array exists and is valid
+    if (!anim.frames || anim.frames.length === 0) {
+        anim.frames = [[[-1, 0, 0, 100, 0, 0, 255, 0]]];
+    }
+    if (this.currentFrameIndex >= anim.frames.length) {
+        this.currentFrameIndex = 0;
+    }
+    if (this.selectedCellIndex >= (anim.frames[this.currentFrameIndex] || []).length) {
+        this.selectedCellIndex = 0;
+    }
+
+    // Attach mouse drag & drop listeners
+    this.setupCanvasInteractions();
+
+    // Start render loop
+    this.startLoop();
+};
+
+/**
+ * Stop RAF loop
+ */
+AnimEditor.stop = function() {
+    if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+    }
+};
+
+/**
+ * Continuous 60fps render loop
+ */
+AnimEditor.startLoop = function() {
+    this.stop();
+    const self = this;
+
+    function step() {
+        if (!self.canvas || !self.ctx) return;
+        if (self.isPlaying) {
+            if (++self.tickCounter >= Math.max(1, Math.round(self.ticksPerFrame / (self.playbackSpeed || 1)))) {
+                self.tickCounter = 0;
+                self.stepFrame(1);
+            }
+        }
+        self.render();
+        self.rafId = requestAnimationFrame(step);
+    }
+
+    this.rafId = requestAnimationFrame(step);
+};
+
+/**
+ * Step frame forward or backward
+ */
+AnimEditor.stepFrame = function(delta) {
+    if (!this.activeAnim || !this.activeAnim.frames) return;
+    const total = this.activeAnim.frames.length;
+    if (total === 0) return;
+
+    let next = this.currentFrameIndex + delta;
+    if (next >= total) {
+        if (this.isLooping || this.isPlaying) {
+            next = 0;
+        } else {
+            next = total - 1;
+            this.isPlaying = false;
+        }
+    } else if (next < 0) {
+        next = total - 1;
+    }
+
+    this.currentFrameIndex = next;
+
+    // Process Timings (Sound SE / Flashes)
+    if (this.isPlaying && this.activeAnim.timings) {
+        for (const tm of this.activeAnim.timings) {
+            if (tm.frame === this.currentFrameIndex) {
+                if (!this.isMuted && tm.se && tm.se.name && typeof SkillAnimator !== 'undefined') {
+                    SkillAnimator.playSe(tm.se.name, tm.se.volume, tm.se.pitch);
+                }
+            }
+        }
+    }
+
+    this.updateTimelineUI();
+};
+
+/**
+ * Mouse drag & drop interactions on canvas
+ */
+AnimEditor.setupCanvasInteractions = function() {
+    const canvas = this.canvas;
+    if (!canvas || canvas._hasAnimListeners) return;
+    canvas._hasAnimListeners = true;
+
+    const self = this;
+
+    function getCoords(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const mouseX = (e.clientX - rect.left) * scaleX;
+        const mouseY = (e.clientY - rect.top) * scaleY;
+        return {
+            x: Math.round(mouseX - (self.WIDTH / 2)),
+            y: Math.round(mouseY - (self.HEIGHT / 2))
+        };
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+        if (self.isPlaying) return;
+        const coords = getCoords(e);
+        const frame = (self.activeAnim.frames || [])[self.currentFrameIndex] || [];
+
+        // Hit-test cells in reverse order (top to bottom)
+        let hitIdx = -1;
+        for (let i = frame.length - 1; i >= 0; i--) {
+            const cell = frame[i];
+            if (!cell || cell[0] < 0) continue;
+            const cx = cell[1] || 0;
+            const cy = cell[2] || 0;
+            const scale = (cell[3] || 100) / 100;
+            const hitRadius = 96 * scale;
+
+            const dist = Math.hypot(coords.x - cx, coords.y - cy);
+            if (dist <= hitRadius) {
+                hitIdx = i;
+                break;
+            }
+        }
+
+        if (hitIdx !== -1) {
+            self.selectedCellIndex = hitIdx;
+            const cell = frame[hitIdx];
+            self.dragState = {
+                isDragging: true,
+                startX: coords.x,
+                startY: coords.y,
+                cellStartX: cell[1] || 0,
+                cellStartY: cell[2] || 0
+            };
+            self.updateCellInspectorUI();
+        } else {
+            self.dragState.isDragging = false;
+        }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!self.dragState.isDragging || !self.activeAnim) return;
+        const coords = getCoords(e);
+        const dx = coords.x - self.dragState.startX;
+        const dy = coords.y - self.dragState.startY;
+
+        const frame = (self.activeAnim.frames || [])[self.currentFrameIndex];
+        if (!frame || !frame[self.selectedCellIndex]) return;
+
+        const cell = frame[self.selectedCellIndex];
+        cell[1] = Math.round(self.dragState.cellStartX + dx);
+        cell[2] = Math.round(self.dragState.cellStartY + dy);
+
+        // Update inspector input fields in real time
+        const inX = document.getElementById('cellPosX');
+        const inY = document.getElementById('cellPosY');
+        if (inX) inX.value = cell[1];
+        if (inY) inY.value = cell[2];
+
+        if (typeof setUnsaved === 'function') setUnsaved(true);
+    });
+
+    window.addEventListener('mouseup', () => {
+        self.dragState.isDragging = false;
+    });
+};
+
+/**
+ * Render animation frame on Canvas
+ */
+AnimEditor.render = function() {
+    const ctx = this.ctx;
+    const W = this.WIDTH;
+    const H = this.HEIGHT;
+    const originX = W / 2;
+    const originY = H / 2;
+
+    ctx.save();
+    ctx.clearRect(0, 0, W, H);
+
+    // 1. Draw Checkerboard / Dark Arena Background
+    ctx.fillStyle = '#090d16';
+    ctx.fillRect(0, 0, W, H);
+
+    // 2. Draw Subtle Coordinate Grid
+    if (this.showCrosshair) {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < W; x += 48) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, H);
+            ctx.stroke();
+        }
+        for (let y = 0; y < H; y += 48) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(W, y);
+            ctx.stroke();
+        }
+
+        // Major Crosshair (0, 0)
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(originX, 0);
+        ctx.lineTo(originX, H);
+        ctx.moveTo(0, originY);
+        ctx.lineTo(W, originY);
+        ctx.stroke();
+    }
+
+    // 3. Draw Target Battler Silhouette
+    this.drawTargetSilhouette(ctx, originX, originY);
+
+    if (!this.activeAnim) {
+        ctx.restore();
+        return;
+    }
+
+    const anim = this.activeAnim;
+    const frames = anim.frames || [];
+    const currentFrame = frames[this.currentFrameIndex] || [];
+
+    const img1 = anim.animation1Name ? this.getImage(`img/animations/${anim.animation1Name}.png`) : null;
+    const img2 = anim.animation2Name ? this.getImage(`img/animations/${anim.animation2Name}.png`) : null;
+
+    // 4. Draw Onion Skin (Previous Frame in Ghost Alpha)
+    if (this.showOnionSkin && !this.isPlaying && this.currentFrameIndex > 0) {
+        const prevFrame = frames[this.currentFrameIndex - 1] || [];
+        ctx.save();
+        for (const cell of prevFrame) {
+            this.drawCell(ctx, cell, img1, img2, originX, originY, 0.22, false);
+        }
+        ctx.restore();
+    }
+
+    // 5. Draw Current Frame Cells
+    for (let i = 0; i < currentFrame.length; i++) {
+        const cell = currentFrame[i];
+        const isSelected = (!this.isPlaying && i === this.selectedCellIndex);
+        this.drawCell(ctx, cell, img1, img2, originX, originY, 1.0, isSelected);
+    }
+
+    // 6. Draw HUD info overlay
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    ctx.fillRect(8, 8, 140, 24);
+    ctx.font = '11px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText(`Frame ${this.currentFrameIndex + 1} / ${Math.max(1, frames.length)}`, 16, 24);
+
+    ctx.restore();
+};
+
+/**
+ * Draw Center Target Silhouette
+ */
+AnimEditor.drawTargetSilhouette = function(ctx, ox, oy) {
+    if (this.targetSilhouette === 'none') return;
+
+    if (this.targetSilhouette === 'actor') {
+        const actorImg = this.getImage('img/sv_actors/Actor1_1.png');
+        if (actorImg && actorImg.complete && actorImg.naturalWidth > 0) {
+            ctx.save();
+            ctx.globalAlpha = 0.35;
+            // Draw Harold in wait pose at center
+            const cw = actorImg.naturalWidth / 9;
+            const ch = actorImg.naturalHeight / 6;
+            ctx.drawImage(actorImg, 0, 0, cw, ch, ox - cw / 2, oy - ch + 20, cw, ch);
+            ctx.restore();
+        }
+    } else if (this.targetSilhouette === 'enemy') {
+        const enemyImg = this.getImage('img/sv_enemies/Actor1_3.png');
+        if (enemyImg && enemyImg.complete && enemyImg.naturalWidth > 0) {
+            ctx.save();
+            ctx.globalAlpha = 0.35;
+            const ew = Math.min(enemyImg.naturalWidth, 96);
+            const eh = Math.min(enemyImg.naturalHeight, 96);
+            ctx.drawImage(enemyImg, 0, 0, enemyImg.naturalWidth, enemyImg.naturalHeight, ox - ew / 2, oy - eh + 20, ew, eh);
+            ctx.restore();
+        }
+    }
+
+    // Origin Pivot Dot
+    ctx.save();
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(ox, oy, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+};
+
+/**
+ * Draw Single Cell
+ */
+AnimEditor.drawCell = function(ctx, cell, img1, img2, originX, originY, alphaMult = 1.0, isSelected = false) {
+    if (!cell) return;
+    const pattern = cell[0];
+    if (pattern < 0) return;
+
+    const img = (pattern < 100) ? img1 : img2;
+    if (!img || !img.complete || img.naturalWidth === 0) return;
+
+    const cellW = 192;
+    const cellH = 192;
+    const subPattern = pattern % 100;
+    const sx = (subPattern % 5) * cellW;
+    const sy = Math.floor(subPattern / 5) * cellH;
+
+    const x = originX + (cell[1] || 0);
+    const y = originY + (cell[2] || 0);
+    const scale = (cell[3] !== undefined ? cell[3] : 100) / 100;
+    const rotation = ((cell[4] || 0) * Math.PI) / 180;
+    const mirror = cell[5] ? -1 : 1;
+    const opacity = ((cell[6] !== undefined ? cell[6] : 255) / 255) * alphaMult;
+    const blendMode = cell[7] || 0;
+
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, opacity));
+
+    if (blendMode === 1) {
+        ctx.globalCompositeOperation = 'lighter';
+    } else if (blendMode === 2) {
+        ctx.globalCompositeOperation = 'multiply';
+    } else {
+        ctx.globalCompositeOperation = 'source-over';
+    }
+
+    ctx.translate(x, y);
+    if (rotation !== 0) ctx.rotate(rotation);
+    ctx.scale(scale * mirror, scale);
+
+    // Draw 192x192 centered
+    ctx.drawImage(img, sx, sy, cellW, cellH, -cellW / 2, -cellH / 2, cellW, cellH);
+
+    // If selected, draw selection bounding box & handles
+    if (isSelected) {
+        ctx.save();
+        ctx.globalAlpha = 1.0;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2 / scale;
+        ctx.setLineDash([6, 4]);
+        ctx.strokeRect(-cellW / 2, -cellH / 2, cellW, cellH);
+
+        // Center cross
+        ctx.setLineDash([]);
+        ctx.strokeStyle = '#facc15';
+        ctx.beginPath();
+        ctx.moveTo(-10, 0); ctx.lineTo(10, 0);
+        ctx.moveTo(0, -10); ctx.lineTo(0, 10);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    ctx.restore();
+};
+
+/**
+ * HTML Template for Animation Editor Workspace
+ */
+function renderAnimationEditor(container, anim) {
+    if (!anim) {
+        container.innerHTML = `<div class="empty-state">Pilih animasi dari sidebar untuk mengedit.</div>`;
+        return;
+    }
+
+    const animImages = State.animationImages || [];
+    const positionNames = { 0: 'Atas Kepala (Top/Head)', 1: 'Pusat Tubuh (Center)', 2: 'Bawah Kaki (Bottom/Feet)', 3: 'Layar Penuh (Screen)' };
+
+    container.innerHTML = `
+        <!-- HEADER IDENTITAS ANIMASI -->
+        <div class="card" style="border:1px solid #f472b655; background:linear-gradient(180deg, rgba(80,7,36,0.35) 0%, rgba(15,23,42,0.6) 100%); margin-bottom:14px;">
+            <div class="card-header" style="border-bottom:1px solid #f472b633; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.2rem;">💥</span>
+                    <div>
+                        <h2 style="font-size:1.05rem; color:#fbcfe8; margin:0;">Animation #${anim.id}: ${escapeHtml(anim.name || 'Unnamed')}</h2>
+                        <div style="font-size:0.72rem; color:var(--text-muted);">Visual Frame-by-Frame Spritesheet Animation Studio</div>
+                    </div>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="openAnimAutoFillModal()" title="Isi urutan frame otomatis dari potongan spritesheet">
+                        🪄 Auto-Fill Urutan
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="openAnimBatchShiftModal()" title="Geser koordinat atau skala seluruh sel di semua frame">
+                        ⚙️ Batch Modifiers
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body" style="padding:12px;">
+                <div class="grid-3">
+                    <div class="form-group" style="margin:0;">
+                        <label title="Nama animasi">Animation Name</label>
+                        <input type="text" class="form-control" value="${escapeHtml(anim.name || '')}" onchange="anim.name=this.value; setUnsaved(true); renderSidebar();">
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label title="File gambar animasi 1 di folder img/animations/">Animation Graphic 1</label>
+                        <select class="form-control" onchange="anim.animation1Name=this.value; setUnsaved(true); AnimEditor.render(); renderSidebar();">
+                            <option value="">(None)</option>
+                            ${animImages.map(f => {
+                                const base = f.replace(/\.png$/i, '');
+                                return `<option value="${base}" ${anim.animation1Name === base ? 'selected' : ''}>${base}</option>`;
+                            }).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label title="Posisi penempatan animasi pada target">Target Position</label>
+                        <select class="form-control" onchange="anim.position=parseInt(this.value,10); setUnsaved(true);">
+                            ${Object.keys(positionNames).map(k => `<option value="${k}" ${anim.position === parseInt(k,10) ? 'selected' : ''}>${positionNames[k]}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CANVAS STAGE & TIMELINE SCRUBBER -->
+        <div class="card" style="margin-bottom:14px; overflow:hidden;">
+            <div class="card-header" style="padding:8px 14px; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:0.75rem; color:#38bdf8; font-weight:700;">CANVAS STAGE</span>
+                    <span id="animFrameBadge" class="badge" style="background:#0284c722; color:#38bdf8; border:1px solid #0284c755; font-size:0.7rem; padding:2px 8px;">Frame 1</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem;">
+                    <label class="checkbox-label" style="font-size:0.72rem; margin:0;" title="Tampilkan bayangan frame sebelumnya untuk mempermudah perataan gerakan">
+                        <input type="checkbox" ${AnimEditor.showOnionSkin ? 'checked' : ''} onchange="AnimEditor.showOnionSkin=this.checked; AnimEditor.render();">
+                        <span>Ghost / Onion Skin</span>
+                    </label>
+                    <label class="checkbox-label" style="font-size:0.72rem; margin:0;">
+                        <input type="checkbox" ${AnimEditor.showCrosshair ? 'checked' : ''} onchange="AnimEditor.showCrosshair=this.checked; AnimEditor.render();">
+                        <span>Grid &amp; Origin</span>
+                    </label>
+                    <select class="form-control" style="width:auto; padding:2px 6px; font-size:0.72rem; height:auto;" onchange="AnimEditor.targetSilhouette=this.value; AnimEditor.render();">
+                        <option value="actor" ${AnimEditor.targetSilhouette === 'actor' ? 'selected' : ''}>Siluet: Hero (Actor)</option>
+                        <option value="enemy" ${AnimEditor.targetSilhouette === 'enemy' ? 'selected' : ''}>Siluet: Musuh (Enemy)</option>
+                        <option value="none" ${AnimEditor.targetSilhouette === 'none' ? 'selected' : ''}>Siluet: Tanpa Siluet</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Canvas Viewport -->
+            <div style="position:relative; width:100%; aspect-ratio:16/10; max-height:360px; background:#000; display:flex; justify-content:center; align-items:center; overflow:hidden;">
+                <canvas id="animEditorCanvas" width="540" height="360" style="width:100%; height:100%; display:block; cursor:crosshair; image-rendering:pixelated;"></canvas>
+            </div>
+
+            <!-- Playback & Frame Scrubber Bar -->
+            <div style="padding:10px 14px; background:rgba(15,23,42,0.95); border-top:1px solid var(--border-color); display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <button type="button" id="animPlayBtn" class="btn btn-sm btn-primary" onclick="AnimEditor.togglePlay()" style="padding:4px 12px; font-size:0.75rem;">
+                            ${AnimEditor.isPlaying ? '⏸ Pause' : '▶ Play'}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.currentFrameIndex=0; AnimEditor.updateTimelineUI();" style="padding:4px 8px; font-size:0.75rem;" title="Ke Frame 1">⏮</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.stepFrame(-1)" style="padding:4px 8px; font-size:0.75rem;" title="Frame Sebelumnya">◀</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.stepFrame(1)" style="padding:4px 8px; font-size:0.75rem;" title="Frame Berikutnya">▶</button>
+                        <button type="button" id="animLoopBtn" class="btn btn-sm btn-secondary" onclick="AnimEditor.toggleLoop()" style="padding:4px 8px; font-size:0.75rem;">
+                            ${AnimEditor.isLooping ? '🔄 Loop: ON' : '🔄 Loop: OFF'}
+                        </button>
+                    </div>
+
+                    <!-- Speed & SE -->
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <select class="form-control" style="width:auto; padding:2px 6px; font-size:0.75rem; height:auto;" onchange="AnimEditor.playbackSpeed=parseFloat(this.value);">
+                            <option value="0.5">0.5x Slow</option>
+                            <option value="1.0" selected>1.0x Normal</option>
+                            <option value="1.5">1.5x Fast</option>
+                            <option value="2.0">2.0x Turbo</option>
+                        </select>
+                        <button type="button" id="animMuteBtn" class="btn btn-sm btn-secondary" onclick="AnimEditor.toggleMute()" style="padding:4px 8px; font-size:0.75rem;">🔊 SE</button>
+                    </div>
+
+                    <!-- Frame Actions -->
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.addNewFrame()" style="padding:4px 8px; font-size:0.75rem; color:#34d399;" title="Tambah frame baru di posisi berikutnya">➕ Tambah Frame</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.cloneCurrentFrame()" style="padding:4px 8px; font-size:0.75rem;" title="Duplikasi seluruh sel di frame aktif ke frame baru">📋 Clone Frame</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.deleteCurrentFrame()" style="padding:4px 8px; font-size:0.75rem; color:#f87171;" title="Hapus frame aktif">🗑️ Hapus</button>
+                    </div>
+                </div>
+
+                <!-- Horizontal Frame Thumb Scrubber -->
+                <div id="animFrameStrip" style="display:flex; gap:4px; overflow-x:auto; padding:4px 0; max-width:100%; scrollbar-width:thin;">
+                    <!-- Dynamically populated frame pills -->
+                </div>
+            </div>
+        </div>
+
+        <!-- CELL PROPERTIES & INSPECTOR -->
+        <div id="animCellInspectorContainer">
+            <!-- Dynamically populated cell inspector -->
+        </div>
+
+        <!-- CELL PATTERN PICKER MODAL -->
+        <div id="animPatternPickerModal" class="modal-overlay" style="display:none;" onclick="if(event.target === this) closeAnimPatternPicker();">
+            <div class="modal-card" style="max-width:900px; width:95vw; max-height:85vh;">
+                <div class="modal-header">
+                    <h3>🖼️ Pilih Potongan Sel dari Spritesheet</h3>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="closeAnimPatternPicker()">✕ Tutup</button>
+                </div>
+                <div class="modal-body" style="padding:14px; overflow:auto; max-height:70vh;">
+                    <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;">
+                        💡 Klik pada salah satu kotak sel berukuran 192×192 di bawah ini untuk memasukkannya ke sel yang sedang Anda pilih.
+                    </div>
+                    <div id="animSheetGridContainer" style="display:flex; justify-content:center;">
+                        <!-- Dynamically populated sheet canvas -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    setTimeout(() => {
+        const cvs = document.getElementById('animEditorCanvas');
+        if (cvs) {
+            AnimEditor.initCanvas(cvs, anim);
+            AnimEditor.updateTimelineUI();
+            AnimEditor.updateCellInspectorUI();
+        }
+    }, 40);
+}
+
+/**
+ * Update the horizontal timeline frame scrubber strip
+ */
+AnimEditor.updateTimelineUI = function() {
+    const strip = document.getElementById('animFrameStrip');
+    const badge = document.getElementById('animFrameBadge');
+    if (!this.activeAnim || !this.activeAnim.frames) return;
+
+    const frames = this.activeAnim.frames;
+    if (badge) {
+        badge.textContent = `Frame ${this.currentFrameIndex + 1} / ${frames.length}`;
+    }
+
+    if (strip) {
+        strip.innerHTML = frames.map((f, idx) => {
+            const isSel = (idx === this.currentFrameIndex);
+            const cellCount = (f || []).filter(c => c && c[0] >= 0).length;
+            return `
+                <button type="button" class="btn btn-sm ${isSel ? 'btn-primary' : 'btn-secondary'}" 
+                        onclick="AnimEditor.currentFrameIndex=${idx}; AnimEditor.updateTimelineUI(); AnimEditor.updateCellInspectorUI();"
+                        style="padding:3px 8px; font-size:0.72rem; min-width:44px; display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0;">
+                    <span>F${idx + 1}</span>
+                    <span style="font-size:0.62rem; color:${isSel ? '#fff' : 'var(--text-muted)'};">${cellCount} sel</span>
+                </button>
+            `;
+        }).join('');
+
+        // Ensure active frame button is in view
+        const activeBtn = strip.children[this.currentFrameIndex];
+        if (activeBtn) {
+            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        }
+    }
+};
+
+/**
+ * Update the Cell Inspector UI panel for the active frame
+ */
+AnimEditor.updateCellInspectorUI = function() {
+    const container = document.getElementById('animCellInspectorContainer');
+    if (!container || !this.activeAnim || !this.activeAnim.frames) return;
+
+    const frames = this.activeAnim.frames;
+    const currentFrame = frames[this.currentFrameIndex] || [];
+
+    if (this.selectedCellIndex >= currentFrame.length && currentFrame.length > 0) {
+        this.selectedCellIndex = currentFrame.length - 1;
+    }
+
+    const cell = currentFrame[this.selectedCellIndex] || null;
+
+    const blendNames = {
+        0: '0: Normal',
+        1: '1: Additive (Lighter / Kilau Bersinar)',
+        2: '2: Multiply (Gelap / Shadow)',
+        3: '3: Screen'
+    };
+
+    container.innerHTML = `
+        <div class="card" style="border:1px solid var(--border-color); margin-bottom:14px;">
+            <div class="card-header" style="padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:0.95rem;">🎯</span>
+                    <div>
+                        <strong style="color:#f8fafc; font-size:0.85rem;">Inspektor Sel (Frame #${this.currentFrameIndex + 1})</strong>
+                        <span style="font-size:0.72rem; color:var(--text-muted); margin-left:6px;">${currentFrame.length} Sel Aktif</span>
+                    </div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.addCellToFrame()" style="color:#34d399; font-size:0.75rem; padding:4px 8px;">
+                        ➕ Tambah Sel
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.cloneCurrentCell()" style="font-size:0.75rem; padding:4px 8px;">
+                        📋 Clone
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.deleteCurrentCell()" style="color:#f87171; font-size:0.75rem; padding:4px 8px;">
+                        🗑️ Hapus Sel
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body" style="padding:14px;">
+                <!-- Cell Selector Tabs -->
+                <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border-color);">
+                    ${currentFrame.map((c, idx) => {
+                        const isSel = (idx === this.selectedCellIndex);
+                        const pat = c[0] >= 0 ? `P:${c[0]}` : 'Kosong';
+                        return `
+                            <button type="button" class="btn btn-sm ${isSel ? 'btn-primary' : 'btn-secondary'}" 
+                                    onclick="AnimEditor.selectedCellIndex=${idx}; AnimEditor.updateCellInspectorUI(); AnimEditor.render();"
+                                    style="padding:4px 10px; font-size:0.75rem;">
+                                Sel #${idx + 1} (${pat})
+                            </button>
+                        `;
+                    }).join('')}
+                    ${currentFrame.length === 0 ? '<span style="color:var(--text-muted); font-size:0.8rem;">(Frame ini belum memiliki sel)</span>' : ''}
+                </div>
+
+                ${cell ? `
+                    <!-- ACTIVE CELL FORM CONTROLS -->
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
+                        
+                        <!-- 1. PATTERN & GRAPHIC -->
+                        <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+                            <strong style="font-size:0.8rem; color:#38bdf8;">1. Pola Sel (Spritesheet Pattern)</strong>
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Nomor Pola (Pattern Index)</label>
+                                <div style="display:flex; gap:6px;">
+                                    <input type="number" id="cellPattern" min="-1" max="199" class="form-control" value="${cell[0]}" 
+                                           onchange="cell[0]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render(); AnimEditor.updateTimelineUI();">
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimPatternPicker()" style="white-space:nowrap; padding:4px 8px; font-size:0.75rem;" title="Buka modal spritesheet untuk memilih potongan sel">
+                                        🖼️ Pilih Visual
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="font-size:0.68rem; color:var(--text-muted);">
+                                💡 Kotak sel 192×192 dihitung dari kiri ke kanan (0 s/d 99). Nilai -1 = Kosong.
+                            </div>
+                        </div>
+
+                        <!-- 2. POSITION (X, Y) -->
+                        <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <strong style="font-size:0.8rem; color:#fbbf24;">2. Posisi (X, Y Offset)</strong>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="cell[1]=0; cell[2]=0; setUnsaved(true); AnimEditor.updateCellInspectorUI(); AnimEditor.render();" style="padding:1px 6px; font-size:0.68rem;">
+                                    🎯 Reset (0, 0)
+                                </button>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:0.72rem;">Posisi X (Horizontal)</label>
+                                    <input type="number" id="cellPosX" min="-400" max="400" class="form-control" value="${cell[1] || 0}" 
+                                           onchange="cell[1]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                </div>
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:0.72rem;">Posisi Y (Vertikal)</label>
+                                    <input type="number" id="cellPosY" min="-400" max="400" class="form-control" value="${cell[2] || 0}" 
+                                           onchange="cell[2]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                </div>
+                            </div>
+                            <div style="font-size:0.68rem; color:var(--text-muted);">
+                                💡 Anda juga bisa langsung mengklik dan menggeser (drag) sel pada layar kanvas di atas!
+                            </div>
+                        </div>
+
+                        <!-- 3. SCALE & ROTATION -->
+                        <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+                            <strong style="font-size:0.8rem; color:#a78bfa;">3. Ukuran &amp; Rotasi</strong>
+                            <div class="grid-2">
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:0.72rem;">Ukuran Skala (%)</label>
+                                    <input type="number" min="10" max="400" class="form-control" value="${cell[3] !== undefined ? cell[3] : 100}" 
+                                           onchange="cell[3]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                </div>
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:0.72rem;">Rotasi Derajat (°)</label>
+                                    <input type="number" min="0" max="360" class="form-control" value="${cell[4] || 0}" 
+                                           onchange="cell[4]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:4px; margin-top:2px;">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="cell[4]=0; setUnsaved(true); AnimEditor.updateCellInspectorUI(); AnimEditor.render();" style="flex:1; padding:2px; font-size:0.68rem;">0°</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="cell[4]=90; setUnsaved(true); AnimEditor.updateCellInspectorUI(); AnimEditor.render();" style="flex:1; padding:2px; font-size:0.68rem;">90°</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="cell[4]=180; setUnsaved(true); AnimEditor.updateCellInspectorUI(); AnimEditor.render();" style="flex:1; padding:2px; font-size:0.68rem;">180°</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="cell[4]=270; setUnsaved(true); AnimEditor.updateCellInspectorUI(); AnimEditor.render();" style="flex:1; padding:2px; font-size:0.68rem;">270°</button>
+                            </div>
+                        </div>
+
+                        <!-- 4. OPACITY, BLEND & MIRROR -->
+                        <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+                            <strong style="font-size:0.8rem; color:#f472b6;">4. Tampilan &amp; Efek Visual</strong>
+                            <div class="grid-2">
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:0.72rem;">Opasitas (0 - 255)</label>
+                                    <input type="number" min="0" max="255" class="form-control" value="${cell[6] !== undefined ? cell[6] : 255}" 
+                                           onchange="cell[6]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                </div>
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:0.72rem;">Cermin (Flip Horizontal)</label>
+                                    <label class="checkbox-label" style="font-size:0.75rem; margin-top:6px;">
+                                        <input type="checkbox" ${cell[5] ? 'checked' : ''} onchange="cell[5]=this.checked ? 1 : 0; setUnsaved(true); AnimEditor.render();">
+                                        <span>Mirror Horizontal</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.72rem;">Mode Campuran (Blend Mode)</label>
+                                <select class="form-control" onchange="cell[7]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                    ${Object.keys(blendNames).map(k => `<option value="${k}" ${(cell[7] || 0) === parseInt(k,10) ? 'selected' : ''}>${blendNames[k]}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+};
+
+/**
+ * Right Sidebar Inspector (Timings SE & Flash, Info, Stats)
+ */
+function renderAnimationStatPreview(container, anim) {
+    if (!anim) return;
+
+    container.innerHTML = `
+        <!-- SOUND SE & FLASH TIMINGS INSPECTOR -->
+        <div class="card" style="margin-bottom:12px; border:1px solid #38bdf855; overflow:hidden;">
+            <div class="card-header" style="padding:10px 14px; background:rgba(12,74,110,0.4); display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.1rem;">🔊</span>
+                    <div>
+                        <div style="font-size:0.7rem; color:#38bdf8; font-weight:700;">TIMINGS &amp; AUDIO</div>
+                        <h3 style="font-size:0.95rem; margin:0; color:#fff; font-weight:700;">Sound Effect &amp; Flash</h3>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-primary" onclick="AnimEditor.addTiming()" style="padding:3px 8px; font-size:0.72rem;">
+                    ➕ Tambah
+                </button>
+            </div>
+
+            <div class="card-body" style="padding:12px; display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto;">
+                ${(anim.timings && anim.timings.length > 0) ? anim.timings.map((tm, idx) => {
+                    const seName = tm.se ? tm.se.name : '';
+                    return `
+                        <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:6px; padding:8px; display:flex; flex-direction:column; gap:4px; font-size:0.75rem;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <strong style="color:#facc15;">Frame #${(tm.frame || 0) + 1}</strong>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.deleteTiming(${idx})" style="padding:1px 6px; font-size:0.65rem; color:#f87171;">✕</button>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="color:var(--text-muted);">Audio SE:</span>
+                                <div style="display:flex; align-items:center; gap:4px;">
+                                    <span style="color:#38bdf8; font-weight:600;">${seName || '(Tanpa SE)'}</span>
+                                    ${seName ? `<button type="button" class="btn btn-sm btn-secondary" onclick="SkillAnimator.playSe('${seName}')" style="padding:1px 6px; font-size:0.65rem;">🔊</button>` : ''}
+                                </div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between;">
+                                <span style="color:var(--text-muted);">Flash Scope:</span>
+                                <span>${['None', 'Target', 'Screen', 'Hide Target'][tm.flashScope] || 'None'} (${tm.flashDuration || 0}f)</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('') : `
+                    <div style="color:var(--text-muted); font-size:0.78rem; text-align:center; padding:12px;">
+                        Belum ada timing suara atau flash layar pada animasi ini.
+                    </div>
+                `}
+            </div>
+        </div>
+
+        <!-- QUICK SUMMARY CARD -->
+        <div class="card" style="margin-bottom:0;">
+            <div class="card-header" style="padding:10px 14px;">
+                <div>
+                    <div style="font-size:0.72rem; color:#f472b6; font-weight:700;">ANIMATION SUMMARY</div>
+                    <h2 style="font-size:1.05rem; margin:2px 0 0 0; color:#fff;">#${anim.id} ${escapeHtml(anim.name || '')}</h2>
+                </div>
+            </div>
+            <div class="card-body" style="padding:12px; display:flex; flex-direction:column; gap:8px; font-size:0.78rem;">
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-muted);">🎞️ Total Frames:</span>
+                    <strong style="color:#38bdf8;">${(anim.frames || []).length} Frames</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-muted);">🖼️ Sheet 1:</span>
+                    <strong style="color:#facc15;">${anim.animation1Name || '(None)'}</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-muted);">📍 Posisi:</span>
+                    <strong style="color:#f8fafc;">${['Top', 'Center', 'Feet', 'Screen'][anim.position] || 'Center'}</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-muted);">⚡ Timings:</span>
+                    <strong style="color:#4ade80;">${(anim.timings || []).length} Events</strong>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Playback Control functions
+ */
+AnimEditor.togglePlay = function() {
+    this.isPlaying = !this.isPlaying;
+    const btn = document.getElementById('animPlayBtn');
+    if (btn) btn.textContent = this.isPlaying ? '⏸ Pause' : '▶ Play';
+};
+
+AnimEditor.toggleLoop = function() {
+    this.isLooping = !this.isLooping;
+    const btn = document.getElementById('animLoopBtn');
+    if (btn) btn.textContent = this.isLooping ? '🔄 Loop: ON' : '🔄 Loop: OFF';
+};
+
+AnimEditor.toggleMute = function() {
+    this.isMuted = !this.isMuted;
+    const btn = document.getElementById('animMuteBtn');
+    if (btn) btn.textContent = this.isMuted ? '🔇 SE Muted' : '🔊 SE';
+};
+
+/**
+ * Frame management
+ */
+AnimEditor.addNewFrame = function() {
+    if (!this.activeAnim) return;
+    this.activeAnim.frames = this.activeAnim.frames || [];
+    // Insert new frame with default empty or copy of first cell
+    this.activeAnim.frames.splice(this.currentFrameIndex + 1, 0, [[0, 0, 0, 100, 0, 0, 255, 0]]);
+    this.currentFrameIndex++;
+    this.selectedCellIndex = 0;
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    this.updateTimelineUI();
+    this.updateCellInspectorUI();
+    this.render();
+};
+
+AnimEditor.cloneCurrentFrame = function() {
+    if (!this.activeAnim || !this.activeAnim.frames) return;
+    const cur = this.activeAnim.frames[this.currentFrameIndex] || [];
+    const copy = JSON.parse(JSON.stringify(cur));
+    this.activeAnim.frames.splice(this.currentFrameIndex + 1, 0, copy);
+    this.currentFrameIndex++;
+    this.selectedCellIndex = 0;
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    this.updateTimelineUI();
+    this.updateCellInspectorUI();
+    this.render();
+};
+
+AnimEditor.deleteCurrentFrame = function() {
+    if (!this.activeAnim || !this.activeAnim.frames) return;
+    if (this.activeAnim.frames.length <= 1) {
+        if (typeof showToast === 'function') showToast('Animasi harus memiliki minimal 1 frame!', 'error');
+        return;
+    }
+    this.activeAnim.frames.splice(this.currentFrameIndex, 1);
+    if (this.currentFrameIndex >= this.activeAnim.frames.length) {
+        this.currentFrameIndex = this.activeAnim.frames.length - 1;
+    }
+    this.selectedCellIndex = 0;
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    this.updateTimelineUI();
+    this.updateCellInspectorUI();
+    this.render();
+};
+
+/**
+ * Cell management
+ */
+AnimEditor.addCellToFrame = function() {
+    if (!this.activeAnim || !this.activeAnim.frames) return;
+    const frame = this.activeAnim.frames[this.currentFrameIndex];
+    if (!frame) return;
+    frame.push([0, 0, 0, 100, 0, 0, 255, 0]);
+    this.selectedCellIndex = frame.length - 1;
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    this.updateCellInspectorUI();
+    this.render();
+};
+
+AnimEditor.cloneCurrentCell = function() {
+    if (!this.activeAnim || !this.activeAnim.frames) return;
+    const frame = this.activeAnim.frames[this.currentFrameIndex];
+    if (!frame || !frame[this.selectedCellIndex]) return;
+    const copy = JSON.parse(JSON.stringify(frame[this.selectedCellIndex]));
+    copy[1] = (copy[1] || 0) + 16; // offset slightly
+    copy[2] = (copy[2] || 0) + 16;
+    frame.push(copy);
+    this.selectedCellIndex = frame.length - 1;
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    this.updateCellInspectorUI();
+    this.render();
+};
+
+AnimEditor.deleteCurrentCell = function() {
+    if (!this.activeAnim || !this.activeAnim.frames) return;
+    const frame = this.activeAnim.frames[this.currentFrameIndex];
+    if (!frame) return;
+    frame.splice(this.selectedCellIndex, 1);
+    if (this.selectedCellIndex >= frame.length) {
+        this.selectedCellIndex = Math.max(0, frame.length - 1);
+    }
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    this.updateCellInspectorUI();
+    this.render();
+};
+
+/**
+ * Timing management
+ */
+AnimEditor.addTiming = function() {
+    if (!this.activeAnim) return;
+    this.activeAnim.timings = this.activeAnim.timings || [];
+    this.activeAnim.timings.push({
+        frame: this.currentFrameIndex,
+        se: { name: 'Blow1', volume: 90, pitch: 100, pan: 0 },
+        flashScope: 1, // Target
+        flashColor: [255, 255, 255, 200],
+        flashDuration: 5
+    });
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    const prev = document.getElementById('statPreviewContainer');
+    if (prev) renderAnimationStatPreview(prev, this.activeAnim);
+};
+
+AnimEditor.deleteTiming = function(idx) {
+    if (!this.activeAnim || !this.activeAnim.timings) return;
+    this.activeAnim.timings.splice(idx, 1);
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    const prev = document.getElementById('statPreviewContainer');
+    if (prev) renderAnimationStatPreview(prev, this.activeAnim);
+};
+
+/**
+ * Visual Spritesheet Pattern Picker Modal
+ */
+function openAnimPatternPicker() {
+    const modal = document.getElementById('animPatternPickerModal');
+    const container = document.getElementById('animSheetGridContainer');
+    if (!modal || !container || !AnimEditor.activeAnim) return;
+
+    const anim = AnimEditor.activeAnim;
+    if (!anim.animation1Name) {
+        if (typeof showToast === 'function') showToast('Pilih Animation Graphic 1 terlebih dahulu!', 'info');
+        return;
+    }
+
+    const img = AnimEditor.getImage(`img/animations/${anim.animation1Name}.png`);
+    img.onload = () => buildPatternGrid();
+    if (img.complete && img.naturalWidth > 0) buildPatternGrid();
+
+    function buildPatternGrid() {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        const cellW = 192;
+        const cellH = 192;
+        const cols = 5;
+        const rows = Math.ceil(h / cellH);
+        const totalPatterns = cols * rows;
+
+        // Render preview canvas with grid overlay
+        const cvs = document.createElement('canvas');
+        cvs.width = w;
+        cvs.height = h;
+        const ctx = cvs.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        // Draw grid lines and index badges
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = 'bold 16px sans-serif';
+
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const pat = r * cols + c;
+                const x = c * cellW;
+                const y = r * cellH;
+                ctx.strokeRect(x, y, cellW, cellH);
+
+                // Badge
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+                ctx.fillRect(x + 4, y + 4, 38, 24);
+                ctx.fillStyle = '#facc15';
+                ctx.fillText(`#${pat}`, x + 8, y + 21);
+            }
+        }
+
+        cvs.style.width = '100%';
+        cvs.style.maxWidth = `${w}px`;
+        cvs.style.height = 'auto';
+        cvs.style.cursor = 'pointer';
+        cvs.style.imageRendering = 'pixelated';
+
+        cvs.onclick = (e) => {
+            const rect = cvs.getBoundingClientRect();
+            const clickX = ((e.clientX - rect.left) / rect.width) * w;
+            const clickY = ((e.clientY - rect.top) / rect.height) * h;
+            const col = Math.floor(clickX / cellW);
+            const row = Math.floor(clickY / cellH);
+            const pat = row * cols + col;
+
+            const frame = (AnimEditor.activeAnim.frames || [])[AnimEditor.currentFrameIndex];
+            if (frame && frame[AnimEditor.selectedCellIndex]) {
+                frame[AnimEditor.selectedCellIndex][0] = pat;
+                if (typeof setUnsaved === 'function') setUnsaved(true);
+                AnimEditor.updateCellInspectorUI();
+                AnimEditor.render();
+                closeAnimPatternPicker();
+                if (typeof showToast === 'function') showToast(`Pola #${pat} dipilih!`, 'success');
+            }
+        };
+
+        container.innerHTML = '';
+        container.appendChild(cvs);
+    }
+
+    modal.style.display = 'flex';
+}
+
+function closeAnimPatternPicker() {
+    const modal = document.getElementById('animPatternPickerModal');
+    if (modal) modal.style.display = 'none';
+}
+
+/**
+ * Auto-Fill frames sequentially from spritesheet
+ */
+function openAnimAutoFillModal() {
+    if (!AnimEditor.activeAnim) return;
+    const anim = AnimEditor.activeAnim;
+    const countStr = prompt(`Masukkan jumlah frame yang ingin dibuat secara otomatis berurutan dari spritesheet (misal: 12):`, '12');
+    if (!countStr) return;
+    const count = parseInt(countStr, 10);
+    if (isNaN(count) || count < 1 || count > 100) {
+        alert('Jumlah frame harus antara 1 sampai 100');
+        return;
+    }
+
+    anim.frames = [];
+    for (let i = 0; i < count; i++) {
+        anim.frames.push([
+            [i, 0, 0, 100, 0, 0, 255, 0] // Pattern i, centered, 100% scale
+        ]);
+    }
+
+    AnimEditor.currentFrameIndex = 0;
+    AnimEditor.selectedCellIndex = 0;
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    AnimEditor.updateTimelineUI();
+    AnimEditor.updateCellInspectorUI();
+    AnimEditor.render();
+    if (typeof renderSidebar === 'function') renderSidebar();
+    if (typeof showToast === 'function') showToast(`Berhasil membuat ${count} frame berurutan dari pola 0 s/d ${count - 1}!`, 'success');
+}
+
+/**
+ * Batch Modifier Modal: Shift coordinates or Scale all cells
+ */
+function openAnimBatchShiftModal() {
+    if (!AnimEditor.activeAnim || !AnimEditor.activeAnim.frames) return;
+    const anim = AnimEditor.activeAnim;
+    const choice = prompt("Pilih operasi batch modifier:\n1. Geser Posisi X/Y Semua Sel\n2. Ubah Skala % Semua Sel\n\nKetik 1 atau 2:", "1");
+    if (choice === "1") {
+        const dxStr = prompt("Geser X sebesar berapa pixel? (misal: +20 atau -20):", "0");
+        const dyStr = prompt("Geser Y sebesar berapa pixel? (misal: +20 atau -20):", "0");
+        const dx = parseInt(dxStr, 10) || 0;
+        const dy = parseInt(dyStr, 10) || 0;
+        if (dx === 0 && dy === 0) return;
+
+        for (const frame of anim.frames) {
+            for (const cell of frame) {
+                if (cell && cell[0] >= 0) {
+                    cell[1] = (cell[1] || 0) + dx;
+                    cell[2] = (cell[2] || 0) + dy;
+                }
+            }
+        }
+        if (typeof setUnsaved === 'function') setUnsaved(true);
+        AnimEditor.updateCellInspectorUI();
+        AnimEditor.render();
+        if (typeof showToast === 'function') showToast(`Berhasil menggeser seluruh sel X:${dx}, Y:${dy}!`, 'success');
+    } else if (choice === "2") {
+        const scaleStr = prompt("Masukkan nilai skala persen baru untuk semua sel (misal: 120):", "100");
+        const scale = parseInt(scaleStr, 10);
+        if (isNaN(scale) || scale < 10) return;
+
+        for (const frame of anim.frames) {
+            for (const cell of frame) {
+                if (cell && cell[0] >= 0) {
+                    cell[3] = scale;
+                }
+            }
+        }
+        if (typeof setUnsaved === 'function') setUnsaved(true);
+        AnimEditor.updateCellInspectorUI();
+        AnimEditor.render();
+        if (typeof showToast === 'function') showToast(`Berhasil mengubah skala seluruh sel menjadi ${scale}%!`, 'success');
+    }
+}
+
+/**
+ * Shortcut from Skill Editor: Open specific animation in Animation Studio
+ */
+function openAnimationInEditor(animId) {
+    if (!animId) return;
+    const targetIdx = State.animations.findIndex(a => a && a.id === animId);
+    if (targetIdx !== -1) {
+        switchTab('animations');
+        State.selectedIndex = targetIdx;
+        State.selectedIndices = State.selectedIndices || {};
+        State.selectedIndices.animations = targetIdx;
+        renderSidebar();
+        renderEditor();
+    }
+}
+
+/**
+ * Clean stop when navigating away
+ */
+function stopAnimationEditorLoop() {
+    AnimEditor.stop();
+}
+
+if (typeof window !== 'undefined') {
+    window.AnimEditor = AnimEditor;
+}
+
+
 /* Inlined from editor_studio/js/editors/skill_editor.js */
 /**
  * NUSV Database Studio - Entity Editor: editors/skill_editor.js
@@ -8092,7 +10745,89 @@ function renderSkillStatPreview(container, skill) {
     };
     const hitTypes = { 0: 'Certain Hit', 1: 'Physical Attack', 2: 'Magical Attack' };
 
+    const svActors = (State.svActors && State.svActors.length > 0) ? State.svActors : ['Actor1_1', 'Actor1_2', 'Actor1_3', 'Actor2_1', 'Actor2_2'];
+    const enemies = (State.enemiesPics && State.enemiesPics.length > 0) ? State.enemiesPics : ['Actor1_3', 'Actor1_4', 'Actor1_5', 'Actor2_1'];
+
     container.innerHTML = `
+        <!-- LIVE BATTLE SIMULATOR (SIDEVIEW PREVIEW) -->
+        <div class="card" style="margin-bottom:12px; border:1px solid #8b5cf655; background:#0f172a; overflow:hidden;">
+            <div class="card-header" style="padding:10px 14px; background:linear-gradient(135deg, rgba(30,27,75,0.6) 0%, rgba(15,23,42,0.8) 100%); display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:1.15rem;">⚔️</span>
+                    <div>
+                        <div style="font-size:0.7rem; color:#c084fc; font-weight:700; letter-spacing:0.5px;">LIVE BATTLE SIMULATOR</div>
+                        <h3 style="font-size:0.95rem; margin:0; color:#fff; font-weight:700;">Sideview Combat Preview</h3>
+                    </div>
+                </div>
+                <div id="svPhaseIndicator" class="badge" style="background:#1e1b4b; border:1px solid #8b5cf6; font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:9999px; white-space:nowrap; flex-shrink:0;">
+                    ⏸ Standby
+                </div>
+            </div>
+
+            <!-- 16:9 SV Canvas Viewport -->
+            <div style="position:relative; width:100%; aspect-ratio:16/9; background:#000; overflow:hidden; border-bottom:1px solid var(--border-color);">
+                <canvas id="svBattleCanvas" width="480" height="270" style="width:100%; height:100%; display:block; image-rendering:pixelated;"></canvas>
+            </div>
+
+            <!-- Playback Control Toolbar -->
+            <div style="padding:8px 12px; background:rgba(15,23,42,0.95); border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <button id="svPlayBtn" class="btn btn-sm btn-primary" onclick="toggleSkillAnimPlay()" style="padding:4px 10px; font-size:0.75rem;">⏸ Pause</button>
+                    <button id="svReplayBtn" class="btn btn-sm btn-secondary" onclick="replaySkillAnim()" style="padding:4px 8px; font-size:0.75rem;" title="Ulangi animasi dari awal">⏮ Replay</button>
+                    <button id="svLoopBtn" class="btn btn-sm btn-secondary" onclick="toggleSkillAnimLoop()" style="padding:4px 8px; font-size:0.75rem;" title="Ulang otomatis secara berkala">🔄 Loop: ON</button>
+                </div>
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <select id="svSpeedSelect" class="form-control" style="width:auto; padding:3px 6px; font-size:0.75rem; height:auto;" onchange="setSkillAnimSpeed(parseFloat(this.value))">
+                        <option value="0.5">0.5x Slow</option>
+                        <option value="1.0" selected>1.0x Normal</option>
+                        <option value="1.5">1.5x Fast</option>
+                        <option value="2.0">2.0x Turbo</option>
+                    </select>
+                    <button id="svMuteBtn" class="btn btn-sm btn-secondary" onclick="toggleSkillAnimMute()" style="padding:4px 8px; font-size:0.75rem;" title="Mute efek suara">🔊 SE</button>
+                </div>
+            </div>
+
+            <!-- Scene Battler & Arena Customizers -->
+            <div style="padding:8px 12px; background:rgba(15,23,42,0.6); display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; font-size:0.72rem;">
+                <div>
+                    <label style="color:var(--text-muted); display:block; margin-bottom:2px;">🎭 SV Actor:</label>
+                    <select id="svActorSelect" class="form-control" style="padding:2px 4px; font-size:0.72rem; height:auto;" 
+                            onchange="SkillAnimator.selectedActorName=this.value; SkillAnimator.getImage('img/sv_actors/' + this.value + '.png');">
+                        ${svActors.map(a => {
+                            const name = a.replace(/\.png$/i, '');
+                            return `<option value="${name}" ${SkillAnimator.selectedActorName === name ? 'selected' : ''}>${name}</option>`;
+                        }).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); display:block; margin-bottom:2px;">👾 SV Enemy:</label>
+                    <select id="svEnemySelect" class="form-control" style="padding:2px 4px; font-size:0.72rem; height:auto;" 
+                            onchange="SkillAnimator.selectedEnemyName=this.value; SkillAnimator.getImage('img/sv_enemies/' + this.value + '.png'); SkillAnimator.getImage('img/enemies/' + this.value + '.png');">
+                        ${enemies.map(e => {
+                            const name = e.replace(/\.png$/i, '');
+                            return `<option value="${name}" ${SkillAnimator.selectedEnemyName === name ? 'selected' : ''}>${name}</option>`;
+                        }).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label style="color:var(--text-muted); display:block; margin-bottom:2px;">🌄 Arena:</label>
+                    <select id="svBattlebackSelect" class="form-control" style="padding:2px 4px; font-size:0.72rem; height:auto;" 
+                            onchange="SkillAnimator.selectedBattleback1=this.value; SkillAnimator.getImage('img/battlebacks1/' + this.value + '.png');">
+                        <option value="Cobblestones1" ${SkillAnimator.selectedBattleback1 === 'Cobblestones1' ? 'selected' : ''}>Cobblestones</option>
+                        <option value="Castle1" ${SkillAnimator.selectedBattleback1 === 'Castle1' ? 'selected' : ''}>Castle</option>
+                        <option value="Clouds" ${SkillAnimator.selectedBattleback1 === 'Clouds' ? 'selected' : ''}>Clouds</option>
+                        <option value="Grassland" ${SkillAnimator.selectedBattleback1 === 'Grassland' ? 'selected' : ''}>Grassland</option>
+                        <option value="Forest" ${SkillAnimator.selectedBattleback1 === 'Forest' ? 'selected' : ''}>Forest</option>
+                        <option value="Desert" ${SkillAnimator.selectedBattleback1 === 'Desert' ? 'selected' : ''}>Desert</option>
+                        <option value="Wasteland" ${SkillAnimator.selectedBattleback1 === 'Wasteland' ? 'selected' : ''}>Wasteland</option>
+                        <option value="Lava" ${SkillAnimator.selectedBattleback1 === 'Lava' ? 'selected' : ''}>Lava</option>
+                        <option value="Snow" ${SkillAnimator.selectedBattleback1 === 'Snow' ? 'selected' : ''}>Snow</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- SKILL INSPECTOR STAT CARD -->
         <div class="card" style="margin-bottom:0;">
             <div class="card-header" style="padding:10px 14px;">
                 <div>
@@ -8162,9 +10897,14 @@ function renderSkillStatPreview(container, skill) {
             </div>
         </div>
     `;
+
+    setTimeout(() => {
+        const cvs = document.getElementById('svBattleCanvas');
+        if (cvs && typeof SkillAnimator !== 'undefined') {
+            SkillAnimator.initPreview(cvs, skill);
+        }
+    }, 40);
 }
-
-
 
 function renderSkillEditor(container, skill) {
     const note = skill.note || '';
@@ -8307,7 +11047,12 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                         </div>
 
                         <div class="form-group">
-                            <label title="Animasi visual yang dimainkan pada target saat skill dilancarkan">Skill Animation</label>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                <label style="margin:0;" title="Animasi visual yang dimainkan pada target saat skill dilancarkan">Skill Animation</label>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimationInEditor(skill.animationId)" style="padding:1px 8px; font-size:0.7rem; color:#f472b6;" title="Buka dan modifikasi animasi ini di Animation Studio">
+                                    🎨 Edit Animasi
+                                </button>
+                            </div>
                             <select class="form-control" onchange="skill.animationId=parseInt(this.value,10); setUnsaved(true);">
                                 <option value="0">(Tanpa Animasi)</option>
                                 ${State.animations.filter(a => a).map(a => `<option value="${a.id}" ${skill.animationId === a.id ? 'selected' : ''}>#${a.id} ${escapeHtml(a.name)}</option>`).join('')}
@@ -8361,6 +11106,8 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                 </div>
             </div>
         </div>
+
+        ${typeof SkillAnimator !== "undefined" ? SkillAnimator.renderStudioPanel(skill) : ""}
 
         <!-- FORMULA KERUSAKAN / PEMULIHAN (DAMAGE FORMULA) -->
         <div class="card">

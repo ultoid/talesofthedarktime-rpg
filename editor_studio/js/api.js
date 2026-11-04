@@ -54,12 +54,13 @@ async function reloadAllData() {
     showToast('Loading project database...', 'info');
     let dataLoaded = false;
     try {
-        const [pics, faces, chars, svs, enes, act, cls, wep, arm, ski, itm, ene, sta, anim, sys, ce, rce] = await Promise.all([
+        const [pics, faces, chars, svs, enes, animPics, act, cls, wep, arm, ski, itm, ene, sta, anim, sys, ce, rce] = await Promise.all([
             fetch(getApiUrl('/api/images/pictures')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/faces')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/characters')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/sv_actors')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/sv_enemies')).then(r => r.json()).catch(() => []),
+            fetch(getApiUrl('/api/images/animations')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/data/Actors.json')).then(r => { if (!r.ok) throw new Error('Failed to load Actors.json'); return r.json(); }),
             fetch(getApiUrl('/api/data/Classes.json')).then(r => { if (!r.ok) throw new Error('Failed to load Classes.json'); return r.json(); }),
             fetch(getApiUrl('/api/data/Weapons.json')).then(r => { if (!r.ok) throw new Error('Failed to load Weapons.json'); return r.json(); }),
@@ -80,6 +81,7 @@ async function reloadAllData() {
         State.characters = chars || [];
         State.svActors = svs || [];
         State.enemiesPics = enes || [];
+        State.animationImages = animPics || [];
 
         State.actors = act || [];
         State.classes = cls || [];
@@ -129,7 +131,8 @@ async function saveActiveDataset() {
         skills: { filename: 'Skills.json', data: () => State.skills },
         items: { filename: 'Items.json', data: () => State.items },
         enemies: { filename: 'Enemies.json', data: () => State.enemies },
-        states: { filename: 'States.json', data: () => State.states }
+        states: { filename: 'States.json', data: () => State.states },
+        animations: { filename: 'Animations.json', data: () => State.animations }
     };
 
     // Collect all modified tabs and the current active tab

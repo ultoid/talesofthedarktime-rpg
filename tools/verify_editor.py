@@ -16,6 +16,8 @@ armor_ed = read_mod('js/editors/armor_editor.js')
 enemy_ed = read_mod('js/editors/enemy_editor.js')
 state_ed = read_mod('js/editors/state_editor.js')
 skill_ed = read_mod('js/editors/skill_editor.js')
+skill_anim = read_mod('js/editors/skill_animator.js')
+anim_ed = read_mod('js/editors/animation_editor.js')
 item_ed = read_mod('js/editors/item_editor.js')
 api_js = read_mod('js/api.js')
 constants_js = read_mod('js/constants.js')
@@ -45,6 +47,16 @@ checks = {
     "NUSV Core Attributes (STR, INT, VIT, AGI, DEX, LUK)": 'STR' in constants_js and 'DEX' in constants_js,
     "NUSV SP Regeneration (replacing TP)": 'SP Regeneration' in constants_js,
     "Enemy Battler SV Preview": '/api/images/sv_enemies' in api_js and 'img/sv_enemies/' in enemy_ed,
+    "Skill Sideview Battle Canvas in HTML": 'id="svBattleCanvas"' in html,
+    "Skill Action Sequence Studio in HTML": 'Sideview Battle &amp; Skill Animation Studio' in html,
+    "Skill Animator Engine in Module": 'const SkillAnimator =' in skill_anim,
+    "Skill 1-Click Presets in Module": 'PRESETS:' in skill_anim,
+    "Skill Yanfly Action Sequence Generator": 'generateYanflySequence' in skill_anim,
+    "Animation Studio Canvas in HTML": 'id="animEditorCanvas"' in html,
+    "Animations Tab in HTML": "switchTab('animations')" in html,
+    "Animation Engine in Module": 'const AnimEditor =' in anim_ed,
+    "Animation Spritesheet Cell Picker in Module": 'openAnimPatternPicker' in anim_ed,
+    "Animation Save Endpoint in API": "'Animations.json'" in api_js,
 }
 
 all_ok = True
@@ -63,3 +75,5 @@ print(f"{'✓ PASS' if exp_in_cls else '✗ FAIL'}: EXP curve present in Classes
 if not exp_in_cls: all_ok = False
 
 print("\nOVERALL VERIFICATION:", "ALL PASSED!" if all_ok else "SOME CHECKS FAILED!")
+if not all_ok:
+    sys.exit(1)

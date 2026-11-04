@@ -9,6 +9,7 @@ const State = {
     characters: [],
     svActors: [],
     enemiesPics: [],
+    animationImages: [],
     actors: [],
     classes: [],
     races: [],
@@ -28,6 +29,7 @@ const State = {
         weapons: 1,
         armors: 1,
         skills: 1,
+        animations: 1,
         items: 1,
         enemies: 1,
         states: 1
@@ -66,6 +68,7 @@ function getActiveList() {
         case 'items': return State.items;
         case 'enemies': return State.enemies;
         case 'states': return State.states;
+        case 'animations': return State.animations;
         default: return [];
     }
 }
