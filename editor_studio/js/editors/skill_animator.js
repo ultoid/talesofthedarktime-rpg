@@ -2489,9 +2489,12 @@ SkillAnimator.changeSelectedStepDuration = function (delta) {
 /**
  * Save Current Studio Configuration
  */
-SkillAnimator.saveCurrentStudioConfig = async function () {
-    const skill = this.activeSkill || State.skills[State.selectedIndex];
-    if (!skill) return;
+/**
+ * Synchronize Current Studio Configuration to Skill in Memory
+ */
+SkillAnimator.syncCurrentStudioConfig = function () {
+    const skill = this.activeSkill || (State.skills && State.skills[State.selectedIndex]);
+    if (!skill) return null;
     const cfg = this.getConfig(skill);
     this.saveConfigToSkill(skill, cfg);
 
@@ -2500,8 +2503,7 @@ SkillAnimator.saveCurrentStudioConfig = async function () {
         for (const w of State.weapons) {
             if (w && w.note && (w.note.includes(`<skill_id: ${skill.id}>`) || w.note.includes(`<skill_id:${skill.id}>`))) {
                 if (!w.note.includes(`<Unleash Skill: ${skill.id}`)) {
-                    w.note = `<Unleash Skill: ${skill.id}>
-` + w.note;
+                    w.note = `<Unleash Skill: ${skill.id}>\n` + w.note;
                 }
                 if (!State.modifiedTabs) State.modifiedTabs = new Set();
                 State.modifiedTabs.add('weapons');
@@ -2512,13 +2514,18 @@ SkillAnimator.saveCurrentStudioConfig = async function () {
     if (!State.modifiedTabs) State.modifiedTabs = new Set();
     State.modifiedTabs.add('skills');
     State.modifiedTabs.add('skill_animator');
+    return skill;
+};
 
-    // Automatically persist to game project database files on disk!
+/**
+ * Save Current Studio Configuration and Persist to Disk
+ */
+SkillAnimator.saveCurrentStudioConfig = async function () {
+    const skill = this.syncCurrentStudioConfig();
+    if (!skill) return;
+
     if (typeof saveActiveDataset === 'function') {
         await saveActiveDataset();
-        if (typeof showToast === 'function') {
-            showToast('✅ Berhasil disimpan ke Skill #' + skill.id + ' & langsung diterapkan ke game!', 'success');
-        }
     } else if (typeof showToast === 'function') {
         showToast('Koreografi blok modular berhasil disimpan ke Skill #' + skill.id, 'success');
     }

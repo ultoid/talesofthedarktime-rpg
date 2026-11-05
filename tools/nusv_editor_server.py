@@ -15,7 +15,12 @@ import os
 import sys
 import webbrowser
 import datetime
+import threading
+import shutil
 from pathlib import Path
+
+# Thread lock for atomic file operations across requests
+FILE_LOCK = threading.Lock()
 
 # Safe IO streams for background or windowless (pythonw) execution
 if sys.stdout is None:
@@ -183,22 +188,30 @@ class NUSVEditorHandler(http.server.SimpleHTTPRequestHandler):
             content_len = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(content_len)
 
+            if content_len <= 0:
+                self.send_response(400)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(b'{"status": "error", "message": "Empty payload"}')
+                return
+
             try:
                 # Validate JSON syntax
                 parsed = json.loads(body.decode("utf-8"))
 
-                # 1. Backup existing file if present
-                BACKUP_DIR.mkdir(parents=True, exist_ok=True)
-                if filepath.exists():
-                    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                    backup_file = BACKUP_DIR / f"{filepath.stem}_{ts}.json"
-                    with open(backup_file, "wb") as bf:
-                        with open(filepath, "rb") as orig:
-                            bf.write(orig.read())
+                with FILE_LOCK:
+                    # 1. Backup existing file if present
+                    BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+                    if filepath.exists():
+                        ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                        backup_file = BACKUP_DIR / f"{filepath.stem}_{ts}.json"
+                        shutil.copyfile(filepath, backup_file)
 
-                # 2. Write updated JSON with clean formatting
-                with open(filepath, "w", encoding="utf-8") as f:
-                    json.dump(parsed, f, indent=2, ensure_ascii=False)
+                    # 2. Write updated JSON with clean formatting atomically using temporary file
+                    temp_file = filepath.with_suffix('.tmp')
+                    with open(temp_file, "w", encoding="utf-8") as f:
+                        json.dump(parsed, f, indent=2, ensure_ascii=False)
+                    os.replace(temp_file, filepath)
 
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json; charset=utf-8")

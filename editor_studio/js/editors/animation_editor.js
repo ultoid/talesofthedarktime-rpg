@@ -455,6 +455,9 @@ function renderAnimationEditor(container, anim) {
                     <button type="button" class="btn btn-sm btn-secondary" onclick="openAnimBatchShiftModal()" title="Geser koordinat atau skala seluruh sel di semua frame">
                         ⚙️ Batch Modifiers
                     </button>
+                    <button type="button" class="btn btn-sm" onclick="saveActiveDataset()" style="font-weight:700; background:linear-gradient(135deg, #ec4899 0%, #db2777 100%); color:#fff; border:1px solid #f472b6; box-shadow:0 0 12px rgba(236,72,153,0.35);" title="Simpan seluruh perubahan animasi langsung ke file database game (Animations.json)">
+                        💾 Simpan ke Project
+                    </button>
                 </div>
             </div>
 

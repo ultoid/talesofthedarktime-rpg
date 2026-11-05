@@ -123,7 +123,15 @@ async function reloadAllData() {
 
 
 
+let _isSavingDataset = false;
+
 async function saveActiveDataset() {
+    if (_isSavingDataset) {
+        console.warn('[saveActiveDataset] Save operation already in progress. Ignoring duplicate trigger.');
+        return;
+    }
+    _isSavingDataset = true;
+
     // 1. Commit any currently focused input/field
     if (document.activeElement && typeof document.activeElement.blur === 'function') {
         try {
@@ -131,10 +139,18 @@ async function saveActiveDataset() {
         } catch (_) {}
     }
 
-    // 2. If in Skill Animator, ensure the current sequence is compiled to skill note
-    if (State.currentTab === 'skill_animator' && typeof SkillAnimator !== 'undefined' && SkillAnimator.saveCurrentStudioConfig) {
+    // 2. If in Skill Animator, ensure current sequence is compiled to skill note in memory (DO NOT trigger re-entrant save)
+    if (State.currentTab === 'skill_animator' && typeof SkillAnimator !== 'undefined') {
         try {
-            SkillAnimator.saveCurrentStudioConfig();
+            if (typeof SkillAnimator.syncCurrentStudioConfig === 'function') {
+                SkillAnimator.syncCurrentStudioConfig();
+            } else if (typeof SkillAnimator.saveConfigToSkill === 'function') {
+                const sk = SkillAnimator.activeSkill || (State.skills && State.skills[State.selectedIndex]);
+                if (sk) {
+                    const cfg = SkillAnimator.getConfig(sk);
+                    SkillAnimator.saveConfigToSkill(sk, cfg);
+                }
+            }
         } catch (e) {
             console.warn('[saveActiveDataset] Error syncing studio config:', e);
         }
@@ -213,6 +229,7 @@ async function saveActiveDataset() {
             showServerOfflineModal();
         }
     } finally {
+        _isSavingDataset = false;
         saveBtns.forEach(btn => {
             btn.disabled = false;
             if (btn.dataset.originalHtml) {
@@ -220,4 +237,14 @@ async function saveActiveDataset() {
             }
         });
     }
+}
+
+// Global keyboard shortcut: Ctrl+S / Cmd+S to save to project
+if (typeof window !== 'undefined') {
+    window.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+            e.preventDefault();
+            saveActiveDataset();
+        }
+    });
 }
