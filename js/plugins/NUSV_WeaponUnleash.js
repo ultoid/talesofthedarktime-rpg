@@ -136,7 +136,7 @@ Imported.NUSV_WeaponUnleash = true;
 var NUSV = NUSV || {};
 NUSV.WeaponUnleash = NUSV.WeaponUnleash || {};
 
-(function() {
+(function () {
     'use strict';
 
     var pluginName = 'NUSV_WeaponUnleash';
@@ -225,7 +225,7 @@ NUSV.WeaponUnleash = NUSV.WeaponUnleash || {};
             }
         }
 
-        return list.filter(function(entry) {
+        return list.filter(function (entry) {
             return entry.skillId > 0 && entry.condition;
         });
     }
@@ -240,17 +240,17 @@ NUSV.WeaponUnleash = NUSV.WeaponUnleash || {};
             var simple = parseSimpleEntries(obj);
             var advanced = parseAdvancedEntries(obj, actor);
 
-            simple.forEach(function(entry, index) {
+            simple.forEach(function (entry, index) {
                 entry._sourceIndex = i * 100 + index;
                 entries.push(entry);
             });
-            advanced.forEach(function(entry, index) {
+            advanced.forEach(function (entry, index) {
                 entry._sourceIndex = i * 100 + 50 + index;
                 entries.push(entry);
             });
         }
 
-        return entries.filter(function(entry) {
+        return entries.filter(function (entry) {
             return entry.skillId > 0 && entry.condition;
         });
     }
@@ -259,7 +259,7 @@ NUSV.WeaponUnleash = NUSV.WeaponUnleash || {};
         var entries = allEntries(actor);
         if (!entries.length) return 0;
 
-        entries.sort(function(a, b) {
+        entries.sort(function (a, b) {
             if (b.priority !== a.priority) return b.priority - a.priority;
             return a._sourceIndex - b._sourceIndex;
         });
@@ -277,11 +277,11 @@ NUSV.WeaponUnleash = NUSV.WeaponUnleash || {};
     // Save fallback after other plugins above this already changed attackSkillId.
     var _Game_Actor_attackSkillId = Game_Actor.prototype.attackSkillId;
 
-    Game_Actor.prototype.nusvBaseAttackSkillId = function() {
+    Game_Actor.prototype.nusvBaseAttackSkillId = function () {
         return _Game_Actor_attackSkillId.call(this);
     };
 
-    Game_Actor.prototype.attackSkillId = function() {
+    Game_Actor.prototype.attackSkillId = function () {
         var skillId = chooseUnleashSkill(this);
         if (skillId > 0) return skillId;
         return this.nusvBaseAttackSkillId();
@@ -289,7 +289,7 @@ NUSV.WeaponUnleash = NUSV.WeaponUnleash || {};
 
     // Keep Attack command selection flow compatible with special target types.
     var _Scene_Battle_commandAttack = Scene_Battle.prototype.commandAttack;
-    Scene_Battle.prototype.commandAttack = function() {
+    Scene_Battle.prototype.commandAttack = function () {
         BattleManager.inputtingAction().setAttack();
         var action = BattleManager.inputtingAction();
 

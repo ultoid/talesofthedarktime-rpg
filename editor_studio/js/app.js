@@ -32,6 +32,10 @@ window.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    if (typeof initStatSidebarState === 'function') {
+        initStatSidebarState();
+    }
+
     await reloadAllData();
 });
 
@@ -61,6 +65,65 @@ document.addEventListener('mouseout', (e) => {
     if (!toEl) {
         const bar = document.getElementById('hoverInfoBar');
         if (bar) bar.classList.remove('visible');
+    }
+});
+
+// Helper to close any currently opened modals
+function closeActiveModals() {
+    let closed = false;
+    if (typeof closeConfirmModal === 'function') {
+        const cModal = document.getElementById('confirmModal');
+        if (cModal && cModal.style.display && cModal.style.display !== 'none') {
+            closeConfirmModal();
+            closed = true;
+        }
+    }
+    const modals = document.querySelectorAll('.modal-overlay');
+    modals.forEach(m => {
+        if (m.style.display && m.style.display !== 'none') {
+            m.style.display = 'none';
+            closed = true;
+        }
+    });
+    const offlineBanner = document.getElementById('serverOfflineBanner');
+    if (offlineBanner) {
+        offlineBanner.remove();
+        closed = true;
+    }
+    return closed;
+}
+
+function isAnyModalOpen() {
+    const activeModals = Array.from(document.querySelectorAll('.modal-overlay')).filter(
+        m => m.style.display && m.style.display !== 'none'
+    );
+    return activeModals.length > 0 || !!document.getElementById('serverOfflineBanner');
+}
+
+// Global Keyboard Navigation & Shortcuts
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        if (closeActiveModals()) {
+            e.preventDefault();
+        }
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        const activeTag = document.activeElement ? document.activeElement.tagName : '';
+        const isInput = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT' || (document.activeElement && document.activeElement.isContentEditable);
+        if (!isInput && !isAnyModalOpen()) {
+            e.preventDefault();
+            if (typeof selectAdjacentSidebarItem === 'function') {
+                selectAdjacentSidebarItem(e.key === 'ArrowUp' ? -1 : 1);
+            }
+        }
+    }
+});
+
+// Prevent accidental tab/browser close if there are unsaved changes
+window.addEventListener('beforeunload', (e) => {
+    if (typeof State !== 'undefined' && State.hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'Perubahan data belum disimpan ke database project. Tinggalkan halaman?';
+        return e.returnValue;
     }
 });
 

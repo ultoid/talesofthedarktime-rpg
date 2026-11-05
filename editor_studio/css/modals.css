@@ -1,5 +1,10 @@
 /* NUSV Database Studio - Modals & Pickers */
 
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 /* Visual Sheet Selector Modal */
         .modal-overlay {
             position: fixed;

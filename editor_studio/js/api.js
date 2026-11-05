@@ -49,12 +49,37 @@ function showServerOfflineModal() {
 
 // Initialize application with auto-detection for file:// protocol
 
+function showLoadingOverlay(msg = 'Memuat database project...') {
+    let overlay = document.getElementById('globalLoadingOverlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'globalLoadingOverlay';
+        overlay.className = 'global-loading-overlay';
+        overlay.innerHTML = `
+            <div class="loading-spinner-box">
+                <div class="loading-spinner"></div>
+                <div class="loading-text" id="globalLoadingText">${typeof escapeHtml === 'function' ? escapeHtml(msg) : msg}</div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    } else {
+        const textEl = document.getElementById('globalLoadingText');
+        if (textEl) textEl.textContent = msg;
+        overlay.style.display = 'flex';
+    }
+}
+
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('globalLoadingOverlay');
+    if (overlay) overlay.style.display = 'none';
+}
 
 async function reloadAllData() {
+    showLoadingOverlay('Memuat seluruh data database project...');
     showToast('Loading project database...', 'info');
     let dataLoaded = false;
     try {
-        const [pics, faces, chars, svs, enes, animPics, seAudio, act, cls, wep, arm, ski, itm, ene, sta, anim, sys, ce, rce] = await Promise.all([
+        const [pics, faces, chars, svs, enes, animPics, seAudio, act, cls, wep, arm, ski, itm, ene, sta, anim, sys, ce, rce, troops, pluginScript] = await Promise.all([
             fetch(getApiUrl('/api/images/pictures')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/faces')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/images/characters')).then(r => r.json()).catch(() => []),
@@ -73,7 +98,9 @@ async function reloadAllData() {
             fetch(getApiUrl('/api/data/Animations.json')).then(r => r.json()).catch(() => []),
             fetch(getApiUrl('/api/data/System.json')).then(r => r.json()).catch(() => ({})),
             fetch(getApiUrl('/api/data/CommonEvents.json')).then(r => r.json()).catch(() => []),
-            fetch(getApiUrl('/api/data/Races.json')).then(r => r.json()).catch(() => [])
+            fetch(getApiUrl('/api/data/Races.json')).then(r => r.json()).catch(() => []),
+            fetch(getApiUrl('/api/data/Troops.json')).then(r => r.json()).catch(() => []),
+            fetch(getApiUrl('/js/plugins.js')).then(r => r.ok ? r.text() : '').catch(() => '')
         ]);
         State.commonEvents = ce || [];
 
@@ -93,9 +120,22 @@ async function reloadAllData() {
         State.skills = ski || [];
         State.items = itm || [];
         State.enemies = ene || [];
+        State.troops = troops || [];
         State.states = sta || [];
         State.animations = anim || [];
         State.system = sys || {};
+        try {
+            const pluginsStart = pluginScript.indexOf('var $plugins');
+            const arrayStart = pluginScript.indexOf('[', pluginsStart);
+            const arrayEnd = pluginScript.lastIndexOf(']');
+            const pluginList = arrayStart >= 0 && arrayEnd > arrayStart
+                ? JSON.parse(pluginScript.slice(arrayStart, arrayEnd + 1))
+                : [];
+            State.pluginParameters = Object.fromEntries(pluginList.map(plugin => [plugin.name, plugin.parameters || {}]));
+        } catch (error) {
+            State.pluginParameters = {};
+            console.warn('Plugin configuration could not be loaded for battle preview:', error);
+        }
 
         dataLoaded = true;
         const banner = document.getElementById('serverOfflineBanner');
@@ -105,6 +145,8 @@ async function reloadAllData() {
         showToast('Failed to load data. Ensure tools/nusv_editor_server.py is running!', 'error');
         showServerOfflineModal();
         return;
+    } finally {
+        hideLoadingOverlay();
     }
 
     if (dataLoaded) {

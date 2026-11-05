@@ -18,9 +18,11 @@ const State = {
     skills: [],
     items: [],
     enemies: [],
+    troops: [],
     states: [],
     animations: [],
     system: {},
+    pluginParameters: {},
     selectedIndex: 1,
     selectedIndices: {
         actors: 1,

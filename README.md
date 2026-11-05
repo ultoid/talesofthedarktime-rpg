@@ -1,7 +1,7 @@
 # ⚔️ Tales of The Dark Time (Nusvanir RPG Project)
 
 > **Dokumentasi Proyek, Pembaruan Sistem Terakhir, dan Rencana Pengembangan (Handover Log)**  
-> *Terakhir diperbarui: 5 November 2026*
+> *Terakhir diperbarui: 6 November 2026*
 
 ---
 
@@ -141,6 +141,46 @@ Database State telah dirampingkan secara menyeluruh dari 275+ entri lama yang tu
   Menambahkan tombol utama **`💾 Simpan ke Game (Project)`** di toolbar atas Skill Animator yang secara otomatis mengompilasi notetag sequence dan langsung menyimpan perubahan ke file database fisik di disk (`data/Skills.json` & `data/Weapons.json`).
 * **Verifikasi Integritas:**  
   Re-bundle studio berhasil (`editor.html` & `editor.bundled.html`) dengan **33 dari 33 pemeriksaan lulus (ALL PASS)**.
+
+---
+
+### 11. Penyelarasan Paritas Penuh Battle Preview (Skill Animator), Native Animation Editor, & Runtime YEP (1080×720)
+* **Penyelarasan Canvas Tempur 1080×720 (3:2) Rasio 1:1:**  
+  * Resolusi canvas Battle Preview kini tepat 1080×720 piksel, identik 1:1 dengan native battle resolution in-game RPG Maker MV.
+  * Latar belakang arena tempur (`Battlebacks1` & `Battlebacks2`) diskalakan dan diposisikan proporsional tanpa distorsi aspek rasio.
+* **Formasi Tempur Sesuai Rumus YEP Battle Engine Core & Party System:**  
+  * Posisi horizontal Actor Home dihitung dinamis menggunakan formula kanonikal YEP BEC:  
+    `screenWidth - 16 - (maxSize + 2) * 32 + index * 32`  
+    Pada resolusi 1080px dan kapasitas formasi 4 party member, koordinat Home X menghasilkan nilai deterministik:  
+    `Slot 0 = 872`, `Slot 1 = 904`, `Slot 2 = 936`, `Slot 3 = 968`.
+  * Menyediakan kontrol pemilihan slot party (0..3) serta aktor hero aktif (`State.partyActors` default: `[5, 6, 7]`).
+  * **Eliminasi Bug Pergerakan (Double Definitions Cleanup):**  
+    Membersihkan definisi ganda `evaluateHomeFormula` dan `syncBattleFormation` di `skill_animator.js`. Fungsi `syncBattleFormation(resetActorPos = true)` kini diisolasi dari loop render 60 Hz sehingga koreografi pergerakan maju/lompat/teleport tidak lagi ter-reset kembali ke titik awal saat animasi berlangsung.
+* **Dukungan Multi-Member Troops & Dinamika Sasaran Musuh (Targeting):**  
+  * Membaca langsung database pasukan dari `data/Troops.json` dan menampilkan seluruh anggota musuh pada koordinat aslinya (`members[].x/y`).
+  * Dropdown pemilihan Troop dan Target Enemy: Lintasan proyektil VFX (Keyframe B), reaksi flinch/shake, popup damage, dan target kamera secara otomatis mengunci slot musuh yang dipilih (bukan koordinat statis tunggal).
+* **Paritas Sprite Musuh Sesuai Runtime YEP (Static vs Sideview):**  
+  * **Static Enemies:** Mengambil grafis dari `img/enemies/`, non-mirrored, dengan titik jangkar (anchor) kaki dasar.
+  * **Animated Sideview Enemies (`YEP_X_AnimatedSVEnemies`):** Mendeteksi otomatis notetag `<Sideview Battler: filename>`, folder khusus (`img/sv_enemies/`), custom frames (misal: 8 frames pada Babi Hutan), custom rows, frame speed, scaling, dan anchor.
+  * **Aturan Mirroring YEP:** Musuh sideview otomatis di-mirror horizontal (`scale.x = -1`) agar menghadap kiri ke arah party hero, kecuali bila disematkan notetag `<Sideview No Mirror>` atau `<Sideview Facing Right>`.
+* **Kamera Tempur & Generator Sekuens YEP_X_ActSeqPack3:**  
+  * Generator sequence aksi hanya memproduksi perintah sintaks resmi YEP Action Sequence Pack 3 yang didukung runtime:  
+    * `camera focus: target/user, center, [duration]`  
+    * `camera screen: center, [duration]`  
+    * `camera offset: left/right/up/down, [distance]`  
+    * `zoom: [scale]%, [duration]`  
+  * Reset kamera dan reset zoom dipicu secara otomatis di blok selesai via perintah standar `perform finish`.
+  * Canvas preview merender efek zoom dan panning kamera secara langsung dan mulus (*real-time CSS transform*).
+* **Integrasi & Modal Pemilihan Skill dari Native Animation Editor:**  
+  * Tombol **"Preview di Battle Sequence"** pada Animation Editor kini mendukung situasi di mana satu animasi digunakan oleh beberapa skill sekaligus (contoh: Animasi #2 dipakai oleh 9 skill).
+  * Menghadirkan modal interaktif (`#animSkillSelectModal`) untuk memilih skill tujuan, lalu melakukan navigasi tab mulus ke Skill Animator dengan seluruh aset ter-preload.
+* **Paritas Grafis VFX (Hue Shift, Graphic 2, & Blend Mode Screen):**  
+  * Mengintegrasikan fungsi `SkillAnimator.getImageWithHue` yang identik dengan pipeline pemrosesan HSL piksel di Native Animation Editor.
+  * Baik Graphic 1 maupun Graphic 2 mendukung slider hue custom (0–360°) serta blend mode Additive / Screen yang akurat.
+* **Verifikasi Otomatis & Nol Error Browser:**  
+  * Pengujian berbasis headless browser 1440×900 (`tools/test_browser_parity.py`) melalui protokol WebDriver BiDi lulus 100% pada kedua endpoint (`/` dan `/editor.bundled.html`).
+  * **0 pageerror / unhandled exceptions**.
+  * Terverifikasi `State.hasUnsavedChanges === false` setelah seluruh preview dijalankan.
 
 ---
 

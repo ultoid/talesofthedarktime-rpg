@@ -28,13 +28,24 @@ function applyResizeFromModal() {
         return;
     }
     if (newCount < currentCount) {
-        if (!confirm(`Apakah Anda yakin ingin memotong kapasitas dari ${currentCount} menjadi ${newCount}? Entri dari #${newCount + 1} ke atas akan dihapus permanent!`)) {
-            return;
-        }
-        list.length = newCount + 1;
-        if (State.selectedIndex > newCount) {
-            State.selectedIndex = newCount;
-        }
+        closeModal('resizeModal');
+        showConfirmDialog({
+            title: '⚠️ Konfirmasi Pemangkasan Kapasitas',
+            message: `Apakah Anda yakin ingin memotong kapasitas ${State.currentTab} dari ${currentCount} menjadi ${newCount}?\n\nEntri dari #${newCount + 1} ke atas akan dihapus permanen dari memori database saat ini!`,
+            confirmText: 'Ya, Pangkas Kapasitas',
+            confirmClass: 'btn-danger',
+            onConfirm: () => {
+                list.length = newCount + 1;
+                if (State.selectedIndex > newCount) {
+                    State.selectedIndex = newCount;
+                }
+                setUnsaved(true);
+                renderSidebar();
+                renderEditor();
+                showToast(`Kapasitas ${State.currentTab} berhasil diubah menjadi ${newCount}!`, 'success');
+            }
+        });
+        return;
     } else {
         while (list.length <= newCount) {
             const nextId = list.length;

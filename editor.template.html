@@ -18,21 +18,26 @@
             <div id="unsavedBadge" class="unsaved-badge" title="Perubahan belum disimpan ke file database project">Unsaved Changes</div>
         </div>
 
-        <nav class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('actors')">🎭 Actors</button>
-            <button class="tab-btn" onclick="switchTab('classes')">🛡️ Classes</button>
-            <button class="tab-btn" onclick="switchTab('races')">🧬 Races</button>
-            <button class="tab-btn" onclick="switchTab('weapons')">⚔️ Weapons</button>
-            <button class="tab-btn" onclick="switchTab('armors')">🛡️ Armors</button>
-            <button class="tab-btn" onclick="switchTab('skills')">✨ Skills</button>
-            <button class="tab-btn" onclick="switchTab('skill_animator')">🎬 Skill Animation Editor</button>
-            <button class="tab-btn" onclick="switchTab('animations')">💥 Animations</button>
-            <button class="tab-btn" onclick="switchTab('items')">🧪 Items</button>
-            <button class="tab-btn" onclick="switchTab('enemies')">👾 Enemies</button>
-            <button class="tab-btn" onclick="switchTab('states')">💫 States</button>
-        </nav>
+        <div class="nav-tabs-wrapper">
+            <button type="button" class="tab-scroll-btn" onclick="scrollTabs(-180)" title="Scroll tabs left">◀</button>
+            <nav class="nav-tabs" id="navTabs">
+                <button class="tab-btn active" onclick="switchTab('actors')">🎭 Actors</button>
+                <button class="tab-btn" onclick="switchTab('classes')">🛡️ Classes</button>
+                <button class="tab-btn" onclick="switchTab('races')">🧬 Races</button>
+                <button class="tab-btn" onclick="switchTab('weapons')">⚔️ Weapons</button>
+                <button class="tab-btn" onclick="switchTab('armors')">🛡️ Armors</button>
+                <button class="tab-btn" onclick="switchTab('skills')">✨ Skills</button>
+                <button class="tab-btn" onclick="switchTab('skill_animator')">🎬 Skill Animation Editor</button>
+                <button class="tab-btn" onclick="switchTab('animations')">💥 Animations</button>
+                <button class="tab-btn" onclick="switchTab('items')">🧪 Items</button>
+                <button class="tab-btn" onclick="switchTab('enemies')">👾 Enemies</button>
+                <button class="tab-btn" onclick="switchTab('states')">💫 States</button>
+            </nav>
+            <button type="button" class="tab-scroll-btn" onclick="scrollTabs(180)" title="Scroll tabs right">▶</button>
+        </div>
 
         <div class="header-actions">
+            <button id="toggleStatSidebarBtn" class="btn btn-secondary" onclick="toggleStatSidebar()" title="Sembunyikan/Tampilkan Panel Pratinjau Stat">📊 Sembunyikan Stats</button>
             <button class="btn btn-secondary" onclick="reloadAllData()" title="Muat ulang seluruh data database dari file project">🔄 Reload Data</button>
             <button class="btn btn-primary" onclick="saveActiveDataset()" title="Simpan seluruh perubahan di tab aktif langsung ke file database project">💾 Save to Project</button>
         </div>
@@ -77,15 +82,29 @@
         </aside>
     </main>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="toast">
-        <span id="toastIcon">💾</span>
-        <span id="toastMessage">Disimpan</span>
-    </div>
+    <!-- Notification Toast Stack Container -->
+    <div id="toastContainer" class="toast-container"></div>
 
-        <!-- Floating Bottom Hover Info Bar -->
+    <!-- Floating Bottom Hover Info Bar -->
     <div id="hoverInfoBar" class="hover-info-bar">
         <span id="hoverInfoText">💡 Hover over any label or element to see description in Indonesian.</span>
+    </div>
+
+    <!-- Custom Dark-Themed Confirmation Modal -->
+    <div id="confirmModal" class="modal-overlay" style="display:none;" onclick="if(event.target === this) closeConfirmModal();">
+        <div class="modal-card" style="width: 460px;">
+            <div class="modal-header">
+                <h3 id="confirmModalTitle">⚠️ Konfirmasi Tindakan</h3>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeConfirmModal()">✕</button>
+            </div>
+            <div class="modal-body" style="padding: 20px; font-size: 0.9rem; line-height: 1.6; color: var(--text-main);" id="confirmModalMessage">
+                Apakah Anda yakin ingin melanjutkan tindakan ini?
+            </div>
+            <div class="modal-footer" style="padding: 12px 18px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 8px;">
+                <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()" id="confirmModalCancelBtn">Batal</button>
+                <button type="button" class="btn btn-danger" id="confirmModalOkBtn" onclick="handleConfirmModalOk()">Lanjutkan</button>
+            </div>
+        </div>
     </div>
     
 

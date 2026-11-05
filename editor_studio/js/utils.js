@@ -410,22 +410,41 @@ function formatEffect(eff) {
 
 
 
-function showToast(message, type = 'info') {
-    const toast = document.getElementById('toast');
-    const msg = document.getElementById('toastMessage');
-    const icon = document.getElementById('toastIcon');
+function showToast(message, type = 'info', duration = 3200) {
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
 
-    toast.className = `toast show ${type}`;
-    msg.innerText = message;
+    const toast = document.createElement('div');
+    toast.className = `toast-item ${type}`;
 
-    if (type === 'success') icon.innerText = '✅';
-    else if (type === 'error') icon.innerText = '❌';
-    else icon.innerText = 'ℹ️';
+    let icon = 'ℹ️';
+    if (type === 'success') icon = '✅';
+    else if (type === 'error') icon = '❌';
+    else if (type === 'warning') icon = '⚠️';
 
-    clearTimeout(window.toastTimer);
-    window.toastTimer = setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3200);
+    toast.innerHTML = `
+        <span class="toast-icon">${icon}</span>
+        <span class="toast-msg">${typeof escapeHtml === 'function' ? escapeHtml(message) : message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    // Limit maximum stacked toasts to 5 to avoid screen clutter
+    while (container.children.length > 5) {
+        container.removeChild(container.firstChild);
+    }
+
+    setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 220);
+    }, duration);
 }
 
 

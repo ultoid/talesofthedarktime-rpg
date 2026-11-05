@@ -203,6 +203,20 @@ NUSV.BattlePopups.version = 1.01;
         return this._duration > 0;
     };
 
+    // Active busy threshold for battle flow & turn pacing (only block for first 22 frames)
+    Sprite_Damage.prototype.isPopupBusy = function() {
+        return this._duration > Math.max(0, popupDuration - 22);
+    };
+
+    // Override Sprite_Battler.prototype.isPopupPlaying from YEP_BattleEngineCore
+    // Allows damage numbers to continue smooth drifting & fade-out while releasing the battle turn queue
+    Sprite_Battler.prototype.isPopupPlaying = function() {
+        if (!this._damages || this._damages.length === 0) return false;
+        return this._damages.some(function(damage) {
+            return damage.isPopupBusy ? damage.isPopupBusy() : damage.isPlaying();
+        });
+    };
+
     // Replace setup with clean HD vector renderer
     Sprite_Damage.prototype.setup = function(target) {
         if (!target) return;

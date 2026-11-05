@@ -103,6 +103,13 @@ function ensureNavTabs() {
     }
 }
 
+function scrollTabs(amount) {
+    const nav = document.getElementById('navTabs') || document.querySelector('.nav-tabs');
+    if (nav) {
+        nav.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+}
+
 function switchTab(tabKey) {
     ensureNavTabs();
     if (typeof stopEnemyBattlerAnimation === 'function') {
@@ -131,7 +138,11 @@ function switchTab(tabKey) {
     State.selectedIndex = (list && rememberedIdx < list.length) ? rememberedIdx : 1;
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('onclick').includes(tabKey));
+        const isActive = (btn.getAttribute('onclick') || '').includes(tabKey);
+        btn.classList.toggle('active', isActive);
+        if (isActive) {
+            btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
     });
     document.getElementById('searchInput').value = '';
     renderSidebar();
@@ -154,6 +165,7 @@ function switchTab(tabKey) {
 
 function setClassTierFilter(filterVal) {
     State.classTierFilter = filterVal;
+    State._renderedFilterTab = null;
     if (filterVal !== 'all') {
         const currentClass = State.classes[State.selectedIndex];
         const currentTier = currentClass ? (getTagVal(currentClass.note, 'Class Tier', '1') || '1') : '';
@@ -172,6 +184,7 @@ function setClassTierFilter(filterVal) {
 
 function setRaceGroupFilter(filterVal) {
     State.raceGroupFilter = filterVal;
+    State._renderedFilterTab = null;
     if (filterVal !== 'all') {
         const currentRace = (State.races || [])[State.selectedIndex];
         if (!currentRace || currentRace.group !== filterVal) {
@@ -189,6 +202,7 @@ function setRaceGroupFilter(filterVal) {
 
 function setWeaponTypeFilter(filterVal) {
     State.weaponTypeFilter = filterVal;
+    State._renderedFilterTab = null;
     if (filterVal !== 'all') {
         const currentWep = State.weapons[State.selectedIndex];
         if (!currentWep || String(currentWep.wtypeId) !== String(filterVal)) {
@@ -206,6 +220,7 @@ function setWeaponTypeFilter(filterVal) {
 
 function setArmorSlotFilter(filterVal) {
     State.armorSlotFilter = filterVal;
+    State._renderedFilterTab = null;
     if (filterVal !== 'all') {
         const currentArm = State.armors[State.selectedIndex];
         if (!currentArm || String(currentArm.etypeId) !== String(filterVal)) {
@@ -269,6 +284,7 @@ function skillMatchesFilter(skill, filterVal) {
 
 function setSkillClassFilter(filterVal) {
     State.skillClassFilter = filterVal;
+    State._renderedFilterTab = null;
     if (filterVal !== 'all') {
         const currentSkill = State.skills[State.selectedIndex];
         if (!skillMatchesFilter(currentSkill, filterVal)) {
@@ -286,6 +302,7 @@ function setSkillClassFilter(filterVal) {
 
 function setItemCategoryFilter(filterVal) {
     State.itemCategoryFilter = filterVal;
+    State._renderedFilterTab = null;
     if (filterVal !== 'all') {
         const currentItem = State.items[State.selectedIndex];
         if (getItemCategory(currentItem) !== filterVal) {
@@ -303,6 +320,7 @@ function setItemCategoryFilter(filterVal) {
 
 function setStateCategoryFilter(filterVal) {
     State.stateCategoryFilter = filterVal;
+    State._renderedFilterTab = null;
     if (filterVal !== 'all') {
         const currentState = State.states[State.selectedIndex];
         if (getStateCategory(currentState) !== filterVal) {
@@ -318,21 +336,206 @@ function setStateCategoryFilter(filterVal) {
     renderSidebar();
 }
 
-function setArmorSlotFilter(filterVal) {
-    State.armorSlotFilter = filterVal;
-    if (filterVal !== 'all') {
-        const currentArm = State.armors[State.selectedIndex];
-        if (!currentArm || String(currentArm.etypeId) !== String(filterVal)) {
-            const firstMatch = State.armors.findIndex((a, idx) => idx > 0 && a && String(a.etypeId) === String(filterVal));
-            if (firstMatch !== -1) {
-                State.selectedIndex = firstMatch;
-                State.selectedIndices = State.selectedIndices || {};
-                State.selectedIndices.armors = firstMatch;
-                renderEditor();
-            }
+function renderSidebarFilters() {
+    const filterContainer = document.getElementById('sidebarFilters');
+    if (!filterContainer) return;
+
+    if (State.currentTab === 'classes') {
+        filterContainer.style.display = 'flex';
+        const f = State.classTierFilter || 'all';
+        const tiers = [
+            { id: 'all', name: '🛡️ Semua Tier Kelas (All Tiers)' },
+            { id: '1', name: '🌱 Tier 1 - Base / Novice' },
+            { id: '2', name: '⚔️ Tier 2 - Advanced' },
+            { id: '3', name: '🎖️ Tier 3 - Elite' },
+            { id: '4', name: '👑 Tier 4 - Master' },
+            { id: '5', name: '🌟 Tier 5 - Grandmaster' },
+            { id: '6', name: '🌌 Tier 6 - Pinnacle' }
+        ];
+        const totalCount = State.classes.filter(c => c).length;
+        filterContainer.innerHTML = `
+            <select class="form-control" onchange="setClassTierFilter(this.value)" title="Filter kelas berdasarkan tingkatan Tier">
+                ${tiers.map(t => {
+                    const count = t.id === 'all'
+                        ? totalCount
+                        : State.classes.filter(c => c && String(getTagVal(c.note, 'Class Tier', '1') || '1') === String(t.id)).length;
+                    return `<option value="${t.id}" ${String(f) === String(t.id) ? 'selected' : ''}>${t.name} (${count})</option>`;
+                }).join('')}
+            </select>
+        `;
+    } else if (State.currentTab === 'weapons') {
+        filterContainer.style.display = 'flex';
+        const f = State.weaponTypeFilter || 'all';
+        const wtypes = (State.system && State.system.weaponTypes) ? State.system.weaponTypes : [];
+        const icons = {
+            'Sword': '⚔️',
+            'Long Sword': '🗡️',
+            'Gloves': '🥊',
+            'Spear': '🔱',
+            'Axe': '🪓',
+            'Staff': '🪄',
+            'Rune': '🔮',
+            'Long Bow': '🏹',
+            'Crossbow': '🎯',
+            'Dagger': '🗡️',
+            'Bow': '🏹',
+            'Mace': '🔨',
+            'Gun': '🔫',
+            'Wand': '🪄'
+        };
+        const totalCount = State.weapons.filter(w => w).length;
+        let optionsHtml = `<option value="all" ${f === 'all' ? 'selected' : ''}>⚔️ Semua Tipe Senjata (All Weapons) (${totalCount})</option>`;
+        for (let i = 1; i < wtypes.length; i++) {
+            const wt = wtypes[i];
+            if (!wt) continue;
+            const icon = icons[wt] || '⚔️';
+            const count = State.weapons.filter(w => w && String(w.wtypeId) === String(i)).length;
+            optionsHtml += `<option value="${i}" ${String(f) === String(i) ? 'selected' : ''}>${icon} ${escapeHtml(wt)} (${count})</option>`;
         }
+        filterContainer.innerHTML = `
+            <select class="form-control" onchange="setWeaponTypeFilter(this.value)" title="Pilih filter tipe senjata">
+                ${optionsHtml}
+            </select>
+        `;
+    } else if (State.currentTab === 'armors') {
+        filterContainer.style.display = 'flex';
+        const f = State.armorSlotFilter || 'all';
+        const slots = [
+            { id: 'all', name: '🛡️ Semua Slot Armor (All Slots)' },
+            { id: '2', name: '🛡️ Shields (Tangan Kiri / Slot 2)' },
+            { id: '3', name: '🎩 Helms (Kepala / Slot 3)' },
+            { id: '4', name: '🥋 Body Armor (Badan / Slot 4)' },
+            { id: '5', name: '👢 Boots (Kaki / Slot 5)' },
+            { id: '6', name: '💍 Accessories (Aksesoris / Slot 6)' },
+            { id: '7', name: '🔮 Relics (Pusaka Relik / Slot 7)' }
+        ];
+        const totalCount = State.armors.filter(a => a).length;
+        filterContainer.innerHTML = `
+            <select class="form-control" onchange="setArmorSlotFilter(this.value)" title="Pilih filter kategori slot armor">
+                ${slots.map(s => {
+                    const count = s.id === 'all' 
+                        ? totalCount 
+                        : State.armors.filter(a => a && String(a.etypeId) === String(s.id)).length;
+                    return `<option value="${s.id}" ${f === s.id ? 'selected' : ''}>${s.name} (${count})</option>`;
+                }).join('')}
+            </select>
+        `;
+    } else if (State.currentTab === 'skills') {
+        filterContainer.style.display = 'flex';
+        const f = State.skillClassFilter || 'all';
+        const totalCount = State.skills.filter(s => s).length;
+        const playerSkillsCount = State.skills.filter(s => s && skillMatchesFilter(s, 'player_skills')).length;
+        const tmCount = State.skills.filter(s => s && !isSkillExclusive(s) && getSkillTmCompatibleClasses(s).length > 0).length;
+        const ultCount = State.skills.filter(s => s && isSkillExclusive(s)).length;
+        const enemySkillsCount = State.skills.filter(s => s && skillMatchesFilter(s, 'enemy_skills')).length;
+        const grimoireCount = State.skills.filter(s => s && skillMatchesFilter(s, 'grimoire_skills')).length;
+
+        let classLearnOptions = '';
+        let classCompatOptions = '';
+        (State.classes || []).forEach(c => {
+            if (!c) return;
+            const learnedCount = (c.learnings || []).length;
+            const tier = getTagVal(c.note, 'Class Tier', '1');
+            const valCls = `cls_${c.id}`;
+            classLearnOptions += `<option value="${valCls}" ${f === valCls || f === String(c.id) ? 'selected' : ''}>#${c.id} ${escapeHtml(c.name)} (T${tier}) (${learnedCount})</option>`;
+
+            const cnameLower = c.name.toLowerCase();
+            const compatCount = State.skills.filter(s => s && skillMatchesFilter(s, `compat_${cnameLower}`)).length;
+            const valCompat = `compat_${cnameLower}`;
+            classCompatOptions += `<option value="${valCompat}" ${f === valCompat ? 'selected' : ''}>${escapeHtml(c.name)} (${compatCount} Jurus)</option>`;
+        });
+
+        filterContainer.innerHTML = `
+            <select class="form-control" onchange="setSkillClassFilter(this.value)" title="Filter skill berdasarkan kategori, tier, atau profesi">
+                <option value="player_skills" ${f === 'player_skills' ? 'selected' : ''}>⚔️ Skill Kelas Pemain (${playerSkillsCount})</option>
+                <option value="tm_available" ${f === 'tm_available' ? 'selected' : ''}>📜 Memiliki Scroll (${tmCount})</option>
+                <option value="exclusive_ult" ${f === 'exclusive_ult' ? 'selected' : ''}>👑 Jurus Pamungkas Eksklusif (${ultCount})</option>
+                <option value="enemy_skills" ${f === 'enemy_skills' ? 'selected' : ''}>👾 Aksi Monster & Musuh (${enemySkillsCount})</option>
+                <option value="grimoire_skills" ${f === 'grimoire_skills' ? 'selected' : ''}>📖 Grimoire Lapangan (${grimoireCount})</option>
+                <option value="all" ${f === 'all' ? 'selected' : ''}>✨ Semua Skill (${totalCount})</option>
+                <optgroup label="--- Filter Berdasarkan Tier ---">
+                    <option value="tier_1" ${f === 'tier_1' ? 'selected' : ''}>Tier 1 - Novice</option>
+                    <option value="tier_2" ${f === 'tier_2' ? 'selected' : ''}>Tier 2 - Basic</option>
+                    <option value="tier_3" ${f === 'tier_3' ? 'selected' : ''}>Tier 3 - Intermediate</option>
+                    <option value="tier_4" ${f === 'tier_4' ? 'selected' : ''}>Tier 4 - Advanced Promoted</option>
+                    <option value="tier_5" ${f === 'tier_5' ? 'selected' : ''}>Tier 5 - Master Specialist</option>
+                    <option value="tier_6" ${f === 'tier_6' ? 'selected' : ''}>Tier 6 - Transcendent Legend</option>
+                </optgroup>
+                <optgroup label="--- Dikuasai Alami (Level-Up) ---">
+                    ${classLearnOptions}
+                </optgroup>
+                <optgroup label="--- Kompatibel Scroll (Jurus Tambahan) ---">
+                    ${classCompatOptions}
+                </optgroup>
+            </select>
+        `;
+    } else if (State.currentTab === 'items') {
+        filterContainer.style.display = 'flex';
+        const f = State.itemCategoryFilter || 'all';
+        const categories = [
+            { id: 'all', name: '🧪 Semua Kategori Item (All Categories)' },
+            { id: 'Consumable', name: '🧪 Consumable (Konsumsi / Obat)' },
+            { id: 'Material', name: '🪵 Material (Bahan Baku Monster / Alam)' },
+            { id: 'Forge', name: '⚒️ Forge (Bahan Tempa / Logam / Kristal)' },
+            { id: 'Valuable', name: '💎 Valuable (Barang Berharga / Harta)' },
+            { id: 'Key Item', name: '🗝️ Key Item (Barang Kunci / Quest)' }
+        ];
+        const totalCount = State.items.filter(i => i).length;
+        filterContainer.innerHTML = `
+            <select class="form-control" onchange="setItemCategoryFilter(this.value)" title="Filter item berdasarkan kategori inventori">
+                ${categories.map(cat => {
+                    const count = cat.id === 'all'
+                        ? totalCount
+                        : State.items.filter(i => i && getItemCategory(i) === cat.id).length;
+                    return `<option value="${cat.id}" ${f === cat.id ? 'selected' : ''}>${cat.name} (${count})</option>`;
+                }).join('')}
+            </select>
+        `;
+    } else if (State.currentTab === 'states') {
+        filterContainer.style.display = 'flex';
+        const f = State.stateCategoryFilter || 'all';
+        const categories = [
+            { id: 'all', name: '💫 Semua Kategori State (All States)' },
+            { id: 'Passive', name: '🟣 Passive (Pasif / Trait Khusus)' },
+            { id: 'Status Effect', name: '🩸 Status Effect (Status Ailment / Buruk)' },
+            { id: 'Skill Effect', name: '⚡ Skill Effect (Efek Tempur / Buff & Debuff)' }
+        ];
+        const totalCount = State.states.filter(s => s).length;
+        filterContainer.innerHTML = `
+            <select class="form-control" onchange="setStateCategoryFilter(this.value)" title="Filter state berdasarkan klasifikasi: Passive, Status Effect, atau Skill Effect">
+                ${categories.map(cat => {
+                    const count = cat.id === 'all'
+                        ? totalCount
+                        : State.states.filter(s => s && getStateCategory(s) === cat.id).length;
+                    return `<option value="${cat.id}" ${f === cat.id ? 'selected' : ''}>${cat.name} (${count})</option>`;
+                }).join('')}
+            </select>
+        `;
+    } else if (State.currentTab === 'races') {
+        filterContainer.style.display = 'flex';
+        const f = State.raceGroupFilter || 'all';
+        const groups = [
+            { id: 'all', name: '🧬 Semua Golongan Ras' },
+            { id: 'Suku Bumi', name: '🌍 Suku Bumi (Daratan Utama)' },
+            { id: 'Wuru Loka', name: '🐾 Wuru Loka (Makhluk Eksotis/Liar)' },
+            { id: 'Arkahyan', name: '✨ Arkahyan (Surgawi/Cahaya)' },
+            { id: 'Drahkthar', name: '🌑 Drahkthar (Entitas Gelap/Iblis)' }
+        ];
+        const totalCount = (State.races || []).filter(r => r).length;
+        filterContainer.innerHTML = `
+            <select class="form-control" onchange="setRaceGroupFilter(this.value)" title="Filter ras berdasarkan golongan alam">
+                ${groups.map(g => {
+                    const count = g.id === 'all'
+                        ? totalCount
+                        : (State.races || []).filter(r => r && r.group === g.id).length;
+                    return `<option value="${g.id}" ${f === g.id ? 'selected' : ''}>${g.name} (${count})</option>`;
+                }).join('')}
+            </select>
+        `;
+    } else {
+        filterContainer.style.display = 'none';
+        filterContainer.innerHTML = '';
     }
-    renderSidebar();
 }
 
 function renderSidebar() {
@@ -342,203 +545,10 @@ function renderSidebar() {
     const items = getActiveList();
     const query = (document.getElementById('searchInput').value || '').toLowerCase();
 
-        const filterContainer = document.getElementById('sidebarFilters');
-    if (filterContainer) {
-        if (State.currentTab === 'classes') {
-            filterContainer.style.display = 'flex';
-            const f = State.classTierFilter || 'all';
-            const tiers = [
-                { id: 'all', name: '🛡️ Semua Tier Kelas (All Tiers)' },
-                { id: '1', name: '🌱 Tier 1 - Base / Novice' },
-                { id: '2', name: '⚔️ Tier 2 - Advanced' },
-                { id: '3', name: '🎖️ Tier 3 - Elite' },
-                { id: '4', name: '👑 Tier 4 - Master' },
-                { id: '5', name: '🌟 Tier 5 - Grandmaster' },
-                { id: '6', name: '🌌 Tier 6 - Pinnacle' }
-            ];
-            const totalCount = State.classes.filter(c => c).length;
-            filterContainer.innerHTML = `
-                <select class="form-control" onchange="setClassTierFilter(this.value)" title="Filter kelas berdasarkan tingkatan Tier">
-                    ${tiers.map(t => {
-                        const count = t.id === 'all'
-                            ? totalCount
-                            : State.classes.filter(c => c && String(getTagVal(c.note, 'Class Tier', '1') || '1') === String(t.id)).length;
-                        return `<option value="${t.id}" ${String(f) === String(t.id) ? 'selected' : ''}>${t.name} (${count})</option>`;
-                    }).join('')}
-                </select>
-            `;
-        } else if (State.currentTab === 'weapons') {
-            filterContainer.style.display = 'flex';
-            const f = State.weaponTypeFilter || 'all';
-            const wtypes = (State.system && State.system.weaponTypes) ? State.system.weaponTypes : [];
-            const icons = {
-                'Sword': '⚔️',
-                'Long Sword': '🗡️',
-                'Gloves': '🥊',
-                'Spear': '🔱',
-                'Axe': '🪓',
-                'Staff': '🪄',
-                'Rune': '🔮',
-                'Long Bow': '🏹',
-                'Crossbow': '🎯',
-                'Dagger': '🗡️',
-                'Bow': '🏹',
-                'Mace': '🔨',
-                'Gun': '🔫',
-                'Wand': '🪄'
-            };
-            const totalCount = State.weapons.filter(w => w).length;
-            let optionsHtml = `<option value="all" ${f === 'all' ? 'selected' : ''}>⚔️ Semua Tipe Senjata (All Weapons) (${totalCount})</option>`;
-            for (let i = 1; i < wtypes.length; i++) {
-                const wt = wtypes[i];
-                if (!wt) continue;
-                const icon = icons[wt] || '⚔️';
-                const count = State.weapons.filter(w => w && String(w.wtypeId) === String(i)).length;
-                optionsHtml += `<option value="${i}" ${String(f) === String(i) ? 'selected' : ''}>${icon} ${escapeHtml(wt)} (${count})</option>`;
-            }
-            filterContainer.innerHTML = `
-                <select class="form-control" onchange="setWeaponTypeFilter(this.value)" title="Pilih filter tipe senjata">
-                    ${optionsHtml}
-                </select>
-            `;
-        } else if (State.currentTab === 'armors') {
-            filterContainer.style.display = 'flex';
-            const f = State.armorSlotFilter || 'all';
-            const slots = [
-                { id: 'all', name: '🛡️ Semua Slot Armor (All Slots)' },
-                { id: '2', name: '🛡️ Shields (Tangan Kiri / Slot 2)' },
-                { id: '3', name: '🎩 Helms (Kepala / Slot 3)' },
-                { id: '4', name: '🥋 Body Armor (Badan / Slot 4)' },
-                { id: '5', name: '👢 Boots (Kaki / Slot 5)' },
-                { id: '6', name: '💍 Accessories (Aksesoris / Slot 6)' },
-                { id: '7', name: '🔮 Relics (Pusaka Relik / Slot 7)' }
-            ];
-            const totalCount = State.armors.filter(a => a).length;
-            filterContainer.innerHTML = `
-                <select class="form-control" onchange="setArmorSlotFilter(this.value)" title="Pilih filter kategori slot armor">
-                    ${slots.map(s => {
-                        const count = s.id === 'all' 
-                            ? totalCount 
-                            : State.armors.filter(a => a && String(a.etypeId) === String(s.id)).length;
-                        return `<option value="${s.id}" ${f === s.id ? 'selected' : ''}>${s.name} (${count})</option>`;
-                    }).join('')}
-                </select>
-            `;
-        } else if (State.currentTab === 'skills') {
-            filterContainer.style.display = 'flex';
-            const f = State.skillClassFilter || 'all';
-            const totalCount = State.skills.filter(s => s).length;
-            const playerSkillsCount = State.skills.filter(s => s && skillMatchesFilter(s, 'player_skills')).length;
-            const tmCount = State.skills.filter(s => s && !isSkillExclusive(s) && getSkillTmCompatibleClasses(s).length > 0).length;
-            const ultCount = State.skills.filter(s => s && isSkillExclusive(s)).length;
-            const enemySkillsCount = State.skills.filter(s => s && skillMatchesFilter(s, 'enemy_skills')).length;
-            const grimoireCount = State.skills.filter(s => s && skillMatchesFilter(s, 'grimoire_skills')).length;
-
-            let classLearnOptions = '';
-            let classCompatOptions = '';
-            (State.classes || []).forEach(c => {
-                if (!c) return;
-                const learnedCount = (c.learnings || []).length;
-                const tier = getTagVal(c.note, 'Class Tier', '1');
-                const valCls = `cls_${c.id}`;
-                classLearnOptions += `<option value="${valCls}" ${f === valCls || f === String(c.id) ? 'selected' : ''}>#${c.id} ${escapeHtml(c.name)} (T${tier}) (${learnedCount})</option>`;
-
-                const cnameLower = c.name.toLowerCase();
-                const compatCount = State.skills.filter(s => s && skillMatchesFilter(s, `compat_${cnameLower}`)).length;
-                const valCompat = `compat_${cnameLower}`;
-                classCompatOptions += `<option value="${valCompat}" ${f === valCompat ? 'selected' : ''}>${escapeHtml(c.name)} (${compatCount} Jurus)</option>`;
-            });
-
-            filterContainer.innerHTML = `
-                <select class="form-control" onchange="setSkillClassFilter(this.value)" title="Filter skill berdasarkan kategori, tier, atau profesi">
-                    <option value="player_skills" ${f === 'player_skills' ? 'selected' : ''}>⚔️ Skill Kelas Pemain (${playerSkillsCount})</option>
-                    <option value="tm_available" ${f === 'tm_available' ? 'selected' : ''}>📜 Memiliki Scroll (${tmCount})</option>
-                    <option value="exclusive_ult" ${f === 'exclusive_ult' ? 'selected' : ''}>👑 Jurus Pamungkas Eksklusif (${ultCount})</option>
-                    <option value="enemy_skills" ${f === 'enemy_skills' ? 'selected' : ''}>👾 Aksi Monster & Musuh (${enemySkillsCount})</option>
-                    <option value="grimoire_skills" ${f === 'grimoire_skills' ? 'selected' : ''}>📖 Grimoire Lapangan (${grimoireCount})</option>
-                    <option value="all" ${f === 'all' ? 'selected' : ''}>✨ Semua Skill (${totalCount})</option>
-                    <optgroup label="--- Filter Berdasarkan Tier ---">
-                        <option value="tier_1" ${f === 'tier_1' ? 'selected' : ''}>Tier 1 - Novice</option>
-                        <option value="tier_2" ${f === 'tier_2' ? 'selected' : ''}>Tier 2 - Basic</option>
-                        <option value="tier_3" ${f === 'tier_3' ? 'selected' : ''}>Tier 3 - Intermediate</option>
-                        <option value="tier_4" ${f === 'tier_4' ? 'selected' : ''}>Tier 4 - Advanced Promoted</option>
-                        <option value="tier_5" ${f === 'tier_5' ? 'selected' : ''}>Tier 5 - Master Specialist</option>
-                        <option value="tier_6" ${f === 'tier_6' ? 'selected' : ''}>Tier 6 - Transcendent Legend</option>
-                    </optgroup>
-                    <optgroup label="--- Dikuasai Alami (Level-Up) ---">
-                        ${classLearnOptions}
-                    </optgroup>
-                    <optgroup label="--- Kompatibel Scroll (Jurus Tambahan) ---">
-                        ${classCompatOptions}
-                    </optgroup>
-                </select>
-            `;
-        } else if (State.currentTab === 'items') {
-            filterContainer.style.display = 'flex';
-            const f = State.itemCategoryFilter || 'all';
-            const categories = [
-                { id: 'all', name: '🧪 Semua Kategori Item (All Categories)' },
-                { id: 'Consumable', name: '🧪 Consumable (Konsumsi / Obat)' },
-                { id: 'Material', name: '🪵 Material (Bahan Baku Monster / Alam)' },
-                { id: 'Forge', name: '⚒️ Forge (Bahan Tempa / Logam / Kristal)' },
-                { id: 'Valuable', name: '💎 Valuable (Barang Berharga / Harta)' },
-                { id: 'Key Item', name: '🗝️ Key Item (Barang Kunci / Quest)' }
-            ];
-            const totalCount = State.items.filter(i => i).length;
-            filterContainer.innerHTML = `
-                <select class="form-control" onchange="setItemCategoryFilter(this.value)" title="Filter item berdasarkan kategori inventori">
-                    ${categories.map(cat => {
-                        const count = cat.id === 'all'
-                            ? totalCount
-                            : State.items.filter(i => i && getItemCategory(i) === cat.id).length;
-                        return `<option value="${cat.id}" ${f === cat.id ? 'selected' : ''}>${cat.name} (${count})</option>`;
-                    }).join('')}
-                </select>
-            `;
-        } else if (State.currentTab === 'states') {
-            filterContainer.style.display = 'flex';
-            const f = State.stateCategoryFilter || 'all';
-            const categories = [
-                { id: 'all', name: '💫 Semua Kategori State (All States)' },
-                { id: 'Passive', name: '🟣 Passive (Pasif / Trait Khusus)' },
-                { id: 'Status Effect', name: '🩸 Status Effect (Status Ailment / Buruk)' },
-                { id: 'Skill Effect', name: '⚡ Skill Effect (Efek Tempur / Buff & Debuff)' }
-            ];
-            const totalCount = State.states.filter(s => s).length;
-            filterContainer.innerHTML = `
-                <select class="form-control" onchange="setStateCategoryFilter(this.value)" title="Filter state berdasarkan klasifikasi: Passive, Status Effect, atau Skill Effect">
-                    ${categories.map(cat => {
-                        const count = cat.id === 'all'
-                            ? totalCount
-                            : State.states.filter(s => s && getStateCategory(s) === cat.id).length;
-                        return `<option value="${cat.id}" ${f === cat.id ? 'selected' : ''}>${cat.name} (${count})</option>`;
-                    }).join('')}
-                </select>
-            `;
-        } else if (State.currentTab === 'races') {
-            filterContainer.style.display = 'flex';
-            const f = State.raceGroupFilter || 'all';
-            const groups = [
-                { id: 'all', name: '🧬 Semua Golongan Ras' },
-                { id: 'Suku Bumi', name: '🌍 Suku Bumi (Daratan Utama)' },
-                { id: 'Wuru Loka', name: '🐾 Wuru Loka (Makhluk Eksotis/Liar)' },
-                { id: 'Arkahyan', name: '✨ Arkahyan (Surgawi/Cahaya)' },
-                { id: 'Drahkthar', name: '🌑 Drahkthar (Entitas Gelap/Iblis)' }
-            ];
-            const totalCount = (State.races || []).filter(r => r).length;
-            filterContainer.innerHTML = `
-                <select class="form-control" onchange="setRaceGroupFilter(this.value)" title="Filter ras berdasarkan golongan alam">
-                    ${groups.map(g => {
-                        const count = g.id === 'all'
-                            ? totalCount
-                            : (State.races || []).filter(r => r && r.group === g.id).length;
-                        return `<option value="${g.id}" ${f === g.id ? 'selected' : ''}>${g.name} (${count})</option>`;
-                    }).join('')}
-                </select>
-            `;
-        } else {
-            filterContainer.style.display = 'none';
-        }
+    const filterContainer = document.getElementById('sidebarFilters');
+    if (filterContainer && State._renderedFilterTab !== State.currentTab) {
+        renderSidebarFilters();
+        State._renderedFilterTab = State.currentTab;
     }
 
     items.forEach((item, index) => {
@@ -577,11 +587,7 @@ function renderSidebar() {
         const div = document.createElement('div');
         div.className = `list-item ${index === State.selectedIndex ? 'active' : ''}`;
         div.onclick = () => {
-            State.selectedIndex = index;
-            State.selectedIndices = State.selectedIndices || {};
-            State.selectedIndices[State.currentTab] = index;
-            renderSidebar();
-            renderEditor();
+            selectSidebarItem(index);
         };
 
         let mainBadge = '';
@@ -671,10 +677,80 @@ function renderSidebar() {
     }
 }
 
-
-
-function filterItems() {
+function selectSidebarItem(index) {
+    const list = getActiveList();
+    if (!list || index < 1 || index >= list.length) return;
+    State.selectedIndex = index;
+    State.selectedIndices = State.selectedIndices || {};
+    State.selectedIndices[State.currentTab] = index;
     renderSidebar();
+    renderEditor();
+
+    const listEl = document.getElementById('sidebarList');
+    if (listEl) {
+        const activeEl = listEl.querySelector('.list-item.active');
+        if (activeEl) {
+            activeEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }
+}
+
+function selectAdjacentSidebarItem(delta) {
+    const list = getActiveList();
+    if (!list || list.length <= 1) return;
+    let nextIdx = (State.selectedIndex || 1) + delta;
+    if (nextIdx < 1) nextIdx = 1;
+    if (nextIdx >= list.length) nextIdx = list.length - 1;
+    if (nextIdx !== State.selectedIndex) {
+        selectSidebarItem(nextIdx);
+    }
+}
+
+let _searchDebounceTimer = null;
+function filterItems() {
+    if (_searchDebounceTimer) clearTimeout(_searchDebounceTimer);
+    _searchDebounceTimer = setTimeout(() => {
+        renderSidebar();
+    }, 200);
+}
+
+function toggleStatSidebar() {
+    const sb = document.getElementById('statSidebar');
+    const btn = document.getElementById('toggleStatSidebarBtn');
+    if (!sb) return;
+
+    const isCollapsed = sb.classList.toggle('collapsed');
+    if (window.innerWidth <= 1024) {
+        if (!isCollapsed) {
+            sb.classList.add('open-mobile');
+        } else {
+            sb.classList.remove('open-mobile');
+        }
+    }
+
+    try {
+        localStorage.setItem('nusv_stat_sidebar_collapsed', isCollapsed ? '1' : '0');
+    } catch (_) {}
+
+    if (btn) {
+        btn.classList.toggle('active', !isCollapsed);
+        btn.innerHTML = isCollapsed ? '📊 Tampilkan Stats' : '📊 Sembunyikan Stats';
+    }
+}
+
+function initStatSidebarState() {
+    try {
+        const isCollapsed = localStorage.getItem('nusv_stat_sidebar_collapsed') === '1';
+        if (isCollapsed) {
+            const sb = document.getElementById('statSidebar');
+            const btn = document.getElementById('toggleStatSidebarBtn');
+            if (sb) sb.classList.add('collapsed');
+            if (btn) {
+                btn.classList.remove('active');
+                btn.innerHTML = '📊 Tampilkan Stats';
+            }
+        }
+    } catch (_) {}
 }
 
 
@@ -864,6 +940,43 @@ function cloneSelectedEntry() {
     showToast(`Entri #${curr.id} berhasil digandakan ke #${newId}!`, 'success');
 }
 
+let _pendingConfirmCallback = null;
+
+function showConfirmDialog({ title = '⚠️ Konfirmasi Tindakan', message = 'Apakah Anda yakin?', confirmText = 'Lanjutkan', confirmClass = 'btn-danger', onConfirm }) {
+    const modal = document.getElementById('confirmModal');
+    if (!modal) {
+        if (confirm(message)) {
+            if (typeof onConfirm === 'function') onConfirm();
+        }
+        return;
+    }
+    const titleEl = document.getElementById('confirmModalTitle');
+    const msgEl = document.getElementById('confirmModalMessage');
+    const okBtn = document.getElementById('confirmModalOkBtn');
+    if (titleEl) titleEl.innerText = title;
+    if (msgEl) msgEl.innerHTML = typeof escapeHtml === 'function' ? escapeHtml(message).replace(/\n/g, '<br>') : message.replace(/\n/g, '<br>');
+    if (okBtn) {
+        okBtn.className = `btn ${confirmClass}`;
+        okBtn.innerText = confirmText;
+    }
+    _pendingConfirmCallback = onConfirm;
+    modal.style.display = 'flex';
+}
+
+function closeConfirmModal() {
+    const modal = document.getElementById('confirmModal');
+    if (modal) modal.style.display = 'none';
+    _pendingConfirmCallback = null;
+}
+
+function handleConfirmModalOk() {
+    const cb = _pendingConfirmCallback;
+    closeConfirmModal();
+    if (typeof cb === 'function') {
+        cb();
+    }
+}
+
 /**
  * Hapus entri yang sedang dipilih (atau kosongkan jika di tengah-tengah daftar).
  */
@@ -875,22 +988,28 @@ function deleteSelectedEntry() {
         showToast('Tidak bisa menghapus entri terakhir!', 'warning');
         return;
     }
-    if (!confirm(`Hapus entri #${curr.id} (${curr.name || 'Tanpa Nama'})?`)) {
-        return;
-    }
-    if (curr.id === list.length - 1) {
-        list.pop();
-        if (State.selectedIndex >= list.length) {
-            State.selectedIndex = list.length - 1;
+
+    showConfirmDialog({
+        title: '🗑️ Hapus Entri Database',
+        message: `Hapus entri #${curr.id} (${curr.name || 'Tanpa Nama'})?\n\nJika entri ini berada di akhir daftar, kapasitas data akan dikurangi. Jika di tengah, data akan direset kosong.`,
+        confirmText: 'Ya, Hapus Entri',
+        confirmClass: 'btn-danger',
+        onConfirm: () => {
+            if (curr.id === list.length - 1) {
+                list.pop();
+                if (State.selectedIndex >= list.length) {
+                    State.selectedIndex = list.length - 1;
+                }
+            } else {
+                const blank = createBlankEntry(State.currentTab, curr.id);
+                list[curr.id] = blank;
+            }
+            setUnsaved(true);
+            renderSidebar();
+            renderEditor();
+            showToast(`Entri #${curr.id} berhasil dihapus/dikosongkan!`, 'info');
         }
-    } else {
-        const blank = createBlankEntry(State.currentTab, curr.id);
-        list[curr.id] = blank;
-    }
-    setUnsaved(true);
-    renderSidebar();
-    renderEditor();
-    showToast(`Entri #${curr.id} berhasil dihapus/dikosongkan!`, 'info');
+    });
 }
 
 if (typeof document !== 'undefined') {
