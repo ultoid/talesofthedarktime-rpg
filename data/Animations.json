@@ -28105,5 +28105,26 @@
         }
       }
     ]
+  },
+  {
+    "id": 58,
+    "name": "AURA_UP",
+    "note": "",
+    "frames": [
+      [
+        [
+          1,
+          0,
+          0,
+          100,
+          0,
+          0,
+          255,
+          0
+        ]
+      ]
+    ],
+    "animation1Name": "AURA_UP",
+    "position": 2
   }
 ]
