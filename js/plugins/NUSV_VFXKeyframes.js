@@ -70,17 +70,24 @@
             var cfg = null;
             var animId = this._animation.id;
 
-            // Match step by animId
+            // Match action step by animId
             if (activeNusvConfig.steps && Array.isArray(activeNusvConfig.steps)) {
                 for (var i = 0; i < activeNusvConfig.steps.length; i++) {
                     var s = activeNusvConfig.steps[i];
-                    if (s && Number(s.animId) === Number(animId)) {
+                    if (s && s.type === 'action' && Number(s.animId) === Number(animId)) {
                         cfg = s;
                         break;
                     }
                 }
-                if (!cfg && activeNusvConfig.steps[0]) {
-                    cfg = activeNusvConfig.steps[0];
+                // Fallback to any action step if animId was 0 or unassigned
+                if (!cfg) {
+                    for (var j = 0; j < activeNusvConfig.steps.length; j++) {
+                        var st = activeNusvConfig.steps[j];
+                        if (st && st.type === 'action') {
+                            cfg = st;
+                            break;
+                        }
+                    }
                 }
             }
             if (!cfg && activeNusvConfig.attack) {
@@ -91,27 +98,85 @@
 
             if (cfg) {
                 this._nusvConfig = cfg;
+                var totalFrames = Math.max(1, (this._animation.frames || []).length);
 
-                // Adaptive / Custom Frame Rate
-                if (cfg.animRate && cfg.animRate !== 'auto') {
-                    this._rate = Math.max(1, parseInt(cfg.animRate, 10) || 2);
+                // Adaptive / Custom Frame Rate & Lifetime Synchronizer
+                if (cfg.useKeyframes) {
+                    // For projectiles / flight keyframes, animate smoothly over the travel duration
+                    var kfDur = Math.max(1, parseInt(cfg.kfDuration !== undefined ? cfg.kfDuration : 10, 10));
+                    if (cfg.animRate && cfg.animRate !== 'auto') {
+                        this._rate = Math.max(1, parseInt(cfg.animRate, 10) || 2);
+                    } else {
+                        this._rate = Math.max(1, Math.min(4, Math.floor(kfDur / totalFrames)));
+                    }
                     this.setupDuration();
-                } else if (cfg.animRate === 'auto' && cfg.duration) {
-                    var totalFrames = Math.max(1, (this._animation.frames || []).length);
-                    this._rate = Math.max(1, Math.min(4, Math.floor(cfg.duration / totalFrames)));
+                } else {
+                    // For stationary / melee animations, auto-fit to step duration (matches editor studio)
+                    var stepDur = parseInt(cfg.duration, 10) || (totalFrames * 2);
+                    if (cfg.animRate && cfg.animRate !== 'auto') {
+                        this._rate = Math.max(1, parseInt(cfg.animRate, 10) || 2);
+                    } else {
+                        this._rate = Math.max(1, Math.min(4, Math.floor(stepDur / totalFrames)));
+                    }
                     this.setupDuration();
                 }
             }
         }
     };
 
-    // --- Track elapsed animation ticks ---
+    // --- Track elapsed animation ticks & terminate on arrival ---
     var _Sprite_Animation_updateMain = Sprite_Animation.prototype.updateMain;
     Sprite_Animation.prototype.updateMain = function () {
         if (this.isPlaying() && this.isReady() && this._delay <= 0) {
             this._nusvElapsedTicks = (this._nusvElapsedTicks || 0) + 1;
+
+            if (this._nusvConfig) {
+                if (this._nusvConfig.useKeyframes) {
+                    var kfStart = Math.max(0, parseInt(this._nusvConfig.kfStart || 0, 10));
+                    var kfDur = Math.max(1, parseInt(this._nusvConfig.kfDuration !== undefined ? this._nusvConfig.kfDuration : 10, 10));
+                    // When projectile reaches target, finish immediately so it does not linger as a phantom effect
+                    if (this._nusvElapsedTicks > kfStart + kfDur) {
+                        this._duration = 0;
+                        if (this._cellSprites) {
+                            for (var c1 = 0; c1 < this._cellSprites.length; c1++) {
+                                this._cellSprites[c1].visible = false;
+                            }
+                        }
+                        return;
+                    }
+                } else if (this._nusvConfig.duration) {
+                    var maxTicks = parseInt(this._nusvConfig.duration, 10);
+                    // When step duration expires, cleanly terminate any leftover frames
+                    if (this._nusvElapsedTicks > maxTicks) {
+                        this._duration = 0;
+                        if (this._cellSprites) {
+                            for (var c2 = 0; c2 < this._cellSprites.length; c2++) {
+                                this._cellSprites[c2].visible = false;
+                            }
+                        }
+                        return;
+                    }
+                }
+            }
         }
         _Sprite_Animation_updateMain.call(this);
+    };
+
+    // --- Suppress premature target flash during projectile flight (matches editor preview) ---
+    var _Sprite_Animation_processTimingData = Sprite_Animation.prototype.processTimingData;
+    Sprite_Animation.prototype.processTimingData = function (timing) {
+        if (this._nusvConfig && this._nusvConfig.useKeyframes) {
+            var kfStart = Math.max(0, parseInt(this._nusvConfig.kfStart || 0, 10));
+            var kfDur = Math.max(1, parseInt(this._nusvConfig.kfDuration !== undefined ? this._nusvConfig.kfDuration : 10, 10));
+            // While projectile is flying to target, do not flash target prematurely
+            if (this._nusvElapsedTicks < (kfStart + kfDur) && timing.flashScope === 1) {
+                if (!this._duplicated && timing.se) {
+                    AudioManager.playSe(timing.se);
+                }
+                return;
+            }
+        }
+        _Sprite_Animation_processTimingData.call(this, timing);
     };
 
     // --- Progress & Easing Calculation ---
@@ -260,7 +325,7 @@
             sprite.scale.x *= scaleMul;
             sprite.scale.y *= scaleMul;
 
-            if (cfg.flipX) {
+            if (cfg.flipX && !this._mirror) {
                 sprite.scale.x *= -1;
             }
             if (cfg.flipY) {

@@ -553,9 +553,8 @@ SkillAnimator.generateYanflySequence = function (cfg, skill) {
                 if (targetToken !== 'user') {
                     if (step.reaction === 'knockback') {
                         lines.push('enemy effect: targets, whiten');
-                    } else if (step.reaction === 'flinch') {
-                        lines.push('enemy effect: targets, blink');
                     }
+                    // Note: 'flinch' is already natively handled by RPG Maker MV's performDamage() blink effect
                 }
 
                 if (step.se) {
@@ -941,14 +940,14 @@ SkillAnimator.startLoop = function () {
  * Compute actor's baseline position resulting from prior choreography steps
  */
 SkillAnimator.getActorPosBeforeStep = function (steps, targetIdx) {
-    let px = this.actorHome.x;
+    let px = this.actorHome.x - 48; // RPG Maker MV perform start baseline
     let py = this.actorHome.y;
     if (!steps || targetIdx <= 0) return { x: px, y: py };
 
     for (let i = 0; i < targetIdx && i < steps.length; i++) {
         const s = steps[i];
         if (s.type === 'cast') {
-            if (s.step) px = this.actorHome.x - 28;
+            if (s.step) px = (this.actorHome.x - 48) - 28;
         } else if (s.type === 'move') {
             const app = s.approach || 'melee';
             const dist = parseInt(s.distance, 10) || 50;
@@ -961,7 +960,7 @@ SkillAnimator.getActorPosBeforeStep = function (steps, targetIdx) {
             }
             // 'ranged' leaves px unchanged
         } else if (s.type === 'return') {
-            px = this.actorHome.x;
+            px = this.actorHome.x - 48;
             py = this.actorHome.y;
         }
         // 'action' does not alter character position (stays where it was left)
@@ -975,8 +974,11 @@ SkillAnimator.update = function (isManual = false) {
         cfg.steps = this.generateDefaultStepsFromCfg(cfg, this.activeSkill);
     }
 
-    // Compute cumulative timeline boundaries for every modular step (Immediate 0-lag start)
-    let accum = 0;
+    const SETUP_TICKS = 12; // RPG Maker MV Sprite_Actor perform start (12f forward step)
+    const FINISH_TICKS = 12; // RPG Maker MV Sprite_Actor perform finish (12f backward step)
+
+    // Compute cumulative timeline boundaries for every modular step starting after perform start
+    let accum = SETUP_TICKS;
     for (let i = 0; i < cfg.steps.length; i++) {
         const step = cfg.steps[i];
         step.startTick = accum;
@@ -984,7 +986,9 @@ SkillAnimator.update = function (isManual = false) {
         step.endTick = accum + dur;
         accum = step.endTick;
     }
-    this.totalTicks = accum + 4;
+    const finishStart = accum;
+    const finishEnd = finishStart + FINISH_TICKS;
+    this.totalTicks = finishEnd + 4;
     const t = this.currentTick;
 
     // Find which step is active at current tick
@@ -997,7 +1001,7 @@ SkillAnimator.update = function (isManual = false) {
             break;
         }
     }
-    const baseActorPos = (activeStepIdx >= 0) ? this.getActorPosBeforeStep(cfg.steps, activeStepIdx) : { x: this.actorHome.x, y: this.actorHome.y };
+    const baseActorPos = (activeStepIdx >= 0) ? this.getActorPosBeforeStep(cfg.steps, activeStepIdx) : { x: this.actorHome.x - 48, y: this.actorHome.y };
 
     if (t < 0) {
         // --- Standby before sequence starts ---
@@ -1013,7 +1017,35 @@ SkillAnimator.update = function (isManual = false) {
         this.enemyFlinchOffset.y = 0;
         this.enemyFlashColor = null;
 
-    } else if (t >= accum) {
+    } else if (t < SETUP_TICKS) {
+        // --- RPG Maker MV Setup Action: perform start (Step forward 48px) ---
+        this.currentPhase = 'setup';
+        this.targetAnimPlayers = [];
+        this.scrubAnimPlayer = null;
+        const p = Math.max(0, Math.min(1, t / SETUP_TICKS));
+        this.actorPos.x = this.actorHome.x - Math.round(48 * p);
+        this.actorPos.y = this.actorHome.y;
+        this.actorMotion = 'walk';
+        this.actorAlpha = 1.0;
+        this.enemyFlinchOffset.x = 0;
+        this.enemyFlinchOffset.y = 0;
+        this.enemyFlashColor = null;
+
+    } else if (t >= finishStart && t < finishEnd) {
+        // --- RPG Maker MV Finish Action: perform finish (Step back 48px to Home) ---
+        this.currentPhase = 'finish';
+        this.targetAnimPlayers = [];
+        this.scrubAnimPlayer = null;
+        const p = Math.max(0, Math.min(1, (t - finishStart) / FINISH_TICKS));
+        this.actorPos.x = (this.actorHome.x - 48) + Math.round(48 * p);
+        this.actorPos.y = this.actorHome.y;
+        this.actorMotion = 'walk';
+        this.actorAlpha = 1.0;
+        this.enemyFlinchOffset.x = 0;
+        this.enemyFlinchOffset.y = 0;
+        this.enemyFlashColor = null;
+
+    } else if (t >= finishEnd) {
         // --- Finished sequence / loop standby ---
         this.currentPhase = 'idle';
         this.targetAnimPlayers = [];
@@ -1033,7 +1065,8 @@ SkillAnimator.update = function (isManual = false) {
         if (activeStep.type === 'cast') {
             this.currentPhase = 'cast';
             this.actorMotion = activeStep.motion || 'chant';
-            this.actorPos.x = activeStep.step ? (this.actorHome.x - Math.min(28, p * 28)) : this.actorHome.x;
+            const basePx = this.actorHome.x - 48;
+            this.actorPos.x = activeStep.step ? (basePx - Math.min(28, p * 28)) : basePx;
             this.actorPos.y = this.actorHome.y;
             this.actorAlpha = 1.0;
             this.scrubAnimPlayer = null;
@@ -1284,7 +1317,7 @@ SkillAnimator.update = function (isManual = false) {
             this.castAnimPlayer = null;
             this.scrubAnimPlayer = null;
             const startX = baseActorPos.x;
-            const endX = this.actorHome.x;
+            const endX = this.actorHome.x - 48; // Returns to battle-ready step-forward spot
             const approach = activeStep.approach || 'walk';
 
             if (approach === 'teleport') {
@@ -1361,6 +1394,20 @@ SkillAnimator.update = function (isManual = false) {
                     if (tm.frame === p.frameIndex) {
                         if (tm.se && tm.se.name) {
                             this.playSe(tm.se.name, tm.se.volume, tm.se.pitch);
+                        }
+                        if (tm.flashColor && tm.flashColor.length >= 4) {
+                            const flashAlpha = Math.max(0, Math.min(1, tm.flashColor[3] / 255));
+                            const flashDur = Math.max(1, (tm.flashDuration || 3) * (p.rate || 2));
+                            if (tm.flashScope === 1) {
+                                this.enemyFlashColor = [tm.flashColor[0], tm.flashColor[1], tm.flashColor[2], flashAlpha];
+                                setTimeout(() => { this.enemyFlashColor = null; }, flashDur * 16.6);
+                            } else if (tm.flashScope === 2) {
+                                this.screenFlash = {
+                                    color: [tm.flashColor[0], tm.flashColor[1], tm.flashColor[2], flashAlpha],
+                                    duration: flashDur,
+                                    current: flashDur
+                                };
+                            }
                         }
                     }
                 }
@@ -1890,6 +1937,23 @@ SkillAnimator.drawActor = function (ctx) {
     const drawH = ch;
     ctx.drawImage(img, cx * cw, cy * ch, cw, ch, this.actorPos.x - drawW / 2, this.actorPos.y - drawH + 4, drawW, drawH);
 
+    // Render weapon sprite during swing, thrust, or missile motions (matches RPG Maker MV Sprite_Weapon)
+    if (this.actorMotion === 'swing' || this.actorMotion === 'thrust' || this.actorMotion === 'missile') {
+        const weaponImg = this.getImage('img/system/Weapons1.png');
+        if (weaponImg && weaponImg.complete && weaponImg.naturalWidth > 0) {
+            // Weapon index in Weapons1: 1=Sword (swing), 4=Spear (thrust), 8=Bow (missile)
+            let wIdx = 1;
+            if (this.actorMotion === 'thrust') wIdx = 4;
+            if (this.actorMotion === 'missile') wIdx = 8;
+
+            const wW = 96;
+            const wH = 64;
+            const wCol = (Math.floor((wIdx - 1) / 6) * 3) + pattern;
+            const wRow = (wIdx - 1) % 6;
+            ctx.drawImage(weaponImg, wCol * wW, wRow * wH, wW, wH, this.actorPos.x - 48, this.actorPos.y - 56, wW, wH);
+        }
+    }
+
     ctx.restore();
 };
 
@@ -2029,20 +2093,24 @@ SkillAnimator.updatePhaseIndicator = function () {
 
     const phaseNames = {
         idle: '⏸ Standby',
+        setup: '🚀 Setup: Step Forward',
         cast: '🔮 F1: Casting',
         approach: '🏃 F2A: Maju',
         attack: '⚔️ F2B: Serang',
         reaction: '💥 F3: Reaksi',
-        return: '↩️ Selesai'
+        return: '↩️ F4: Mundur',
+        finish: '🏁 Finish: Step Back'
     };
 
     const phaseColors = {
         idle: '#94a3b8',
+        setup: '#818cf8',
         cast: '#c084fc',
         approach: '#38bdf8',
         attack: '#f87171',
         reaction: '#facc15',
-        return: '#4ade80'
+        return: '#4ade80',
+        finish: '#a78bfa'
     };
 
     badge.textContent = phaseNames[this.currentPhase] || this.currentPhase;
