@@ -786,20 +786,29 @@ BattleManager.actionFloat = function(name, actionArgs) {
 BattleManager.actionJump = function(name, actionArgs) {
     var movers = this.makeActionTargets(name);
     if (movers.length < 1) return true;
-    var cmd = actionArgs[0];
+    var cmd = String(actionArgs[0] || '100%');
     var frames = actionArgs[1] || 12;
+    var parsedFrames = parseInt(frames, 10);
+    if (isNaN(parsedFrames) || parsedFrames <= 0) {
+      // If actionArgs was like [target, front, 60, 6], check last arg for frames
+      var lastArg = parseInt(actionArgs[actionArgs.length - 1], 10);
+      parsedFrames = (!isNaN(lastArg) && lastArg > 0) ? lastArg : 12;
+    }
     var pixels = 0;
+    var jumpPeak = 1.0;
     if (cmd.match(/(.*)([%％])/i)) {
-      var jumpPeak = parseFloat(RegExp.$1 * 0.01);
+      jumpPeak = parseFloat(RegExp.$1 * 0.01);
     } else if (cmd.match(/(\d+)/i)) {
-      pixels = parseInt(cmd) || 0;
-      var jumpPeak = 0.0;
+      pixels = parseInt(cmd, 10) || 0;
+      jumpPeak = 0.0;
     } else {
-      var jumpPeak = 1.0;
+      jumpPeak = 1.0;
     }
     movers.forEach(function(mover) {
-      var jumpRate = jumpPeak + (pixels / mover.spriteHeight());
-      mover.spriteJump(jumpRate, frames);
+      var spHeight = mover.spriteHeight ? (mover.spriteHeight() || 48) : 48;
+      var jumpRate = jumpPeak + (pixels / spHeight);
+      if (isNaN(jumpRate)) jumpRate = 1.0;
+      mover.spriteJump(jumpRate, parsedFrames);
     });
     return true;
 };
@@ -1181,7 +1190,14 @@ Sprite_Battler.prototype.setupFloat = function(floatHeight, floatDuration) {
 };
 
 Sprite_Battler.prototype.setupJump = function(jumpHeight, jumpDuration) {
-    this._jumpHeight = jumpHeight;
+    jumpDuration = parseInt(jumpDuration, 10);
+    if (isNaN(jumpDuration) || jumpDuration <= 0) {
+        this._jumpHeight = 0;
+        this._jumpDur = 0;
+        this._jumpFull = 0;
+        return;
+    }
+    this._jumpHeight = Number(jumpHeight) || 0;
     this._jumpDur = jumpDuration;
     this._jumpFull = jumpDuration;
 };
@@ -1211,15 +1227,22 @@ Sprite_Battler.prototype.updateFloat = function() {
     if (this._floatDur > 0) this._floatDur--;
     if (this._jumpDur > 0) this._jumpDur--;
     var baseY = this._battler.anchorY();
-    var floatHeight = this.getFloatHeight();
-    var jumpHeight = this.getJumpHeight();
+    var floatHeight = this.getFloatHeight() || 0;
+    var jumpHeight = this.getJumpHeight() || 0;
     var height = floatHeight + jumpHeight;
     if (this._mainSprite && this._mainSprite.bitmap) {
-      var rate = this._battler.spriteHeight() / this._mainSprite.height;
-      this._mainSprite.anchor.y = (baseY + height * rate);
-      this._weaponSprite.anchor.y = this._mainSprite.anchor.y;
+      var sHeight = this._mainSprite.height || 1;
+      var rate = this._battler.spriteHeight() / sHeight;
+      var targetAnchorY = baseY + height * rate;
+      if (!isNaN(targetAnchorY)) {
+        this._mainSprite.anchor.y = targetAnchorY;
+        this._weaponSprite.anchor.y = targetAnchorY;
+      }
     } else {
-      this.anchor.y = (baseY + height);
+      var targetAnchorY = baseY + height;
+      if (!isNaN(targetAnchorY)) {
+        this.anchor.y = targetAnchorY;
+      }
     }
 };
 
@@ -1273,16 +1296,15 @@ Sprite_Battler.prototype.getFloatHeight = function() {
 };
 
 Sprite_Battler.prototype.getJumpHeight = function() {
-    if (this._jumpDur <= 0) {
+    if (!this._jumpDur || this._jumpDur <= 0 || isNaN(this._jumpDur)) {
       return 0;
-    } else {
-      var x = this._jumpFull - this._jumpDur;
-      var h = this._jumpFull / 2;
-      var k = this._jumpHeight;
-      var a = -k / Math.pow(h, 2);
-      var height = a * Math.pow((x - h), 2) + k;
     }
-    return height;
+    var x = this._jumpFull - this._jumpDur;
+    var h = this._jumpFull / 2;
+    var k = this._jumpHeight;
+    var a = (h === 0) ? 0 : -k / Math.pow(h, 2);
+    var height = a * Math.pow((x - h), 2) + k;
+    return isNaN(height) ? 0 : height;
 };
 
 Sprite_Battler.prototype.updateOpacity = function() {

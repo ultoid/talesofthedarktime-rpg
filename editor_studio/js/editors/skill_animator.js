@@ -506,10 +506,12 @@ SkillAnimator.generateYanflySequence = function (cfg, skill) {
                     lines.push(`move user: forward, 32, ${dur}`);
                     lines.push('wait for movement');
                 } else if (app === 'jump') {
-                    lines.push(`jump user: target, front, 60, ${dur}`);
+                    lines.push(`jump user: 60, ${dur}`);
+                    lines.push(`move user: target, front, ${dur}`);
                     lines.push('wait for movement');
                 } else if (app === 'jump_behind') {
-                    lines.push(`jump user: target, back, 60, ${dur}`);
+                    lines.push(`jump user: 60, ${dur}`);
+                    lines.push(`move user: target, back, ${dur}`);
                     lines.push('wait for movement');
                 } else if (app === 'teleport') {
                     lines.push('opacity user: 0, 4');
@@ -583,7 +585,8 @@ SkillAnimator.generateYanflySequence = function (cfg, skill) {
             } else if (step.type === 'return') {
                 const app = step.approach || 'walk';
                 if (app === 'jump') {
-                    lines.push(`jump user: home, 50, ${dur}`);
+                    lines.push(`jump user: 50, ${dur}`);
+                    lines.push(`move user: home, ${dur}`);
                     lines.push('wait for movement');
                 } else if (app === 'teleport') {
                     lines.push('opacity user: 0, 4');
