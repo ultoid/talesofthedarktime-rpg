@@ -184,6 +184,109 @@ Database State telah dirampingkan secara menyeluruh dari 275+ entri lama yang tu
 
 ---
 
+### 12. Modular 6-Phase Event-Command Studio, Universal Flying Projectiles & Preset 10 Senjata
+* **Eliminasi Bug Kritis Black Screen & Crash Sparse Array:**  
+  * Memperbaiki infinite loop saat game startup di `YEP_BattleEngineCore.js` (penanganan `addActionEffects` terhadap nilai `repeats` kosong dan penghapusan loop instansiasi berlebih).
+  * Menambahkan defensive null-checks (`if (!obj) continue;`) pada `YEP_X_BattleSysCTB.js` untuk menangani array senjata dan zirah yang diisi sparse `null` hingga ID 3000+ akibat sistem instancing `YEP_ItemCore`. Game kini boot 100% mulus langsung ke `Scene_Title` dan `Scene_Map` tanpa lag maupun black screen.
+* **Modular 6-Phase Event-Command Action Sequence Studio:**  
+  * Merombak editor sekuens pertempuran menjadi arsitektur kanonikal 6 Fase:
+    1. **Pre-Condition**: Pengaturan CTB Cast Speed, Instant Cast, dan Target Scope.
+    2. **Setup Action**: Pembukaan adegan, zoom sinematik, fokus kamera, dan immortal lock.
+    3. **Whole Action**: Efek area massal sebelum serangan individual.
+    4. **Target Action**: Inti benturan per target (pergerakan, tebasan/proyektil, damage, guncangan layar).
+    5. **Follow Action**: Serangan combo susulan atau reaksi paska serangan.
+    6. **Finish Action**: Pemulangan battler ke posisi home, reset kamera, dan pembukaan kunci immortal.
+  * Dilengkapi **Interactive Flowchart Timeline**: visualisasi status aktif/kosong tiap fase serta tombol lompat langsung ke kanvas fase yang dituju.
+  * **HTML5 Drag & Drop Reordering**: Pengurutan baris perintah aksi kini menggunakan drag handle (`⋮⋮`), mempermudah pemindahan timing perintah secara intuitif tanpa tombol panah kaku.
+* **Universal Flying Projectile Engine (`NUSV_ProjectileEngine.js`):**  
+  * Engine proyektil fisik meluncur terintegrasi penuh ke dalam Yanfly Action Sequences dan Studio:
+    * `projectile weapon: start user, goal target, duration [f], arc [px]`: Deteksi cerdas senjata (Panah untuk Long Bow, Baut cepat untuk Crossbow, dan Peluru Sihir Elemen adaptif untuk Staff & Rune sesuai elemen Fire/Ice/Water/Thunder/Wind/Earth/Dark/Holy).
+    * `projectile animation [id]`: Menerbangkan ID animasi visual database apa saja melintasi arena pertempuran.
+    * `projectile icon [index]`: Menerbangkan icon mana saja dari `IconSet.png` lengkap dengan orientasi otomatis (*auto-rotate tangent trajectory*) atau putaran rotasi (*spin*).
+    * `wait for projectile`: Menahan timing aksi agar damage dan efek hantaman baru meletus tepat saat proyektil menyentuh tubuh sasaran.
+* **Preset Koreografi 10 Tipe Senjata Resmi (Skills #431 – #440):**  
+  * Telah diimplementasikan dan dikonfigurasi ke dalam `data/Skills.json` untuk semua senjata dasar:
+    1. *Long Sword (#431)*: Maju mantap, tebasan berat, knockback 45px.
+    2. *Sword (#432)*: Maju lincah, tebasan cepat, damage & return.
+    3. *Gloves (#433)*: Maju cepat, tinjuan beruntun 1–2x (sadar Dual-Wield).
+    4. *Spear (#434)*: Melompat menusuk (jump 120px), thrust animation, knockback 50px.
+    5. *Axe (#435)*: Melompat tinggi (jump 140px), hantaman berat ke tanah, screen shake 4.
+    6. *Staff (#436)*: Maju selangkah, chant mantra, proyektil sihir meluncur ke target.
+    7. *Rune (#437)*: Maju selangkah, chant mantra, tembakan 1–2 bola sihir rune melengkung.
+    8. *Long Bow (#438)*: Diam di tempat, tarik busur, anak panah meluncur melengkung (*arc 35*) dan menancap.
+    9. *Crossbow (#439)*: Diam di tempat, tembakan beruntun 1–3 anak panah kilat mendatar (*arc 15, duration 12f*).
+    10. *Dagger (#440)*: Shadowstep teleport ke belakang target, 1–2x sabetan cepat, return home.
+
+---
+
+## 📘 Modul Panduan Praktis: Cara Meracik Koreografi Aksi & Proyektil (Untuk Pemula & Tim Desain)
+
+Modul ini dibuat dengan bahasa yang sederhana agar siapa pun dalam tim pengembang dapat meracik jurus spektakuler langsung dari browser (`http://127.0.0.1:5050`) tanpa perlu menyentuh baris kode manual.
+
+### 💡 Konsep Dasar: Bagaimana Jurus Dieksekusi?
+Bayangkan jurus di dalam pertarungan seperti **adegan film pendek**:
+1. Karakter bersiap-siap dan kamera mendekat (*Setup Action*).
+2. Karakter bergerak atau menembakkan peluru (*Target Action*).
+3. Peluru terbang di udara, lalu menabrak musuh (*Projectile & Wait*).
+4. Musuh bergetar, angka damage muncul, layar berguncang (*Action Effect & Shake*).
+5. Karakter melangkah mundur ke posisi awal dan kamera kembali luas (*Finish Action*).
+
+---
+
+### 🗺️ Peta 6 Fase Aksi (6-Phase Canvas)
+Di dalam studio, setiap skill dibagi menjadi 6 kotak fase yang berurutan dari atas ke bawah:
+* **Fase 1 (Pre-Condition)**: Kapan jurus aktif? (Apakah jurus langsung keluar tanpa makan giliran? Berapa kecepatan CTB-nya?).
+* **Fase 2 (Setup Action)**: Persiapan sebelum menyerang. Contoh: Kamera menyorot karakter penyerang (*Zoom 120%*), mengunci musuh agar tidak mati sebelum animasi selesai (*Immortal Lock*).
+* **Fase 3 (Whole Action)**: Dipakai jika jurus bersifat **Area (AoE)** menyerang seluruh musuh sekaligus.
+* **Fase 4 (Target Action)**: **JANTUNG DARI SETIAP JURUS**. Di sinilah karakter maju, mengayunkan pedang, menembakkan panah, menampilkan animasi impact, dan memberikan damage.
+* **Fase 5 (Follow Action)**: Aksi tambahan setelah serangan utama (misal: serangan susulan tangan kedua jika memakai dua senjata / Dual-Wield).
+* **Fase 6 (Finish Action)**: Penutupan. Mengembalikan karakter mundur ke tempat semula (*Return*), mengembalikan zoom kamera (*Reset Zoom*), dan membuka kembali kunci immortal.
+
+---
+
+### 🚀 Cara Menambahkan & Mengatur Proyektil Meluncur
+Jika kamu ingin membuat jurus panah, sihir lempar, atau senjata lempar:
+
+1. **Buka Fase 4 (Target Action)** pada jurus yang sedang diedit.
+2. Klik tombol **`➕ Tambah Perintah Baru`**.
+3. Pada pilihan paling atas (**Pilih Jenis Perintah Action Sequence**), pilih salah satu:
+   * **`🚀 Projectile Weapon (Otomatis Senjata)`**: Pilih ini jika ingin animasi otomatis berubah mengikuti senjata pemain (Staff Api jadi bola api, Bow jadi panah).
+   * **`✨ Projectile Animation ID`**: Pilih ini jika ingin **menentukan sendiri animasi visualnya**. Kamu tinggal memilih nama animasi dari dropdown (misal: *#15 Pix - Fireball*, *#21 Pix - Ice Lance*, *#4 Pix - Arrow Shot*).
+   * **`🏹 Projectile Icon`**: Pilih ini jika ingin melempar icon gambar dari IconSet (misal: lempar pisau, lempar botol ramuan, shuriken).
+4. **Atur Parameter Gerakan Proyektil**:
+   * **Asal (Start)**: Pilih `User` (Karakter penyerang).
+   * **Tujuan (Goal)**: Pilih `Target` (Musuh).
+   * **Durasi Terbang (Frames)**: Seberapa cepat peluru sampai (Rekomendasi: `12` untuk panah kilat, `16-20` untuk bola sihir sedang, `25` untuk lemparan lambat). *(60 frames = 1 detik)*.
+   * **Lengkungan / Arc (px)**: Seberapa tinggi peluru melengkung di udara (Isi `0` untuk tembakan laser lurus mendatar, isi `25-35` untuk panah melengkung tinggi ke atas).
+   * **Centang `Otomatis sisipkan: wait for projectile`** agar sistem otomatis menunggu proyektil mendarat.
+5. Klik **Simpan Perintah**.
+
+---
+
+### ⏱️ Aturan Emas Urutan Proyektil (Golden Rule of Projectiles)
+Agar animasi tidak terlihat aneh (misal: damage sudah keluar padahal panah masih terbang di udara), pastikan urutan baris di **Fase 4** tersusun rapi seperti ini:
+1. `Motion missile: user` *(Karakter mengambil pose menembak)*
+2. `Projectile Animation ...` *(Proyektil meluncur)*
+3. **`Wait for Projectile`** $\leftarrow$ **KUNCI UTAMA: Wajib ditaruh di sini agar sistem menunggu peluru sampai!**
+4. `Attack Animation` atau efek ledakan di target
+5. `Action Effect: target` *(Angka damage meletus)*
+6. `Motion damage: target` *(Musuh tersentak/flinch)*
+7. `Shake Screen` *(Layar bergetar saat hantaman)*
+
+> [!TIP]
+> **Cara Menggeser Urutan Baris:**  
+> Cukup klik dan tahan icon **titik enam (`⋮⋮`)** di sebelah kiri baris yang ingin dipindah, lalu seret (**Drag & Drop**) ke atas atau ke bawah.
+
+---
+
+### 💾 Cara Menyimpan Hasil Editan ke Dalam Game
+Setelah selesai meracik perintah:
+1. Periksa kotak hijau **Live Code Preview** di bawah untuk memastikan kode Yanfly telah tergenerate dengan rapi.
+2. Klik tombol biru besar **`💾 Save to Project`** di pojok kanan atas layar studio.
+3. Perubahan akan langsung tersimpan permanen ke file `data/Skills.json` di proyek game kamu dan siap dimainkan!
+
+---
+
 ## 🎯 Target Pengembangan Besok (Roadmap & Next Steps)
 
 1. **Fiksasi State:**
