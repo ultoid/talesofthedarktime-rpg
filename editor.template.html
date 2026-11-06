@@ -13,13 +13,19 @@
     <!-- Header Navbar -->
     <header>
         <div class="brand">
-            <h1>NUSV Full Database Studio</h1>
-            <span>v3.0 All-In-One</span>
-            <div id="unsavedBadge" class="unsaved-badge" title="Perubahan belum disimpan ke file database project">Unsaved Changes</div>
+            <div class="brand-emblem" title="Tales of The Dark Time — Studio Workstation">⚔️</div>
+            <div class="brand-titles">
+                <h1>Tales of The Dark Time</h1>
+                <div class="brand-meta">
+                    <span class="brand-tag">NUSV Studio</span>
+                    <span class="brand-ver">v3.0 Pro</span>
+                </div>
+            </div>
+            <div id="unsavedBadge" class="unsaved-badge" title="Perubahan belum disimpan ke file database project">● Belum Disimpan</div>
         </div>
 
         <div class="nav-tabs-wrapper">
-            <button type="button" class="tab-scroll-btn" onclick="scrollTabs(-180)" title="Scroll tabs left">◀</button>
+            <button type="button" class="tab-scroll-btn" onclick="scrollTabs(-180)" title="Gulir tab ke kiri">◀</button>
             <nav class="nav-tabs" id="navTabs">
                 <button class="tab-btn active" onclick="switchTab('actors')">🎭 Actors</button>
                 <button class="tab-btn" onclick="switchTab('classes')">🛡️ Classes</button>
@@ -32,13 +38,13 @@
                 <button class="tab-btn" onclick="switchTab('enemies')">👾 Enemies</button>
                 <button class="tab-btn" onclick="switchTab('states')">💫 States</button>
             </nav>
-            <button type="button" class="tab-scroll-btn" onclick="scrollTabs(180)" title="Scroll tabs right">▶</button>
+            <button type="button" class="tab-scroll-btn" onclick="scrollTabs(180)" title="Gulir tab ke kanan">▶</button>
         </div>
 
         <div class="header-actions">
-            <button id="toggleStatSidebarBtn" class="btn btn-secondary" onclick="toggleStatSidebar()" title="Sembunyikan/Tampilkan Panel Pratinjau Stat">📊 Sembunyikan Stats</button>
-            <button class="btn btn-secondary" onclick="reloadAllData()" title="Muat ulang seluruh data database dari file project">🔄 Reload Data</button>
-            <button class="btn btn-primary" onclick="saveActiveDataset()" title="Simpan seluruh perubahan di tab aktif langsung ke file database project">💾 Save to Project</button>
+            <button id="toggleStatSidebarBtn" class="btn btn-secondary" onclick="toggleStatSidebar()" title="Sembunyikan atau tampilkan panel pratinjau kalkulasi stat">📊 Panel Stat</button>
+            <button class="btn btn-secondary" onclick="reloadAllData()" title="Muat ulang seluruh data database dari file project">🔄 Muat Ulang</button>
+            <button class="btn btn-primary" onclick="saveActiveDataset()" title="Simpan seluruh perubahan di tab aktif langsung ke file database project">💾 Simpan Database</button>
         </div>
     </header>
 
@@ -46,7 +52,7 @@
     <main>
         <aside class="sidebar">
             <div class="search-box">
-                <input type="text" id="searchInput" class="search-input" placeholder="Search by ID or name..." title="Ketik ID atau nama untuk memfilter daftar di sidebar" oninput="filterItems()">
+                <input type="text" id="searchInput" class="search-input" placeholder="Cari ID atau nama entri..." title="Ketik ID atau nama untuk memfilter daftar di sidebar" oninput="filterItems()">
             </div>
             <div id="sidebarFilters" class="sidebar-filter-box" style="display:none;"></div>
             <div class="item-list" id="sidebarList">
@@ -54,10 +60,10 @@
             </div>
             <div class="sidebar-footer">
                 <div class="sidebar-action-grid">
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.75rem;" onclick="addNewEntry()" title="Tambah entri baru di bagian bawah">➕ Add</button>
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.75rem;" onclick="cloneSelectedEntry()" title="Duplikasi entri yang sedang dipilih">📋 Clone</button>
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.75rem; color:#f87171;" onclick="deleteSelectedEntry()" title="Hapus entri yang sedang dipilih">🗑️ Del</button>
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.75rem;" onclick="openResizeModal()" title="Ubah batas maksimum jumlah entri (Change Maximum)">🔢 Max...</button>
+                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem;" onclick="addNewEntry()" title="Tambah entri baru di bagian bawah">➕ Tambah</button>
+                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem;" onclick="cloneSelectedEntry()" title="Duplikasi entri yang sedang dipilih">📋 Salin</button>
+                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem; color:var(--red);" onclick="deleteSelectedEntry()" title="Hapus entri yang sedang dipilih">🗑️ Hapus</button>
+                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem;" onclick="openResizeModal()" title="Ubah batas kapasitas jumlah entri">🔢 Kapasitas</button>
                 </div>
             </div>
         </aside>
