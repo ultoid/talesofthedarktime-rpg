@@ -3215,7 +3215,6 @@ HTML_CONTENT = r'''<!DOCTYPE html>
                 case 'weapons': filename = 'Weapons.json'; data = State.weapons; break;
                 case 'armors': filename = 'Armors.json'; data = State.armors; break;
                 case 'skills': filename = 'Skills.json'; data = State.skills; break;
-                case 'skill_animator': filename = 'Skills.json'; data = State.skills; break;
                 case 'animations': filename = 'Animations.json'; data = State.animations; break;
                 case 'items': filename = 'Items.json'; data = State.items; break;
                 case 'enemies': filename = 'Enemies.json'; data = State.enemies; break;

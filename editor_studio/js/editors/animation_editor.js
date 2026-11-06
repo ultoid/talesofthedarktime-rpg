@@ -172,7 +172,7 @@ AnimEditor.processFrameTimings = function(frameIndex) {
             this.visualEffects.hideRemaining = duration || Math.max(1, this.activeAnim.frames.length - frameIndex);
         }
 
-        if (!this.isMuted && timing.se && timing.se.name && typeof SkillAnimator !== 'undefined') {
+        if (!this.isMuted && timing.se && timing.se.name) {
             this.playTimingSE(timing.se);
         }
     }
@@ -432,13 +432,13 @@ AnimEditor.ensurePreviewBattler = function() {
 
 AnimEditor.findBattlePreviewSkills = function(targetAnim) {
     const anim = targetAnim || this.activeAnim || (State.animations || [])[State.selectedIndices?.animations || State.selectedIndex];
-    if (!anim || typeof SkillAnimator === 'undefined') return [];
+    if (!anim) return [];
     const animId = Number(anim.id);
     return (State.skills || []).filter(skill => {
         if (!skill || skill.id <= 0) return false;
         if (Number(skill.animationId) === animId) return true;
-        const config = SkillAnimator.getConfig(skill);
-        return (config.steps || []).some(step => step && Number(step.animId) === animId);
+        const note = skill.note || '';
+        return new RegExp(`animation\\s+${animId}:`, 'i').test(note) || new RegExp(`<Cast Animation:\\s*${animId}>`, 'i').test(note);
     });
 };
 
@@ -452,13 +452,8 @@ AnimEditor.navigateToSkillBattlePreview = function(skill) {
     this.closeSkillSelectModal();
     State.selectedIndices = State.selectedIndices || {};
     State.selectedIndices.skills = skill.id;
-    State.selectedIndices.skill_animator = skill.id;
-    SkillAnimator.stop();
-    SkillAnimator.activeSkill = skill;
-    SkillAnimator.currentTick = 0;
-    SkillAnimator.selectedStepIndex = 0;
-    SkillAnimator.isPlaying = false;
-    switchTab('skill_animator');
+    State.selectedIndex = skill.id;
+    switchTab('skills');
 };
 
 AnimEditor.openBattlePreview = function(skillId) {
@@ -1319,14 +1314,14 @@ AnimEditor.playTimingSE = function(se) {
     if (!se || !se.name) return;
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) {
-        if (typeof SkillAnimator !== 'undefined') SkillAnimator.playSe(se.name, se.volume, se.pitch);
+        new Audio(`audio/se/${encodeURIComponent(se.name)}.ogg`).play().catch(() => {});
         return;
     }
 
     try {
         const context = this.audioContext || (this.audioContext = new AudioContextClass());
         if (!context.createStereoPanner) {
-            if (typeof SkillAnimator !== 'undefined') SkillAnimator.playSe(se.name, se.volume, se.pitch);
+            new Audio(`audio/se/${encodeURIComponent(se.name)}.ogg`).play().catch(() => {});
             return;
         }
         const audio = new Audio(`audio/se/${encodeURIComponent(se.name)}.ogg`);
@@ -1346,7 +1341,7 @@ AnimEditor.playTimingSE = function(se) {
             panner.disconnect();
         });
     } catch (error) {
-        if (typeof SkillAnimator !== 'undefined') SkillAnimator.playSe(se.name, se.volume, se.pitch);
+        new Audio(`audio/se/${encodeURIComponent(se.name)}.ogg`).play().catch(() => {});
     }
 };
 

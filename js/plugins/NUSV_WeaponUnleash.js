@@ -234,6 +234,24 @@ NUSV.WeaponUnleash = NUSV.WeaponUnleash || {};
         var entries = [];
         var objects = traitObjects(actor);
 
+        // Ensure actor's equipped weapons and armors are included even with independent items
+        if (actor && actor.weapons) {
+            var weps = actor.weapons();
+            for (var w = 0; w < weps.length; w++) {
+                if (weps[w] && objects.indexOf(weps[w]) === -1) {
+                    objects.push(weps[w]);
+                }
+            }
+        }
+        if (actor && actor.armors) {
+            var arms = actor.armors();
+            for (var a = 0; a < arms.length; a++) {
+                if (arms[a] && objects.indexOf(arms[a]) === -1) {
+                    objects.push(arms[a]);
+                }
+            }
+        }
+
         // Keep source order stable for equal priority.
         for (var i = 0; i < objects.length; i++) {
             var obj = objects[i];
@@ -284,6 +302,19 @@ NUSV.WeaponUnleash = NUSV.WeaponUnleash || {};
     Game_Actor.prototype.attackSkillId = function () {
         var skillId = chooseUnleashSkill(this);
         if (skillId > 0) return skillId;
+
+        // Auto-fallback: use 10 weapon basic attack presets (Skills #431 - #440) based on equipped weapon type
+        var weapons = this.weapons ? this.weapons() : [];
+        if (weapons && weapons.length > 0 && weapons[0]) {
+            var w = weapons[0];
+            if (w.wtypeId > 0 && w.wtypeId <= 10) {
+                var wtypeSkillId = 430 + w.wtypeId;
+                if ($dataSkills && $dataSkills[wtypeSkillId]) {
+                    return wtypeSkillId;
+                }
+            }
+        }
+
         return this.nusvBaseAttackSkillId();
     };
 

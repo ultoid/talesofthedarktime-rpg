@@ -454,17 +454,16 @@ NUSV.DamageCore = NUSV.DamageCore || {};
     };
 
     // -------------------------------------------------------------------------
-    // MP/SP Gain Popups
+    // MP/SP Gain Popups (Turn / Action End Unified Notifications)
     // -------------------------------------------------------------------------
 
-    // Native damage popups only cover MP/SP loss. Gains are recorded here and
-    // drawn as "+X MP" / "+X SP" popups by the sprite layer instead.
+    // Native damage popups only cover MP/SP loss. Resource gains are accumulated
+    // throughout an action sequence and displayed at action/turn end as a single,
+    // crisp notification (e.g. "+10 SP") instead of stacking during strikes.
+    // Zero gains (e.g. already full SP/MP) are completely suppressed.
 
-    var resourceGainPopupFontSize = 28;
-    var resourceGainPopupPadding = 24;
-    var resourceGainPopupPrefix = '+';
-    var resourceGainPopupSeparator = ' ';
-    var resourceGainPopupMaxSuffix = ' Max';
+    var resourceGainPopupFontSize = 24;
+    var resourceGainPopupFontFace = 'BattleFont, sans-serif';
 
     Game_Battler.prototype.nusvResourceGainPopups = function() {
         if (!this._nusvResourceGainPopups) this._nusvResourceGainPopups = [];
@@ -479,90 +478,267 @@ NUSV.DamageCore = NUSV.DamageCore || {};
         this._nusvResourceGainPopups = [];
     };
 
+    Game_Battler.prototype.nusvPendingResourceGains = function() {
+        if (!this._nusvPendingResourceGains) {
+            this._nusvPendingResourceGains = { mp: 0, tp: 0 };
+        }
+        return this._nusvPendingResourceGains;
+    };
+
+    Game_Battler.prototype.nusvClearPendingResourceGains = function() {
+        this._nusvPendingResourceGains = { mp: 0, tp: 0 };
+    };
+
+    Game_Battler.prototype.nusvRecordResourceGain = function(type, amount) {
+        if (typeof $gameParty === 'undefined' || !$gameParty.inBattle() || !amount || amount <= 0) return;
+        var pending = this.nusvPendingResourceGains();
+        if (type === 'tp') {
+            pending.tp += Math.round(amount);
+        } else if (type === 'mp') {
+            pending.mp += Math.round(amount);
+        }
+    };
+
+    // Backward compatibility helper
     Game_Battler.prototype.nusvRecordResourceGainPopup = function(type, amount) {
-        if (!$gameParty.inBattle()) {
-            this.nusvClearResourceGainPopups();
+        this.nusvRecordResourceGain(type, amount);
+    };
+
+    Game_Battler.prototype.nusvFlushPendingResourcePopups = function() {
+        if (!this._nusvPendingResourceGains) return;
+        if (this.isDead && this.isDead()) {
+            this.nusvClearPendingResourceGains();
             return;
         }
-        this.nusvResourceGainPopups().push({
-            type: type,
-            amount: Math.max(0, amount)
-        });
+        var pending = this._nusvPendingResourceGains;
+        var popups = this.nusvResourceGainPopups();
+
+        if (pending.tp > 0) {
+            popups.push({ type: 'tp', amount: pending.tp });
+        }
+        if (pending.mp > 0) {
+            popups.push({ type: 'mp', amount: pending.mp });
+        }
+
+        this.nusvClearPendingResourceGains();
     };
 
     Game_Battler.prototype.nusvResourceGainPopupLabel = function(type) {
-        return type === 'tp' ? TextManager.tpA : TextManager.mpA;
+        if (type === 'tp') {
+            return (typeof TextManager !== 'undefined' && TextManager.tpA) ? TextManager.tpA : 'SP';
+        }
+        return (typeof TextManager !== 'undefined' && TextManager.mpA) ? TextManager.mpA : 'MP';
     };
 
     Game_Battler.prototype.nusvResourceGainPopupText = function(popup) {
         var label = this.nusvResourceGainPopupLabel(popup.type);
-        if (popup.amount > 0) {
-            return resourceGainPopupPrefix + popup.amount +
-                resourceGainPopupSeparator + label;
-        }
-        return label + resourceGainPopupMaxSuffix;
+        return '+' + popup.amount + ' ' + label;
     };
 
     var _Game_Battler_gainMp = Game_Battler.prototype.gainMp;
     Game_Battler.prototype.gainMp = function(value) {
         var before = this.mp;
         _Game_Battler_gainMp.call(this, value);
-        if (value > 0) this.nusvRecordResourceGainPopup('mp', this.mp - before);
+        var actualGain = this.mp - before;
+        if (actualGain > 0) this.nusvRecordResourceGain('mp', actualGain);
     };
 
     var _Game_Battler_gainTp = Game_Battler.prototype.gainTp;
     Game_Battler.prototype.gainTp = function(value) {
         var before = this.tp;
         _Game_Battler_gainTp.call(this, value);
-        if (value > 0) this.nusvRecordResourceGainPopup('tp', this.tp - before);
+        var actualGain = this.tp - before;
+        if (actualGain > 0) this.nusvRecordResourceGain('tp', actualGain);
     };
 
     var _Game_Battler_gainSilentTp = Game_Battler.prototype.gainSilentTp;
     Game_Battler.prototype.gainSilentTp = function(value) {
         var before = this.tp;
         _Game_Battler_gainSilentTp.call(this, value);
-        if (value > 0) this.nusvRecordResourceGainPopup('tp', this.tp - before);
+        var actualGain = this.tp - before;
+        if (actualGain > 0) this.nusvRecordResourceGain('tp', actualGain);
     };
 
     var _Game_Battler_startDamagePopup = Game_Battler.prototype.startDamagePopup;
     Game_Battler.prototype.startDamagePopup = function() {
-        // The gain is already shown by the gain popup system, so the native
-        // MP/SP recovery popup for the same result is suppressed.
-        if (this.nusvHasResourceGainPopups() && this._result) {
-            if (this._result.mpDamage < 0) this._result.mpDamage = 0;
-            if (this._result.tpDamage < 0) this._result.tpDamage = 0;
+        // Native damage popups only cover MP damage/loss.
+        // MP gains are deferred to action/turn end for clean, unified display.
+        if (this._result && this._result.mpDamage < 0) {
+            this._result.mpDamage = 0;
         }
         _Game_Battler_startDamagePopup.call(this);
     };
 
-    Sprite_Damage.prototype.nusvSetupResourceGainPopup = function(battler, popup) {
+    var _Game_Battler_onTurnEnd = Game_Battler.prototype.onTurnEnd;
+    Game_Battler.prototype.onTurnEnd = function() {
+        _Game_Battler_onTurnEnd.call(this);
+        this.nusvFlushPendingResourcePopups();
+    };
+
+    if (typeof BattleManager !== 'undefined') {
+        BattleManager.nusvHasAnyPendingResourceGains = function() {
+            if (!this.allBattleMembers) return false;
+            var members = this.allBattleMembers();
+            for (var i = 0; i < members.length; i++) {
+                var m = members[i];
+                if (m && m._nusvPendingResourceGains) {
+                    if (m._nusvPendingResourceGains.tp > 0 || m._nusvPendingResourceGains.mp > 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        BattleManager.nusvFlushAllPendingResourcePopups = function() {
+            if (this.allBattleMembers) {
+                var members = this.allBattleMembers();
+                for (var i = 0; i < members.length; i++) {
+                    var battler = members[i];
+                    if (battler && battler.nusvFlushPendingResourcePopups) {
+                        battler.nusvFlushPendingResourcePopups();
+                    }
+                }
+            }
+        };
+
+        // When finish actions are prepared, ensure:
+        // 1. PERFORM FINISH (sprites start returning to home position)
+        // 2. WAIT FOR MOVEMENT (wait until actor & targets reach home position)
+        // 3. NUSV RESOURCE GAIN (spawn SP/MP popup at home position & wait before turn end)
+        var _BattleManager_createFinishActions = BattleManager.createFinishActions;
+        BattleManager.createFinishActions = function() {
+            _BattleManager_createFinishActions.call(this);
+            if (!this._actionList) this._actionList = [];
+            var list = this._actionList;
+
+            var alreadyHasNusvGain = false;
+            var performFinishIdx = -1;
+            var hasWaitMovementAfter = false;
+
+            for (var i = 0; i < list.length; i++) {
+                var cmd = (list[i][0] || '').toUpperCase();
+                if (cmd === 'NUSV RESOURCE GAIN') {
+                    alreadyHasNusvGain = true;
+                } else if (cmd === 'PERFORM FINISH') {
+                    performFinishIdx = i;
+                } else if (performFinishIdx >= 0 && (cmd === 'WAIT FOR MOVEMENT' || cmd === 'WAIT FOR MOVEMENT: USER')) {
+                    hasWaitMovementAfter = true;
+                }
+            }
+
+            if (!alreadyHasNusvGain) {
+                if (performFinishIdx < 0) {
+                    list.push(['PERFORM FINISH', []]);
+                    performFinishIdx = list.length - 1;
+                }
+                if (!hasWaitMovementAfter) {
+                    list.splice(performFinishIdx + 1, 0, ['WAIT FOR MOVEMENT', []]);
+                }
+                list.push(['NUSV RESOURCE GAIN', []]);
+            }
+        };
+
+        // Hook action sequence to execute NUSV RESOURCE GAIN
+        var _BattleManager_processActionSequence = BattleManager.processActionSequence;
+        BattleManager.processActionSequence = function(actionName, actionArgs) {
+            if (actionName === 'NUSV RESOURCE GAIN') {
+                return this.actionNusvResourceGain();
+            }
+            return _BattleManager_processActionSequence.call(this, actionName, actionArgs);
+        };
+
+        BattleManager.actionNusvResourceGain = function() {
+            var hasGains = this.nusvHasAnyPendingResourceGains();
+            this.nusvFlushAllPendingResourcePopups();
+            if (hasGains) {
+                // Actor is now at home position (posisi awal).
+                // Wait 35 frames (~0.58s) so the player clearly sees the SP/MP
+                // gain notification floating up before the turn finishes/switches.
+                if (this.actionWait) {
+                    return this.actionWait(35);
+                } else if (this._logWindow) {
+                    this._logWindow._waitCount = 35;
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        var _BattleManager_endAction = BattleManager.endAction;
+        BattleManager.endAction = function() {
+            this.nusvFlushAllPendingResourcePopups();
+            _BattleManager_endAction.call(this);
+        };
+
+        var _BattleManager_endBattle = BattleManager.endBattle;
+        BattleManager.endBattle = function(result) {
+            if (this.allBattleMembers) {
+                var members = this.allBattleMembers();
+                for (var i = 0; i < members.length; i++) {
+                    var battler = members[i];
+                    if (battler) {
+                        if (battler.nusvClearPendingResourceGains) battler.nusvClearPendingResourceGains();
+                        if (battler.nusvClearResourceGainPopups) battler.nusvClearResourceGainPopups();
+                    }
+                }
+            }
+            _BattleManager_endBattle.call(this, result);
+        };
+    }
+
+    Sprite_Damage.prototype.nusvSetupResourceGainPopup = function(battler, popup, index) {
         var text = battler.nusvResourceGainPopupText(popup);
-        var width = resourceGainPopupPadding * 2 + text.length * resourceGainPopupFontSize;
-        var height = resourceGainPopupFontSize * 2;
-        var bitmap = new Bitmap(width, height);
-        bitmap.fontFace = Window_Base.prototype.standardFontFace();
-        bitmap.fontSize = resourceGainPopupFontSize;
-        bitmap.drawText(text, 0, 0, width, height, 'center');
+        var isTp = popup.type === 'tp';
+        var fontSize = resourceGainPopupFontSize;
+        var tw = Math.ceil(text.length * (fontSize * 0.75)) + 40;
+        var th = fontSize + 16;
+        var bitmap = new Bitmap(tw, th);
+        var ctx = bitmap._context;
+
+        bitmap.fontFace = resourceGainPopupFontFace;
+        bitmap.fontSize = fontSize;
+        bitmap.fontBold = true;
+        bitmap.textColor = isTp ? '#FACC15' : '#00E5FF';
+        bitmap.outlineColor = isTp ? '#451A03' : '#082F49';
+        bitmap.outlineWidth = 4;
+
+        if (ctx) {
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetY = 2;
+        }
+
+        bitmap.drawText(text, 0, 0, tw, th, 'center');
 
         var sprite = new Sprite(bitmap);
         sprite.anchor.x = 0.5;
-        sprite.anchor.y = 0.5;
-        sprite.dy = 0;
-        sprite.ry = 0;
+        sprite.anchor.y = 1.0;
+        sprite.x = 0;
+        sprite.y = 0;
+        sprite.dy = -1.2;
+        sprite.scale.x = 1.15;
+        sprite.scale.y = 1.15;
+        this._duration = 65;
         this.addChild(sprite);
     };
 
-    Sprite_Battler.prototype.nusvCreateResourceGainSprite = function(battler, popup) {
+    Sprite_Battler.prototype.nusvCreateResourceGainSprite = function(battler, popup, index) {
         var sprite = new Sprite_Damage();
+        var yOffset = (index || 0) * 26;
         sprite.x = this.x + this.damageOffsetX();
-        sprite.y = this.y + this.damageOffsetY();
-        sprite.nusvSetupResourceGainPopup(battler, popup);
+        sprite.y = this.y + this.damageOffsetY() - yOffset;
+        sprite.nusvSetupResourceGainPopup(battler, popup, index);
         if (this.pushDamageSprite) {
             this.pushDamageSprite(sprite);
         } else {
             this._damages.push(sprite);
         }
-        if (BattleManager._spriteset) BattleManager._spriteset.addChild(sprite);
+        if (BattleManager._spriteset) {
+            BattleManager._spriteset.addChild(sprite);
+        } else if (this.parent) {
+            this.parent.addChild(sprite);
+        }
     };
 
     Sprite_Battler.prototype.nusvUpdateResourceGainPopups = function() {
@@ -573,8 +749,10 @@ NUSV.DamageCore = NUSV.DamageCore || {};
             return;
         }
         var popups = battler.nusvResourceGainPopups();
+        var index = 0;
         while (popups.length > 0) {
-            this.nusvCreateResourceGainSprite(battler, popups.shift());
+            this.nusvCreateResourceGainSprite(battler, popups.shift(), index);
+            index++;
         }
     };
 
@@ -588,6 +766,6 @@ NUSV.DamageCore = NUSV.DamageCore || {};
     // Script-call helpers
     // -------------------------------------------------------------------------
 
-    NUSV.DamageCore.version = '1.1.0';
+    NUSV.DamageCore.version = '1.2.0';
 
 })();

@@ -16,7 +16,7 @@ armor_ed = read_mod('js/editors/armor_editor.js')
 enemy_ed = read_mod('js/editors/enemy_editor.js')
 state_ed = read_mod('js/editors/state_editor.js')
 skill_ed = read_mod('js/editors/skill_editor.js')
-skill_anim = read_mod('js/editors/skill_animator.js')
+bec_ed = read_mod('js/editors/battle_sequence_editor.js')
 anim_ed = read_mod('js/editors/animation_editor.js')
 item_ed = read_mod('js/editors/item_editor.js')
 api_js = read_mod('js/api.js')
@@ -47,11 +47,10 @@ checks = {
     "NUSV Core Attributes (STR, INT, VIT, AGI, DEX, LUK)": 'STR' in constants_js and 'DEX' in constants_js,
     "NUSV SP Regeneration (replacing TP)": 'SP Regeneration' in constants_js,
     "Enemy Battler SV Preview": '/api/images/sv_enemies' in api_js and 'img/sv_enemies/' in enemy_ed,
-    "Skill Sideview Battle Canvas in HTML": 'id="svBattleCanvas"' in html,
-    "Skill Action Sequence Studio in HTML": 'Sideview Battle &amp; Skill Animation Studio' in html,
-    "Skill Animator Engine in Module": 'const SkillAnimator =' in skill_anim,
-    "Skill 1-Click Presets in Module": 'PRESETS:' in skill_anim,
-    "Skill Yanfly Action Sequence Generator": 'generateYanflySequence' in skill_anim,
+    "Battle Engine Flowchart Timeline in Module": 'bec-flowchart-track' in bec_ed,
+    "Battle Engine Core 6-Phase Forms in Module": 'parseBecSkillState' in bec_ed and 'generateBecSkillNote' in bec_ed,
+    "Battle Engine Studio Card in HTML": 'BATTLE ENGINE CORE &amp; ACTION SEQUENCES STUDIO' in html,
+    "Action Sequence Execution Flowchart in HTML": 'Action Sequence Execution Flowchart' in html,
     "Animation Studio Canvas in HTML": 'id="animEditorCanvas"' in html,
     "Animations Tab in HTML": "switchTab('animations')" in html,
     "Animation Engine in Module": 'const AnimEditor =' in anim_ed,

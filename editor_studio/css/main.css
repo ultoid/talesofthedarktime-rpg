@@ -614,6 +614,12 @@ header {
             border-color: var(--accent);
         }
 
+        select.form-control option,
+        select option {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
         textarea.form-control {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
             line-height: 1.45;
@@ -1004,4 +1010,71 @@ header {
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* 6-Phase Battle Engine & Action Sequence Flowchart */
+        .bec-flowchart-track::-webkit-scrollbar {
+            height: 6px;
+        }
+        .bec-flowchart-track::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 4px;
+        }
+        .bec-flowchart-track::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        .bec-flowchart-track::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        .bec-node-btn {
+            transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+            user-select: none;
+        }
+        .bec-node-btn:hover {
+            transform: translateY(-2px);
+            border-color: #c084fc !important;
+            box-shadow: 0 4px 12px rgba(192, 132, 252, 0.25) !important;
+        }
+        .bec-node-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 6-Phase Command List Drag & Drop Styles */
+        .bec-cmd-row {
+            transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
+            user-select: none;
+        }
+        .bec-cmd-row:hover {
+            border-color: #475569 !important;
+            background: rgba(30, 41, 59, 0.8) !important;
+        }
+        .bec-cmd-row:hover .bec-drag-handle {
+            color: #38bdf8 !important;
+        }
+        .bec-cmd-row.bec-dragging {
+            opacity: 0.3 !important;
+            border: 1px dashed #38bdf8 !important;
+            background: rgba(56, 189, 248, 0.08) !important;
+        }
+        .bec-cmd-row.bec-drag-over-top {
+            border-top: 2px solid #38bdf8 !important;
+            box-shadow: 0 -3px 8px rgba(56, 189, 248, 0.45);
+        }
+        .bec-cmd-row.bec-drag-over-bottom {
+            border-bottom: 2px solid #38bdf8 !important;
+            box-shadow: 0 3px 8px rgba(56, 189, 248, 0.45);
+        }
+        .bec-drag-handle {
+            cursor: grab;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 4px;
+            color: #64748b;
+            transition: color 0.15s ease;
+        }
+        .bec-drag-handle:active {
+            cursor: grabbing;
         }

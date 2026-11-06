@@ -1425,18 +1425,20 @@ DataManager.isWholeAction = function(obj) {
 };
 
 DataManager.addActionEffects = function(obj, array) {
+    var count = (typeof obj.repeats === 'number' && !isNaN(obj.repeats)) ? Math.max(1, obj.repeats) : 1;
     for (;;) {
       array[array.length] = ['ACTION EFFECT'];
       array[array.length] = ['DEATH BREAK'];
-      obj.repeats -= 1;
-      if (obj.repeats <= 0) break;
+      count -= 1;
+      if (count <= 0) break;
       array[array.length] = ['WAIT', [8]];
     }
-    obj.repeats = 1;
 };
 
 DataManager.convertSequenceLine = function(obj, line, actionType) {
   if (actionType <= 0 || actionType > 5) return;
+  line = line.trim();
+  if (!line || line.startsWith('#') || line.startsWith('//')) return;
   Yanfly.BEC.SeqType;
   var seqArgs;
   if (line.match(/[ ]*(.*):[ ](.*)/i)) {
@@ -2152,11 +2154,25 @@ BattleManager.createPhaseChanges = function() {
 BattleManager.createSetupActions = function() {
     $gameTemp.clearActionSequenceSettings();
     this._returnPhase = 'setup';
+    if (this._action && this._action.isAttack() && this._subject && this._subject.isActor && this._subject.isActor()) {
+        var weapon = this._subject.weapons ? this._subject.weapons()[0] : null;
+        if (weapon && weapon.setupActions && weapon.setupActions.length > 0) {
+            this._actionList = weapon.setupActions.slice();
+            return;
+        }
+    }
     this._actionList = this._action.item().setupActions.slice();
 };
 
 BattleManager.createWholeActions = function() {
     this._returnPhase = 'whole';
+    if (this._action && this._action.isAttack() && this._subject && this._subject.isActor && this._subject.isActor()) {
+        var weapon = this._subject.weapons ? this._subject.weapons()[0] : null;
+        if (weapon && weapon.wholeActions && weapon.wholeActions.length > 0) {
+            this._actionList = weapon.wholeActions.slice();
+            return;
+        }
+    }
     this._actionList = this._action.item().wholeActions.slice();
 };
 
@@ -2164,16 +2180,37 @@ BattleManager.createTargetActions = function() {
     this._returnPhase = 'target';
     this._phase = 'actionTargetList';
     this.setTargets([this._individualTargets[0]]);
+    if (this._action && this._action.isAttack() && this._subject && this._subject.isActor && this._subject.isActor()) {
+        var weapon = this._subject.weapons ? this._subject.weapons()[0] : null;
+        if (weapon && weapon.targetActions && weapon.targetActions.length > 0) {
+            this._actionList = weapon.targetActions.slice();
+            return;
+        }
+    }
     this._actionList = this._action.item().targetActions.slice();
 };
 
 BattleManager.createFollowActions = function() {
     this._returnPhase = 'follow';
+    if (this._action && this._action.isAttack() && this._subject && this._subject.isActor && this._subject.isActor()) {
+        var weapon = this._subject.weapons ? this._subject.weapons()[0] : null;
+        if (weapon && weapon.followActions && weapon.followActions.length > 0) {
+            this._actionList = weapon.followActions.slice();
+            return;
+        }
+    }
     this._actionList = this._action.item().followActions.slice();
 };
 
 BattleManager.createFinishActions = function() {
     this._returnPhase = 'finish';
+    if (this._action && this._action.isAttack() && this._subject && this._subject.isActor && this._subject.isActor()) {
+        var weapon = this._subject.weapons ? this._subject.weapons()[0] : null;
+        if (weapon && weapon.finishActions && weapon.finishActions.length > 0) {
+            this._actionList = weapon.finishActions.slice();
+            return;
+        }
+    }
     this._actionList = this._action.item().finishActions.slice();
 };
 
@@ -2370,8 +2407,12 @@ BattleManager.processActionSequence = function(actionName, actionArgs) {
 };
 
 BattleManager.makeActionTargets = function(string) {
-    var targets = []
-    string = string.toUpperCase()
+    var targets = [];
+    if (!string) return targets;
+    if (Array.isArray(string)) string = string[0];
+    if (typeof string !== 'string') string = String(string || '');
+    string = string.trim().toUpperCase();
+    if (!string) return targets;
     if (['SUBJECT', 'USER'].contains(string)) {
       return [this._subject];
     }
@@ -2803,10 +2844,13 @@ BattleManager.actionImmortal = function(actionArgs) {
 };
 
 BattleManager.actionMotionWait = function(actionArgs) {
-    var targets = this.makeActionTargets(actionArgs[0]);
-    if (targets[0].isActor() && targets[0].isSpriteVisible()) {
-      this._logWindow._waitCount += 12;
-      return false;
+    var targetName = (actionArgs && actionArgs[0]) ? actionArgs[0] : 'user';
+    var targets = this.makeActionTargets(targetName);
+    if (targets && targets[0] && typeof targets[0].isActor === 'function' && targets[0].isActor()) {
+      if (typeof targets[0].isSpriteVisible === 'function' && targets[0].isSpriteVisible()) {
+        this._logWindow._waitCount += 12;
+        return false;
+      }
     }
     return true;
 };

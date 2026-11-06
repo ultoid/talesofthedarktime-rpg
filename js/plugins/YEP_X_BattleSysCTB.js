@@ -628,6 +628,7 @@ DataManager.processCTBNotetags1 = function(group) {
   var noteS2 = /<(?:AFTER CTB):[ ](\d+)([%％])>/i;
     for (var n = 1; n < group.length; n++) {
       var obj = group[n];
+      if (!obj) continue;
       var notedata = obj.note.split(/[\r\n]+/);
 
       obj.setCTBGaugeFlat = undefined;
@@ -696,6 +697,7 @@ DataManager.processCTBNotetags2 = function(group) {
   var noteB2 = /<(?:CTB TURN):[ ]([\+\-]\d+)([%％])>/i;
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
+    if (!obj) continue;
     var notedata = obj.note.split(/[\r\n]+/);
 
     obj.ctbStartFlat = 0;
@@ -730,6 +732,7 @@ DataManager.processCTBNotetags2 = function(group) {
 DataManager.processCTBNotetags3 = function(group, isActor) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
+    if (!obj) continue;
     var notedata = obj.note.split(/[\r\n]+/);
     
     if (isActor) obj.ctbIcon = Yanfly.Param.CTBAllyIcon;

@@ -189,11 +189,12 @@ function renderWeaponEditor(container, weapon) {
     const motionMatch = note.match(/<Weapon Motion:\s*([a-zA-Z]+)>/i);
     const weaponMotion = motionMatch ? motionMatch[1].toLowerCase() : 'auto';
 
-    const seqMatch = note.match(/<target action>[\s\S]*?<\/target action>/i) || note.match(/<setup action>[\s\S]*?<\/finish action>/i);
-    const rawSeqText = seqMatch ? seqMatch[0] : '';
+    const seqMatch = note.match(/(?:<(?:setup|whole|target|follow|finish) action>[\s\S]*?<\/(?:setup|whole|target|follow|finish) action>\s*)+/i);
+    const rawSeqText = seqMatch ? seqMatch[0].trim() : '';
     const hasCustomSeq = !!rawSeqText;
 
     const wtypes = State.system.weaponTypes || [];
+    const wtName = wtypes[weapon.wtypeId] || '';
 
     container.innerHTML = `
         <!-- WEAPON PROPERTIES & STATS -->
@@ -314,13 +315,19 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                         </label>
                         <div style="display:flex; gap:6px; flex-wrap:wrap;">
                             <button type="button" class="btn btn-sm btn-primary" onclick="openSkillInAnimator(${customAttackSkillId || 1})" style="padding:3px 10px; font-size:0.72rem; font-weight:700;">
-                                🎬 Buka di Skill Animation Editor
+                                ✨ Buka di Skills Editor
                             </button>
                             ${!customAttackSkillId ? `
                                 <button type="button" class="btn btn-sm" onclick="createNewSkillForWeapon()" style="background:#10b98122; border:1px solid #10b981; color:#6ee7b7; padding:3px 10px; font-size:0.72rem; font-weight:700;" title="Otomatis duplikasi & buat skill baru khusus untuk senjata ini dan buka di Skill Animator">
                                     + Buat Skill Khusus Senjata Ini
                                 </button>
                             ` : ''}
+                            <button type="button" class="btn btn-sm" onclick="linkDefaultWeaponAttackSkill()" style="background:#3b82f622; border:1px solid #3b82f6; color:#93c5fd; padding:3px 10px; font-size:0.72rem; font-weight:700;" title="Otomatis hubungkan senjata ini ke Skill Attack spesifik sesuai Weapon Type (Skill #${430 + Math.min(10, Math.max(1, weapon.wtypeId || 1))})">
+                                🎯 Pasang Basic Attack Sesuai Tipe (${escapeHtml(wtName || 'Senjata')})
+                            </button>
+                            <button type="button" class="btn btn-sm" onclick="openVisualEditorForWeaponAttack()" style="background:#8b5cf622; border:1px solid #8b5cf6; color:#c084fc; padding:3px 10px; font-size:0.72rem; font-weight:700;" title="Buka skill senjata ini di Visual Action Sequence Editor untuk edit koreografi secara visual">
+                                🎨 Edit Visual di Action Sequence Editor
+                            </button>
                         </div>
                     </div>
                     <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; align-items:flex-end;">
@@ -328,9 +335,19 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                             <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:2px;">Skill yang Dipakai Saat Perintah Attack</label>
                             <select class="form-control" style="font-size:0.8rem; padding:4px 8px; color:#38bdf8; font-weight:600;" onchange="onWeaponAttackSkillChange(this.value)">
                                 <option value="0" ${!customAttackSkillId ? 'selected' : ''}>(Default: Skill #1 - Attack standar)</option>
-                                ${State.skills.filter(s => s && s.id !== 1).map(s => `
-                                    <option value="${s.id}" ${customAttackSkillId === s.id ? 'selected' : ''}>#${s.id} ${escapeHtml(s.name)}</option>
-                                `).join('')}
+                                <optgroup label="⚔️ 10 Preset Basic Attack Senjata (#431 - #440)">
+                                    ${[1,2,3,4,5,6,7,8,9,10].map(tid => {
+                                        const sid = 430 + tid;
+                                        const s = State.skills[sid];
+                                        if (!s) return '';
+                                        return `<option value="${sid}" ${customAttackSkillId === sid ? 'selected' : ''}>#${sid} ${escapeHtml(s.name)}</option>`;
+                                    }).join('')}
+                                </optgroup>
+                                <optgroup label="✨ Skill Lainnya">
+                                    ${State.skills.filter(s => s && s.id !== 1 && (s.id < 431 || s.id > 440)).map(s => `
+                                        <option value="${s.id}" ${customAttackSkillId === s.id ? 'selected' : ''}>#${s.id} ${escapeHtml(s.name)}</option>
+                                    `).join('')}
+                                </optgroup>
                             </select>
                         </div>
                         <div>
@@ -367,33 +384,57 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                             <strong style="color:#c084fc; font-size:0.78rem;">⚡ Koreografi Action Sequence Khusus pada Senjata (Yanfly Override)</strong>
                             <div style="font-size:0.68rem; color:var(--text-muted);">Jika disetel, sequence ini langsung menimpa gaya serang Skill #1 saat senjata ini dipakai.</div>
                         </div>
-                        <!-- 1-CLICK PRESETS -->
                         <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('melee')" style="background:#0284c733; border:1px solid #38bdf8; color:#e0f2fe; padding:2px 8px; font-size:0.7rem;">
-                                🗡️ Melee Dash
-                            </button>
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('thrust')" style="background:#05966933; border:1px solid #10b981; color:#d1fae5; padding:2px 8px; font-size:0.7rem;">
-                                🏹 Thrust / Pierce
-                            </button>
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('ranged')" style="background:#7c3aed33; border:1px solid #c084fc; color:#ede9fe; padding:2px 8px; font-size:0.7rem;">
-                                🎯 Ranged / Bow
-                            </button>
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('combo')" style="background:#ea580c33; border:1px solid #fb923c; color:#ffedd5; padding:2px 8px; font-size:0.7rem;">
-                                ⚡ 2x Multi-Strike
-                            </button>
+                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('melee_dash')" style="background:#0284c733; border:1px solid #38bdf8; color:#e0f2fe; padding:2px 7px; font-size:0.68rem;">🗡️ Melee Dash</button>
+                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('thrust_pierce')" style="background:#05966933; border:1px solid #10b981; color:#d1fae5; padding:2px 7px; font-size:0.68rem;">🏹 Thrust / Pierce</button>
+                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('ranged_bow')" style="background:#ea580c33; border:1px solid #fb923c; color:#ffedd5; padding:2px 7px; font-size:0.68rem;">🎯 Ranged / Bow</button>
+                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('multi_strike')" style="background:#d9770633; border:1px solid #f59e0b; color:#fef3c7; padding:2px 7px; font-size:0.68rem;">⚡ 2x Multi-Strike</button>
                             ${hasCustomSeq ? `
-                                <button type="button" class="btn btn-xs btn-danger" onclick="clearWeaponActionSequence()" style="padding:2px 8px; font-size:0.7rem;">
+                                <button type="button" class="btn btn-xs btn-danger" onclick="clearWeaponActionSequence()" style="padding:2px 7px; font-size:0.68rem;">
                                     🧹 Hapus Sequence
                                 </button>
                             ` : ''}
                         </div>
                     </div>
+                    
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; background:rgba(0,0,0,0.25); padding:6px 10px; border-radius:6px; border:1px dashed rgba(192,132,252,0.25);">
+                        <span style="font-size:0.72rem; color:#c084fc; font-weight:700;">Preset 10 Tipe Senjata:</span>
+                        <select id="wepPresetSelect" class="form-control" style="width:auto; font-size:0.72rem; padding:2px 8px; height:26px; color:#f1f5f9; background:#0f172a; border-color:#8b5cf6;" onchange="if(this.value) applyWeaponActionSequencePreset(this.value)">
+                            <option value="">-- Pilih Koreografi 10 Senjata --</option>
+                            <option value="long_sword">01. 🗡️ Long Sword (Maju Mantap, Tebas Berat & Knockback)</option>
+                            <option value="sword">02. ⚔️ Sword (Maju Lincah & Sabetan Cepat)</option>
+                            <option value="gloves">03. 🥊 Gloves (Maju Cepat, Tinjuan 1-2x Dual Wield)</option>
+                            <option value="spear">04. 🔱 Spear (Melompat & Tusukan Tombak)</option>
+                            <option value="axe">05. 🪓 Axe (Melompat Tinggi & Hantaman Kapak)</option>
+                            <option value="staff">06. 🪄 Staff (Maju Selangkah & Proyektil Mana)</option>
+                            <option value="rune">07. 🔮 Rune (Angkat Tangan & Proyektil Mana 1-2x)</option>
+                            <option value="long_bow">08. 🏹 Long Bow (Tarik Panah Jarak Jauh)</option>
+                            <option value="crossbow">09. 🎯 Crossbow (Tembakan Beruntun 1-3x)</option>
+                            <option value="dagger">10. 🗡️ Dagger (Teleport Belakang & Sabetan Cepat)</option>
+                        </select>
+                        <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset(document.getElementById('wepPresetSelect').value || 'sword')" style="background:#8b5cf633; border:1px solid #8b5cf6; color:#e0e7ff; padding:2px 10px; font-size:0.7rem; font-weight:600;">
+                            ⚡ Terapkan
+                        </button>
+                    </div>
+
                     ${hasCustomSeq ? `
-                        <textarea class="form-control" rows="5" style="font-family:monospace; font-size:0.72rem; color:#f8fafc; background:#04060c;" readonly>${escapeHtml(rawSeqText)}</textarea>
-                    ` : `
-                        <div style="font-size:0.72rem; color:var(--text-muted); font-style:italic;">
-                            Senjata ini belum memiliki Action Sequence tersendiri (mengikuti Skill #1 atau Skill khusus di atas). Klik salah satu tombol preset di atas untuk memasang koreografi langsung pada senjata ini.
+                        <div style="font-size:0.72rem; color:#c084fc; font-weight:700; margin-bottom:4px;">
+                            🎬 Action Sequence Khusus Aktif pada Senjata Ini (Override):
                         </div>
+                        <textarea class="form-control" rows="5" style="font-family:monospace; font-size:0.75rem; color:#f8fafc; background:#04060c; line-height:1.4;" onchange="onWeaponSeqChange(this.value)">${escapeHtml(rawSeqText)}</textarea>
+                    ` : `
+                        <div style="background:rgba(0,0,0,0.3); border:1px dashed rgba(192,132,252,0.3); border-radius:6px; padding:8px 12px; font-size:0.75rem; color:#cbd5e1; margin-bottom:8px;">
+                            <div style="color:#38bdf8; font-weight:700; margin-bottom:2px; display:flex; justify-content:space-between; align-items:center;">
+                                <span>⚡ Koreografi Tempur Aktif:</span>
+                                <span class="list-badge" style="background:#0284c722; color:#38bdf8; border-color:#38bdf8; font-size:0.68rem; padding:1px 6px;">
+                                    ${customAttackSkillId > 0 ? `Skill #${customAttackSkillId} [${(State.skills[customAttackSkillId]||{}).name||''}]` : (weapon.wtypeId > 0 && weapon.wtypeId <= 10 ? `Otomatis Tipe Senjata (Skill #${430 + weapon.wtypeId}: ${wtName})` : 'Skill #1 (Attack Standar)')}
+                                </span>
+                            </div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); line-height:1.4;">
+                                Senjata ini secara otomatis menggunakan aksi sequence dari skill di atas saat memilih perintah <strong>Attack</strong>. Klik <strong>"🎨 Edit Visual di Action Sequence Editor"</strong> untuk menyusun command-nya, atau gunakan tombol preset di atas / ketik di bawah untuk menimpa (override) koreografi khusus hanya untuk senjata ini.
+                            </div>
+                        </div>
+                        <textarea class="form-control" rows="3" style="font-family:monospace; font-size:0.75rem; color:#f8fafc; background:#04060c; line-height:1.4;" onchange="onWeaponSeqChange(this.value)" placeholder="Tempelkan atau ketik action sequence Yanfly (<target action>...) di sini jika ingin override khusus..."></textarea>
                     `}
                 </div>
             </div>
@@ -594,10 +635,14 @@ function onWeaponHandChange(type) {
 function openSkillInAnimator(skillId) {
     if (!skillId) skillId = 1;
     State.selectedIndices = State.selectedIndices || {};
-    State.selectedIndices['skill_animator'] = skillId;
     State.selectedIndices['skills'] = skillId;
+    if (skillId >= 431 && skillId <= 440) {
+        State.skillClassFilter = 'weapon_attacks';
+    } else {
+        State.skillClassFilter = 'all';
+    }
     if (typeof switchTab === 'function') {
-        switchTab('skill_animator');
+        switchTab('skills');
     }
 }
 
@@ -674,59 +719,15 @@ function createNewSkillForWeapon() {
     const isSpear = wtName.includes('spear') || wtName.includes('tombak') || wtName.includes('lance') || wtName.includes('dagger') || wtName.includes('belati');
 
     const appMotion = isRanged ? 'missile' : (isSpear ? 'thrust' : 'swing');
-    const appType = isRanged ? 'ranged' : 'melee';
 
-    // Generate starter sequence for this weapon attack skill
-    const newCfg = {
-        hasCustomSeq: true,
-        cast: { enabled: false, motion: 'chant', step: false, animId: 0, duration: 15, se: '' },
-        attack: {
-            target: 'target',
-            approach: appType,
-            motion: appMotion,
-            distance: isRanged ? 0 : 50,
-            animId: newSkill.animationId,
-            posType: 'center',
-            offsetX: 0,
-            offsetY: -35,
-            repeats: 1,
-            interval: 10,
-            shake: 'light',
-            flash: 'none'
-        },
-        reaction: {
-            type: 'flinch',
-            flash: 'red',
-            popupType: 'hp_damage',
-            testValue: 0,
-            se: 'Blow1'
-        },
-        steps: [
-            ...(isRanged ? [] : [{ id: 'step_m1', type: 'move', name: '🏃 Gerak Maju', duration: 14, approach: 'melee', distance: 50 }]),
-            {
-                id: 'step_a1',
-                type: 'action',
-                name: '⚔️ Serangan',
-                duration: 18,
-                motion: appMotion,
-                target: 'target',
-                animId: newSkill.animationId,
-                offsetX: 0,
-                offsetY: -35,
-                posType: 'center',
-                se: 'Blow1',
-                shake: 'light',
-                flash: 'none',
-                reaction: 'flinch',
-                popupType: 'hp_damage'
-            },
-            ...(isRanged ? [] : [{ id: 'step_r1', type: 'return', name: '↩️ Kembali', duration: 14, approach: 'walk' }])
-        ]
-    };
-
-    if (typeof SkillAnimator !== 'undefined' && SkillAnimator.saveConfigToSkill) {
-        SkillAnimator.saveConfigToSkill(newSkill, newCfg);
+    // Generate starter sequence for this weapon attack skill (Yanfly Battle Engine Core)
+    let seq = '';
+    if (isRanged) {
+        seq = `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\nperform start\nwait for movement\n</setup action>\n\n<target action>\nmotion ${appMotion}: user\nattack animation: target\nwait for animation\naction effect: target\nwait for effect\n</target action>\n\n<finish action>\nimmortal: targets, false\nperform finish\n</finish action>`;
+    } else {
+        seq = `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\nperform start\nwait for movement\n</setup action>\n\n<target action>\nmove user: target, front, 18\nwait for movement\nmotion ${appMotion}: user\nattack animation: target\nwait for animation\naction effect: target\nshake screen: 2, 4, 10\nwait for effect\n</target action>\n\n<finish action>\nimmortal: targets, false\nperform finish\n</finish action>`;
     }
+    newSkill.note = seq;
 
     State.skills[newId] = newSkill;
 
@@ -739,7 +740,6 @@ function createNewSkillForWeapon() {
     if (!State.modifiedTabs) State.modifiedTabs = new Set();
     State.modifiedTabs.add('weapons');
     State.modifiedTabs.add('skills');
-    State.modifiedTabs.add('skill_animator');
     setUnsaved(true);
 
     if (typeof showToast === 'function') {
@@ -751,36 +751,78 @@ function createNewSkillForWeapon() {
 }
 
 const WEAPON_SEQ_PRESETS = {
-    melee: {
+    long_sword: {
+        name: '🗡️ Long Sword',
+        seq: `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\ncamera clamp off\ncamera focus: user, center, 25\nzoom: 120%, 25\nwait for camera\nwait for zoom\nwait: 6\n</setup action>\n\n<target action>\nmove user: target, front, 18, 20\nwait for movement\nmotion swing: user\nwait: 12\nattack animation: target\nwait for animation\naction effect: target\nmotion damage: target\nshake screen: 3, 5, 12\nmove target: backward, 45, 8\nwait: 8\nmove target: home, 8\nwait: 10\n</target action>\n\n<finish action>\nimmortal: targets, false\nmove user: return, 15\nwait for movement\nreset camera: 30\nreset zoom: 30\nwait for camera\nwait for zoom\nperform finish\nclear battle log\n</finish action>`
+    },
+    sword: {
+        name: '⚔️ Sword',
+        seq: `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\ncamera clamp off\ncamera focus: user, center, 25\nzoom: 120%, 25\nwait for camera\nwait for zoom\nwait: 6\n</setup action>\n\n<target action>\nmove user: target, front, 18, 14\nwait for movement\nmotion swing: user\nwait: 6\nattack animation: target\nwait for animation\naction effect: target\nmotion damage: target\nshake screen: 2, 4, 8\nwait: 12\n</target action>\n\n<finish action>\nimmortal: targets, false\nmove user: return, 15\nwait for movement\nreset camera: 30\nreset zoom: 30\nwait for camera\nwait for zoom\nperform finish\nclear battle log\n</finish action>`
+    },
+    gloves: {
+        name: '🥊 Gloves',
+        seq: `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\ncamera clamp off\ncamera focus: user, center, 25\nzoom: 125%, 25\nwait for camera\nwait for zoom\nwait: 6\n</setup action>\n\n<target action>\nmove user: target, front, 14, 12\nwait for movement\nmotion thrust: user\nattack animation: target\nwait for animation\naction effect: target\nmotion damage: target\nshake screen: 2, 4, 6\nwait: 10\nif user.isDualWield()\n  motion swing: user\n  attack animation: target\n  wait for animation\n  action effect: target\n  motion damage: target\n  shake screen: 3, 5, 8\n  wait: 10\nend\nwait: 8\n</target action>\n\n<finish action>\nimmortal: targets, false\nmove user: return, 14\nwait for movement\nreset camera: 30\nreset zoom: 30\nwait for camera\nwait for zoom\nperform finish\nclear battle log\n</finish action>`
+    },
+    spear: {
+        name: '🔱 Spear',
+        seq: `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\ncamera clamp off\ncamera focus: user, center, 25\nzoom: 120%, 25\nwait for camera\nwait for zoom\nwait: 6\n</setup action>\n\n<target action>\njump user: 120, 16\nmove user: target, front, 24, 16\nwait for movement\nmotion thrust: user\nwait: 8\nattack animation: target\nwait for animation\naction effect: target\nmotion damage: target\nshake screen: 3, 5, 10\nmove target: backward, 50, 8\nwait: 8\nmove target: home, 8\nwait: 10\n</target action>\n\n<finish action>\nimmortal: targets, false\nmove user: return, 15\nwait for movement\nreset camera: 30\nreset zoom: 30\nwait for camera\nwait for zoom\nperform finish\nclear battle log\n</finish action>`
+    },
+    axe: {
+        name: '🪓 Axe',
+        seq: `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\ncamera clamp off\ncamera focus: user, center, 25\nzoom: 125%, 25\nwait for camera\nwait for zoom\nwait: 6\n</setup action>\n\n<target action>\njump user: 140, 18\nmove user: target, front, 18, 18\nwait for movement\nmotion swing: user\nwait: 12\nattack animation: target\nwait for animation\naction effect: target\nmotion damage: target\nshake screen: 4, 6, 14\nmove target: backward, 60, 8\nwait: 8\nmove target: home, 8\nwait: 12\n</target action>\n\n<finish action>\nimmortal: targets, false\nmove user: return, 15\nwait for movement\nreset camera: 30\nreset zoom: 30\nwait for camera\nwait for zoom\nperform finish\nclear battle log\n</finish action>`
+    },
+    staff: {
+        name: '🪄 Staff',
+        seq: `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\ncamera clamp off\ncamera focus: user, center, 25\nzoom: 120%, 25\nwait for camera\nwait for zoom\nwait: 6\n</setup action>\n\n<target action>\nmove user: forward, 30, 12\nwait for movement\nmotion chant: user\ncast animation\nwait: 16\nmotion swing: user\nwait: 6\nattack animation: target\nwait for animation\naction effect: target\nmotion damage: target\nshake screen: 2, 4, 8\nwait: 15\n</target action>\n\n<finish action>\nimmortal: targets, false\nmove user: home, 12\nwait for movement\nreset camera: 30\nreset zoom: 30\nwait for camera\nwait for zoom\nperform finish\nclear battle log\n</finish action>`
+    },
+    rune: {
+        name: '🔮 Rune',
+        seq: `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\ncamera clamp off\ncamera focus: user, center, 25\nzoom: 120%, 25\nwait for camera\nwait for zoom\nwait: 6\n</setup action>\n\n<target action>\nmove user: forward, 25, 12\nwait for movement\nmotion chant: user\ncast animation\nwait: 14\nmotion spell: user\nwait: 8\nattack animation: target\nwait for animation\naction effect: target\nmotion damage: target\nshake screen: 2, 4, 6\nwait: 8\nif user.isDualWield()\n  motion spell: user\n  attack animation: target\n  wait for animation\n  action effect: target\n  motion damage: target\n  shake screen: 2, 4, 6\n  wait: 8\nend\nwait: 10\n</target action>\n\n<finish action>\nimmortal: targets, false\nmove user: home, 12\nwait for movement\nreset camera: 30\nreset zoom: 30\nwait for camera\nwait for zoom\nperform finish\nclear battle log\n</finish action>`
+    },
+    long_bow: {
+        name: '🏹 Long Bow',
+        seq: `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\ncamera clamp off\ncamera focus: user, center, 25\nzoom: 120%, 25\nwait for camera\nwait for zoom\nwait: 6\n</setup action>\n\n<target action>\nmotion chant: user\nwait: 14\nmotion missile: user\nwait: 6\nattack animation: target\nwait for animation\naction effect: target\nmotion damage: target\nshake screen: 3, 5, 10\nmove target: backward, 40, 8\nwait: 8\nmove target: home, 8\nwait: 12\n</target action>\n\n<finish action>\nimmortal: targets, false\nreset camera: 30\nreset zoom: 30\nwait for camera\nwait for zoom\nperform finish\nclear battle log\n</finish action>`
+    },
+    crossbow: {
+        name: '🎯 Crossbow',
+        seq: `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\ncamera clamp off\ncamera focus: user, center, 25\nzoom: 120%, 25\nwait for camera\nwait for zoom\nwait: 6\n</setup action>\n\n<target action>\nmotion missile: user\nattack animation: target\nwait: 8\naction effect: target\nmotion damage: target\nshake screen: 1, 3, 5\nwait: 6\nmotion missile: user\nattack animation: target\nwait: 8\naction effect: target\nmotion damage: target\nshake screen: 2, 4, 6\nwait: 6\nif user.agi >= 30 || user.atk >= 40\n  motion missile: user\n  attack animation: target\n  wait: 8\n  action effect: target\n  motion damage: target\n  shake screen: 3, 5, 8\n  wait: 6\nend\nmove target: backward, 35, 8\nwait: 8\nmove target: home, 8\nwait: 10\n</target action>\n\n<finish action>\nimmortal: targets, false\nreset camera: 30\nreset zoom: 30\nwait for camera\nwait for zoom\nperform finish\nclear battle log\n</finish action>`
+    },
+    dagger: {
+        name: '🗡️ Dagger',
+        seq: `<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\ncamera clamp off\ncamera focus: user, center, 25\nzoom: 125%, 25\nwait for camera\nwait for zoom\nwait: 6\n</setup action>\n\n<target action>\nopacity user: 0%, 5\nwait for opacity\nmove user: target, back base, 0\nopacity user: 100%, 5\nwait for opacity\nface user: backward\nmotion swing: user\nwait: 6\nattack animation: target\nwait for animation\naction effect: target\nmotion damage: target\nshake screen: 2, 4, 6\nwait: 6\nif user.isDualWield()\n  motion thrust: user\n  wait: 6\n  attack animation: target\n  wait for animation\n  action effect: target\n  motion damage: target\n  shake screen: 2, 4, 8\n  wait: 8\nend\nmove target: forward, 20, 6\nwait: 6\nmove target: home, 6\nwait: 6\n</target action>\n\n<finish action>\nimmortal: targets, false\nopacity user: 0%, 5\nwait for opacity\nmove user: home, 0\nface user: forward\nopacity user: 100%, 5\nwait for opacity\nreset camera: 30\nreset zoom: 30\nwait for camera\nwait for zoom\nperform finish\nclear battle log\n</finish action>`
+    },
+    melee_dash: {
         name: '🗡️ Melee Dash',
-        seq: `<target action>\nmove user: target, front, 14\nwait for movement\nmotion swing: user\naction animation: target\naction effect: target\nwait for animation\n</target action>`
+        seq: `<target action>\nmove user: target, front, 14, 15\nwait for movement\nmotion swing: user\nwait: 6\naction animation: target\naction effect: target\nwait for animation\nwait for effect\n</target action>`
     },
-    thrust: {
+    thrust_pierce: {
         name: '🏹 Thrust / Pierce',
-        seq: `<target action>\nmove user: target, front, 12\nwait for movement\nmotion thrust: user\naction animation: target\naction effect: target\nenemy effect: targets, blink\nwait for animation\n</target action>`
+        seq: `<target action>\nmove user: target, front, 18, 15\nwait for movement\nmotion thrust: user\nwait: 6\naction animation: target\naction effect: target\nwait for animation\nwait for effect\n</target action>`
     },
-    ranged: {
+    ranged_bow: {
         name: '🎯 Ranged / Bow',
-        seq: `<target action>\nmotion missile: user\naction animation: target\naction effect: target\nwait for animation\n</target action>`
+        seq: `<target action>\nmotion missile: user\nwait: 10\naction animation: target\naction effect: target\nwait for animation\nwait for effect\n</target action>`
     },
-    combo: {
+    multi_strike: {
         name: '⚡ 2x Multi-Strike',
-        seq: `<target action>\nmove user: target, front, 14\nwait for movement\nmotion swing: user\naction animation: target\naction effect: target\nwait: 8\nmotion thrust: user\naction animation: target\naction effect: target\nwait for animation\n</target action>`
+        seq: `<target action>\nmove user: target, front, 14, 15\nwait for movement\nmotion swing: user\nwait: 6\naction animation: target\naction effect: target\nwait: 10\nmotion swing: user\nwait: 6\naction animation: target\naction effect: target\nwait for animation\nwait for effect\n</target action>`
     }
 };
 
 function applyWeaponActionSequencePreset(presetKey) {
     const weapon = State.weapons[State.selectedIndex];
-    if (!weapon) return;
+    if (!weapon || !presetKey) return;
     const p = WEAPON_SEQ_PRESETS[presetKey];
     if (!p) return;
 
     let note = weapon.note || '';
     note = note.replace(/<setup action>[\s\S]*?<\/setup action>\n?/gi, '');
+    note = note.replace(/<whole action>[\s\S]*?<\/whole action>\n?/gi, '');
     note = note.replace(/<target action>[\s\S]*?<\/target action>\n?/gi, '');
+    note = note.replace(/<follow action>[\s\S]*?<\/follow action>\n?/gi, '');
     note = note.replace(/<finish action>[\s\S]*?<\/finish action>\n?/gi, '').trim();
 
-    note = note + '\n\n' + p.seq;
+    note = note ? note + '\n\n' + p.seq : p.seq;
     weapon.note = note.trim();
     setUnsaved(true);
     renderEditor();
@@ -789,12 +831,65 @@ function applyWeaponActionSequencePreset(presetKey) {
     }
 }
 
+function onWeaponSeqChange(val) {
+    const weapon = State.weapons[State.selectedIndex];
+    if (!weapon) return;
+    let note = weapon.note || '';
+    note = note.replace(/<setup action>[\s\S]*?<\/setup action>\n?/gi, '');
+    note = note.replace(/<whole action>[\s\S]*?<\/whole action>\n?/gi, '');
+    note = note.replace(/<target action>[\s\S]*?<\/target action>\n?/gi, '');
+    note = note.replace(/<follow action>[\s\S]*?<\/follow action>\n?/gi, '');
+    note = note.replace(/<finish action>[\s\S]*?<\/finish action>\n?/gi, '').trim();
+
+    val = (val || '').trim();
+    if (val) {
+        note = note ? note + '\n\n' + val : val;
+    }
+    weapon.note = note.trim();
+    setUnsaved(true);
+    updateRawNoteTextarea();
+}
+
+function linkDefaultWeaponAttackSkill() {
+    const weapon = State.weapons[State.selectedIndex];
+    if (!weapon) return;
+    const wtype = Math.min(10, Math.max(1, weapon.wtypeId || 1));
+    const targetSkillId = 430 + wtype;
+    let note = weapon.note || '';
+    note = note.replace(/<skill_id:\s*\d+>\n?/gi, '');
+    note = note.replace(/<Attack Skill:\s*\d+>\n?/gi, '').trim();
+    weapon.note = `<skill_id: ${targetSkillId}>\n` + note;
+    setUnsaved(true);
+    renderEditor();
+    const skillName = State.skills[targetSkillId]?.name || `Skill #${targetSkillId}`;
+    if (typeof showToast === 'function') {
+        showToast(`Senjata ${weapon.name} dihubungkan ke [${skillName}]!`, 'success');
+    }
+}
+
+function openVisualEditorForWeaponAttack() {
+    const weapon = State.weapons[State.selectedIndex];
+    if (!weapon) return;
+    let skillId = 1;
+    const m = (weapon.note || '').match(/<(?:skill_id|Attack Skill):\s*(\d+)>/i);
+    if (m) {
+        skillId = parseInt(m[1], 10);
+    } else {
+        const wtype = Math.min(10, Math.max(1, weapon.wtypeId || 1));
+        skillId = 430 + wtype;
+        linkDefaultWeaponAttackSkill();
+    }
+    openSkillInAnimator(skillId);
+}
+
 function clearWeaponActionSequence() {
     const weapon = State.weapons[State.selectedIndex];
     if (!weapon) return;
     let note = weapon.note || '';
     note = note.replace(/<setup action>[\s\S]*?<\/setup action>\n?/gi, '');
+    note = note.replace(/<whole action>[\s\S]*?<\/whole action>\n?/gi, '');
     note = note.replace(/<target action>[\s\S]*?<\/target action>\n?/gi, '');
+    note = note.replace(/<follow action>[\s\S]*?<\/follow action>\n?/gi, '');
     note = note.replace(/<finish action>[\s\S]*?<\/finish action>\n?/gi, '').trim();
     weapon.note = note;
     setUnsaved(true);
@@ -803,6 +898,16 @@ function clearWeaponActionSequence() {
         showToast(`Action sequence pada ${weapon.name} dihapus (kembali ke default)`, 'info');
     }
 }
+
+window.applyWeaponActionSequencePreset = applyWeaponActionSequencePreset;
+window.clearWeaponActionSequence = clearWeaponActionSequence;
+window.linkDefaultWeaponAttackSkill = linkDefaultWeaponAttackSkill;
+window.openVisualEditorForWeaponAttack = openVisualEditorForWeaponAttack;
+window.onWeaponSeqChange = onWeaponSeqChange;
+window.onWeaponAttackSkillChange = onWeaponAttackSkillChange;
+window.onWeaponMotionChange = onWeaponMotionChange;
+window.openSkillInAnimator = openSkillInAnimator;
+window.createNewSkillForWeapon = createNewSkillForWeapon;
 
 // =====================================================================
 // 4. ARMORS & ACCESSORIES EDITOR (MERGED NUSV STAT SYSTEM)

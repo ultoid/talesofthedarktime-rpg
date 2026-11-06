@@ -26,26 +26,6 @@ function ensureNavTabs() {
         }
     }
 
-    const hasSkillAnim = tabBtns.some(b => {
-        const onclick = b.getAttribute('onclick') || '';
-        return onclick.includes('skill_animator');
-    });
-    if (!hasSkillAnim) {
-        const skiBtn = tabBtns.find(b => {
-            const onclick = b.getAttribute('onclick') || '';
-            return onclick.includes("'skills'") || onclick.includes('"skills"');
-        });
-        const saBtn = document.createElement('button');
-        saBtn.className = 'tab-btn' + (State.currentTab === 'skill_animator' ? ' active' : '');
-        saBtn.setAttribute('onclick', "switchTab('skill_animator')");
-        saBtn.innerHTML = '🎬 Skill Animation Editor';
-        if (skiBtn && skiBtn.nextSibling) {
-            nav.insertBefore(saBtn, skiBtn.nextSibling);
-        } else {
-            nav.appendChild(saBtn);
-        }
-    }
-
     const hasAnim = tabBtns.some(b => {
         const onclick = b.getAttribute('onclick') || '';
         return onclick.includes('animations');
@@ -85,18 +65,6 @@ function ensureNavTabs() {
             s.src = 'editor_studio/js/editors/animation_editor.js?t=' + Date.now();
             s.onload = () => {
                 if (State.currentTab === 'animations') renderEditor();
-            };
-            document.head.appendChild(s);
-        }
-    }
-
-    if (typeof SkillAnimator === 'undefined' && typeof document !== 'undefined' && document.head) {
-        const existing = document.querySelector('script[src*="skill_animator.js"]');
-        if (!existing) {
-            const s = document.createElement('script');
-            s.src = 'editor_studio/js/editors/skill_animator.js?t=' + Date.now();
-            s.onload = () => {
-                if (State.currentTab === 'skills') renderEditor();
             };
             document.head.appendChild(s);
         }
@@ -242,12 +210,15 @@ function skillMatchesFilter(skill, filterVal) {
     if (filterVal === 'player_skills') {
         return (State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === skill.id)) || skill.id <= 2) && skill.id <= 232;
     }
+    if (filterVal === 'weapon_attacks') {
+        return skill.id >= 431 && skill.id <= 440;
+    }
     if (filterVal === 'enemy_skills') {
         const isPlayer = (State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === skill.id)) || skill.id <= 2) && skill.id <= 232;
         return !isPlayer && skill.id < 426;
     }
     if (filterVal === 'grimoire_skills') {
-        return skill.id >= 426;
+        return skill.id >= 426 && skill.id <= 430;
     }
     if (filterVal === 'basic') {
         return !State.classes.some(c => c && c.learnings && c.learnings.some(l => l.skillId === skill.id));
@@ -425,6 +396,7 @@ function renderSidebarFilters() {
         const f = State.skillClassFilter || 'all';
         const totalCount = State.skills.filter(s => s).length;
         const playerSkillsCount = State.skills.filter(s => s && skillMatchesFilter(s, 'player_skills')).length;
+        const weaponAttacksCount = State.skills.filter(s => s && skillMatchesFilter(s, 'weapon_attacks')).length;
         const tmCount = State.skills.filter(s => s && !isSkillExclusive(s) && getSkillTmCompatibleClasses(s).length > 0).length;
         const ultCount = State.skills.filter(s => s && isSkillExclusive(s)).length;
         const enemySkillsCount = State.skills.filter(s => s && skillMatchesFilter(s, 'enemy_skills')).length;
@@ -448,6 +420,7 @@ function renderSidebarFilters() {
         filterContainer.innerHTML = `
             <select class="form-control" onchange="setSkillClassFilter(this.value)" title="Filter skill berdasarkan kategori, tier, atau profesi">
                 <option value="player_skills" ${f === 'player_skills' ? 'selected' : ''}>⚔️ Skill Kelas Pemain (${playerSkillsCount})</option>
+                <option value="weapon_attacks" ${f === 'weapon_attacks' ? 'selected' : ''}>🗡️ Basic Attack 10 Tipe Senjata (${weaponAttacksCount})</option>
                 <option value="tm_available" ${f === 'tm_available' ? 'selected' : ''}>📜 Memiliki Scroll (${tmCount})</option>
                 <option value="exclusive_ult" ${f === 'exclusive_ult' ? 'selected' : ''}>👑 Jurus Pamungkas Eksklusif (${ultCount})</option>
                 <option value="enemy_skills" ${f === 'enemy_skills' ? 'selected' : ''}>👾 Aksi Monster & Musuh (${enemySkillsCount})</option>
@@ -614,17 +587,24 @@ function renderSidebar() {
             const tmClasses = getSkillTmCompatibleClasses(item);
             const isExclusive = isSkillExclusive(item);
 
-            if (tier > 0) {
-                mainBadge = `<span class="list-badge" style="color:#f59e0b; border-color:rgba(245,158,11,0.3); font-weight:700;">T${tier}</span>`;
-            }
-            if (classIds.length > 0) {
-                const clsName = State.classes[classIds[0]]?.name || `Cls #${classIds[0]}`;
-                subBadges.push(`<span class="list-badge" style="color:#a78bfa; border-color:rgba(167,139,250,0.3);">${escapeHtml(clsName)}</span>`);
-            }
-            if (isExclusive) {
-                subBadges.push(`<span class="list-badge" style="color:#ef4444; border-color:rgba(239,68,68,0.3); font-weight:700;">★ Ult</span>`);
-            } else if (tmClasses.length > 0) {
-                subBadges.push(`<span class="list-badge" style="color:#10b981; border-color:rgba(16,185,129,0.3);" title="Kompatibel TM: ${escapeHtml(tmClasses.join(', '))}">+${tmClasses.length} TM</span>`);
+            if (item.id >= 431 && item.id <= 440) {
+                const wtNames = ['', 'Long Sword', 'Sword', 'Gloves', 'Spear', 'Axe', 'Staff', 'Rune', 'Long Bow', 'Crossbow', 'Dagger'];
+                const wt = wtNames[item.id - 430] || 'Senjata';
+                mainBadge = `<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.4); font-weight:700;">${escapeHtml(wt)}</span>`;
+                subBadges.push(`<span class="list-badge" style="color:#c084fc; border-color:rgba(192,132,252,0.3);">⚔️ Preset Senjata</span>`);
+            } else {
+                if (tier > 0) {
+                    mainBadge = `<span class="list-badge" style="color:#f59e0b; border-color:rgba(245,158,11,0.3); font-weight:700;">T${tier}</span>`;
+                }
+                if (classIds.length > 0) {
+                    const clsName = State.classes[classIds[0]]?.name || `Cls #${classIds[0]}`;
+                    subBadges.push(`<span class="list-badge" style="color:#a78bfa; border-color:rgba(167,139,250,0.3);">${escapeHtml(clsName)}</span>`);
+                }
+                if (isExclusive) {
+                    subBadges.push(`<span class="list-badge" style="color:#ef4444; border-color:rgba(239,68,68,0.3); font-weight:700;">★ Ult</span>`);
+                } else if (tmClasses.length > 0) {
+                    subBadges.push(`<span class="list-badge" style="color:#10b981; border-color:rgba(16,185,129,0.3);" title="Kompatibel TM: ${escapeHtml(tmClasses.join(', '))}">+${tmClasses.length} TM</span>`);
+                }
             }
         } else if (State.currentTab === 'items') {
             const cat = getItemCategory(item);
@@ -837,14 +817,6 @@ function renderEditor() {
             if (statSub) statSub.innerText = 'Sideview Combat Simulation';
             renderSkillEditor(container, item); 
             if (previewContainer) renderSkillStatPreview(previewContainer, item);
-            break;
-        case 'skill_animator': 
-            if (statTitle) statTitle.innerHTML = '🎬 Skill Animation Studio';
-            if (statSub) statSub.innerText = 'CapCut-Style Keyframe & VFX';
-            if (typeof SkillAnimator !== 'undefined' && typeof SkillAnimator.renderStudioTab === 'function') {
-                SkillAnimator.renderStudioTab(container, item);
-                if (previewContainer) SkillAnimator.renderStudioSidebar(previewContainer, item);
-            }
             break;
         case 'items': 
             if (statTitle) statTitle.innerHTML = '🧪 Item Inspector';

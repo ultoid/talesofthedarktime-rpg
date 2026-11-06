@@ -20,111 +20,7 @@ function renderSkillStatPreview(container, skill) {
     };
     const hitTypes = { 0: 'Certain Hit', 1: 'Physical Attack', 2: 'Magical Attack' };
 
-    const svActors = (State.svActors && State.svActors.length > 0) ? State.svActors : ['Actor1_1', 'Actor1_2', 'Actor1_3', 'Actor2_1', 'Actor2_2'];
-    const enemies = (State.enemiesPics && State.enemiesPics.length > 0) ? State.enemiesPics : ['Actor1_3', 'Actor1_4', 'Actor1_5', 'Actor2_1'];
-
     container.innerHTML = `
-        <!-- LIVE BATTLE SIMULATOR (SIDEVIEW PREVIEW) -->
-        <div class="card" style="margin-bottom:12px; border:1px solid #8b5cf655; background:#0f172a; overflow:hidden;">
-            <div class="card-header" style="padding:10px 14px; background:linear-gradient(135deg, rgba(30,27,75,0.6) 0%, rgba(15,23,42,0.8) 100%); display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:1.15rem;">⚔️</span>
-                    <div>
-                        <div style="font-size:0.7rem; color:#c084fc; font-weight:700; letter-spacing:0.5px;">LIVE BATTLE SIMULATOR</div>
-                        <h3 style="font-size:0.95rem; margin:0; color:#fff; font-weight:700;">Sideview Combat Preview</h3>
-                    </div>
-                </div>
-                <div id="svPhaseIndicator" class="badge" style="background:#1e1b4b; border:1px solid #8b5cf6; font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:9999px; white-space:nowrap; flex-shrink:0;">
-                    ⏸ Standby
-                </div>
-            </div>
-
-            <!-- 16:9 SV Canvas Viewport -->
-            <div style="position:relative; width:100%; aspect-ratio:16/9; background:#000; overflow:hidden; border-bottom:1px solid var(--border-color);">
-                <canvas id="svBattleCanvas" width="480" height="270" style="width:100%; height:100%; display:block; image-rendering:pixelated;"></canvas>
-            </div>
-
-            <!-- Interactive Choreography Timeline Scrubber Bar -->
-            <div style="padding:6px 12px; background:rgba(2,6,23,0.95); border-bottom:1px solid var(--border-color); display:flex; flex-direction:column; gap:4px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem;">
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <span style="color:#c084fc; font-weight:700;">⏱️ Timeline:</span>
-                        <span id="svCurrentFrameText" style="color:#f8fafc; font-family:monospace; font-weight:700;">0f / 75f</span>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:4px;">
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="stepSkillAnim(-1)" style="padding:1px 6px; font-size:0.68rem;" title="Mundur 1 Frame">⏮ -1f</button>
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="stepSkillAnim(1)" style="padding:1px 6px; font-size:0.68rem;" title="Maju 1 Frame">+1f ⏭</button>
-                    </div>
-                </div>
-                <input type="range" id="svTimelineSlider" min="0" max="75" value="0" style="width:100%; height:6px; cursor:ew-resize; accent-color:#8b5cf6;" oninput="onSvTimelineScrub(this.value)">
-                
-                <!-- Quick Phase Click Tracks -->
-                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:3px; margin-top:2px;">
-                    <button type="button" class="btn btn-sm" onclick="jumpToSkillPhase('cast')" style="padding:2px 0; font-size:0.62rem; background:rgba(192,132,252,0.15); border:1px solid #c084fc44; color:#c084fc;" title="Lompat ke fase Casting">🔮 Cast</button>
-                    <button type="button" class="btn btn-sm" onclick="jumpToSkillPhase('approach')" style="padding:2px 0; font-size:0.62rem; background:rgba(56,189,248,0.15); border:1px solid #38bdf844; color:#38bdf8;" title="Lompat ke fase Gerak">🏃 Move</button>
-                    <button type="button" class="btn btn-sm" onclick="jumpToSkillPhase('attack')" style="padding:2px 0; font-size:0.62rem; background:rgba(248,113,113,0.15); border:1px solid #f8717144; color:#f87171;" title="Lompat ke fase Pukulan &amp; VFX">⚔️ Strike/VFX</button>
-                    <button type="button" class="btn btn-sm" onclick="jumpToSkillPhase('return')" style="padding:2px 0; font-size:0.62rem; background:rgba(250,204,21,0.15); border:1px solid #facc1544; color:#facc15;" title="Lompat ke fase Pulang">↩️ Return</button>
-                </div>
-            </div>
-
-            <!-- Playback Control Toolbar -->
-            <div style="padding:8px 12px; background:rgba(15,23,42,0.95); border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                <div style="display:flex; gap:6px; align-items:center;">
-                    <button id="svPlayBtn" class="btn btn-sm btn-primary" onclick="toggleSkillAnimPlay()" style="padding:4px 10px; font-size:0.75rem;">⏸ Pause</button>
-                    <button id="svReplayBtn" class="btn btn-sm btn-secondary" onclick="replaySkillAnim()" style="padding:4px 8px; font-size:0.75rem;" title="Ulangi animasi dari awal">⏮ Replay</button>
-                    <button id="svLoopBtn" class="btn btn-sm btn-secondary" onclick="toggleSkillAnimLoop()" style="padding:4px 8px; font-size:0.75rem;" title="Ulang otomatis secara berkala">🔄 Loop: ON</button>
-                </div>
-                <div style="display:flex; gap:6px; align-items:center;">
-                    <select id="svSpeedSelect" class="form-control" style="width:auto; padding:3px 6px; font-size:0.75rem; height:auto;" onchange="setSkillAnimSpeed(parseFloat(this.value))">
-                        <option value="0.5">0.5x Slow</option>
-                        <option value="1.0" selected>1.0x Normal</option>
-                        <option value="1.5">1.5x Fast</option>
-                        <option value="2.0">2.0x Turbo</option>
-                    </select>
-                    <button id="svMuteBtn" class="btn btn-sm btn-secondary" onclick="toggleSkillAnimMute()" style="padding:4px 8px; font-size:0.75rem;" title="Mute efek suara">🔊 SE</button>
-                </div>
-            </div>
-
-            <!-- Scene Battler & Arena Customizers -->
-            <div style="padding:8px 12px; background:rgba(15,23,42,0.6); display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; font-size:0.72rem;">
-                <div>
-                    <label style="color:var(--text-muted); display:block; margin-bottom:2px;">🎭 SV Actor:</label>
-                    <select id="svActorSelect" class="form-control" style="padding:2px 4px; font-size:0.72rem; height:auto;" 
-                            onchange="SkillAnimator.selectedActorName=this.value; SkillAnimator.getImage('img/sv_actors/' + this.value + '.png');">
-                        ${svActors.map(a => {
-                            const name = a.replace(/\.png$/i, '');
-                            return `<option value="${name}" ${SkillAnimator.selectedActorName === name ? 'selected' : ''}>${name}</option>`;
-                        }).join('')}
-                    </select>
-                </div>
-                <div>
-                    <label style="color:var(--text-muted); display:block; margin-bottom:2px;">👾 SV Enemy:</label>
-                    <select id="svEnemySelect" class="form-control" style="padding:2px 4px; font-size:0.72rem; height:auto;" 
-                            onchange="SkillAnimator.selectedEnemyName=this.value; SkillAnimator.getImage('img/sv_enemies/' + this.value + '.png'); SkillAnimator.getImage('img/enemies/' + this.value + '.png');">
-                        ${enemies.map(e => {
-                            const name = e.replace(/\.png$/i, '');
-                            return `<option value="${name}" ${SkillAnimator.selectedEnemyName === name ? 'selected' : ''}>${name}</option>`;
-                        }).join('')}
-                    </select>
-                </div>
-                <div>
-                    <label style="color:var(--text-muted); display:block; margin-bottom:2px;">🌄 Arena:</label>
-                    <select id="svBattlebackSelect" class="form-control" style="padding:2px 4px; font-size:0.72rem; height:auto;" 
-                            onchange="SkillAnimator.selectedBattleback1=this.value; SkillAnimator.getImage('img/battlebacks1/' + this.value + '.png');">
-                        <option value="Cobblestones1" ${SkillAnimator.selectedBattleback1 === 'Cobblestones1' ? 'selected' : ''}>Cobblestones</option>
-                        <option value="Castle1" ${SkillAnimator.selectedBattleback1 === 'Castle1' ? 'selected' : ''}>Castle</option>
-                        <option value="Clouds" ${SkillAnimator.selectedBattleback1 === 'Clouds' ? 'selected' : ''}>Clouds</option>
-                        <option value="Grassland" ${SkillAnimator.selectedBattleback1 === 'Grassland' ? 'selected' : ''}>Grassland</option>
-                        <option value="Forest" ${SkillAnimator.selectedBattleback1 === 'Forest' ? 'selected' : ''}>Forest</option>
-                        <option value="Desert" ${SkillAnimator.selectedBattleback1 === 'Desert' ? 'selected' : ''}>Desert</option>
-                        <option value="Wasteland" ${SkillAnimator.selectedBattleback1 === 'Wasteland' ? 'selected' : ''}>Wasteland</option>
-                        <option value="Lava" ${SkillAnimator.selectedBattleback1 === 'Lava' ? 'selected' : ''}>Lava</option>
-                        <option value="Snow" ${SkillAnimator.selectedBattleback1 === 'Snow' ? 'selected' : ''}>Snow</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
         <!-- SKILL INSPECTOR STAT CARD -->
         <div class="card" style="margin-bottom:0;">
             <div class="card-header" style="padding:10px 14px;">
@@ -195,13 +91,6 @@ function renderSkillStatPreview(container, skill) {
             </div>
         </div>
     `;
-
-    setTimeout(() => {
-        const cvs = document.getElementById('svBattleCanvas');
-        if (cvs && typeof SkillAnimator !== 'undefined') {
-            SkillAnimator.initPreview(cvs, skill);
-        }
-    }, 40);
 }
 
 function renderSkillEditor(container, skill) {
@@ -351,7 +240,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                                     🎨 Buka di Animation Studio
                                 </button>
                             </div>
-                            <select class="form-control" onchange="skill.animationId=parseInt(this.value,10); setUnsaved(true);">
+                            <select class="form-control" onchange="skill.animationId=parseInt(this.value,10); setUnsaved(true); renderEditor();">
                                 <option value="0">(Tanpa Animasi)</option>
                                 ${State.animations.filter(a => a).map(a => `<option value="${a.id}" ${skill.animationId === a.id ? 'selected' : ''}>#${a.id} ${escapeHtml(a.name)}</option>`).join('')}
                             </select>
@@ -405,7 +294,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
             </div>
         </div>
 
-        ${typeof SkillAnimator !== "undefined" ? SkillAnimator.renderStudioPanel(skill) : ""}
+        ${typeof renderBattleEngineVisualizer !== "undefined" ? renderBattleEngineVisualizer(skill) : ""}
 
         <!-- FORMULA KERUSAKAN / PEMULIHAN (DAMAGE FORMULA) -->
         <div class="card">

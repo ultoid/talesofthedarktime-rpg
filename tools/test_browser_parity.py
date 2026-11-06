@@ -92,156 +92,216 @@ async def test_endpoint(ws, context_id, url_path, log_entries):
             return result_obj['value']
         elif res.get('type') == 'success' and result_obj.get('type') == 'undefined':
             return None
+        print("JS EVAL ERROR RESPONSE:", res)
         return res
 
-    # 3. Switch to skill_animator tab
-    await evaluate_js("switchTab('skill_animator');")
+    # 3. Switch to skills tab
+    await evaluate_js("switchTab('skills');")
     await asyncio.sleep(0.3)
-    tab_info = json.loads(await evaluate_js("JSON.stringify({tab: State.currentTab, width: SkillAnimator.WIDTH, height: SkillAnimator.HEIGHT, actorHome: SkillAnimator.actorHome, enemyHome: SkillAnimator.enemyHome, selectedActor: SkillAnimator.selectedActorId, selectedSlot: SkillAnimator.selectedPartySlot, selectedTroop: SkillAnimator.selectedTroopId, memberCount: (SkillAnimator.enemyBattlers||[]).length})"))
-    print(f"✓ Skill Animator Tab Active: {tab_info['width']}x{tab_info['height']} battle resolution")
-    assert tab_info['tab'] == 'skill_animator', f"Current tab is {tab_info['tab']}"
-    assert tab_info['width'] == 1080 and tab_info['height'] == 720, "Canvas resolution is not 1080x720"
+    tab_info = json.loads(await evaluate_js("JSON.stringify({tab: State.currentTab, hasVisualizer: typeof renderBattleEngineVisualizer === 'function', hasParser: typeof parseBecSkillState === 'function', hasGenerator: typeof generateBecSkillNote === 'function'})"))
+    print(f"✓ Skills Tab Active: Battle Engine & Action Sequence Flowchart Loaded={tab_info['hasVisualizer']}")
+    assert tab_info['tab'] == 'skills', f"Current tab is {tab_info['tab']}"
+    assert tab_info['hasVisualizer'] == True, "renderBattleEngineVisualizer is missing!"
+    assert tab_info['hasParser'] == True, "parseBecSkillState is missing!"
+    assert tab_info['hasGenerator'] == True, "generateBecSkillNote is missing!"
 
-    # 4. Test Actor & Party Slot home formula parity
-    # YEP BEC sideview home formula: screenWidth - 16 - (maxSize + 2) * 32 + index * 32
-    # For width=1080, maxSize=4: 1080 - 16 - 192 + index * 32 = 872 + index * 32
-    # Index 0 => X = 872; Index 1 => X = 904; Index 2 => X = 936; Index 3 => X = 968
-    actor_home_test = json.loads(await evaluate_js("""
+    # 4. Verify All 6 Flowchart Nodes & Form Sections in DOM
+    bec_dom_test = json.loads(await evaluate_js("""
     (() => {
-        SkillAnimator.selectPreviewPartySlot(0);
-        const x0 = SkillAnimator.actorHome.x;
-        SkillAnimator.selectPreviewPartySlot(1);
-        const x1 = SkillAnimator.actorHome.x;
-        SkillAnimator.selectPreviewPartySlot(2);
-        const x2 = SkillAnimator.actorHome.x;
-        SkillAnimator.selectPreviewPartySlot(3);
-        const x3 = SkillAnimator.actorHome.x;
-        SkillAnimator.selectPreviewPartySlot(0); // return to slot 0
-        return JSON.stringify({x0, x1, x2, x3});
+        const sections = ['becSec_pre', 'becSec_setup', 'becSec_whole', 'becSec_target', 'becSec_follow', 'becSec_finish'];
+        const sectionCheck = sections.map(id => ({ id, exists: Boolean(document.getElementById(id)) }));
+        const flowchartTrack = Boolean(document.querySelector('.bec-flowchart-track'));
+        const nodeButtonsCount = document.querySelectorAll('.bec-node-btn').length;
+        return JSON.stringify({ sectionCheck, flowchartTrack, nodeButtonsCount });
     })()
     """))
-    print(f"✓ YEP BEC Actor Home Formula Verified: Slot 0={actor_home_test['x0']}, Slot 1={actor_home_test['x1']}, Slot 2={actor_home_test['x2']}, Slot 3={actor_home_test['x3']}")
-    assert actor_home_test['x0'] == 872 and actor_home_test['x1'] == 904 and actor_home_test['x2'] == 936 and actor_home_test['x3'] == 968, f"Home positions do not match YEP formula: {actor_home_test}"
+    print(f"✓ BEC 6-Phase Forms & Flowchart Verified: {bec_dom_test['nodeButtonsCount']} flowchart nodes, all 6 forms present")
+    assert bec_dom_test['flowchartTrack'] == True, "bec-flowchart-track element not found"
+    assert bec_dom_test['nodeButtonsCount'] == 6, f"Expected 6 node buttons, got {bec_dom_test['nodeButtonsCount']}"
+    for sec in bec_dom_test['sectionCheck']:
+        assert sec['exists'] == True, f"Phase form section {sec['id']} missing from DOM"
 
-    # 5. Test Troop #1 (Ayam Hutan*2 with 3 members, static enemies in img/enemies/)
-    troop1_info = json.loads(await evaluate_js("""
+    # 5. Test State Parser on Skill #1 (Attack)
+    bec_parse_test = json.loads(await evaluate_js("""
     (() => {
-        SkillAnimator.selectPreviewTroop(1);
-        const members = SkillAnimator.enemyBattlers.map(e => ({
-            slot: e.slot,
-            enemyId: e.enemyId,
-            name: e.name,
-            x: e.x,
-            y: e.y,
-            sideview: e.sideview,
-            folder: e.folder,
-            imagePath: e.imagePath,
-            mirror: e.mirror
-        }));
-        return JSON.stringify({count: members.length, members});
+        const skill = (State.skills || [])[1];
+        const state = parseBecSkillState(skill ? skill.note : '');
+        return JSON.stringify({
+            hasSetup: state.setup.hasSetup,
+            setupImmortal: state.setup.setupImmortal,
+            setupBattleLog: state.setup.setupBattleLog,
+            targetApproach: state.target.targetApproach,
+            targetMotion: state.target.targetMotion,
+            targetAnimType: state.target.targetAnimType,
+            targetImpactFx: state.target.targetImpactFx,
+            finishImmortalRelease: state.finish.finishImmortalRelease
+        });
     })()
     """))
-    print(f"✓ Troop #1 Verified: {troop1_info['count']} members")
-    assert troop1_info['count'] == 3, f"Expected 3 members in Troop #1, got {troop1_info['count']}"
-    assert troop1_info['members'][0]['x'] == 165 and troop1_info['members'][0]['y'] == 444
-    assert troop1_info['members'][1]['x'] == 258 and troop1_info['members'][1]['y'] == 310
-    assert troop1_info['members'][2]['x'] == 300 and troop1_info['members'][2]['y'] == 400
-    assert troop1_info['members'][0]['sideview'] == False, "Static enemy should have sideview=False"
-    assert troop1_info['members'][0]['folder'] == 'enemies', "Static enemy should use folder='enemies'"
-    assert troop1_info['members'][0]['mirror'] == False, "Static enemy should not be mirrored"
+    print(f"✓ BEC Parser Verified for Skill #1: Approach={bec_parse_test['targetApproach']}, Motion={bec_parse_test['targetMotion']}, Anim={bec_parse_test['targetAnimType']}")
+    assert bec_parse_test['targetAnimType'] in ['weapon_anim', 'custom_anim', 'skill_anim'], f"Expected weapon_anim or custom_anim, got {bec_parse_test['targetAnimType']}"
+    assert bec_parse_test['setupImmortal'] == True, "Expected setupImmortal to be true"
+    assert bec_parse_test['finishImmortalRelease'] == True, "Expected finishImmortalRelease to be true"
 
-    # 6. Test Target Enemy Switching on Troop #1
-    target_switch_test = json.loads(await evaluate_js("""
+    # 6. Test Interactive Field Mutation & Note Generation
+    mutation_test = json.loads(await evaluate_js("""
     (() => {
-        SkillAnimator.selectPreviewEnemy(0);
-        const h0 = { ...SkillAnimator.enemyHome };
-        SkillAnimator.selectPreviewEnemy(1);
-        const h1 = { ...SkillAnimator.enemyHome };
-        SkillAnimator.selectPreviewEnemy(2);
-        const h2 = { ...SkillAnimator.enemyHome };
-        return JSON.stringify({h0, h1, h2});
-    })()
-    """))
-    print(f"✓ Target Enemy Switching Verified: Slot 0={target_switch_test['h0']}, Slot 1={target_switch_test['h1']}, Slot 2={target_switch_test['h2']}")
-    assert target_switch_test['h0']['x'] == 165 and target_switch_test['h0']['y'] == 444
-    assert target_switch_test['h1']['x'] == 258 and target_switch_test['h1']['y'] == 310
-    assert target_switch_test['h2']['x'] == 300 and target_switch_test['h2']['y'] == 400
-
-    # 7. Test Troop #2 (Babi Hutan with animated SV enemy tags)
-    troop2_info = json.loads(await evaluate_js("""
-    (() => {
-        SkillAnimator.selectPreviewTroop(2);
-        const members = SkillAnimator.enemyBattlers.map(e => ({
-            slot: e.slot,
-            enemyId: e.enemyId,
-            name: e.name,
-            x: e.x,
-            y: e.y,
-            sideview: e.sideview,
-            folder: e.folder,
-            frames: e.frames,
-            columns: e.columns,
-            frameSpeed: e.frameSpeed,
-            mirror: e.mirror
-        }));
-        return JSON.stringify({count: members.length, members});
-    })()
-    """))
-    print(f"✓ Troop #2 (Animated SV Enemy) Verified: {troop2_info['count']} members, sideview={troop2_info['members'][0]['sideview']}, folder={troop2_info['members'][0]['folder']}, frames={troop2_info['members'][0]['frames']}, mirror={troop2_info['members'][0]['mirror']}")
-    assert troop2_info['members'][0]['sideview'] == True, "Babi Hutan must be recognized as animated SV enemy"
-    assert troop2_info['members'][0]['folder'] == 'sv_enemies', "Babi Hutan folder must match <Sideview Folder: sv_enemies>"
-    assert troop2_info['members'][0]['frames'] == 8, "Babi Hutan frames must be 8"
-    assert troop2_info['members'][0]['mirror'] == False, "Babi Hutan has <Sideview No Mirror> so mirror must be False"
-
-    # Return to Troop 1
-    await evaluate_js("SkillAnimator.selectPreviewTroop(1);")
-
-    # 8. Test Choreography Movement Does NOT Reset Actor Home Every Tick
-    movement_test = json.loads(await evaluate_js("""
-    (() => {
-        SkillAnimator.currentTick = 0;
-        SkillAnimator.update(true);
-        const initActorX = SkillAnimator.actorPos.x;
+        const skill = (State.skills || [])[1];
+        const originalNote = skill.note;
+        skill.note = '<setup action>\\nimmortal: targets, true\\n</setup action>\\n<target action>\\naction effect: target\\n</target action>\\n<finish action>\\nimmortal: targets, false\\n</finish action>';
         
-        // Advance to setup step forward
-        SkillAnimator.currentTick = 12;
-        SkillAnimator.update(true);
-        const steppedActorX = SkillAnimator.actorPos.x;
+        // Mutate target fields
+        onBecStateFieldChange('target', 'targetApproach', 'jump_in');
+        onBecStateFieldChange('target', 'targetMotion', 'thrust');
+        onBecTargetAnimChange('anim_4');
         
-        // Render several times to confirm render() does NOT snap position back to home
-        SkillAnimator.render();
-        SkillAnimator.render();
-        const afterRenderActorX = SkillAnimator.actorPos.x;
+        const modifiedNote = skill.note;
+        const modifiedState = parseBecSkillState(modifiedNote);
         
-        return JSON.stringify({initActorX, steppedActorX, afterRenderActorX});
+        // Restore original note to leave no dirty state
+        skill.note = originalNote;
+        setUnsaved(false);
+        renderEditor();
+        
+        return JSON.stringify({
+            hasJumpIn: modifiedNote.includes('jump user: 120'),
+            hasThrust: modifiedNote.includes('motion thrust: user'),
+            hasAnim4: modifiedNote.includes('animation 4: target'),
+            parsedApproach: modifiedState.target.targetApproach,
+            parsedMotion: modifiedState.target.targetMotion,
+            parsedAnimType: modifiedState.target.targetAnimType,
+            parsedCustomAnim: modifiedState.target.targetCustomAnim
+        });
     })()
     """))
-    print(f"✓ Movement Choreography Verified: Initial X={movement_test['initActorX']}, Stepped X={movement_test['steppedActorX']}, After Render X={movement_test['afterRenderActorX']}")
-    assert movement_test['steppedActorX'] != movement_test['initActorX'], "Actor did not step forward during sequence!"
-    assert movement_test['afterRenderActorX'] == movement_test['steppedActorX'], "Render snapped actor position back to home!"
+    print(f"✓ BEC Sequence Generation & Mutation Verified: JumpIn={mutation_test['hasJumpIn']}, Thrust={mutation_test['hasThrust']}, DirectAnim4={mutation_test['hasAnim4']}")
+    assert mutation_test['hasJumpIn'] == True, "jump user: 120 missing from generated note"
+    assert mutation_test['hasThrust'] == True, "motion thrust: user missing from generated note"
+    assert mutation_test['hasAnim4'] == True, "animation 4: target missing from generated note"
+    assert mutation_test['parsedApproach'] == 'jump_in', "Parsed approach does not match jump_in"
+    assert mutation_test['parsedMotion'] == 'thrust', "Parsed motion does not match thrust"
+    assert mutation_test['parsedAnimType'] == 'custom_anim', "Parsed anim type does not match custom_anim"
+    assert mutation_test['parsedCustomAnim'] == 4, "Parsed custom anim id does not match 4"
 
-    # 9. Test Camera Controls & State
-    camera_test = json.loads(await evaluate_js("""
+    # 6b. Test Cinematic Slow-Mo Preset Generation & Round-trip Parity
+    cinematic_test = json.loads(await evaluate_js("""
     (() => {
-        const cfg = SkillAnimator.getConfig(SkillAnimator.activeSkill);
-        if (cfg.steps && cfg.steps[1]) {
-            cfg.steps[1].cameraFocus = 'target';
-            cfg.steps[1].cameraZoom = 125;
-            cfg.steps[1].cameraDuration = 20;
-            cfg.steps[1].cameraOffsetX = 20;
-            cfg.steps[1].cameraOffsetY = -10;
-        }
-        SkillAnimator.currentTick = cfg.steps && cfg.steps[1] ? (cfg.steps[1].startTick + 10) : 25;
-        SkillAnimator.update(true);
-        const cam = { ...SkillAnimator.cameraState };
-        return JSON.stringify({cam, yanfly: SkillAnimator.generateYanflySequence(cfg, SkillAnimator.activeSkill)});
+        const skill = (State.skills || [])[1];
+        const originalNote = skill.note;
+        
+        // Apply Cinematic Slow-Mo Preset
+        applyCinematicSlowMoPreset();
+        const cineNote = skill.note;
+        const cineState = parseBecSkillState(cineNote);
+        
+        // Restore
+        skill.note = originalNote;
+        setUnsaved(false);
+        renderEditor();
+        
+        return JSON.stringify({
+            hasZoom150: cineNote.includes('zoom: 150%'),
+            hasUserTrack: cineNote.includes('camera focus: user, center, 20'),
+            hasSlowDash: cineNote.includes('move user: target, front, 18, 28'),
+            hasHold12: cineNote.includes('wait: 12'),
+            hasCutTarget: cineNote.includes('camera focus: target, center, 15'),
+            hasSlowRecoil: cineNote.includes('motion damage: target') && cineNote.includes('wait: 20'),
+            hasDeadCheck: cineNote.includes('if target.isDead()'),
+            hasFade50: cineNote.includes('opacity target: 0%, 50'),
+            hasSmoothReset: cineNote.includes('reset camera: 30') && cineNote.includes('reset zoom: 30'),
+            parsedCam: cineState.setup.setupCamera,
+            parsedSpeed: cineState.target.targetApproachSpeed,
+            parsedHold: cineState.target.targetStrikeHold,
+            parsedHitCam: cineState.target.targetHitCamera,
+            parsedRecoil: cineState.target.targetRecoil,
+            parsedDeath: cineState.target.targetDeathRule,
+            parsedFinishCam: cineState.finish.finishResetCamera
+        });
     })()
     """))
-    print(f"✓ Camera State & YEP Commands Verified: Zoom={camera_test['cam']['zoom']:.2f}, X={camera_test['cam']['x']:.1f}, Y={camera_test['cam']['y']:.1f}")
-    assert 'camera focus: target, center' in camera_test['yanfly'] or 'camera' in camera_test['yanfly'], "Camera command missing from Yanfly sequence!"
-    assert 'zoom: 125%' in camera_test['yanfly'] or 'zoom' in camera_test['yanfly'], "Zoom command missing from Yanfly sequence!"
+    print(f"✓ Cinematic Slow-Mo Preset Verified: Zoom150={cinematic_test['hasZoom150']}, SlowDash={cinematic_test['hasSlowDash']}, Hold12={cinematic_test['hasHold12']}, CutTarget={cinematic_test['hasCutTarget']}, Fade50={cinematic_test['hasFade50']}, SmoothReset={cinematic_test['hasSmoothReset']}")
+    assert cinematic_test['hasZoom150'] == True
+    assert cinematic_test['hasUserTrack'] == True
+    assert cinematic_test['hasSlowDash'] == True
+    assert cinematic_test['hasHold12'] == True
+    assert cinematic_test['hasCutTarget'] == True
+    assert cinematic_test['hasSlowRecoil'] == True
+    assert cinematic_test['hasDeadCheck'] == True
+    assert cinematic_test['hasFade50'] == True
+    assert cinematic_test['hasSmoothReset'] == True
+    assert cinematic_test['parsedCam'] == 'zoom_user_track'
+    assert cinematic_test['parsedSpeed'] == 'slow_28'
+    assert cinematic_test['parsedHold'] == 'hold_12'
+    assert cinematic_test['parsedHitCam'] == 'cut_target'
+    assert cinematic_test['parsedRecoil'] == 'slow_recoil_20'
+    assert cinematic_test['parsedDeath'] == 'slow_fade_50'
+    assert cinematic_test['parsedFinishCam'] == 'smooth_30'
 
-    # 10. Test Native Animation Editor to Battle Preview Link & Multi-Skill Modal
+    # 6c. Test Event-Command Builder (Add, Move, Duplicate, Delete, Presets)
+    builder_test = json.loads(await evaluate_js("""
+    (() => {
+        const skill = (State.skills || [])[1];
+        const originalNote = skill.note;
+
+        // 1. Open modal and check visibility
+        openBecCommandModal('target');
+        const modal = document.getElementById('becCommandModal');
+        const modalVisible = modal && modal.style.display === 'flex';
+
+        // 2. Select 'zoom' and set manual values: scale=180, frames=25
+        onBecModalCommandTypeChange('zoom');
+        document.getElementById('bec_p_zoom_scale').value = '180';
+        document.getElementById('bec_p_zoom_frames').value = '25';
+        onBecModalParamChange();
+        saveBecCommandModal();
+
+        const afterAddState = parseBecSkillState(skill.note);
+        const hasManualZoom = skill.note.includes('zoom: 180%, 25');
+        const countAfterAdd = afterAddState.targetCommands.length;
+
+        // 3. Duplicate last command
+        duplicateBecCommand('target', countAfterAdd - 1);
+        const countAfterDup = parseBecSkillState(skill.note).targetCommands.length;
+
+        // 4. Move command & Drag-and-Drop Reorder
+        moveBecCommand('target', countAfterDup - 1, -1);
+        reorderBecCommand('target', 0, 2);
+        const stateAfterReorder = parseBecSkillState(skill.note);
+        const reorderSuccess = stateAfterReorder.targetCommands.length === countAfterDup;
+
+        // 5. Delete command
+        deleteBecCommand('target', countAfterDup - 1);
+        const countAfterDel = parseBecSkillState(skill.note).targetCommands.length;
+
+        // 6. Test phase preset loading
+        applyBecPhasePreset('target', 'standard_melee');
+        const meleeState = parseBecSkillState(skill.note);
+        const hasMeleeLine = skill.note.includes('move user: target, front, 18, 15');
+
+        // Restore original state
+        skill.note = originalNote;
+        setUnsaved(false);
+        renderEditor();
+
+        return JSON.stringify({
+            modalWasVisible: modalVisible,
+            hasManualZoom: hasManualZoom,
+            countAfterAdd: countAfterAdd,
+            countAfterDup: countAfterDup,
+            countAfterDel: countAfterDel,
+            hasMeleeLine: hasMeleeLine,
+            meleeCmdCount: meleeState.targetCommands.length
+        });
+    })()
+    """))
+    print(f"✓ Event-Command Builder Verified: ModalOpened={builder_test['modalWasVisible']}, ManualZoom={builder_test['hasManualZoom']}, DupCount={builder_test['countAfterDup']}, DelCount={builder_test['countAfterDel']}, MeleePreset={builder_test['hasMeleeLine']}")
+    assert builder_test['modalWasVisible'] == True, "Command modal failed to open!"
+    assert builder_test['hasManualZoom'] == True, "Manual zoom 180%, 25 was not generated in skill note!"
+    assert builder_test['countAfterDup'] == builder_test['countAfterAdd'] + 1, "Duplicate failed to increase command count!"
+    assert builder_test['countAfterDel'] == builder_test['countAfterDup'] - 1, "Delete failed to decrease command count!"
+    assert builder_test['hasMeleeLine'] == True, "Standard melee preset failed to generate in note!"
+
+    # 7. Test Native Animation Editor to Skills Link & Multi-Skill Modal
     anim_link_test = json.loads(await evaluate_js("""
     (() => {
         switchTab('animations');
@@ -264,16 +324,16 @@ async def test_endpoint(ws, context_id, url_path, log_entries):
             matchingSkillsCount: skillsUsingAnim.length,
             modalWasVisible: modalVisible,
             activeTabAfterSelect: State.currentTab,
-            selectedSkillId: SkillAnimator.activeSkill ? SkillAnimator.activeSkill.id : 0
+            selectedSkillId: State.selectedIndex || 0
         });
     })()
     """))
-    print(f"✓ Native Animation to Battle Preview Link Verified: Found {anim_link_test['matchingSkillsCount']} skills, Modal Opened={anim_link_test['modalWasVisible']}, Navigated to Tab={anim_link_test['activeTabAfterSelect']} for Skill #{anim_link_test['selectedSkillId']}")
+    print(f"✓ Native Animation to Battle Link Verified: Found {anim_link_test['matchingSkillsCount']} skills, Modal Opened={anim_link_test['modalWasVisible']}, Navigated to Tab={anim_link_test['activeTabAfterSelect']} for Skill #{anim_link_test['selectedSkillId']}")
     assert anim_link_test['matchingSkillsCount'] > 1, f"Expected multiple skills for Animation #2, got {anim_link_test['matchingSkillsCount']}"
     assert anim_link_test['modalWasVisible'] == True, "Selection modal was not shown for multiple skills!"
-    assert anim_link_test['activeTabAfterSelect'] == 'skill_animator', "Did not switch back to skill_animator tab!"
+    assert anim_link_test['activeTabAfterSelect'] == 'skills', "Did not switch to skills tab!"
 
-    # 11. Verify State.hasUnsavedChanges remains FALSE (no modifications committed to project)
+    # 8. Verify State.hasUnsavedChanges remains FALSE (no modifications committed to project)
     unsaved_status = await evaluate_js("State.hasUnsavedChanges")
     print(f"✓ Unsaved Changes Status: {unsaved_status}")
     assert unsaved_status == False, "State.hasUnsavedChanges was set to true during testing!"

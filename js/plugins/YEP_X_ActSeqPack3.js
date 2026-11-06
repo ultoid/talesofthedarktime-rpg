@@ -474,11 +474,25 @@ BattleManager.processActionSequence = function(actionName, actionArgs) {
     actionName, actionArgs);
 };
 
+Yanfly.ASP3.BattleManager_createFinishActions = BattleManager.createFinishActions;
+BattleManager.createFinishActions = function() {
+    this._hasCustomCameraFinish = false;
+    if (this._action && this._action.item() && this._action.item().finishActions) {
+        var finishActs = this._action.item().finishActions;
+        if (finishActs && finishActs.length > 0) {
+            this._hasCustomCameraFinish = true;
+        }
+    }
+    Yanfly.ASP3.BattleManager_createFinishActions.call(this);
+};
+
 Yanfly.ASP3.BattleManager_actionPerformFinish =
     BattleManager.actionPerformFinish;
 BattleManager.actionPerformFinish = function() {
-    this.actionResetZoom([30]);
-    this.resetCamera([30]);
+    if (!this._hasCustomCameraFinish) {
+        this.actionResetZoom([30]);
+        this.resetCamera(30);
+    }
     return Yanfly.ASP3.BattleManager_actionPerformFinish.call(this);
 };
 
@@ -694,12 +708,19 @@ BattleManager.actionZoom = function(actionArgs) {
 
 Yanfly.ASP3.BattleManager_setup = BattleManager.setup;
 BattleManager.setup = function(troopId, canEscape, canLose) {
-    this.resetCamera();
+    this.resetCamera(0);
     this.actionResetZoom([1]);
+    if ($gameScreen) {
+        $gameScreen._zoomX = Graphics.boxWidth / 2;
+        $gameScreen._zoomY = Graphics.boxHeight / 2;
+    }
     Yanfly.ASP3.BattleManager_setup.call(this, troopId, canEscape, canLose);
 };
 
 BattleManager.resetCamera = function(duration) {
+    if (Array.isArray(duration)) duration = duration[0];
+    duration = parseInt(duration);
+    if (isNaN(duration)) duration = 30;
     this._cameraX = Graphics.boxWidth / 2;
     this._cameraY = Graphics.boxHeight / 2;
     this._cameraOffsetX = 0;
@@ -707,7 +728,13 @@ BattleManager.resetCamera = function(duration) {
     this._cameraFocusGroup = [];
     this._cameraFocusPosX = 'BASE';
     this._cameraFocusPosY = 'BASE';
-    this._cameraClamp = true;
+    if (duration > 0) {
+      this._cameraClamp = false;
+      this._cameraResettingClamp = true;
+    } else {
+      this._cameraClamp = true;
+      this._cameraResettingClamp = false;
+    }
     $gameScreen.setCameraDuration(duration);
 };
 
@@ -874,11 +901,15 @@ Game_Screen.prototype.isZooming = function() {
 };
 
 Game_Screen.prototype.setCameraDuration = function(duration) {
-    this._cameraDuration = duration;
+    if (Array.isArray(duration)) duration = duration[0];
+    duration = parseInt(duration);
+    this._cameraDuration = isNaN(duration) ? 0 : duration;
 };
 
 Game_Screen.prototype.updateBattleCamera = function() {
     if (!$gameParty.inBattle()) return;
+    if (this._zoomX === undefined || this._zoomX === 0) this._zoomX = Graphics.boxWidth / 2;
+    if (this._zoomY === undefined || this._zoomY === 0) this._zoomY = Graphics.boxHeight / 2;
     if (this._cameraDuration > 0) {
       var d = this._cameraDuration;
       var tx = BattleManager.cameraX();
@@ -886,6 +917,10 @@ Game_Screen.prototype.updateBattleCamera = function() {
       this._zoomX = (this._zoomX * (d - 1) + tx) / d;
       this._zoomY = (this._zoomY * (d - 1) + ty) / d;
       this._cameraDuration--;
+      if (this._cameraDuration === 0 && BattleManager._cameraResettingClamp) {
+        BattleManager._cameraClamp = true;
+        BattleManager._cameraResettingClamp = false;
+      }
     } else {
       this._zoomX = BattleManager.cameraX();
       this._zoomY = BattleManager.cameraY();

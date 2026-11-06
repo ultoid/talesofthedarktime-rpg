@@ -181,23 +181,6 @@ async function saveActiveDataset() {
         } catch (_) {}
     }
 
-    // 2. If in Skill Animator, ensure current sequence is compiled to skill note in memory (DO NOT trigger re-entrant save)
-    if (State.currentTab === 'skill_animator' && typeof SkillAnimator !== 'undefined') {
-        try {
-            if (typeof SkillAnimator.syncCurrentStudioConfig === 'function') {
-                SkillAnimator.syncCurrentStudioConfig();
-            } else if (typeof SkillAnimator.saveConfigToSkill === 'function') {
-                const sk = SkillAnimator.activeSkill || (State.skills && State.skills[State.selectedIndex]);
-                if (sk) {
-                    const cfg = SkillAnimator.getConfig(sk);
-                    SkillAnimator.saveConfigToSkill(sk, cfg);
-                }
-            }
-        } catch (e) {
-            console.warn('[saveActiveDataset] Error syncing studio config:', e);
-        }
-    }
-
     const tabMap = {
         actors: { filename: 'Actors.json', data: () => State.actors },
         classes: { filename: 'Classes.json', data: () => State.classes },
@@ -205,7 +188,6 @@ async function saveActiveDataset() {
         weapons: { filename: 'Weapons.json', data: () => State.weapons },
         armors: { filename: 'Armors.json', data: () => State.armors },
         skills: { filename: 'Skills.json', data: () => State.skills },
-        skill_animator: { filename: 'Skills.json', data: () => State.skills },
         items: { filename: 'Items.json', data: () => State.items },
         enemies: { filename: 'Enemies.json', data: () => State.enemies },
         states: { filename: 'States.json', data: () => State.states },

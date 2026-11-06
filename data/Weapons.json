@@ -19,7 +19,7 @@
     ],
     "iconIndex": 102,
     "name": "Iron Greatsword",
-    "note": "<NUSV Hand Slot: 2H Primary+Secondary>\n<STR: +2>\n<Action Speed: -2>\n<NUSV Rarity: Common>\n<Synthesis Recipe>\nItem 30: 4\nGold: 150\n</Synthesis Recipe>",
+    "note": "<skill_id: 431>\n<Weapon Motion: swing>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<STR: +2>\n<Action Speed: -2>\n<NUSV Rarity: Common>\n<Synthesis Recipe>\nItem 30: 4\nGold: 150\n</Synthesis Recipe>\n\n<setup action>\nclear battle log\ndisplay action\nimmortal: targets, true\ncamera clamp off\ncamera focus: user, center, 25\nzoom: 120%, 25\nwait for camera\nwait for zoom\nwait: 6\n</setup action>\n\n<target action>\nmove user: target, front, 18, 20\nwait for movement\nmotion swing: user\nwait: 12\nattack animation: target\nwait for animation\naction effect: target\nmotion damage: target\nshake screen: 3, 5, 12\nmove target: backward, 45, 8\nwait: 8\nmove target: home, 8\nwait: 10\n</target action>\n\n<finish action>\nimmortal: targets, false\nmove user: return, 15\nwait for movement\nreset camera: 30\nreset zoom: 30\nwait for camera\nwait for zoom\nperform finish\nclear battle log\n</finish action>",
     "params": [
       0,
       0,
@@ -167,7 +167,7 @@
   },
   {
     "id": 6,
-    "animationId": 0,
+    "animationId": 2,
     "description": "Pedang satu tangan seimbang standar prajurit gilda.",
     "etypeId": 1,
     "traits": [
@@ -179,7 +179,7 @@
     ],
     "iconIndex": 96,
     "name": "Iron Sword",
-    "note": "<NUSV Hand Slot: 1H Primary>\n<STR: +1>\n<VIT: +1>\n<NUSV Rarity: Common>\n<Synthesis Recipe>\nItem 30: 3\nGold: 100\n</Synthesis Recipe>",
+    "note": "<Weapon Motion: swing>\n<NUSV Hand Slot: 1H Primary>\n<STR: +1>\n<VIT: +1>\n<NUSV Rarity: Common>\n<Synthesis Recipe>\nItem 30: 3\nGold: 100\n</Synthesis Recipe>",
     "params": [
       0,
       0,
@@ -739,7 +739,7 @@
     ],
     "iconIndex": 126,
     "name": "Pine Staff",
-    "note": "<NUSV Hand Slot: 1H Primary>\n<INT: +2>\n<Max MP: +10>\n<MRG Plus: +0.5%>\n<NUSV Rarity: Common>",
+    "note": "<skill_id: 436>\n<NUSV Hand Slot: 1H Primary>\n<INT: +2>\n<Max MP: +10>\n<MRG Plus: +0.5%>\n<NUSV Rarity: Common>",
     "params": [
       0,
       10,
@@ -1220,7 +1220,7 @@
     ],
     "iconIndex": 192,
     "name": "Pine Longbow",
-    "note": "<Unleash Skill: 430>\n<skill_id: 430>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<DEX: +2>\n<Ranged>\n<Hit Rate: +3%>\n<NUSV Rarity: Common>",
+    "note": "<skill_id: 438>\n<Weapon Motion: missile>\n<Unleash Skill: 430>\n<NUSV Hand Slot: 2H Primary+Secondary>\n<DEX: +2>\n<Ranged>\n<Hit Rate: +3%>\n<NUSV Rarity: Common>",
     "params": [
       0,
       0,

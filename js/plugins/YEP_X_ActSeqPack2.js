@@ -565,7 +565,7 @@ BattleManager.processActionSequence = function(actionName, actionArgs) {
     }
   }
   // MOTION TYPE
-  if (actionName.match(/MOTION[ ](.*)/i)) {
+  if (actionName.match(/^MOTION[ ](.*)/i)) {
     return this.actionMotionTarget(String(RegExp.$1), actionArgs);
   }
   // MOVE TARGET
@@ -814,10 +814,13 @@ BattleManager.actionJump = function(name, actionArgs) {
 };
 
 BattleManager.actionMotionTarget = function(name, actionArgs) {
+    if (!actionArgs) actionArgs = [];
     if (name.toUpperCase() === 'WAIT') return this.actionMotionWait(actionArgs);
     if (name.toUpperCase() === 'STANDBY') name = 'WAIT';
-    var movers = this.makeActionTargets(actionArgs[0]);
-    if (movers.length < 1) return true;
+    var defaultTarget = ['damage', 'hit'].contains(name.toLowerCase()) ? 'target' : 'user';
+    var targetName = (actionArgs.length > 0 && actionArgs[0]) ? actionArgs[0] : defaultTarget;
+    var movers = this.makeActionTargets(targetName);
+    if (!movers || movers.length < 1) return true;
     var cmd = name.toLowerCase();
     var motion = 'wait';
     if (actionArgs[1] && actionArgs[1].toUpperCase() === 'NO WEAPON') {
