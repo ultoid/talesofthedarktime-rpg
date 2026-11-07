@@ -838,7 +838,7 @@ function renderEditor() {
             break;
         case 'animations': 
             if (statTitle) statTitle.innerHTML = '💥 Animation Inspector &amp; Timings';
-            if (statSub) statSub.innerText = 'SE Audio, Flashes &amp; Cells';
+            if (statSub) statSub.innerText = 'SE Audio, Flashes & Cells';
             if (typeof renderAnimationEditor === 'function') {
                 renderAnimationEditor(container, item);
                 if (previewContainer) renderAnimationStatPreview(previewContainer, item);

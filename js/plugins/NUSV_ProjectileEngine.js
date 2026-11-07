@@ -290,7 +290,8 @@ NUSV.Projectile = NUSV.Projectile || {};
 
         var anim = $dataAnimations[opts.animId || 56];
         if (anim) {
-            this.setup(this, anim, false, 0);
+            var mirrorProj = (this._goalX < this._startX);
+            this.setup(this, anim, mirrorProj, 0);
             // Synchronize animation rate with travel duration
             var totalFrames = Math.max(1, (anim.frames || []).length);
             this._rate = Math.max(1, Math.floor(this._travelDuration / totalFrames)) || 2;

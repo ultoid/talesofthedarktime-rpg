@@ -29,11 +29,115 @@ const AnimEditor = {
     // Display options
     showOnionSkin: true,
     targetSilhouette: 'actor', // 'actor' | 'enemy' | 'cross' | 'none'
-    mirrorTarget: false,
+    combatDirection: 'user_to_enemy', // 'user_to_enemy' (serang kiri, default) | 'enemy_to_user' (serang kanan) | 'raw_unmirrored'
+    mirrorTarget: true,
     showCrosshair: true,
     visualEffects: { targetFlash: null, screenFlash: null, hideRemaining: 0 },
     frameTimingsProcessed: false,
     audioContext: null,
+
+    isMirroredDirection: function() {
+        if (this.combatDirection === 'user_to_enemy') return true;
+        if (this.combatDirection === 'enemy_to_user') return false;
+        if (this.combatDirection === 'raw_unmirrored') return false;
+        return Boolean(this.mirrorTarget);
+    },
+
+    setCombatDirection: function(val) {
+        this.combatDirection = val;
+        this.mirrorTarget = (val === 'user_to_enemy');
+        if (this.ctx) this.render();
+    },
+
+    getCellDimensions: function(anim) {
+        const a = anim || this.activeAnim;
+        const isCustom = Boolean(a && (a.cellWidth > 0 || a.cellHeight > 0 || (a.columns > 0 && a.columns !== 5)));
+        const cols = (a && a.columns > 0) ? parseInt(a.columns, 10) : 5;
+        const rows = (a && a.rows > 0) ? parseInt(a.rows, 10) : 0;
+        const cellW = (a && a.cellWidth > 0) ? parseInt(a.cellWidth, 10) : 192;
+        const cellH = (a && a.cellHeight > 0) ? parseInt(a.cellHeight, 10) : 192;
+        const maxCells = (a && a.maxCells > 0) ? parseInt(a.maxCells, 10) : (rows > 0 ? cols * rows : (cols === 5 && cellW === 192 ? 100 : cols * 20));
+        return { isCustom, cols, rows, cellW, cellH, maxCells };
+    },
+
+    autoDetectGrid: function(anim) {
+        const a = anim || this.activeAnim;
+        if (!a || !a.animation1Name) {
+            if (typeof showToast === 'function') showToast('Pilih Animation Graphic 1 terlebih dahulu!', 'info');
+            return;
+        }
+        const img = this.getImage(`img/animations/${a.animation1Name}.png`);
+        const runDetect = () => {
+            const w = img.naturalWidth;
+            const h = img.naturalHeight;
+            if (!w || !h) return;
+
+            if (w === 960 && h % 192 === 0) {
+                a.columns = 5;
+                a.rows = Math.floor(h / 192);
+                a.cellWidth = 192;
+                a.cellHeight = 192;
+                a.maxCells = a.columns * a.rows;
+            } else {
+                let bestCols = 5;
+                let bestRows = Math.max(1, Math.floor(h / 192));
+                let bestW = 192;
+                let bestH = 192;
+                let bestDiff = 99999;
+
+                for (let c = 1; c <= 32; c++) {
+                    if (w % c !== 0) continue;
+                    const cw = w / c;
+                    for (let r = 1; r <= 32; r++) {
+                        if (h % r !== 0) continue;
+                        const ch = h / r;
+                        const diff = Math.abs(cw - ch);
+                        if (cw >= 24 && cw <= 512 && ch >= 24 && ch <= 512) {
+                            if (diff < bestDiff) {
+                                bestDiff = diff;
+                                bestCols = c;
+                                bestRows = r;
+                                bestW = cw;
+                                bestH = ch;
+                            }
+                        }
+                    }
+                }
+
+                a.columns = bestCols;
+                a.rows = bestRows;
+                a.cellWidth = bestW;
+                a.cellHeight = bestH;
+                a.maxCells = bestCols * bestRows;
+            }
+
+            if (typeof setUnsaved === 'function') setUnsaved(true);
+            this.updateGridSummaryUI();
+            if (typeof renderEditor === 'function') renderEditor();
+            if (typeof showToast === 'function') {
+                showToast(`⚡ Auto-Detect: ${a.columns} Kolom × ${a.rows} Baris (${a.cellWidth}×${a.cellHeight} px/sel)!`, 'success');
+            }
+        };
+
+        if (img.complete && img.naturalWidth > 0) {
+            runDetect();
+        } else {
+            img.onload = runDetect;
+        }
+    },
+
+    updateGridSummaryUI: function() {
+        const dims = this.getCellDimensions();
+        const infoTag = document.getElementById('animViewportInfo');
+        if (infoTag) {
+            infoTag.textContent = `1080×720 • ${dims.cellW}×${dims.cellH} px`;
+        }
+        const gridSummary = document.getElementById('animGridSummaryBadge');
+        if (gridSummary) {
+            const rowText = dims.rows > 0 ? `${dims.rows} Baris` : 'Auto Baris';
+            gridSummary.textContent = `${dims.cols} Kolom × ${rowText} (${dims.cellW}×${dims.cellH} px) • Maks: ${dims.maxCells} sel`;
+        }
+    },
 
     // Drag & Drop State
     dragState: {
@@ -309,13 +413,16 @@ AnimEditor.setupCanvasInteractions = function() {
 
         // Hit-test cells in reverse order (top to bottom)
         let hitIdx = -1;
+        const dims = self.getCellDimensions();
+        const hitRadiusBase = Math.max(dims.cellW, dims.cellH) / 2;
+        const targetMirror = self.isMirroredDirection() ? -1 : 1;
         for (let i = frame.length - 1; i >= 0; i--) {
             const cell = frame[i];
             if (!cell || cell[0] < 0) continue;
-            const cx = cell[1] || 0;
+            const cx = (cell[1] || 0) * targetMirror;
             const cy = cell[2] || 0;
             const scale = (cell[3] || 100) / 100;
-            const hitRadius = 96 * scale;
+            const hitRadius = hitRadiusBase * scale;
 
             const dist = Math.hypot(coords.x - cx, coords.y - cy);
             if (dist <= hitRadius) {
@@ -349,8 +456,9 @@ AnimEditor.setupCanvasInteractions = function() {
         const frame = (self.activeAnim.frames || [])[self.currentFrameIndex];
         if (!frame || !frame[self.selectedCellIndex]) return;
 
+        const targetMirror = self.isMirroredDirection() ? -1 : 1;
         const cell = frame[self.selectedCellIndex];
-        cell[1] = Math.round(self.dragState.cellStartX + dx);
+        cell[1] = Math.round(self.dragState.cellStartX + dx * targetMirror);
         cell[2] = Math.round(self.dragState.cellStartY + dy);
 
         // Update inspector input fields in real time
@@ -538,6 +646,11 @@ AnimEditor.closeSkillSelectModal = function() {
  * Render animation frame on Canvas
  */
 AnimEditor.render = function() {
+    if (!this.ctx) {
+        this.canvas = document.getElementById('animEditorCanvas');
+        if (this.canvas) this.ctx = this.canvas.getContext('2d');
+    }
+    if (!this.ctx) return;
     const ctx = this.ctx;
     const W = this.WIDTH;
     const H = this.HEIGHT;
@@ -627,13 +740,6 @@ AnimEditor.render = function() {
         ctx.fillRect(0, 0, W, H);
     }
 
-    // 6. Draw HUD info overlay
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-    ctx.fillRect(8, 8, 140, 24);
-    ctx.font = '11px sans-serif';
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillText(`Frame ${this.currentFrameIndex + 1} / ${Math.max(1, frames.length)}`, 16, 24);
-
     ctx.restore();
 };
 
@@ -655,7 +761,12 @@ AnimEditor.drawTargetSilhouette = function(ctx, ox, oy) {
     ctx.save();
     ctx.globalAlpha = 0.35;
     ctx.translate(ox, baseY);
-    ctx.scale(this.mirrorTarget ? -1 : 1, 1);
+
+    // In Sideview combat:
+    // - Actor stands on right side facing LEFT towards oncoming attacks (facing = 1)
+    // - Enemy stands on left side facing RIGHT towards oncoming attacks (facing = -1)
+    const battlerFacing = (this.targetSilhouette === 'enemy') ? -1 : 1;
+    ctx.scale(battlerFacing, 1);
     ctx.drawImage(targetImage, 0, 0, frameWidth, frameHeight, -frameWidth / 2, -frameHeight, frameWidth, frameHeight);
 
     const flash = this.visualEffects.targetFlash;
@@ -676,17 +787,22 @@ AnimEditor.drawCell = function(ctx, cell, img1, img2, originX, originY, alphaMul
     const pattern = cell[0];
     if (pattern < 0) return;
 
-    const img = (pattern < 100) ? img1 : img2;
+    const dims = this.getCellDimensions();
+    const cellW = dims.cellW;
+    const cellH = dims.cellH;
+    const cols = dims.cols;
+    const maxCells = dims.maxCells;
+
+    const isSheet2 = (pattern >= maxCells);
+    const subPattern = isSheet2 ? (pattern - maxCells) : pattern;
+    const img = isSheet2 ? img2 : img1;
     const isHueCanvas = img instanceof HTMLCanvasElement;
     if (!img || (isHueCanvas ? img.width === 0 : !img.complete || img.naturalWidth === 0)) return;
 
-    const cellW = 192;
-    const cellH = 192;
-    const subPattern = pattern % 100;
-    const sx = (subPattern % 5) * cellW;
-    const sy = Math.floor(subPattern / 5) * cellH;
+    const sx = (subPattern % cols) * cellW;
+    const sy = Math.floor(subPattern / cols) * cellH;
 
-    const targetMirror = this.mirrorTarget ? -1 : 1;
+    const targetMirror = this.isMirroredDirection() ? -1 : 1;
     const x = originX + (cell[1] || 0) * targetMirror;
     const y = originY + (cell[2] || 0);
     const scale = (cell[3] !== undefined ? cell[3] : 100) / 100;
@@ -750,11 +866,12 @@ function renderAnimationEditor(container, anim) {
 
     const animImages = State.animationImages || [];
     const positionNames = { 0: 'Atas Kepala (Top/Head)', 1: 'Pusat Tubuh (Center)', 2: 'Bawah Kaki (Bottom/Feet)', 3: 'Layar Penuh (Screen)' };
+    const dims = AnimEditor.getCellDimensions(anim);
 
     container.innerHTML = `
-        <!-- HEADER IDENTITAS ANIMASI -->
+        <!-- HEADER IDENTITAS ANIMASI & ASET -->
         <div class="card" style="border:1px solid #f472b655; background:linear-gradient(180deg, rgba(80,7,36,0.35) 0%, rgba(15,23,42,0.6) 100%); margin-bottom:14px;">
-            <div class="card-header" style="border-bottom:1px solid #f472b633; display:flex; justify-content:space-between; align-items:center;">
+            <div class="card-header" style="border-bottom:1px solid #f472b633; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span style="font-size:1.2rem;">💥</span>
                     <div>
@@ -762,7 +879,7 @@ function renderAnimationEditor(container, anim) {
                         <div style="font-size:0.72rem; color:var(--text-muted);">Visual Frame-by-Frame Spritesheet Animation Studio</div>
                     </div>
                 </div>
-                <div style="display:flex; gap:8px;">
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
                     <button type="button" class="btn btn-sm btn-secondary" onclick="openAnimAutoFillModal()" title="Isi urutan frame otomatis dari potongan spritesheet">
                         🪄 Auto-Fill Urutan
                     </button>
@@ -778,15 +895,16 @@ function renderAnimationEditor(container, anim) {
                 </div>
             </div>
 
-            <div class="card-body" style="padding:12px;">
-                <div class="grid-3">
+            <div class="card-body" style="padding:14px; display:flex; flex-direction:column; gap:12px;">
+                <!-- Row 1: Core Graphic & Placement Assets -->
+                <div class="grid-3" style="gap:10px;">
                     <div class="form-group" style="margin:0;">
-                        <label title="Nama animasi">Animation Name</label>
+                        <label title="Nama animasi">Nama Animasi (Name)</label>
                         <input type="text" class="form-control" value="${escapeHtml(anim.name || '')}" onchange="anim.name=this.value; setUnsaved(true); renderSidebar();">
                     </div>
                     <div class="form-group" style="margin:0;">
-                        <label title="File gambar animasi 1 di folder img/animations/">Animation Graphic 1</label>
-                        <select class="form-control" onchange="anim.animation1Name=this.value; setUnsaved(true); AnimEditor.render(); renderSidebar();">
+                        <label title="File gambar animasi 1 di folder img/animations/">Animation Graphic 1 (Utama)</label>
+                        <select class="form-control" onchange="anim.animation1Name=this.value; setUnsaved(true); AnimEditor.autoDetectGrid(anim); AnimEditor.render(); renderSidebar();">
                             <option value="">(None)</option>
                             ${animImages.map(f => {
                                 const base = f.replace(/\.png$/i, '');
@@ -799,7 +917,13 @@ function renderAnimationEditor(container, anim) {
                         <input type="number" min="0" max="359" class="form-control" value="${anim.animation1Hue || 0}" onchange="anim.animation1Hue=parseInt(this.value,10)||0; setUnsaved(true); AnimEditor.render();">
                     </div>
                     <div class="form-group" style="margin:0;">
-                        <label title="File gambar animasi 2 di folder img/animations/">Animation Graphic 2</label>
+                        <label title="Posisi penempatan animasi pada target">Posisi Target (Position)</label>
+                        <select class="form-control" onchange="anim.position=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                            ${Object.keys(positionNames).map(k => `<option value="${k}" ${anim.position === parseInt(k,10) ? 'selected' : ''}>${positionNames[k]}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label title="File gambar animasi 2 di folder img/animations/">Animation Graphic 2 (Sekunder)</label>
                         <select class="form-control" onchange="anim.animation2Name=this.value; setUnsaved(true); AnimEditor.render(); renderSidebar();">
                             <option value="">(None)</option>
                             ${animImages.map(f => {
@@ -812,88 +936,163 @@ function renderAnimationEditor(container, anim) {
                         <label title="Hue bitmap kedua sesuai Bitmap.rotateHue RPG Maker MV">Graphic 2 Hue (°)</label>
                         <input type="number" min="0" max="359" class="form-control" value="${anim.animation2Hue || 0}" onchange="anim.animation2Hue=parseInt(this.value,10)||0; setUnsaved(true); AnimEditor.render();">
                     </div>
-                    <div class="form-group" style="margin:0;">
-                        <label title="Posisi penempatan animasi pada target">Target Position</label>
-                        <select class="form-control" onchange="anim.position=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
-                            ${Object.keys(positionNames).map(k => `<option value="${k}" ${anim.position === parseInt(k,10) ? 'selected' : ''}>${positionNames[k]}</option>`).join('')}
-                        </select>
+                </div>
+
+                <!-- Row 2: CUSTOM SPRITESHEET GRID SETTINGS -->
+                <div style="padding:10px 14px; background:rgba(15,23,42,0.6); border:1px solid rgba(56,189,248,0.25); border-radius:6px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:0.78rem; font-weight:700; color:#38bdf8;">📐 Grid Spritesheet &amp; Ukuran Sel (Custom Frame Slice)</span>
+                            <span id="animGridSummaryBadge" style="font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted); padding:2px 6px; background:rgba(255,255,255,0.04); border-radius:3px; border:1px solid var(--border-subtle);">
+                                ${dims.cols} Kolom × ${dims.rows > 0 ? `${dims.rows} Baris` : 'Auto Baris'} (${dims.cellW}×${dims.cellH} px) • Maks: ${dims.maxCells} sel
+                            </span>
+                        </div>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.autoDetectGrid(anim)" style="font-size:0.72rem; padding:3px 8px; color:#38bdf8;" title="Deteksi otomatis pembagian kolom, baris, dan ukuran sel dari resolusi file gambar Graphic 1">
+                                ⚡ Auto-Detect dari Gambar
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="anim.columns=5; anim.rows=0; anim.cellWidth=192; anim.cellHeight=192; anim.maxCells=100; setUnsaved(true); AnimEditor.updateGridSummaryUI(); renderEditor();" style="font-size:0.72rem; padding:3px 8px;" title="Reset ke standar RPG Maker MV (5 Kolom x 192x192 px)">
+                                🔄 Reset MV Default (192×192)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid-4" style="gap:8px;">
+                        <div class="form-group" style="margin:0;">
+                            <label style="font-size:0.7rem;" title="Jumlah kolom per baris spritesheet (bawaan MV: 5)">Banyak Kolom (Cols)</label>
+                            <input type="number" min="1" max="50" class="form-control" style="font-size:0.75rem; padding:3px 6px;" value="${anim.columns || 5}" 
+                                   onchange="anim.columns=parseInt(this.value,10)||5; setUnsaved(true); AnimEditor.updateGridSummaryUI(); AnimEditor.render();">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label style="font-size:0.7rem;" title="Jumlah baris dalam spritesheet (0 = otomatis sesuai tinggi gambar)">Banyak Baris (Rows)</label>
+                            <input type="number" min="0" max="50" class="form-control" style="font-size:0.75rem; padding:3px 6px;" value="${anim.rows || 0}" placeholder="0 (Auto)" 
+                                   onchange="anim.rows=parseInt(this.value,10)||0; setUnsaved(true); AnimEditor.updateGridSummaryUI(); AnimEditor.render();">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label style="font-size:0.7rem;" title="Lebar per potongan sel/frame animasi dalam pixel (bawaan MV: 192 px)">Lebar Sel / W (px)</label>
+                            <input type="number" min="8" max="1024" step="2" class="form-control" style="font-size:0.75rem; padding:3px 6px;" value="${anim.cellWidth || 192}" 
+                                   onchange="anim.cellWidth=parseInt(this.value,10)||192; setUnsaved(true); AnimEditor.updateGridSummaryUI(); AnimEditor.render();">
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <label style="font-size:0.7rem;" title="Tinggi per potongan sel/frame animasi dalam pixel (bawaan MV: 192 px)">Tinggi Sel / H (px)</label>
+                            <input type="number" min="8" max="1024" step="2" class="form-control" style="font-size:0.75rem; padding:3px 6px;" value="${anim.cellHeight || 192}" 
+                                   onchange="anim.cellHeight=parseInt(this.value,10)||192; setUnsaved(true); AnimEditor.updateGridSummaryUI(); AnimEditor.render();">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- CANVAS STAGE & TIMELINE SCRUBBER -->
-        <div class="card" style="margin-bottom:14px; overflow:hidden;">
-            <div class="card-header" style="padding:8px 14px; display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:0.75rem; color:#38bdf8; font-weight:700;">CANVAS STAGE</span>
-                    <span id="animFrameBadge" class="badge" style="background:#0284c722; color:#38bdf8; border:1px solid #0284c755; font-size:0.7rem; padding:2px 8px;">Frame 1</span>
+        <div class="card" style="margin-bottom:14px; overflow:hidden; border:1px solid var(--border-color);">
+            <!-- Stage Header Toolbar -->
+            <div class="card-header" style="padding:10px 14px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; background:rgba(16,19,27,0.95); border-bottom:1px solid var(--border-color);">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:0.82rem; font-weight:700; color:#f1f5f9; letter-spacing:0.3px;">Stage Viewport</span>
+                    <span id="animViewportInfo" style="font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted); padding:2px 6px; background:rgba(255,255,255,0.04); border-radius:3px; border:1px solid var(--border-subtle); white-space:nowrap;">1080×720 • ${dims.cellW}×${dims.cellH} px</span>
                 </div>
-                <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem;">
-                    <label class="checkbox-label" style="font-size:0.72rem; margin:0;" title="Tampilkan bayangan frame sebelumnya untuk mempermudah perataan gerakan">
-                        <input type="checkbox" ${AnimEditor.showOnionSkin ? 'checked' : ''} onchange="AnimEditor.showOnionSkin=this.checked; AnimEditor.render();">
-                        <span>Ghost / Onion Skin</span>
-                    </label>
-                    <label class="checkbox-label" style="font-size:0.72rem; margin:0;">
-                        <input type="checkbox" ${AnimEditor.showCrosshair ? 'checked' : ''} onchange="AnimEditor.showCrosshair=this.checked; AnimEditor.render();">
-                        <span>Grid &amp; Origin</span>
-                    </label>
-                    <label class="checkbox-label" style="font-size:0.72rem; margin:0;" title="Mirror seperti flag mirror pada request startAnimation RPG Maker MV">
-                        <input type="checkbox" ${AnimEditor.mirrorTarget ? 'checked' : ''} onchange="AnimEditor.mirrorTarget=this.checked; AnimEditor.render();">
-                        <span>Mirror Target</span>
-                    </label>
-                    <select class="form-control" style="width:auto; padding:2px 6px; font-size:0.72rem; height:auto;" onchange="AnimEditor.targetSilhouette=this.value; AnimEditor.render();">
-                        <option value="actor" ${AnimEditor.targetSilhouette === 'actor' ? 'selected' : ''}>Siluet: Hero (Actor)</option>
-                        <option value="enemy" ${AnimEditor.targetSilhouette === 'enemy' ? 'selected' : ''}>Siluet: Musuh (Enemy)</option>
-                        <option value="none" ${AnimEditor.targetSilhouette === 'none' ? 'selected' : ''}>Siluet: Tanpa Siluet</option>
-                    </select>
-                    <select class="form-control" style="width:auto; max-width:180px; padding:2px 6px; font-size:0.72rem; height:auto;" onchange="AnimEditor.previewBattlerId=parseInt(this.value,10); AnimEditor.render();" title="Battler preview dari database project">
-                        ${AnimEditor.getPreviewBattlers().map(battler => `<option value="${battler.id}" ${Number(AnimEditor.previewBattlerId) === battler.id ? 'selected' : ''}>${escapeHtml(battler.name)}</option>`).join('')}
-                    </select>
+                
+                <div style="display:flex; align-items:center; gap:10px; font-size:0.75rem; flex-wrap:wrap;">
+                    <!-- Display Toggles -->
+                    <div style="display:flex; align-items:center; gap:8px; padding-right:8px; border-right:1px solid var(--border-color);">
+                        <label class="checkbox-label" style="font-size:0.72rem; margin:0; cursor:pointer;" title="Tampilkan bayangan frame sebelumnya (Onion Skin) untuk mempermudah animasi gerak halus">
+                            <input type="checkbox" ${AnimEditor.showOnionSkin ? 'checked' : ''} onchange="AnimEditor.showOnionSkin=this.checked; AnimEditor.render();">
+                            <span>Ghost / Onion Skin</span>
+                        </label>
+                        <label class="checkbox-label" style="font-size:0.72rem; margin:0; cursor:pointer;" title="Tampilkan garis bantu origin & kisi grid">
+                            <input type="checkbox" ${AnimEditor.showCrosshair ? 'checked' : ''} onchange="AnimEditor.showCrosshair=this.checked; AnimEditor.render();">
+                            <span>Grid &amp; Origin</span>
+                        </label>
+                    </div>
+
+                    <!-- Combat Direction -->
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="font-size:0.7rem; color:var(--text-muted); white-space:nowrap;">Arah:</span>
+                        <select class="form-control" style="width:auto; padding:3px 8px; font-size:0.72rem; height:auto; font-weight:600; background:#0b0e14; color:#38bdf8; border-color:rgba(56,189,248,0.3);" 
+                                onchange="AnimEditor.setCombatDirection(this.value);" title="Arah serangan animasi dalam pertempuran Sideview">
+                            <option value="user_to_enemy" ${AnimEditor.combatDirection === 'user_to_enemy' ? 'selected' : ''}>⚔️ Serang Kiri (Hero ➔ Musuh)</option>
+                            <option value="enemy_to_user" ${AnimEditor.combatDirection === 'enemy_to_user' ? 'selected' : ''}>🛡️ Serang Kanan (Musuh ➔ Hero)</option>
+                            <option value="raw_unmirrored" ${AnimEditor.combatDirection === 'raw_unmirrored' ? 'selected' : ''}>📁 Format Asli Database</option>
+                        </select>
+                    </div>
+
+                    <!-- Target Silhouette & Battler -->
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="font-size:0.7rem; color:var(--text-muted); white-space:nowrap;">Target:</span>
+                        <select class="form-control" style="width:auto; padding:3px 8px; font-size:0.72rem; height:auto; background:#0b0e14;" onchange="AnimEditor.targetSilhouette=this.value; if(this.value==='enemy'){AnimEditor.setCombatDirection('user_to_enemy');} AnimEditor.render();">
+                            <option value="actor" ${AnimEditor.targetSilhouette === 'actor' ? 'selected' : ''}>Hero (Actor)</option>
+                            <option value="enemy" ${AnimEditor.targetSilhouette === 'enemy' ? 'selected' : ''}>Musuh (Enemy)</option>
+                            <option value="none" ${AnimEditor.targetSilhouette === 'none' ? 'selected' : ''}>Tanpa Siluet</option>
+                        </select>
+                        <select class="form-control" style="width:auto; max-width:140px; padding:3px 8px; font-size:0.72rem; height:auto; background:#0b0e14;" onchange="AnimEditor.previewBattlerId=parseInt(this.value,10); AnimEditor.render();" title="Pilih battler dari database untuk preview siluet">
+                            ${AnimEditor.getPreviewBattlers().map(battler => `<option value="${battler.id}" ${Number(AnimEditor.previewBattlerId) === battler.id ? 'selected' : ''}>${escapeHtml(battler.name)}</option>`).join('')}
+                        </select>
+                    </div>
                 </div>
             </div>
 
             <!-- Canvas Viewport -->
-            <div style="position:relative; width:100%; aspect-ratio:3/2; max-height:480px; background:#000; display:flex; justify-content:center; align-items:center; overflow:hidden; border-radius:6px; box-shadow:inset 0 0 20px rgba(0,0,0,0.8);">
+            <div style="position:relative; width:100%; aspect-ratio:3/2; max-height:480px; background:#000; display:flex; justify-content:center; align-items:center; overflow:hidden; border-radius:0; box-shadow:inset 0 0 24px rgba(0,0,0,0.85);">
                 <canvas id="animEditorCanvas" width="1080" height="720" style="width:100%; height:100%; display:block; cursor:crosshair; image-rendering:pixelated;"></canvas>
             </div>
 
             <!-- Playback & Frame Scrubber Bar -->
-            <div style="padding:10px 14px; background:rgba(15,23,42,0.95); border-top:1px solid var(--border-color); display:flex; flex-direction:column; gap:8px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div style="padding:10px 14px; background:rgba(15,23,42,0.95); border-top:1px solid var(--border-color); display:flex; flex-direction:column; gap:10px;">
+                <!-- Row 1: Transport & Primary Controls -->
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <!-- Group 1: Transport & Frame Pill -->
                     <div style="display:flex; gap:6px; align-items:center;">
-                        <button type="button" id="animPlayBtn" class="btn btn-sm btn-primary" onclick="AnimEditor.togglePlay()" style="padding:4px 12px; font-size:0.75rem;">
+                        <button type="button" id="animPlayBtn" class="btn btn-sm btn-primary" onclick="AnimEditor.togglePlay()" style="padding:5px 14px; font-size:0.75rem; font-weight:600; display:flex; align-items:center; gap:4px;">
                             ${AnimEditor.isPlaying ? '⏸ Pause' : '▶ Play'}
                         </button>
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.currentFrameIndex=0; AnimEditor.updateTimelineUI();" style="padding:4px 8px; font-size:0.75rem;" title="Ke Frame 1">⏮</button>
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.stepFrame(-1)" style="padding:4px 8px; font-size:0.75rem;" title="Frame Sebelumnya">◀</button>
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.stepFrame(1)" style="padding:4px 8px; font-size:0.75rem;" title="Frame Berikutnya">▶</button>
-                        <button type="button" id="animLoopBtn" class="btn btn-sm btn-secondary" onclick="AnimEditor.toggleLoop()" style="padding:4px 8px; font-size:0.75rem;">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.currentFrameIndex=0; AnimEditor.updateTimelineUI(); AnimEditor.render();" style="padding:5px 8px; font-size:0.75rem;" title="Ke Frame 1">⏮</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.stepFrame(-1); AnimEditor.render();" style="padding:5px 8px; font-size:0.75rem;" title="Frame Sebelumnya">◀</button>
+                        
+                        <!-- Dedicated Non-wrapping Frame Counter Pill -->
+                        <div id="animFrameBadge" style="white-space:nowrap; flex-shrink:0; font-family:var(--font-mono); font-weight:700; font-size:0.78rem; padding:4px 12px; background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); border-radius:var(--radius-sm); min-width:96px; text-align:center; user-select:none; letter-spacing:0.3px;">
+                            Frame 1 / ${Math.max(1, (anim.frames || []).length)}
+                        </div>
+
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.stepFrame(1); AnimEditor.render();" style="padding:5px 8px; font-size:0.75rem;" title="Frame Berikutnya">▶</button>
+                        <button type="button" id="animLoopBtn" class="btn btn-sm btn-secondary" onclick="AnimEditor.toggleLoop()" style="padding:5px 9px; font-size:0.75rem;">
                             ${AnimEditor.isLooping ? '🔄 Loop: ON' : '🔄 Loop: OFF'}
                         </button>
                     </div>
 
-                    <!-- Speed & SE -->
+                    <!-- Group 2: Speed & SE -->
                     <div style="display:flex; gap:8px; align-items:center;">
-                        <select class="form-control" style="width:auto; padding:2px 6px; font-size:0.75rem; height:auto;" onchange="AnimEditor.playbackSpeed=parseFloat(this.value); AnimEditor.tickAccumulator=0;">
-                            <option value="0.5">0.5x Slow</option>
-                            <option value="1.0" selected>1.0x MV Default</option>
-                            <option value="2.0">2.0x MV Speed 4</option>
-                            <option value="3.0">3.0x MV Speed 5</option>
-                        </select>
-                        <button type="button" id="animMuteBtn" class="btn btn-sm btn-secondary" onclick="AnimEditor.toggleMute()" style="padding:4px 8px; font-size:0.75rem;">🔊 SE</button>
+                        <div style="display:flex; align-items:center; gap:4px;">
+                            <span style="font-size:0.7rem; color:var(--text-muted);">Speed:</span>
+                            <select class="form-control" style="width:auto; padding:3px 8px; font-size:0.72rem; height:auto; background:#0b0e14;" onchange="AnimEditor.playbackSpeed=parseFloat(this.value); AnimEditor.tickAccumulator=0;">
+                                <option value="0.5">0.5x Slow</option>
+                                <option value="1.0" selected>1.0x MV (15 FPS)</option>
+                                <option value="2.0">2.0x Fast (30 FPS)</option>
+                                <option value="3.0">3.0x Max (45 FPS)</option>
+                            </select>
+                        </div>
+                        <button type="button" id="animMuteBtn" class="btn btn-sm btn-secondary" onclick="AnimEditor.toggleMute()" style="padding:4px 10px; font-size:0.75rem;">
+                            ${AnimEditor.isMuted ? '🔇 SE Muted' : '🔊 SE Audio'}
+                        </button>
                     </div>
 
-                    <!-- Frame Actions -->
+                    <!-- Group 3: Frame Management Actions -->
                     <div style="display:flex; gap:6px; align-items:center;">
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.addNewFrame()" style="padding:4px 8px; font-size:0.75rem; color:#34d399;" title="Tambah frame baru di posisi berikutnya">➕ Tambah Frame</button>
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.cloneCurrentFrame()" style="padding:4px 8px; font-size:0.75rem;" title="Duplikasi seluruh sel di frame aktif ke frame baru">📋 Clone Frame</button>
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.deleteCurrentFrame()" style="padding:4px 8px; font-size:0.75rem; color:#f87171;" title="Hapus frame aktif">🗑️ Hapus</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.addNewFrame()" style="padding:4px 9px; font-size:0.75rem; color:#34d399;" title="Tambah frame baru di posisi berikutnya">
+                            ➕ Tambah Frame
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.cloneCurrentFrame()" style="padding:4px 9px; font-size:0.75rem;" title="Duplikasi seluruh sel di frame aktif ke frame baru">
+                            📋 Clone
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.deleteCurrentFrame()" style="padding:4px 9px; font-size:0.75rem; color:#f87171;" title="Hapus frame aktif">
+                            🗑️ Hapus
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.flipEntireAnimationHorizontal()" style="padding:4px 9px; font-size:0.75rem; color:#facc15;" title="Balikkan orientasi semua frame animasi secara horizontal di database">
+                            ⇄ Balik Horizontal
+                        </button>
                     </div>
                 </div>
 
-                <!-- Horizontal Frame Thumb Scrubber -->
-                <div id="animFrameStrip" style="display:flex; gap:4px; overflow-x:auto; padding:4px 0; max-width:100%; scrollbar-width:thin;">
+                <!-- Row 2: Horizontal Timeline Frame Scrubber Strip -->
+                <div id="animFrameStrip" style="display:flex; gap:6px; overflow-x:auto; padding:4px 2px; max-width:100%; scrollbar-width:thin;">
                     <!-- Dynamically populated frame pills -->
                 </div>
             </div>
@@ -906,14 +1105,14 @@ function renderAnimationEditor(container, anim) {
 
         <!-- CELL PATTERN PICKER MODAL -->
         <div id="animPatternPickerModal" class="modal-overlay" style="display:none;" onclick="if(event.target === this) closeAnimPatternPicker();">
-            <div class="modal-card" style="max-width:900px; width:95vw; max-height:85vh;">
+            <div class="modal-card" style="max-width:920px; width:95vw; max-height:85vh;">
                 <div class="modal-header">
                     <h3>🖼️ Pilih Potongan Sel dari Spritesheet</h3>
                     <button type="button" class="btn btn-sm btn-secondary" onclick="closeAnimPatternPicker()">✕ Tutup</button>
                 </div>
                 <div class="modal-body" style="padding:14px; overflow:auto; max-height:70vh;">
                     <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;">
-                        💡 Klik pada salah satu kotak sel berukuran 192×192 di bawah ini untuk memasukkannya ke sel yang sedang Anda pilih.
+                        💡 Klik pada salah satu kotak sel di bawah ini untuk memasukkannya ke sel yang sedang Anda pilih.
                     </div>
                     <div id="animSheetGridContainer" style="display:flex; justify-content:center;">
                         <!-- Dynamically populated sheet canvas -->
@@ -943,27 +1142,54 @@ AnimEditor.updateTimelineUI = function() {
 
     const frames = this.activeAnim.frames;
     if (badge) {
-        badge.textContent = `Frame ${this.currentFrameIndex + 1} / ${frames.length}`;
+        badge.textContent = `Frame ${this.currentFrameIndex + 1} / ${Math.max(1, frames.length)}`;
     }
 
     if (strip) {
-        strip.innerHTML = frames.map((f, idx) => {
-            const isSel = (idx === this.currentFrameIndex);
-            const cellCount = (f || []).filter(c => c && c[0] >= 0).length;
-            return `
-                <button type="button" class="btn btn-sm ${isSel ? 'btn-primary' : 'btn-secondary'}" 
-                        onclick="AnimEditor.selectFrame(${idx});"
-                        style="padding:3px 8px; font-size:0.72rem; min-width:44px; display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0;">
-                    <span>F${idx + 1}</span>
-                    <span style="font-size:0.62rem; color:${isSel ? '#fff' : 'var(--text-muted)'};">${cellCount} sel</span>
-                </button>
-            `;
-        }).join('');
+        if (strip.children.length !== frames.length) {
+            strip.innerHTML = frames.map((f, idx) => {
+                const isSel = (idx === this.currentFrameIndex);
+                const cellCount = (f || []).filter(c => c && c[0] >= 0).length;
+                return `
+                    <button type="button" class="btn btn-sm ${isSel ? 'btn-primary' : 'btn-secondary'}" 
+                            onclick="AnimEditor.selectFrame(${idx});"
+                            style="padding:4px 8px; font-size:0.72rem; min-width:48px; display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0; border-radius:4px; ${isSel ? 'border-color:var(--accent, #e59b2c); box-shadow:0 0 8px rgba(229,155,44,0.35);' : ''}">
+                        <span style="font-weight:700; font-family:var(--font-mono);">F${idx + 1}</span>
+                        <span style="font-size:0.62rem; color:${isSel ? '#fff' : 'var(--text-muted)'};">${cellCount > 0 ? `${cellCount} sel` : '0 sel'}</span>
+                    </button>
+                `;
+            }).join('');
+        } else {
+            // High-performance class toggling during playback
+            for (let i = 0; i < strip.children.length; i++) {
+                const btn = strip.children[i];
+                const isSel = (i === this.currentFrameIndex);
+                if (isSel) {
+                    btn.classList.remove('btn-secondary');
+                    btn.classList.add('btn-primary');
+                    btn.style.borderColor = 'var(--accent, #e59b2c)';
+                    btn.style.boxShadow = '0 0 8px rgba(229,155,44,0.35)';
+                    const countSpan = btn.children[1];
+                    if (countSpan) countSpan.style.color = '#fff';
+                } else {
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-secondary');
+                    btn.style.borderColor = '';
+                    btn.style.boxShadow = '';
+                    const countSpan = btn.children[1];
+                    if (countSpan) countSpan.style.color = 'var(--text-muted)';
+                }
+            }
+        }
 
         // Ensure active frame button is in view
         const activeBtn = strip.children[this.currentFrameIndex];
         if (activeBtn) {
-            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+            const sRect = strip.getBoundingClientRect();
+            const bRect = activeBtn.getBoundingClientRect();
+            if (bRect.left < sRect.left || bRect.right > sRect.right) {
+                activeBtn.scrollIntoView({ behavior: this.isPlaying ? 'auto' : 'smooth', block: 'nearest', inline: 'nearest' });
+            }
         }
     }
 };
@@ -983,6 +1209,7 @@ AnimEditor.updateCellInspectorUI = function() {
     }
 
     const cell = currentFrame[this.selectedCellIndex] || null;
+    const dims = this.getCellDimensions();
 
     const blendNames = {
         0: '0: Normal',
@@ -993,11 +1220,11 @@ AnimEditor.updateCellInspectorUI = function() {
 
     container.innerHTML = `
         <div class="card" style="border:1px solid var(--border-color); margin-bottom:14px;">
-            <div class="card-header" style="padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+            <div class="card-header" style="padding:10px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span style="font-size:0.95rem;">🎯</span>
                     <div>
-                        <strong style="color:#f8fafc; font-size:0.85rem;">Inspektor Sel (Frame #${this.currentFrameIndex + 1})</strong>
+                        <strong style="color:#f8fafc; font-size:0.85rem;">Inspektor Layer &amp; Sel (Frame #${this.currentFrameIndex + 1})</strong>
                         <span style="font-size:0.72rem; color:var(--text-muted); margin-left:6px;">${currentFrame.length} Sel Aktif</span>
                     </div>
                 </div>
@@ -1019,12 +1246,12 @@ AnimEditor.updateCellInspectorUI = function() {
                 <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border-color);">
                     ${currentFrame.map((c, idx) => {
                         const isSel = (idx === this.selectedCellIndex);
-                        const pat = c[0] >= 0 ? `P:${c[0]}` : 'Kosong';
+                        const pat = c[0] >= 0 ? `Pola ${c[0]}` : 'Kosong';
                         return `
                             <button type="button" class="btn btn-sm ${isSel ? 'btn-primary' : 'btn-secondary'}" 
                                     onclick="AnimEditor.selectedCellIndex=${idx}; AnimEditor.updateCellInspectorUI(); AnimEditor.render();"
-                                    style="padding:4px 10px; font-size:0.75rem;">
-                                Sel #${idx + 1} (${pat})
+                                    style="padding:4px 10px; font-size:0.75rem; ${isSel ? 'border-color:var(--accent, #e59b2c);' : ''}">
+                                Layer #${idx + 1} (${pat})
                             </button>
                         `;
                     }).join('')}
@@ -1049,7 +1276,7 @@ AnimEditor.updateCellInspectorUI = function() {
                                 </div>
                             </div>
                             <div style="font-size:0.68rem; color:var(--text-muted);">
-                                💡 Kotak sel 192×192 dihitung dari kiri ke kanan (0 s/d 99). Nilai -1 = Kosong.
+                                💡 Kotak sel ${dims.cellW}×${dims.cellH} dihitung dari kiri ke kanan (0 s/d ${dims.maxCells - 1}). Nilai -1 = Kosong.
                             </div>
                         </div>
 
@@ -1147,7 +1374,7 @@ function renderAnimationStatPreview(container, anim) {
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span style="font-size:1.1rem;">🔊</span>
                     <div>
-                        <div style="font-size:0.7rem; color:#38bdf8; font-weight:700;">TIMINGS &amp; AUDIO</div>
+                        <div style="font-size:0.7rem; color:#38bdf8; font-weight:700;">Timings &amp; Audio</div>
                         <h3 style="font-size:0.95rem; margin:0; color:#fff; font-weight:700;">Sound Effect &amp; Flash</h3>
                     </div>
                 </div>
@@ -1237,7 +1464,7 @@ function renderAnimationStatPreview(container, anim) {
         <div class="card" style="margin-bottom:0;">
             <div class="card-header" style="padding:10px 14px;">
                 <div>
-                    <div style="font-size:0.72rem; color:#f472b6; font-weight:700;">ANIMATION SUMMARY</div>
+                    <div style="font-size:0.72rem; color:#f472b6; font-weight:700;">Ringkasan Animasi</div>
                     <h2 style="font-size:1.05rem; margin:2px 0 0 0; color:#fff;">#${anim.id} ${escapeHtml(anim.name || '')}</h2>
                 </div>
             </div>
@@ -1425,6 +1652,32 @@ AnimEditor.deleteCurrentFrame = function() {
     if (preview) renderAnimationStatPreview(preview, this.activeAnim);
 };
 
+AnimEditor.flipEntireAnimationHorizontal = function() {
+    if (!this.activeAnim || !this.activeAnim.frames || this.activeAnim.frames.length === 0) return;
+    if (!confirm('Apakah Anda yakin ingin membalikkan posisi (koordinat X, rotasi, & cermin) seluruh sel pada SEMUA frame animasi ini secara horizontal di database?')) return;
+
+    this.activeAnim.frames.forEach(frame => {
+        if (!Array.isArray(frame)) return;
+        frame.forEach(cell => {
+            if (!Array.isArray(cell) || cell[0] < 0) return;
+            // Invert X offset
+            if (cell[1] !== undefined) cell[1] = -cell[1];
+            // Invert rotation angle (0-360)
+            if (cell[4] !== undefined && cell[4] !== 0) cell[4] = (360 - cell[4]) % 360;
+            // Toggle cell mirror flag
+            cell[5] = cell[5] ? 0 : 1;
+        });
+    });
+
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    this.updateTimelineUI();
+    this.updateCellInspectorUI();
+    this.render();
+    if (typeof showToast === 'function') {
+        showToast('Seluruh frame animasi berhasil dibalik horizontal!', 'success');
+    }
+};
+
 /**
  * Cell management
  */
@@ -1511,12 +1764,13 @@ function openAnimPatternPicker() {
     if (img.complete && img.naturalWidth > 0) buildPatternGrid();
 
     function buildPatternGrid() {
+        const dims = AnimEditor.getCellDimensions(anim);
         const w = img.naturalWidth;
         const h = img.naturalHeight;
-        const cellW = 192;
-        const cellH = 192;
-        const cols = 5;
-        const rows = Math.ceil(h / cellH);
+        const cellW = dims.cellW;
+        const cellH = dims.cellH;
+        const cols = dims.cols;
+        const rows = (dims.rows > 0) ? dims.rows : Math.max(1, Math.floor(h / cellH));
         const totalPatterns = cols * rows;
 
         // Render preview canvas with grid overlay
@@ -1528,9 +1782,7 @@ function openAnimPatternPicker() {
 
         // Draw grid lines and index badges
         ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 2;
-        ctx.fillStyle = '#38bdf8';
-        ctx.font = 'bold 16px sans-serif';
+        ctx.lineWidth = Math.max(1, Math.min(2, Math.floor(cellW / 64)));
 
         for (let r = 0; r < rows; r++) {
             for (let c = 0; c < cols; c++) {
@@ -1539,11 +1791,15 @@ function openAnimPatternPicker() {
                 const y = r * cellH;
                 ctx.strokeRect(x, y, cellW, cellH);
 
-                // Badge
-                ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
-                ctx.fillRect(x + 4, y + 4, 38, 24);
+                // Badge dynamically scaled to cell size
+                const fontSize = Math.max(8, Math.min(14, Math.floor(cellW * 0.22)));
+                ctx.font = `bold ${fontSize}px sans-serif`;
+                const badgeW = Math.max(22, Math.min(38, Math.floor(cellW * 0.45)));
+                const badgeH = Math.max(12, Math.min(20, Math.floor(cellH * 0.3)));
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+                ctx.fillRect(x + 2, y + 2, badgeW, badgeH);
                 ctx.fillStyle = '#facc15';
-                ctx.fillText(`#${pat}`, x + 8, y + 21);
+                ctx.fillText(`#${pat}`, x + 4, y + badgeH - 3);
             }
         }
 
@@ -1557,8 +1813,8 @@ function openAnimPatternPicker() {
             const rect = cvs.getBoundingClientRect();
             const clickX = ((e.clientX - rect.left) / rect.width) * w;
             const clickY = ((e.clientY - rect.top) / rect.height) * h;
-            const col = Math.floor(clickX / cellW);
-            const row = Math.floor(clickY / cellH);
+            const col = Math.min(cols - 1, Math.max(0, Math.floor(clickX / cellW)));
+            const row = Math.min(rows - 1, Math.max(0, Math.floor(clickY / cellH)));
             const pat = row * cols + col;
 
             const frame = (AnimEditor.activeAnim.frames || [])[AnimEditor.currentFrameIndex];
@@ -1590,11 +1846,13 @@ function closeAnimPatternPicker() {
 function openAnimAutoFillModal() {
     if (!AnimEditor.activeAnim) return;
     const anim = AnimEditor.activeAnim;
-    const countStr = prompt(`Masukkan jumlah frame yang ingin dibuat secara otomatis berurutan dari spritesheet (misal: 12):`, '12');
+    const dims = AnimEditor.getCellDimensions(anim);
+    const defaultCount = dims.rows > 0 ? (dims.cols * dims.rows) : 12;
+    const countStr = prompt(`Masukkan jumlah frame yang ingin dibuat secara otomatis berurutan dari spritesheet (misal: ${defaultCount}):`, String(defaultCount));
     if (!countStr) return;
     const count = parseInt(countStr, 10);
-    if (isNaN(count) || count < 1 || count > 100) {
-        alert('Jumlah frame harus antara 1 sampai 100');
+    if (isNaN(count) || count < 1 || count > 200) {
+        alert('Jumlah frame harus antara 1 sampai 200');
         return;
     }
 

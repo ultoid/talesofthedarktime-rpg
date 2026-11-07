@@ -58,6 +58,64 @@
         activeNusvConfig = null;
     };
 
+    // --- Intelligent Combat Animation Direction Synchronizer ---
+    function resolveBattleAnimationMirror(target, animationId, requestedMirror) {
+        var isExplicit = (requestedMirror === true);
+        var anim = ($dataAnimations && animationId > 0) ? $dataAnimations[animationId] : null;
+        if (anim && anim.position === 3) {
+            // Whole-screen animations remain unmirrored unless explicitly forced
+            return isExplicit;
+        }
+
+        var subject = BattleManager._subject;
+        var baseMirror = false;
+
+        if (subject && target) {
+            var subjectIsActor = (typeof subject.isActor === 'function' && subject.isActor());
+            var subjectIsEnemy = (typeof subject.isEnemy === 'function' && subject.isEnemy());
+            var targetIsActor = (typeof target.isActor === 'function' && target.isActor());
+            var targetIsEnemy = (typeof target.isEnemy === 'function' && target.isEnemy());
+
+            if (subjectIsActor && targetIsEnemy) {
+                // User (Actor) attacks Enemy -> strikes towards LEFT
+                baseMirror = true;
+            } else if (subjectIsEnemy && targetIsActor) {
+                // Enemy attacks User (Actor) -> strikes towards RIGHT
+                baseMirror = false;
+            } else if (subjectIsActor && targetIsActor) {
+                // Friendly buff/heal on Actor ally -> unmirrored
+                baseMirror = false;
+            } else if (subjectIsEnemy && targetIsEnemy) {
+                // Friendly buff/heal on Enemy ally -> unmirrored
+                baseMirror = false;
+            } else if (targetIsEnemy) {
+                baseMirror = true;
+            } else {
+                baseMirror = false;
+            }
+        } else if (target && typeof target.isEnemy === 'function' && target.isEnemy()) {
+            baseMirror = true;
+        } else {
+            baseMirror = false;
+        }
+
+        // Explicit mirror parameter (e.g. Action Sequence "animation X: target, mirror") toggles direction
+        return isExplicit ? !baseMirror : baseMirror;
+    }
+
+    var _Game_Battler_startAnimation = Game_Battler.prototype.startAnimation;
+    Game_Battler.prototype.startAnimation = function (animationId, mirror, delay) {
+        if ($gameParty && $gameParty.inBattle()) {
+            mirror = resolveBattleAnimationMirror(this, animationId, mirror);
+        }
+        _Game_Battler_startAnimation.call(this, animationId, mirror, delay);
+    };
+
+    Game_Actor.prototype.startAnimation = function (animationId, mirror, delay) {
+        // Disarm default RPG Maker MV inversion on actors (rpg_objects.js had mirror = !mirror here)
+        Game_Battler.prototype.startAnimation.call(this, animationId, mirror, delay);
+    };
+
     // --- Sprite_Animation Setup Hook ---
     var _Sprite_Animation_setup = Sprite_Animation.prototype.setup;
     Sprite_Animation.prototype.setup = function (target, animation, mirror, delay) {
@@ -300,10 +358,52 @@
         this.y = Math.round(baseY + anchorOffsetY + curOy);
     };
 
-    // --- Dynamic Scale & Flip per Cell Sprite ---
+    // --- Dynamic Scale & Flip per Cell Sprite & Custom Grid Engine ---
     var _Sprite_Animation_updateCellSprite = Sprite_Animation.prototype.updateCellSprite;
     Sprite_Animation.prototype.updateCellSprite = function (sprite, cell) {
-        _Sprite_Animation_updateCellSprite.call(this, sprite, cell);
+        var anim = this._animation;
+        var isCustomGrid = Boolean(anim && (anim.cellWidth > 0 || anim.cellHeight > 0 || (anim.columns > 0 && anim.columns !== 5)));
+
+        if (!isCustomGrid) {
+            _Sprite_Animation_updateCellSprite.call(this, sprite, cell);
+        } else {
+            var pattern = cell[0];
+            if (pattern >= 0) {
+                var cellW = (anim.cellWidth > 0) ? parseInt(anim.cellWidth, 10) : 192;
+                var cellH = (anim.cellHeight > 0) ? parseInt(anim.cellHeight, 10) : 192;
+                var cols = (anim.columns > 0) ? parseInt(anim.columns, 10) : 5;
+                var maxCells = (anim.maxCells > 0) ? parseInt(anim.maxCells, 10) : (anim.rows > 0 ? cols * parseInt(anim.rows, 10) : (cols === 5 && cellW === 192 ? 100 : cols * 20));
+
+                var isSheet2 = (pattern >= maxCells);
+                var subPattern = isSheet2 ? (pattern - maxCells) : pattern;
+                var sx = (subPattern % cols) * cellW;
+                var sy = Math.floor(subPattern / cols) * cellH;
+                var mirror = this._mirror;
+
+                sprite.bitmap = isSheet2 ? this._bitmap2 : this._bitmap1;
+                sprite.setFrame(sx, sy, cellW, cellH);
+                sprite.x = cell[1];
+                sprite.y = cell[2];
+                sprite.rotation = cell[4] * Math.PI / 180;
+                sprite.scale.x = cell[3] / 100;
+
+                if (cell[5]) {
+                    sprite.scale.x *= -1;
+                }
+                if (mirror) {
+                    sprite.x *= -1;
+                    sprite.rotation *= -1;
+                    sprite.scale.x *= -1;
+                }
+
+                sprite.scale.y = cell[3] / 100;
+                sprite.opacity = cell[6];
+                sprite.blendMode = cell[7];
+                sprite.visible = true;
+            } else {
+                sprite.visible = false;
+            }
+        }
 
         if (this._nusvConfig && sprite.visible) {
             var cfg = this._nusvConfig;

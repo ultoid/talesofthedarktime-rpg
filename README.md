@@ -1,7 +1,7 @@
 # ⚔️ Tales of The Dark Time (Nusvanir RPG Project)
 
 > **Dokumentasi Proyek, Pembaruan Sistem Terakhir, dan Rencana Pengembangan (Handover Log)**  
-> *Terakhir diperbarui: 6 November 2026*
+> *Terakhir diperbarui: 8 November 2026*
 
 ---
 
@@ -216,6 +216,43 @@ Database State telah dirampingkan secara menyeluruh dari 275+ entri lama yang tu
     8. *Long Bow (#438)*: Diam di tempat, tarik busur, anak panah meluncur melengkung (*arc 35*) dan menancap.
     9. *Crossbow (#439)*: Diam di tempat, tembakan beruntun 1–3 anak panah kilat mendatar (*arc 15, duration 12f*).
     10. *Dagger (#440)*: Shadowstep teleport ke belakang target, 1–2x sabetan cepat, return home.
+
+---
+
+### 13. Directional Auto-Mirroring Animasi Tempur, Custom Spritesheet Grid System, & Perombakan UI/UX Animation Studio
+* **Otomatisasi Arah Orientasi Animasi Tempur (Auto-Mirroring Engine):**  
+  * **Masalah:** Seluruh spritesheet animasi bawaan RPG Maker MV dan database digambar menyerang ke arah kanan (standar musuh menyerang aktor). Akibatnya, saat hero menyerang musuh ke arah kiri battlefield, animasi terlihat terbalik membelakangi target.
+  * **Solusi Runtime Engine (`NUSV_VFXKeyframes.js` & `Game_Battler.prototype.startAnimation`):**  
+    * Mengimplementasikan resolusi cerdas `resolveBattleAnimationMirror`:
+      * Serangan **Hero / Aktor $\rightarrow$ Musuh** otomatis di-mirror horizontal ke arah kiri (`mirror = true`).
+      * Serangan **Musuh $\rightarrow$ Hero** tetap menghadap ke arah kanan (`mirror = false`).
+      * Skill buff, penyembuhan (*heal*), atau bantuan pada kawan (*friendly target*) tetap tegak tidak ter-mirror.
+    * Meredam pembalikan ganda bawaan MV core `Game_Actor.prototype.startAnimation` agar orientasi tetap konsisten dan deterministik.
+    * Mengintegrasikan auto-mirroring pada `NUSV_ProjectileEngine.js` sehingga proyektil terbang dari kanan ke kiri (`goalX < startX`) otomatis berputar menghadap arah target.
+  * **Visual Direction Preview di Studio:**  
+    Menambahkan selektor arah tempur di header kanvas animasi: `⚔️ Serang Kiri (Hero ➔ Musuh)`, `🛡️ Serang Kanan (Musuh ➔ Hero)`, dan `📁 Format Asli Database`.
+
+* **Custom Spritesheet Grid System (Ukuran Sel & Potongan Fleksibel):**  
+  * **Mendobrak Batasan Standar MV (5 Kolom × 192×192 px):**  
+    Menambahkan dukungan engine penuh pada `Sprite_Animation.prototype.updateCellSprite` (`NUSV_VFXKeyframes.js`) untuk memotong spritesheet berukuran sel bebas (misal: 48×48 px, 64×64 px, 32×32 px, dll.).
+  * **Fitur Auto-Detect Resolusi Gambar (`⚡ Auto-Detect dari Gambar`):**  
+    Membaca dimensi piksel asli file grafis spritesheet dan secara otomatis menghitung pembagian kolom, baris, lebar sel, tinggi sel, dan jumlah sel maksimal.
+  * **Penyediaan Aset & Sampel Database:**  
+    * Memasukkan **31 file spritesheet animasi baru** di folder `img/animations/` (*Basic Attack_Arrow*, *Gloves*, *Staff*, *Sword*, *Spear*, *Axe* untuk seluruh elemen).
+    * Mengonfigurasi sampel database nyata pada `data/Animations.json`:
+      * **Animasi #59 (*Basic Attack_Arrow*):** 48×48 px, 7 kolom × 4 baris, 27 frame.
+      * **Animasi #60 (*Basic Attack_Gloves Wind*):** 64×64 px, 10 kolom × 9 baris, 63 frame.
+
+* **Perombakan Menyeluruh UI/UX Tab Animasi (Sesuai Kaidah Frontend Design):**  
+  * **Eliminasi Total Teks HUD Kanvas:** Menghapus kotak hitam overlay (`ctx.fillRect` / `ctx.fillText`) yang sebelumnya menggambar nomor frame di atas kanvas grafis, menghasilkan viewport pixel art yang 100% bersih.
+  * **Stage Header Minimalis & Rapi:**  
+    Header viewport memuat status dinamis `Stage Viewport 1080×720 • W×H px`, kontrol tampilan (*Ghost / Onion Skin*, *Grid & Origin*), selektor arah tempur, dan preview siluet battler tanpa terjadi wrapping teks.
+  * **Dek Playback & Transport Ergonomis:**  
+    * Indikator frame diletakkan terdedikasi di antara tombol langkah frame `◀` dan `▶` dengan monospace pill non-wrapping (`Frame X / Y`).
+    * Menyusun kontrol ala perangkat lunak animasi profesional: Transport (`▶ Play`, `⏮`, `◀`, `▶`, `🔄 Loop`), Speed Modifiers (`0.5x`, `1.0x (15 FPS)`, `2.0x`, `3.0x`), Audio SE Toggle (`[🔊 SE Audio]`), serta Aksi Frame (`➕ Tambah Frame`, `📋 Clone`, `🗑️ Hapus`, `⇄ Balik Horizontal`).
+    * Strip timeline horizontal dengan penanda jumlah sel aktif dan highlight frame terpilih.
+  * **Inspektor Layer & Sel Modular:**  
+    Tab layer bernomor bersih (`Layer #1 (Pola 0)`), hint resolusi sel dinamis, dan 4 blok konfigurasi: *Pola Spritesheet* (dengan visual picker berskala responsif), *Posisi Koordinat X/Y* (dengan drag-and-drop kanvas & tombol reset 0,0), *Skala & Rotasi* (dengan preset sudut), dan *Tampilan Efek* (Opasitas, Flip Mirror, Blend Modes).
 
 ---
 
