@@ -120,6 +120,60 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
         return _Game_BattlerBase_canPaySkillCost.call(this, skill);
     };
 
+    // Suppress unrequested cast animation in battle preview unless explicitly requested via <Cast Animation: X>
+    var _BattleManager_actionCastAnimation = BattleManager.actionCastAnimation;
+    BattleManager.actionCastAnimation = function() {
+        if (NUSV_BattlePreview.isActive()) {
+            var item = this._action ? this._action.item() : null;
+            if (!item || !item.note) return true;
+            var match = /<Cast Animation:\s*(\d+)>/i.exec(item.note);
+            if (!match || parseInt(match[1], 10) <= 0) {
+                return true; // Skip unrequested automatic cast animation
+            }
+        }
+        return _BattleManager_actionCastAnimation.call(this);
+    };
+
+    // Ensure attack animations play accurately based on equipped weapon or weapon type
+    var _Game_Actor_attackAnimationId1 = Game_Actor.prototype.attackAnimationId1;
+    Game_Actor.prototype.attackAnimationId1 = function() {
+        var id = _Game_Actor_attackAnimationId1.call(this);
+        if (id > 0) return id;
+        var weapons = this.weapons ? this.weapons() : [];
+        if (weapons && weapons.length > 0 && weapons[0]) {
+            var w = weapons[0];
+            if (w.animationId > 0) return w.animationId;
+            var map = { 1: 6, 2: 2, 3: 11, 4: 3, 5: 6, 6: 56, 7: 25, 8: 4, 9: 4, 10: 7 };
+            if (map[w.wtypeId]) return map[w.wtypeId];
+        }
+        return 1;
+    };
+
+    // Ensure preview actor can freely equip any weapon or armor regardless of class restrictions
+    var _Game_BattlerBase_canEquip = Game_BattlerBase.prototype.canEquip;
+    Game_BattlerBase.prototype.canEquip = function(item) {
+        if (NUSV_BattlePreview.isActive()) return true;
+        return _Game_BattlerBase_canEquip.call(this, item);
+    };
+
+    var _Game_BattlerBase_canEquipWeapon = Game_BattlerBase.prototype.canEquipWeapon;
+    Game_BattlerBase.prototype.canEquipWeapon = function(item) {
+        if (NUSV_BattlePreview.isActive()) return true;
+        return _Game_BattlerBase_canEquipWeapon.call(this, item);
+    };
+
+    var _Game_BattlerBase_isEquipWtypeOk = Game_BattlerBase.prototype.isEquipWtypeOk;
+    Game_BattlerBase.prototype.isEquipWtypeOk = function(wtypeId) {
+        if (NUSV_BattlePreview.isActive()) return true;
+        return _Game_BattlerBase_isEquipWtypeOk.call(this, wtypeId);
+    };
+
+    var _Game_Actor_releaseUnequippableItems = Game_Actor.prototype.releaseUnequippableItems;
+    Game_Actor.prototype.releaseUnequippableItems = function(forcing) {
+        if (NUSV_BattlePreview.isActive()) return;
+        _Game_Actor_releaseUnequippableItems.call(this, forcing);
+    };
+
     NUSV_BattlePreview.ensureWeaponEquipped = function(actor, skillId) {
         if (!actor || !$dataWeapons) return;
         var targetWtype = 0;
@@ -132,7 +186,7 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             for (var wId = 1; wId < $dataWeapons.length; wId++) {
                 var w = $dataWeapons[wId];
                 if (w && w.name && w.wtypeId === targetWtype) {
-                    actor.changeEquip(0, w);
+                    actor.forceChangeEquip(0, w);
                     return;
                 }
             }
@@ -141,7 +195,7 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
         for (var wId = 1; wId < $dataWeapons.length; wId++) {
             var w = $dataWeapons[wId];
             if (w && w.name) {
-                actor.changeEquip(0, w);
+                actor.forceChangeEquip(0, w);
                 return;
             }
         }

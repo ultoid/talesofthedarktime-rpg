@@ -318,6 +318,21 @@ NUSV.WeaponUnleash = NUSV.WeaponUnleash || {};
         return this.nusvBaseAttackSkillId();
     };
 
+    // Ensure weapon attack animations always resolve cleanly even if animationId is 0 or sparse
+    var _Game_Actor_attackAnimationId1 = Game_Actor.prototype.attackAnimationId1;
+    Game_Actor.prototype.attackAnimationId1 = function () {
+        var id = _Game_Actor_attackAnimationId1 ? _Game_Actor_attackAnimationId1.call(this) : 0;
+        if (id > 0) return id;
+        var weapons = this.weapons ? this.weapons() : [];
+        if (weapons && weapons.length > 0 && weapons[0]) {
+            var w = weapons[0];
+            if (w.animationId > 0) return w.animationId;
+            var wtypeAnimMap = { 1: 6, 2: 2, 3: 11, 4: 3, 5: 6, 6: 56, 7: 25, 8: 4, 9: 4, 10: 7 };
+            if (wtypeAnimMap[w.wtypeId]) return wtypeAnimMap[w.wtypeId];
+        }
+        return 1; // Default hit spark
+    };
+
     // Keep Attack command selection flow compatible with special target types.
     var _Scene_Battle_commandAttack = Scene_Battle.prototype.commandAttack;
     Scene_Battle.prototype.commandAttack = function () {

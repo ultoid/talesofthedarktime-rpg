@@ -350,6 +350,33 @@ Database Studio kini terintegrasi langsung dengan runtime RPG Maker MV (`Scene_B
 
 ---
 
+## 15. 💥 Perbaikan Paritas Total Animasi & Eliminasi VFX Siluman (100% VFX Parity)
+
+Berdasarkan analisis mendalam terhadap perbedaan visual antara preview dan gameplay asli, dilakukan perbaikan tuntas pada seluruh rantai pipeline visual tempur:
+
+* **🔍 Diagnosa & Akar Masalah Teridentifikasi**:
+  1. **Animasi Serangan Tidak Muncul (*Missing Attack Animations*)**:  
+     - Di `data/Weapons.json`, 95 dari 96 senjata memiliki `animationId: 0`. Saat skill memanggil `attack animation: target`, engine RPG Maker MV membaca `attackAnimationId1() = 0` sehingga `$dataAnimations[0]` bernilai `undefined` dan animasi batal diputar.
+     - Pembatasan kelas bawaan (*Class Weapon Traits*): Cassian (Priest) secara bawaan hanya boleh memegang Staff/Rune. Saat pratinjau skill senjata lain (misal: Greatsword #431), fungsi `changeEquip` RPG Maker MV menolak pergantian senjata secara diam-diam.
+  2. **VFX Tambahan / Siluman (*Phantom Cast Animation*)**:  
+     - Parameter bawaan Yanfly Battle Engine Core (`js/plugins.js`) mengatur `"Physical Animation":"1"` dan `"Magical Animation":"56"`. Setiap skill fisik/sihir yang tidak memiliki setup action kustom (atau menjalankan aksi setup default) secara otomatis memicu `cast animation` berupa percikan Hit Spark (#1) atau Arcane Missiles (#56) tepat di tubuh pengguna sebelum menyerang, meskipun pengguna tidak pernah menuliskannya di flow sequence.
+     - Logika fallback di `NUSV_VFXKeyframes.js` sebelumnya mengaitkan sembarang animasi tak dikenal ke config step pertama dan dapat memotong durasi animasi lebih awal.
+     - Regenerasi notetag otomatis di modal pratinjau sebelumnya sempat menimpa notetag asli skill.
+
+* **🛠️ Solusi Terintegrasi End-to-End**:
+  1. **Katalog Senjata Kanonikal (`data/Weapons.json`)**: Seluruh 96 senjata kini terisi kanonikal `animationId` sesuai tipe senjata (*Longsword: 6, Sword: 2, Gloves: 11, Spear: 3, Axe: 6, Staff: 56, Rune: 25, Bow: 4, Crossbow: 4, Dagger: 7*).
+  2. **Engine Fallback Resilient (`NUSV_WeaponUnleash.js` & `NUSV_BattlePreview.js`)**: `Game_Actor.prototype.attackAnimationId1` di-hook agar selalu menghasilkan ID animasi senjata kanonikal berdasarkan `wtypeId` bahkan jika ada senjata baru tanpa ID animasi.
+  3. **Universal Preview Equip Bypass**: Menghapus batasan senjata kelas pada mode preview (`forceChangeEquip`, `isEquipWtypeOk`, `canEquip`), sehingga Actor mana pun bebas memegang senjata apa pun untuk pengujian skill.
+  4. **Eliminasi Total Cast Animation Siluman**: Parameter Yanfly BEC `Physical Animation` dan `Magical Animation` diubah menjadi `0`. Cast animation hanya akan berjalan jika skill secara eksplisit memiliki notetag `<Cast Animation: ID>` dengan ID > 0.
+  5. **Surgical Keyframe Guard (`NUSV_VFXKeyframes.js`)**: Memastikan filter animasi hanya memproses animasi yang benar-benar cocok dengan `animId` yang ditentukan, mencegah pembajakan animasi standar.
+  6. **Pembersihan Notetag Skill #1**: Membuang sisa baris `motion chant / cast animation` warisan template staf pada Skill #1 (Attack dasar), mengembalikan gerakan tebasan fisik murni.
+
+* **🧪 Hasil Pengujian**:
+  - Headless Browser BiDi Tracer memverifikasi Skill #431 memutar Animasi #6 (Cleave) pada target, Skill #433 memutar Animasi #11 (Chi Shockwave), Skill #434 memutar Animasi #3 (Spear), Skill #438 memutar Animasi #4 (Arrow), dan Skill #12 memutar Animasi #6 tanpa ada spark siluman pada hero.
+  - Verifikasi otomatis `tools/test_browser_parity.py` lulus 100% tanpa error.
+
+---
+
 ## 🎯 Target Pengembangan Besok (Roadmap & Next Steps)
 
 1. **Fiksasi State:**

@@ -142,19 +142,9 @@
                         break;
                     }
                 }
-                // Fallback to any action step if animId was 0 or unassigned
-                if (!cfg) {
-                    for (var j = 0; j < activeNusvConfig.steps.length; j++) {
-                        var st = activeNusvConfig.steps[j];
-                        if (st && st.type === 'action') {
-                            cfg = st;
-                            break;
-                        }
-                    }
-                }
             }
             if (!cfg && activeNusvConfig.attack) {
-                if (Number(activeNusvConfig.attack.animId) === Number(animId) || !activeNusvConfig.steps) {
+                if (Number(activeNusvConfig.attack.animId) === Number(animId)) {
                     cfg = activeNusvConfig.attack;
                 }
             }

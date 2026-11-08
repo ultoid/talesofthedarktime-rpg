@@ -2,7 +2,7 @@
   null,
   {
     "id": 1,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Pedang besar dua tangan tempaan besi standar petualang.",
     "etypeId": 1,
     "traits": [
@@ -35,7 +35,7 @@
   },
   {
     "id": 2,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Pedang tebas baja kokoh dengan bilah lebih berat dan padat.",
     "etypeId": 1,
     "traits": [
@@ -68,7 +68,7 @@
   },
   {
     "id": 3,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Pedang perak murni yang sangat tajam dan ditakuti makhluk halus.",
     "etypeId": 1,
     "traits": [
@@ -101,7 +101,7 @@
   },
   {
     "id": 4,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Bilah mithril ringan yang melipatgandakan daya tebas fisik.",
     "etypeId": 1,
     "traits": [
@@ -134,7 +134,7 @@
   },
   {
     "id": 5,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Pedang terberat dari bijih adamantite penembus zirah baja.",
     "etypeId": 1,
     "traits": [
@@ -195,7 +195,7 @@
   },
   {
     "id": 7,
-    "animationId": 0,
+    "animationId": 2,
     "description": "Pedang baja tempaan halus dengan bilah tajam dan kokoh.",
     "etypeId": 1,
     "traits": [
@@ -223,7 +223,7 @@
   },
   {
     "id": 8,
-    "animationId": 0,
+    "animationId": 2,
     "description": "Pedang bersepuh perak murni penangkal kutukan dan siluman.",
     "etypeId": 1,
     "traits": [
@@ -251,7 +251,7 @@
   },
   {
     "id": 9,
-    "animationId": 0,
+    "animationId": 2,
     "description": "Pedang mithril bercahaya redup dengan ayunan sangat gesit.",
     "etypeId": 1,
     "traits": [
@@ -279,7 +279,7 @@
   },
   {
     "id": 10,
-    "animationId": 0,
+    "animationId": 2,
     "description": "Bilah logam adamantite legendaris yang tak dapat tergores.",
     "etypeId": 1,
     "traits": [
@@ -307,7 +307,7 @@
   },
   {
     "id": 11,
-    "animationId": 0,
+    "animationId": 11,
     "description": "Sarung tinju kulit berlapis besi sederhana praktisi bela diri.",
     "etypeId": 1,
     "traits": [
@@ -335,7 +335,7 @@
   },
   {
     "id": 12,
-    "animationId": 0,
+    "animationId": 11,
     "description": "Tinju baja bergigi tumpul untuk memperkeras hantaman tinju.",
     "etypeId": 1,
     "traits": [
@@ -363,7 +363,7 @@
   },
   {
     "id": 13,
-    "animationId": 0,
+    "animationId": 11,
     "description": "Cakar tempur perak runcing yang menyasar celah vital lawan.",
     "etypeId": 1,
     "traits": [
@@ -391,7 +391,7 @@
   },
   {
     "id": 14,
-    "animationId": 0,
+    "animationId": 11,
     "description": "Cakar mithril aerodinamis untuk pukulan berkecepatan tinggi.",
     "etypeId": 1,
     "traits": [
@@ -419,7 +419,7 @@
   },
   {
     "id": 15,
-    "animationId": 0,
+    "animationId": 11,
     "description": "Pelindung tinju adamantite berdaya bentur penghancur batu.",
     "etypeId": 1,
     "traits": [
@@ -447,7 +447,7 @@
   },
   {
     "id": 16,
-    "animationId": 0,
+    "animationId": 3,
     "description": "Tombak besi bertangkai kayu dengan daya tusuk stabil.",
     "etypeId": 1,
     "traits": [
@@ -475,7 +475,7 @@
   },
   {
     "id": 17,
-    "animationId": 0,
+    "animationId": 3,
     "description": "Tombak baja lancip standar barisan penusuk infanteri.",
     "etypeId": 1,
     "traits": [
@@ -503,7 +503,7 @@
   },
   {
     "id": 18,
-    "animationId": 0,
+    "animationId": 3,
     "description": "Tombak berbilah kapak perak untuk menusuk sekaligus menebas.",
     "etypeId": 1,
     "traits": [
@@ -531,7 +531,7 @@
   },
   {
     "id": 19,
-    "animationId": 0,
+    "animationId": 3,
     "description": "Tombak ringan berujung mithril yang mampu menembus pelat tebal.",
     "etypeId": 1,
     "traits": [
@@ -559,7 +559,7 @@
   },
   {
     "id": 20,
-    "animationId": 0,
+    "animationId": 3,
     "description": "Tombak kavaleri terkeras pemecah formasi pertahanan musuh.",
     "etypeId": 1,
     "traits": [
@@ -587,7 +587,7 @@
   },
   {
     "id": 21,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Kapak besi bergagang kayu dengan momentum ayunan berat.",
     "etypeId": 1,
     "traits": [
@@ -615,7 +615,7 @@
   },
   {
     "id": 22,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Kapak perang baja dengan mata pisau tebal pemecah tameng.",
     "etypeId": 1,
     "traits": [
@@ -643,7 +643,7 @@
   },
   {
     "id": 23,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Kapak perak tajam dengan potensi hantaman kritikal tinggi.",
     "etypeId": 1,
     "traits": [
@@ -671,7 +671,7 @@
   },
   {
     "id": 24,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Kapak perang mithril berbobot pas untuk ayunan mematikan.",
     "etypeId": 1,
     "traits": [
@@ -699,7 +699,7 @@
   },
   {
     "id": 25,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Kapak algojo raksasa pemenggal zirah paling tebal di Nusvanir.",
     "etypeId": 1,
     "traits": [
@@ -727,7 +727,7 @@
   },
   {
     "id": 26,
-    "animationId": 0,
+    "animationId": 56,
     "description": "Tongkat sihir kayu pinus sederhana pemandu aliran Mana.",
     "etypeId": 1,
     "traits": [
@@ -755,7 +755,7 @@
   },
   {
     "id": 27,
-    "animationId": 0,
+    "animationId": 56,
     "description": "Tongkat kayu ek padat yang memperkuat fokus mantra dasar.",
     "etypeId": 1,
     "traits": [
@@ -783,7 +783,7 @@
   },
   {
     "id": 28,
-    "animationId": 0,
+    "animationId": 56,
     "description": "Tongkat jati purba berenergi alam yang menstabilkan Mana.",
     "etypeId": 1,
     "traits": [
@@ -811,7 +811,7 @@
   },
   {
     "id": 29,
-    "animationId": 0,
+    "animationId": 56,
     "description": "Tongkat kayu arwah Aksuara yang menghemat konsumsi energi sihir.",
     "etypeId": 1,
     "traits": [
@@ -839,7 +839,7 @@
   },
   {
     "id": 30,
-    "animationId": 0,
+    "animationId": 56,
     "description": "Tongkat kayu purba Maharuha penyalur sihir tingkat tinggi.",
     "etypeId": 1,
     "traits": [
@@ -867,7 +867,7 @@
   },
   {
     "id": 31,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune kristal bening penyerap energi Mana murni.",
     "etypeId": 1,
     "traits": [
@@ -895,7 +895,7 @@
   },
   {
     "id": 32,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune merah menyala penyalur kobaran sihir api.",
     "etypeId": 1,
     "traits": [
@@ -923,7 +923,7 @@
   },
   {
     "id": 33,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune biru jernih pengalir sihir air dan pemulihan.",
     "etypeId": 1,
     "traits": [
@@ -951,7 +951,7 @@
   },
   {
     "id": 34,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune cokelat padat pemanggil keteguhan daya bumi.",
     "etypeId": 1,
     "traits": [
@@ -979,7 +979,7 @@
   },
   {
     "id": 35,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune hijau zamrud pemanggil pusaran angin cepat.",
     "etypeId": 1,
     "traits": [
@@ -1007,7 +1007,7 @@
   },
   {
     "id": 36,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune kuning percikan petir pelumpuh saraf musuh.",
     "etypeId": 1,
     "traits": [
@@ -1035,7 +1035,7 @@
   },
   {
     "id": 37,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune es glasial pembeku gerakan dan aliran darah.",
     "etypeId": 1,
     "traits": [
@@ -1063,7 +1063,7 @@
   },
   {
     "id": 38,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune logam keras penghantar getaran penembus zirah.",
     "etypeId": 1,
     "traits": [
@@ -1091,7 +1091,7 @@
   },
   {
     "id": 39,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune resonansi suara pembungkam mantra penyihir.",
     "etypeId": 1,
     "traits": [
@@ -1119,7 +1119,7 @@
   },
   {
     "id": 40,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune cahaya suci pemusnah iblis dan kutukan gelap.",
     "etypeId": 1,
     "traits": [
@@ -1147,7 +1147,7 @@
   },
   {
     "id": 41,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune obsidian gelap penabur kutukan pengerat sukma.",
     "etypeId": 1,
     "traits": [
@@ -1175,7 +1175,7 @@
   },
   {
     "id": 42,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune kehampaan kosmik penghancur batas pertahanan.",
     "etypeId": 1,
     "traits": [
@@ -1203,7 +1203,7 @@
   },
   {
     "id": 43,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur panjang kayu pinus lentur standar pemburu pemula.",
     "etypeId": 1,
     "traits": [
@@ -1236,7 +1236,7 @@
   },
   {
     "id": 44,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur kayu ek dengan tarikan tali kencang dan akurat.",
     "etypeId": 1,
     "traits": [
@@ -1269,7 +1269,7 @@
   },
   {
     "id": 45,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur jati berdaya pegas tinggi pembidik titik mematikan.",
     "etypeId": 1,
     "traits": [
@@ -1302,7 +1302,7 @@
   },
   {
     "id": 46,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur kayu arwah yang melesatkan anak panah berkecepatan angin.",
     "etypeId": 1,
     "traits": [
@@ -1335,7 +1335,7 @@
   },
   {
     "id": 47,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur agung purba penembus benteng dari jarak sangat jauh.",
     "etypeId": 1,
     "traits": [
@@ -1368,7 +1368,7 @@
   },
   {
     "id": 48,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur silang mekanis besi berpicu pegas sederhana.",
     "etypeId": 1,
     "traits": [
@@ -1396,7 +1396,7 @@
   },
   {
     "id": 49,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur silang baja berkecepatan kokang dan tembak stabil.",
     "etypeId": 1,
     "traits": [
@@ -1424,7 +1424,7 @@
   },
   {
     "id": 50,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Arbalest perak bertekanan tinggi penembus tameng tebal.",
     "etypeId": 1,
     "traits": [
@@ -1452,7 +1452,7 @@
   },
   {
     "id": 51,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur mekanis mithril berbobot ringan untuk berondongan baut.",
     "etypeId": 1,
     "traits": [
@@ -1480,7 +1480,7 @@
   },
   {
     "id": 52,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Mesin pelontar baut adamantite pemecah zirah baja berat.",
     "etypeId": 1,
     "traits": [
@@ -1508,7 +1508,7 @@
   },
   {
     "id": 53,
-    "animationId": 0,
+    "animationId": 7,
     "description": "Belati besi kecil yang sangat lincah untuk tikaman kilat.",
     "etypeId": 1,
     "traits": [
@@ -1536,7 +1536,7 @@
   },
   {
     "id": 54,
-    "animationId": 0,
+    "animationId": 7,
     "description": "Belati baja bermata ganda yang disukai para pencuri dan pengintai.",
     "etypeId": 1,
     "traits": [
@@ -1564,7 +1564,7 @@
   },
   {
     "id": 55,
-    "animationId": 0,
+    "animationId": 7,
     "description": "Belati stiletto ramping penembus celah sambungan baju zirah.",
     "etypeId": 1,
     "traits": [
@@ -1592,7 +1592,7 @@
   },
   {
     "id": 56,
-    "animationId": 0,
+    "animationId": 7,
     "description": "Belati mithril tanpa bobot pemasti serangan kritikal dari balik bayang.",
     "etypeId": 1,
     "traits": [
@@ -1620,7 +1620,7 @@
   },
   {
     "id": 57,
-    "animationId": 0,
+    "animationId": 7,
     "description": "Keris berlekuk adamantite legendaris penyobek daging lawan.",
     "etypeId": 1,
     "traits": [
@@ -1648,7 +1648,7 @@
   },
   {
     "id": 58,
-    "animationId": 0,
+    "animationId": 2,
     "description": "Pedang tebas lebar senjata resmi pasukan infanteri Mandalagiri.",
     "etypeId": 1,
     "traits": [
@@ -1676,7 +1676,7 @@
   },
   {
     "id": 59,
-    "animationId": 0,
+    "animationId": 3,
     "description": "Tombak berkapak penjaga jarak lawan dalam barisan tombak.",
     "etypeId": 1,
     "traits": [
@@ -1704,7 +1704,7 @@
   },
   {
     "id": 60,
-    "animationId": 0,
+    "animationId": 56,
     "description": "Tongkat media ciptaan Cassian pengonversi hayat menjadi Mana.",
     "etypeId": 1,
     "traits": [
@@ -1732,7 +1732,7 @@
   },
   {
     "id": 61,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune buatan dengan sirkuit energi manipulasi medan gaya.",
     "etypeId": 1,
     "traits": [
@@ -1760,7 +1760,7 @@
   },
   {
     "id": 62,
-    "animationId": 0,
+    "animationId": 2,
     "description": "Pedang lengkung pembegal gurun pembuka luka pendarahan.",
     "etypeId": 1,
     "traits": [
@@ -1788,7 +1788,7 @@
   },
   {
     "id": 63,
-    "animationId": 0,
+    "animationId": 7,
     "description": "Belati bertakik racun bisa ular gurun pembunuh senyap.",
     "etypeId": 1,
     "traits": [
@@ -1816,7 +1816,7 @@
   },
   {
     "id": 64,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur silang satu tangan favorit perampok oasis dari kejauhan.",
     "etypeId": 1,
     "traits": [
@@ -1844,7 +1844,7 @@
   },
   {
     "id": 65,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur hidup yang ditumbuhkan langsung dari akar suci Aksuara.",
     "etypeId": 1,
     "traits": [
@@ -1877,7 +1877,7 @@
   },
   {
     "id": 66,
-    "animationId": 0,
+    "animationId": 2,
     "description": "Pedang tusuk perak ramping penari pedang penjaga Maharuna.",
     "etypeId": 1,
     "traits": [
@@ -1905,7 +1905,7 @@
   },
   {
     "id": 67,
-    "animationId": 0,
+    "animationId": 7,
     "description": "Kipas belati berbilah tajam penepis tebasan dari arah tak terduga.",
     "etypeId": 1,
     "traits": [
@@ -1933,7 +1933,7 @@
   },
   {
     "id": 68,
-    "animationId": 0,
+    "animationId": 56,
     "description": "Tongkat kayu ulin Kiskendha Giri berdaya pukul pematah tulang.",
     "etypeId": 1,
     "traits": [
@@ -1961,7 +1961,7 @@
   },
   {
     "id": 69,
-    "animationId": 0,
+    "animationId": 11,
     "description": "Cakar batu ukir prasasti purba senjata bela diri mematikan kera wira.",
     "etypeId": 1,
     "traits": [
@@ -1989,7 +1989,7 @@
   },
   {
     "id": 70,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Kapak tebas bersuhu membara pembelah batu dan tengkorak.",
     "etypeId": 1,
     "traits": [
@@ -2017,7 +2017,7 @@
   },
   {
     "id": 71,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Pedang raksasa campuran tulang monster dan besi hitam sang kepala suku.",
     "etypeId": 1,
     "traits": [
@@ -2050,7 +2050,7 @@
   },
   {
     "id": 72,
-    "animationId": 0,
+    "animationId": 3,
     "description": "Tombak pemburu puncak gunung berujung tanduk Arkananta purba.",
     "etypeId": 1,
     "traits": [
@@ -2078,7 +2078,7 @@
   },
   {
     "id": 73,
-    "animationId": 0,
+    "animationId": 11,
     "description": "Tasbih kayu cendana berselubung sihir penyucian hantaman tangan kosong.",
     "etypeId": 1,
     "traits": [
@@ -2106,7 +2106,7 @@
   },
   {
     "id": 74,
-    "animationId": 0,
+    "animationId": 56,
     "description": "Tongkat kayu ziarah pemancar energi suci pembersih racun sekutu.",
     "etypeId": 1,
     "traits": [
@@ -2134,7 +2134,7 @@
   },
   {
     "id": 75,
-    "animationId": 0,
+    "animationId": 3,
     "description": "Tombak ksatria langit penusuk kilat dari ketinggian angkasa.",
     "etypeId": 1,
     "traits": [
@@ -2162,7 +2162,7 @@
   },
   {
     "id": 76,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur sayap emas pelepas anak panah badai tanpa pernah meleset.",
     "etypeId": 1,
     "traits": [
@@ -2195,7 +2195,7 @@
   },
   {
     "id": 77,
-    "animationId": 0,
+    "animationId": 11,
     "description": "Cakar logam emas pencabik sayap dan tameng pasukan musuh.",
     "etypeId": 1,
     "traits": [
@@ -2223,7 +2223,7 @@
   },
   {
     "id": 78,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Pedang tebas fajar suci penebas legiun iblis Raksamala.",
     "etypeId": 1,
     "traits": [
@@ -2256,7 +2256,7 @@
   },
   {
     "id": 79,
-    "animationId": 0,
+    "animationId": 2,
     "description": "Pedang kesatria matahari pengikis tabir kegelapan dan kutukan.",
     "etypeId": 1,
     "traits": [
@@ -2284,7 +2284,7 @@
   },
   {
     "id": 80,
-    "animationId": 0,
+    "animationId": 56,
     "description": "Tongkat pusaka akademi pemanggil keajaiban pemulihan tanpa tanding.",
     "etypeId": 1,
     "traits": [
@@ -2312,7 +2312,7 @@
   },
   {
     "id": 81,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune suci tertua pemancar cahaya fajar pemusnah kegelapan.",
     "etypeId": 1,
     "traits": [
@@ -2340,7 +2340,7 @@
   },
   {
     "id": 82,
-    "animationId": 0,
+    "animationId": 2,
     "description": "Bilah pedang terkutuk haus darah pemulih luka raga sang pemilik.",
     "etypeId": 1,
     "traits": [
@@ -2368,7 +2368,7 @@
   },
   {
     "id": 83,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Kapak algojo sang raja iblis pemenggal musuh yang sekarat.",
     "etypeId": 1,
     "traits": [
@@ -2396,7 +2396,7 @@
   },
   {
     "id": 84,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune 7 dosa penghisap darah caster demi ledakan sihir neraka.",
     "etypeId": 1,
     "traits": [
@@ -2424,7 +2424,7 @@
   },
   {
     "id": 85,
-    "animationId": 0,
+    "animationId": 56,
     "description": "Tongkat cermin purba pemantul kembali serangan sihir ke pengirimnya.",
     "etypeId": 1,
     "traits": [
@@ -2452,7 +2452,7 @@
   },
   {
     "id": 86,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Batu rune jurang Void penembus segala ilusi dan tameng pertahanan.",
     "etypeId": 1,
     "traits": [
@@ -2480,7 +2480,7 @@
   },
   {
     "id": 87,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Pedang matahari purba berbilah kobaran surya pencipta semesta.",
     "etypeId": 1,
     "traits": [
@@ -2513,7 +2513,7 @@
   },
   {
     "id": 88,
-    "animationId": 0,
+    "animationId": 2,
     "description": "Bilah suci fajar pertama anugerah pelindung tertinggi Avalerion.",
     "etypeId": 1,
     "traits": [
@@ -2541,7 +2541,7 @@
   },
   {
     "id": 89,
-    "animationId": 0,
+    "animationId": 11,
     "description": "Senjata tinju petir dewata pencipta berondongan pukulan asura.",
     "etypeId": 1,
     "traits": [
@@ -2569,7 +2569,7 @@
   },
   {
     "id": 90,
-    "animationId": 0,
+    "animationId": 3,
     "description": "Tombak angkasa pembidik takdir yang mustahil luput dari sasaran.",
     "etypeId": 1,
     "traits": [
@@ -2597,7 +2597,7 @@
   },
   {
     "id": 91,
-    "animationId": 0,
+    "animationId": 6,
     "description": "Kapak haus darah raksasa penelan jiwa setiap makhluk yang ditebasnya.",
     "etypeId": 1,
     "traits": [
@@ -2625,7 +2625,7 @@
   },
   {
     "id": 92,
-    "animationId": 0,
+    "animationId": 56,
     "description": "Cabang suci Pohon Dunia Maharuha penyatu seluruh elemen kehidupan.",
     "etypeId": 1,
     "traits": [
@@ -2653,7 +2653,7 @@
   },
   {
     "id": 93,
-    "animationId": 0,
+    "animationId": 25,
     "description": "Artefak sang waktu Kala Laksana pengendali aliran masa lalu dan depan.",
     "etypeId": 1,
     "traits": [
@@ -2681,7 +2681,7 @@
   },
   {
     "id": 94,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur dewa elang kencana pelontar panah penembus cakrawala langit.",
     "etypeId": 1,
     "traits": [
@@ -2714,7 +2714,7 @@
   },
   {
     "id": 95,
-    "animationId": 0,
+    "animationId": 4,
     "description": "Busur silang pembalasan dewa penabur badai baut kehancuran.",
     "etypeId": 1,
     "traits": [
@@ -2742,7 +2742,7 @@
   },
   {
     "id": 96,
-    "animationId": 0,
+    "animationId": 7,
     "description": "Taring bayangan sang waktu pemutus benang kehidupan seketika.",
     "etypeId": 1,
     "traits": [
