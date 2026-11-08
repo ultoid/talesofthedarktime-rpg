@@ -32,7 +32,7 @@ description: >-
 Before confirming any battle, skill, weapon, or studio modification:
 1. Verify `data/*.json` syntactic and structural integrity.
 2. If modifying plugins, ensure no unhandled null checks on sparse arrays (`$dataWeapons`, `$dataArmors`).
-3. If modifying Database Studio, run `python3 tools/build_editor.py` and verify parity via `python3 tools/test_browser_parity.py`.
+3. If modifying Database Studio, run `python3 tools/build_complete_studio.py` and verify parity via `python3 tools/test_browser_parity.py`.
 4. Run headless boot test to ensure `SceneManager._scene` reaches `Scene_Title` / `Scene_Map` with zero uncaught exceptions.
 
 ## 4. Turn-Based RPG Combat Engineering Principles
