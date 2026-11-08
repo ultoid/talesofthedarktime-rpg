@@ -21,7 +21,7 @@ function showServerOfflineModal() {
     modal.innerHTML = `
         <div style="background:#1e293b;border:2px solid #ef4444;border-radius:12px;max-width:580px;width:100%;padding:24px;box-shadow:0 20px 40px rgba(0,0,0,0.8);color:#f8fafc;">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-                <div style="font-size:2.2rem;">⚠️</div>
+                <div style="font-size:2.2rem;color:#ef4444;"><i class="pai-warning-diamond"></i></div>
                 <div>
                     <h2 style="font-size:1.25rem;font-weight:700;color:#f87171;">Server Database Belum Berjalan / Tidak Terhubung</h2>
                     <p style="font-size:0.85rem;color:#94a3b8;">Tidak dapat memuat file JSON database project</p>
@@ -32,15 +32,15 @@ function showServerOfflineModal() {
             </p>
             <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-family:monospace;font-size:0.85rem;margin-bottom:20px;line-height:1.7;">
                 <div style="color:#38bdf8;font-weight:600;margin-bottom:4px;">Cara Menjalankan Server Backend:</div>
-                <div>🐧 <strong>Linux:</strong> Jalankan <code>./run_editor.sh</code> di terminal</div>
-                <div>🪟 <strong>Windows:</strong> Double-click <code>run_editor.bat</code></div>
+                <div><i class="pai-terminal"></i> <strong>Linux:</strong> Jalankan <code>./run_editor.sh</code> di terminal</div>
+                <div><i class="pai-device-laptop"></i> <strong>Windows:</strong> Double-click <code>run_editor.bat</code></div>
                 <div style="margin-top:6px;color:#94a3b8;">Atau ketik: <code>python3 tools/nusv_editor_server.py</code></div>
             </div>
             <div style="display:flex;gap:10px;justify-content:flex-end;">
                 <button class="btn btn-secondary" onclick="document.getElementById('serverOfflineBanner').remove()">Tutup Notifikasi</button>
-                <a href="http://localhost:5050/" class="btn btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;">🌐 Buka http://localhost:5050</a>
-                <a href="http://127.0.0.1:5050/" class="btn btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;">🌐 Buka 127.0.0.1</a>
-                <button class="btn btn-secondary" onclick="reloadAllData()">🔄 Coba Hubungkan Ulang</button>
+                <a href="http://localhost:5050/" class="btn btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="pai-external-link"></i> Buka http://localhost:5050</a>
+                <a href="http://127.0.0.1:5050/" class="btn btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><i class="pai-external-link"></i> Buka 127.0.0.1</a>
+                <button class="btn btn-secondary" onclick="reloadAllData()"><i class="pai-reload"></i> Coba Hubungkan Ulang</button>
             </div>
         </div>
     `;
@@ -244,11 +244,11 @@ async function saveActiveDataset() {
 
         if (savedFiles.length > 0) {
             setUnsaved(false);
-            showToast(`✅ Berhasil menyimpan ${savedFiles.join(', ')} ke project!`, 'success');
+            showToast(`Berhasil menyimpan ${savedFiles.join(', ')} ke project!`, 'success');
         }
     } catch (err) {
         console.error('[saveActiveDataset Error]', err);
-        showToast(`❌ Gagal menyimpan database: ${err.message}`, 'error');
+        showToast(`Gagal menyimpan database: ${err.message}`, 'error');
         if (typeof showServerOfflineModal === 'function' && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError'))) {
             showServerOfflineModal();
         }

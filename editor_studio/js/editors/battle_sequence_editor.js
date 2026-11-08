@@ -814,6 +814,9 @@ function renderBattleEngineVisualizer(skill) {
                         </select>
                     </div>
 
+                    <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(State.currentSkillId || (State.skills && State.skills[State.selectedIndex] && State.skills[State.selectedIndex].id))" style="padding:4px 12px; font-size:0.75rem; background:linear-gradient(135deg, #ec4899, #8b5cf6); border:none; font-weight:700; display:flex; align-items:center; gap:5px; box-shadow:0 2px 10px rgba(236,72,153,0.35); border-radius:6px;" title="Uji langsung skill & urutan aksi ini di engine battle asli">
+                        ⚔️ Test di Layar Battle
+                    </button>
                     <button type="button" class="btn btn-primary btn-sm" onclick="applyCinematicSlowMoPreset()" style="padding:4px 12px; font-size:0.75rem; background:linear-gradient(135deg, #8b5cf6, #d946ef); border:none; font-weight:600; display:flex; align-items:center; gap:5px;" title="Apply cinematic camera zoom, auto-tracking dash, slow-mo hitstop, target recoil, fade on death &amp; smooth zoom-out">
                         🎬 Apply Cinematic Slow-Mo Preset
                     </button>

@@ -54,7 +54,7 @@ document.addEventListener('mouseover', (e) => {
         // Ubah newline menjadi pemisah bersih &bull; untuk bar bawah
         const formattedTitle = escapeHtml(title).replace(/\r?\n/g, ' &bull; ');
 
-        txt.innerHTML = `💡 <strong style="color:#60a5fa;">${escapeHtml(name || 'Info')}:</strong> ${formattedTitle}`;
+        txt.innerHTML = `<i class="pai-lightbulb"></i> <strong style="color:#60a5fa;">${escapeHtml(name || 'Info')}:</strong> ${formattedTitle}`;
         bar.classList.add('visible');
     }
 });

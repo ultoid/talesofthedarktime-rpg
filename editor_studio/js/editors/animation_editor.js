@@ -562,6 +562,9 @@ AnimEditor.navigateToSkillBattlePreview = function(skill) {
     State.selectedIndices.skills = skill.id;
     State.selectedIndex = skill.id;
     switchTab('skills');
+    if (typeof openBattlePreviewModal === 'function') {
+        openBattlePreviewModal(skill.id);
+    }
 };
 
 AnimEditor.openBattlePreview = function(skillId) {
@@ -1122,14 +1125,12 @@ function renderAnimationEditor(container, anim) {
         </div>
     `;
 
-    setTimeout(() => {
-        const cvs = document.getElementById('animEditorCanvas');
-        if (cvs) {
-            AnimEditor.initCanvas(cvs, anim);
-            AnimEditor.updateTimelineUI();
-            AnimEditor.updateCellInspectorUI();
-        }
-    }, 40);
+    const cvs = document.getElementById('animEditorCanvas');
+    if (cvs) {
+        AnimEditor.initCanvas(cvs, anim);
+        AnimEditor.updateTimelineUI();
+        AnimEditor.updateCellInspectorUI();
+    }
 }
 
 /**
@@ -1195,6 +1196,69 @@ AnimEditor.updateTimelineUI = function() {
 };
 
 /**
+ * Helper to retrieve currently selected cell array [pattern, x, y, scale, rotation, mirror, opacity, blend]
+ */
+AnimEditor.getCurrentCell = function() {
+    if (!this.activeAnim || !this.activeAnim.frames) return null;
+    const frame = this.activeAnim.frames[this.currentFrameIndex];
+    if (!frame) return null;
+    return frame[this.selectedCellIndex] || null;
+};
+
+/**
+ * Update property of currently selected cell with real-time feedback
+ */
+AnimEditor.updateCellProp = function(propIdx, value, shouldRerenderTimeline = false) {
+    const cell = this.getCurrentCell();
+    if (!cell) return;
+    
+    cell[propIdx] = value;
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    
+    // If pattern changed, update the tab label in real time
+    if (propIdx === 0) {
+        const container = document.getElementById('animCellInspectorContainer');
+        if (container) {
+            const tabs = container.querySelectorAll('.card-body > div:first-child button');
+            if (tabs && tabs[this.selectedCellIndex]) {
+                const patText = value >= 0 ? `Pola ${value}` : 'Kosong';
+                tabs[this.selectedCellIndex].textContent = `Layer #${this.selectedCellIndex + 1} (${patText})`;
+            }
+        }
+        if (shouldRerenderTimeline) {
+            this.updateTimelineUI();
+        }
+    }
+    
+    this.render();
+};
+
+/**
+ * Reset selected cell offset back to origin (0, 0)
+ */
+AnimEditor.resetCellPosition = function() {
+    const cell = this.getCurrentCell();
+    if (!cell) return;
+    cell[1] = 0;
+    cell[2] = 0;
+    if (typeof setUnsaved === 'function') setUnsaved(true);
+    const inX = document.getElementById('cellPosX');
+    const inY = document.getElementById('cellPosY');
+    if (inX) inX.value = 0;
+    if (inY) inY.value = 0;
+    this.render();
+};
+
+/**
+ * Set selected cell rotation degrees
+ */
+AnimEditor.setCellRotation = function(deg) {
+    this.updateCellProp(4, deg);
+    const rotInput = document.getElementById('cellRotation');
+    if (rotInput) rotInput.value = deg;
+};
+
+/**
  * Update the Cell Inspector UI panel for the active frame
  */
 AnimEditor.updateCellInspectorUI = function() {
@@ -1209,6 +1273,7 @@ AnimEditor.updateCellInspectorUI = function() {
     }
 
     const cell = currentFrame[this.selectedCellIndex] || null;
+    window.cell = cell; // Expose as safety fallback
     const dims = this.getCellDimensions();
 
     const blendNames = {
@@ -1269,7 +1334,8 @@ AnimEditor.updateCellInspectorUI = function() {
                                 <label style="font-size:0.72rem;">Nomor Pola (Pattern Index)</label>
                                 <div style="display:flex; gap:6px;">
                                     <input type="number" id="cellPattern" min="-1" max="199" class="form-control" value="${cell[0]}" 
-                                           onchange="cell[0]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render(); AnimEditor.updateTimelineUI();">
+                                           oninput="AnimEditor.updateCellProp(0, parseInt(this.value,10), true);"
+                                           onchange="AnimEditor.updateCellProp(0, parseInt(this.value,10), true);">
                                     <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimPatternPicker()" style="white-space:nowrap; padding:4px 8px; font-size:0.75rem;" title="Buka modal spritesheet untuk memilih potongan sel">
                                         🖼️ Pilih Visual
                                     </button>
@@ -1284,7 +1350,7 @@ AnimEditor.updateCellInspectorUI = function() {
                         <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <strong style="font-size:0.8rem; color:#fbbf24;">2. Posisi (X, Y Offset)</strong>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="cell[1]=0; cell[2]=0; setUnsaved(true); AnimEditor.updateCellInspectorUI(); AnimEditor.render();" style="padding:1px 6px; font-size:0.68rem;">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="AnimEditor.resetCellPosition();" style="padding:1px 6px; font-size:0.68rem;">
                                     🎯 Reset (0, 0)
                                 </button>
                             </div>
@@ -1292,12 +1358,14 @@ AnimEditor.updateCellInspectorUI = function() {
                                 <div class="form-group" style="margin:0;">
                                     <label style="font-size:0.72rem;">Posisi X (Horizontal)</label>
                                     <input type="number" id="cellPosX" min="-400" max="400" class="form-control" value="${cell[1] || 0}" 
-                                           onchange="cell[1]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                           oninput="AnimEditor.updateCellProp(1, parseInt(this.value,10)||0);"
+                                           onchange="AnimEditor.updateCellProp(1, parseInt(this.value,10)||0);">
                                 </div>
                                 <div class="form-group" style="margin:0;">
                                     <label style="font-size:0.72rem;">Posisi Y (Vertikal)</label>
                                     <input type="number" id="cellPosY" min="-400" max="400" class="form-control" value="${cell[2] || 0}" 
-                                           onchange="cell[2]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                           oninput="AnimEditor.updateCellProp(2, parseInt(this.value,10)||0);"
+                                           onchange="AnimEditor.updateCellProp(2, parseInt(this.value,10)||0);">
                                 </div>
                             </div>
                             <div style="font-size:0.68rem; color:var(--text-muted);">
@@ -1311,20 +1379,22 @@ AnimEditor.updateCellInspectorUI = function() {
                             <div class="grid-2">
                                 <div class="form-group" style="margin:0;">
                                     <label style="font-size:0.72rem;">Ukuran Skala (%)</label>
-                                    <input type="number" min="10" max="400" class="form-control" value="${cell[3] !== undefined ? cell[3] : 100}" 
-                                           onchange="cell[3]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                    <input type="number" id="cellScale" min="10" max="400" class="form-control" value="${cell[3] !== undefined ? cell[3] : 100}" 
+                                           oninput="AnimEditor.updateCellProp(3, parseInt(this.value,10)||100);"
+                                           onchange="AnimEditor.updateCellProp(3, parseInt(this.value,10)||100);">
                                 </div>
                                 <div class="form-group" style="margin:0;">
                                     <label style="font-size:0.72rem;">Rotasi Derajat (°)</label>
-                                    <input type="number" min="0" max="360" class="form-control" value="${cell[4] || 0}" 
-                                           onchange="cell[4]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                    <input type="number" id="cellRotation" min="0" max="360" class="form-control" value="${cell[4] || 0}" 
+                                           oninput="AnimEditor.updateCellProp(4, parseInt(this.value,10)||0);"
+                                           onchange="AnimEditor.updateCellProp(4, parseInt(this.value,10)||0);">
                                 </div>
                             </div>
                             <div style="display:flex; gap:4px; margin-top:2px;">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="cell[4]=0; setUnsaved(true); AnimEditor.updateCellInspectorUI(); AnimEditor.render();" style="flex:1; padding:2px; font-size:0.68rem;">0°</button>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="cell[4]=90; setUnsaved(true); AnimEditor.updateCellInspectorUI(); AnimEditor.render();" style="flex:1; padding:2px; font-size:0.68rem;">90°</button>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="cell[4]=180; setUnsaved(true); AnimEditor.updateCellInspectorUI(); AnimEditor.render();" style="flex:1; padding:2px; font-size:0.68rem;">180°</button>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="cell[4]=270; setUnsaved(true); AnimEditor.updateCellInspectorUI(); AnimEditor.render();" style="flex:1; padding:2px; font-size:0.68rem;">270°</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="AnimEditor.setCellRotation(0);" style="flex:1; padding:2px; font-size:0.68rem;">0°</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="AnimEditor.setCellRotation(90);" style="flex:1; padding:2px; font-size:0.68rem;">90°</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="AnimEditor.setCellRotation(180);" style="flex:1; padding:2px; font-size:0.68rem;">180°</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="AnimEditor.setCellRotation(270);" style="flex:1; padding:2px; font-size:0.68rem;">270°</button>
                             </div>
                         </div>
 
@@ -1334,20 +1404,21 @@ AnimEditor.updateCellInspectorUI = function() {
                             <div class="grid-2">
                                 <div class="form-group" style="margin:0;">
                                     <label style="font-size:0.72rem;">Opasitas (0 - 255)</label>
-                                    <input type="number" min="0" max="255" class="form-control" value="${cell[6] !== undefined ? cell[6] : 255}" 
-                                           onchange="cell[6]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                    <input type="number" id="cellOpacity" min="0" max="255" class="form-control" value="${cell[6] !== undefined ? cell[6] : 255}" 
+                                           oninput="AnimEditor.updateCellProp(6, Math.max(0, Math.min(255, parseInt(this.value,10)||0)));"
+                                           onchange="AnimEditor.updateCellProp(6, Math.max(0, Math.min(255, parseInt(this.value,10)||0)));">
                                 </div>
                                 <div class="form-group" style="margin:0;">
                                     <label style="font-size:0.72rem;">Cermin (Flip Horizontal)</label>
                                     <label class="checkbox-label" style="font-size:0.75rem; margin-top:6px;">
-                                        <input type="checkbox" ${cell[5] ? 'checked' : ''} onchange="cell[5]=this.checked ? 1 : 0; setUnsaved(true); AnimEditor.render();">
+                                        <input type="checkbox" id="cellMirror" ${cell[5] ? 'checked' : ''} onchange="AnimEditor.updateCellProp(5, this.checked ? 1 : 0);">
                                         <span>Mirror Horizontal</span>
                                     </label>
                                 </div>
                             </div>
                             <div class="form-group" style="margin:0;">
                                 <label style="font-size:0.72rem;">Mode Campuran (Blend Mode)</label>
-                                <select class="form-control" onchange="cell[7]=parseInt(this.value,10); setUnsaved(true); AnimEditor.render();">
+                                <select id="cellBlend" class="form-control" onchange="AnimEditor.updateCellProp(7, parseInt(this.value,10)||0);">
                                     ${Object.keys(blendNames).map(k => `<option value="${k}" ${(cell[7] || 0) === parseInt(k,10) ? 'selected' : ''}>${blendNames[k]}</option>`).join('')}
                                 </select>
                             </div>

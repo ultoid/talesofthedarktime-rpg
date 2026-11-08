@@ -23,14 +23,19 @@ function renderSkillStatPreview(container, skill) {
     container.innerHTML = `
         <!-- SKILL INSPECTOR STAT CARD -->
         <div class="card" style="margin-bottom:0;">
-            <div class="card-header" style="padding:10px 14px;">
+            <div class="card-header" style="padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
                 <div>
                     <div style="font-size:0.75rem; color:#a78bfa; font-weight:700;">Skill Inspector</div>
                     <h2 style="font-size:1.1rem; margin:2px 0 0 0; color:#fff;">#${skill.id} ${escapeHtml(skill.name || 'Unnamed')}</h2>
                 </div>
-                <span class="badge" style="background:#a78bfa22; color:#a78bfa; border:1px solid #a78bfa55; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:9999px;">
-                    ${hitTypes[skill.hitType] || 'Action'}
-                </span>
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="badge" style="background:#a78bfa22; color:#a78bfa; border:1px solid #a78bfa55; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:9999px;">
+                        ${hitTypes[skill.hitType] || 'Action'}
+                    </span>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" style="padding:4px 10px; font-size:0.72rem; background:linear-gradient(135deg, #ec4899, #8b5cf6); border:none; font-weight:700; display:inline-flex; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(236,72,153,0.35); border-radius:6px;" title="Uji skill ini langsung di battle engine RPG Maker MV asli 100% akurat">
+                        ⚔️ Preview Battle
+                    </button>
+                </div>
             </div>
             <div class="card-body" style="padding:12px 14px; display:flex; flex-direction:column; gap:12px;">
                 <!-- Resource Costs -->
@@ -143,7 +148,10 @@ function renderSkillEditor(container, skill) {
                 <h2 style="color:#c4b5fd; font-size:1.05rem; display:flex; align-items:center; gap:8px;">
                     <span>🌟</span> Pembelajaran Jurus &amp; Scroll Pusaka (TM)
                 </h2>
-                <div style="display:flex; align-items:center; gap:6px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" style="padding:4px 12px; font-size:0.75rem; background:linear-gradient(135deg, #ec4899, #8b5cf6); border:none; font-weight:700; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 10px rgba(236,72,153,0.35); border-radius:6px;" title="Buka pratinjau engine battle RPG Maker MV asli 100% akurat">
+                        ⚔️ Pratinjau Battle (100% Real Engine)
+                    </button>
                     ${isOutOfBattle ? `<span class="badge" style="background:#10b98122; color:#34d399; border:1px solid #10b98155; font-size:0.75rem; font-weight:700; padding:3px 8px;">📖 Grimoire / Luar Battle</span>` : ''}
                     <span class="badge" style="background:#8b5cf622; color:#c4b5fd; border:1px solid #8b5cf655; font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:9999px;">
                         ${tierLabels[tier] || 'Tier ' + (tier || 1)}

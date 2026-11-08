@@ -384,6 +384,110 @@ async def test_endpoint(ws, context_id, url_path, log_entries):
     assert anim_dir_test['flippedRotation'] == 315, "Flipped rotation should be 315 (360-45)!"
     assert anim_dir_test['flippedMirror'] == 1, "Flipped mirror should be 1!"
 
+    # 8b. Verify Cell Inspector Input Fields Real-Time Reactivity (X, Y, Scale, Rotation, Reset)
+    inspector_test = json.loads(await evaluate_js("""
+    (function() {
+        switchTab('animations');
+        State.selectedIndex = 1;
+        renderEditor();
+
+        // 1. Test X input reactivity
+        var inX = document.getElementById('cellPosX');
+        inX.value = 42;
+        inX.dispatchEvent(new Event('input', { bubbles: true }));
+        var cellAfterX = AnimEditor.getCurrentCell();
+        var xVal = cellAfterX ? cellAfterX[1] : null;
+
+        // 2. Test Y input reactivity
+        var inY = document.getElementById('cellPosY');
+        inY.value = -15;
+        inY.dispatchEvent(new Event('input', { bubbles: true }));
+        var cellAfterY = AnimEditor.getCurrentCell();
+        var yVal = cellAfterY ? cellAfterY[2] : null;
+
+        // 3. Test Scale input reactivity
+        var inScale = document.getElementById('cellScale');
+        inScale.value = 125;
+        inScale.dispatchEvent(new Event('input', { bubbles: true }));
+        var cellAfterScale = AnimEditor.getCurrentCell();
+        var scaleVal = cellAfterScale ? cellAfterScale[3] : null;
+
+        // 4. Test Rotation preset button reactivity
+        AnimEditor.setCellRotation(90);
+        var cellAfterRot = AnimEditor.getCurrentCell();
+        var rotVal = cellAfterRot ? cellAfterRot[4] : null;
+        var inRotVal = document.getElementById('cellRotation') ? document.getElementById('cellRotation').value : null;
+
+        // 5. Test Reset (0, 0)
+        AnimEditor.resetCellPosition();
+        var cellAfterReset = AnimEditor.getCurrentCell();
+        var resetX = cellAfterReset ? cellAfterReset[1] : null;
+        var resetY = cellAfterReset ? cellAfterReset[2] : null;
+        var inXAfterReset = document.getElementById('cellPosX') ? document.getElementById('cellPosX').value : null;
+        var inYAfterReset = document.getElementById('cellPosY') ? document.getElementById('cellPosY').value : null;
+
+        // Restore clean state
+        State.hasUnsavedChanges = false;
+
+        return JSON.stringify({
+            xVal: xVal,
+            yVal: yVal,
+            scaleVal: scaleVal,
+            rotVal: rotVal,
+            inRotVal: inRotVal,
+            resetX: resetX,
+            resetY: resetY,
+            inXAfterReset: inXAfterReset,
+            inYAfterReset: inYAfterReset
+        });
+    })()
+    """))
+    print(f"✓ Cell Inspector Real-Time Reactivity Verified: X={inspector_test['xVal']}, Y={inspector_test['yVal']}, Scale={inspector_test['scaleVal']}, Rot={inspector_test['rotVal']}, Reset=({inspector_test['resetX']},{inspector_test['resetY']})")
+    assert inspector_test['xVal'] == 42, f"Cell X should be 42, got {inspector_test['xVal']}"
+    assert inspector_test['yVal'] == -15, f"Cell Y should be -15, got {inspector_test['yVal']}"
+    assert inspector_test['scaleVal'] == 125, f"Cell Scale should be 125, got {inspector_test['scaleVal']}"
+    assert inspector_test['rotVal'] == 90, f"Cell Rotation should be 90, got {inspector_test['rotVal']}"
+    assert inspector_test['inRotVal'] == '90', f"Cell Rotation input should be '90', got {inspector_test['inRotVal']}"
+    assert inspector_test['resetX'] == 0 and inspector_test['resetY'] == 0, "Cell offset should be reset to (0, 0)"
+    assert inspector_test['inXAfterReset'] == '0' and inspector_test['inYAfterReset'] == '0', "Input fields should be updated to '0'"
+
+    # 8b. Verify Native 100% Battle Preview Modal
+    bp_test = json.loads(await evaluate_js("""
+    (() => {
+        openBattlePreviewModal(1);
+        const modal = document.getElementById('battlePreviewModal');
+        const iframe = document.getElementById('battlePreviewIframe');
+        const openedDisplay = modal ? modal.style.display : null;
+        const openedSrc = iframe ? iframe.src : '';
+
+        BattlePreviewModal.changeSpeed(0.5);
+        const speedVal = BattlePreviewModal.speed;
+
+        BattlePreviewModal.toggleMute();
+        const muteVal = BattlePreviewModal.mute;
+
+        closeBattlePreviewModal();
+        const closedDisplay = modal ? modal.style.display : null;
+        const closedSrc = iframe ? iframe.src : '';
+
+        return JSON.stringify({
+            openedDisplay,
+            hasSkillParam: openedSrc.includes('skillPreview=1'),
+            speedVal,
+            muteVal,
+            closedDisplay,
+            isClosedBlank: closedSrc.includes('about:blank')
+        });
+    })()
+    """))
+    print(f"✓ Native Battle Preview Modal Verified: Display={bp_test['openedDisplay']}, HasSkillParam={bp_test['hasSkillParam']}, Speed={bp_test['speedVal']}, Mute={bp_test['muteVal']}, ClosedBlank={bp_test['isClosedBlank']}")
+    assert bp_test['openedDisplay'] == 'flex', "Battle Preview Modal failed to open!"
+    assert bp_test['hasSkillParam'] == True, "Battle Preview Iframe missing skillPreview=1!"
+    assert bp_test['speedVal'] == 0.5, "Battle Preview speed change failed!"
+    assert bp_test['muteVal'] == True, "Battle Preview mute toggle failed!"
+    assert bp_test['closedDisplay'] == 'none', "Battle Preview Modal failed to close!"
+    assert bp_test['isClosedBlank'] == True, "Battle Preview Iframe failed to reset to about:blank!"
+
     # 9. Verify State.hasUnsavedChanges remains FALSE (no modifications committed to project)
     unsaved_status = await evaluate_js("State.hasUnsavedChanges")
     print(f"✓ Unsaved Changes Status: {unsaved_status}")
@@ -431,6 +535,51 @@ async def main():
 
             # Test 2: editor.bundled.html
             await test_endpoint(ws, context_id, '/editor.bundled.html', log_entries)
+
+            # Test 3: Native Battle Engine Boot in Sandbox
+            print("\n=======================================================")
+            print(" TESTING ENDPOINT: /index.html?skillPreview=1 (Real Game Engine)")
+            print("=======================================================")
+            game_preview_url = "http://127.0.0.1:5050/index.html?skillPreview=1&actorId=1&troopId=2&mute=1&autoCast=1"
+            req_id_preview = 9990
+            await ws.send(json.dumps({
+                'id': req_id_preview,
+                'method': 'browsingContext.navigate',
+                'params': {'context': context_id, 'url': game_preview_url, 'wait': 'complete'}
+            }))
+            resp_p = json.loads(await ws.recv())
+            while resp_p.get('id') != req_id_preview:
+                if resp_p.get('method') == 'log.entryAdded':
+                    log_entries.append(resp_p['params'])
+                resp_p = json.loads(await ws.recv())
+            
+            battle_scene_reached = False
+            for attempt in range(35):
+                await asyncio.sleep(0.3)
+                req_id_preview += 1
+                await ws.send(json.dumps({
+                    'id': req_id_preview,
+                    'method': 'script.evaluate',
+                    'params': {
+                        'target': {'context': context_id},
+                        'expression': 'JSON.stringify({ scene: (typeof SceneManager !== "undefined" && SceneManager._scene) ? SceneManager._scene.constructor.name : null, previewActive: typeof NUSV_BattlePreview !== "undefined" ? NUSV_BattlePreview.isActive() : false })',
+                        'awaitPromise': True
+                    }
+                }))
+                eval_p = json.loads(await ws.recv())
+                while eval_p.get('id') != req_id_preview:
+                    if eval_p.get('method') == 'log.entryAdded':
+                        log_entries.append(eval_p['params'])
+                    eval_p = json.loads(await ws.recv())
+                
+                state_val = json.loads(eval_p.get('result', {}).get('result', {}).get('value', '{}'))
+                if state_val.get('scene') == 'Scene_Battle':
+                    print(f"✓ Native Engine reached {state_val['scene']} with previewActive={state_val['previewActive']}")
+                    battle_scene_reached = True
+                    break
+
+            assert battle_scene_reached, "Failed to boot native game into Scene_Battle!"
+            print("✓ Native RPG Maker MV Scene_Battle Boot Verified Successfully!")
 
             # Check for any fatal errors in captured logs
             page_errors = [entry for entry in log_entries if entry.get('level') == 'error' and 'favicon' not in entry.get('text', '').lower()]

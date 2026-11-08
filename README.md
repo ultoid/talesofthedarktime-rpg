@@ -324,6 +324,19 @@ Setelah selesai meracik perintah:
 
 ---
 
+## 14. ⚔️ Native Battle Preview Sandbox (100% Real Engine)
+
+Database Studio kini terintegrasi langsung dengan runtime RPG Maker MV (`Scene_Battle`) asli untuk memberikan pratinjau skill dan aksi tempur **100% akurat tanpa kompromi**:
+
+* **🎮 Native Engine Execution**: Tidak menggunakan simulasi kanvas tiruan. Yang berjalan di dalam jendela pratinjau adalah engine game RPG Maker MV sesungguhnya lengkap dengan Yanfly Battle Engine Core, CTB Timeline, Action Sequences Pack 1/2/3, Flying Projectiles, damage calculation pipeline, sound effects, dan camera zoom.
+* **⚡ Auto-Cast & Immortal Dummy**: Begitu modal dibuka, Actor langsung otomatis melancarkan skill ke target tanpa perlu navigasi menu battle. Musuh/dummy tidak akan mati atau memicu layar Game Over; HP otomatis terisi ulang agar sandbox tetap berjalan interaktif.
+* **🔁 Instant Replay**: Satu klik tombol `🔁 Replay` untuk mengulang kembali aksi skill seketika dari posisi awal.
+* **⏱️ Speed Scaling (Slow-Mo)**: Opsi kecepatan dinamis **0.5x (Slow-Motion)** untuk memeriksa hit frame/keyframe animasi secara presisi, **1.0x (Normal)**, dan **2.0x (Fast)**.
+* **⚡ Live Unsaved Sync**: Perubahan formula damage, notetag action sequence, dan animasi yang sedang diketik di editor langsung diterapkan secara *hot-reload* ke memori battle engine tanpa harus menyimpan file JSON terlebih dahulu.
+* **👥 Ganti Actor & Target**: Dropdown terintegrasi untuk menguji skill dengan Actor berbeda (Cassian, Hector, Rama, dll.) dan musuh berbeda (Babi Hutan, Orc, Boss, dll.).
+
+---
+
 ## 🎯 Target Pengembangan Besok (Roadmap & Next Steps)
 
 1. **Fiksasi State:**

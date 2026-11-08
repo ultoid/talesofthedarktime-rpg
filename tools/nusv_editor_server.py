@@ -152,7 +152,10 @@ class NUSVEditorHandler(http.server.SimpleHTTPRequestHandler):
 
         # 3. Root path and editor endpoints serve fresh editor.html
         clean_path = self.path.split('?')[0]
-        if clean_path in ("/", "/index.html", "/editor", "/editor.html"):
+        if clean_path == "/index.html" and ("skillPreview" in self.path or "btest" in self.path or "preview" in self.path):
+            # Pass through to static file handler to serve real game index.html
+            pass
+        elif clean_path in ("/", "/index.html", "/editor", "/editor.html"):
             editor_path = GAME_DIR / "editor.html"
             if editor_path.exists():
                 self.send_response(200)

@@ -30,10 +30,10 @@ function renderTraitsCard(item, tab) {
         <div class="card">
             <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
-                    <h2 title="Ciri khas (Traits) RPG Maker MV & NUSV: ketahanan elemen, status, buff/debuff, dan fitur khusus battler">🧬 Traits / Ciri Khas (${traits.length})</h2>
+                    <h2 title="Ciri khas (Traits) RPG Maker MV & NUSV: ketahanan elemen, status, buff/debuff, dan fitur khusus battler"><i class="pai-sliders"></i> Traits / Ciri Khas (${traits.length})</h2>
                     <div style="font-size:0.75rem; color:var(--text-muted);">Element Rate, Parameter Scaling, Ex/Sp-Params, Equip Slots, etc.</div>
                 </div>
-                <button type="button" class="btn btn-primary btn-sm" onclick="openTraitModal(-1)" title="Tambah trait baru">➕ Add Trait</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="openTraitModal(-1)" title="Tambah trait baru"><i class="pai-plus"></i> Add Trait</button>
             </div>
             <div class="card-body">
                 ${traits.length === 0 ? `<div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">Belum ada Trait. Klik "+ Add Trait" untuk menambahkan ciri khas.</div>` : `
@@ -51,8 +51,8 @@ function renderTraitsCard(item, tab) {
                                     <td><span class="badge-cat">${(TRAIT_CATEGORIES[tr.code]||{}).cat || 'Trait'}</span> <strong style="font-size:0.8rem; color:#94a3b8;">#${tr.code}</strong></td>
                                     <td>${formatTrait(tr)}</td>
                                     <td style="text-align:right;">
-                                        <button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px;" onclick="openTraitModal(${idx})" title="Edit trait ini">✏️</button>
-                                        <button type="button" class="btn btn-danger btn-sm" style="padding:2px 6px;" onclick="removeTrait(${idx})" title="Hapus trait ini">🗑️</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px;" onclick="openTraitModal(${idx})" title="Edit trait ini"><i class="pai-pencil"></i></button>
+                                        <button type="button" class="btn btn-danger btn-sm" style="padding:2px 6px;" onclick="removeTrait(${idx})" title="Hapus trait ini"><i class="pai-trash"></i></button>
                                     </td>
                                 </tr>
                             `).join('')}
@@ -94,7 +94,7 @@ function renderTraitModalBody() {
             } else if (opt.hasData === 'param') {
                 html += `
                     <select id="tr_data_${code}" class="form-control" style="flex:1;" onclick="event.stopPropagation();">
-                        ${PARAM_DEFS.map(p => `<option value="${p.id}">${p.icon} ${p.code} (${p.name})</option>`).join('')}
+                        ${PARAM_DEFS.map(p => `<option value="${p.id}">${p.code} - ${p.name}</option>`).join('')}
                     </select>
                 `;
             } else if (opt.hasData === 'xparam') {

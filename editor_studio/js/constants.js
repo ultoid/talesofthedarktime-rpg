@@ -7,7 +7,8 @@ const PARAM_DEFS = [
         id: 0, 
         code: 'MHP', 
         name: 'Max HP (Vitality & STR)', 
-        icon: '❤️', 
+        icon: '<i class="pai-heart"></i>',
+        iconName: 'heart',
         color: '#f87171',
         desc: 'Poin Kesehatan Maksimal pahlawan',
         formula: 'Class Base HP + (VIT × 15) + (STR × 5) + Bonus Equipment'
@@ -16,7 +17,8 @@ const PARAM_DEFS = [
         id: 1, 
         code: 'MMP', 
         name: 'Max MP (Intelligence)', 
-        icon: '💧', 
+        icon: '<i class="pai-sparkles"></i>',
+        iconName: 'sparkles',
         color: '#60a5fa',
         desc: 'Poin Mana / Energi Sihir Maksimal',
         formula: 'Class Base MP + (INT × 8) + Bonus Equipment'
@@ -25,7 +27,8 @@ const PARAM_DEFS = [
         id: 2, 
         code: 'ATK', 
         name: 'Physical ATK (STR & DEX)', 
-        icon: '⚔️', 
+        icon: '<i class="pai-sword"></i>',
+        iconName: 'sword',
         color: '#fb923c',
         desc: 'Daya Serang Fisik Utama',
         formula: 'Standar: Weapon ATK + (STR × 2.0) + (DEX × 0.5) + Equip | Finesse (Dagger/Bow): Weapon ATK + (DEX × 2.0) + (STR × 0.5) + Equip'
@@ -34,7 +37,8 @@ const PARAM_DEFS = [
         id: 3, 
         code: 'DEF', 
         name: 'Physical DEF (VIT & STR)', 
-        icon: '🛡️', 
+        icon: '<i class="pai-shield"></i>',
+        iconName: 'shield',
         color: '#34d399',
         desc: 'Ketahanan Pertahanan Fisik',
         formula: 'Class Base DEF + (VIT × 1.5) + (STR × 0.5) + Bonus Armor'
@@ -43,7 +47,8 @@ const PARAM_DEFS = [
         id: 4, 
         code: 'MAT', 
         name: 'Magic ATK (Intelligence)', 
-        icon: '🔮', 
+        icon: '<i class="pai-wand"></i>',
+        iconName: 'wand',
         color: '#a78bfa',
         desc: 'Daya Serang Kekuatan Sihir',
         formula: 'Class Base MAT + (INT × 2.0) + Bonus Equipment'
@@ -52,7 +57,8 @@ const PARAM_DEFS = [
         id: 5, 
         code: 'MDF', 
         name: 'Magic DEF (INT & VIT)', 
-        icon: '💠', 
+        icon: '<i class="pai-shield-sharp"></i>',
+        iconName: 'shield-sharp',
         color: '#38bdf8',
         desc: 'Ketahanan Pertahanan Sihir',
         formula: 'Class Base MDF + (INT × 1.2) + (VIT × 0.8) + Bonus Equipment'
@@ -61,7 +67,8 @@ const PARAM_DEFS = [
         id: 6, 
         code: 'AGI', 
         name: 'Action Speed (Agility)', 
-        icon: '⚡', 
+        icon: '<i class="pai-speed-fast"></i>',
+        iconName: 'speed-fast',
         color: '#facc15',
         desc: 'Kecepatan Giliran & Inisiatif Tempur',
         formula: 'Class Base AGI + (AGI × 1.5) + Bonus Equipment'
@@ -70,7 +77,8 @@ const PARAM_DEFS = [
         id: 7, 
         code: 'LUK', 
         name: 'Luck (LUK)', 
-        icon: '🍀', 
+        icon: '<i class="pai-coins"></i>',
+        iconName: 'coins',
         color: '#4ade80',
         desc: 'Keberuntungan, Evasion Kritis & Efek Status',
         formula: 'Class Base LUK + LUK + Bonus Equipment'
@@ -83,7 +91,8 @@ const CORE_ATTRIBUTES = [
     { 
         code: 'STR', 
         name: 'Strength', 
-        icon: '💪', 
+        icon: '<i class="pai-power"></i>',
+        iconName: 'power',
         color: '#ef4444',
         desc: 'Kekuatan fisik dasar, meningkatkan P.ATK dan sedikit Max HP & DEF',
         formula: 'Actor Species Base + Class IV Rating + Actor Growth + Class Growth + Equip'
@@ -91,7 +100,8 @@ const CORE_ATTRIBUTES = [
     { 
         code: 'INT', 
         name: 'Intelligence', 
-        icon: '🧠', 
+        icon: '<i class="pai-lightbulb"></i>',
+        iconName: 'lightbulb',
         color: '#3b82f6',
         desc: 'Kecerdasan sihir, meningkatkan M.ATK, M.DEF, Max MP, dan MP Regen',
         formula: 'Actor Species Base + Class IV Rating + Actor Growth + Class Growth + Equip'
@@ -99,7 +109,8 @@ const CORE_ATTRIBUTES = [
     { 
         code: 'DEX', 
         name: 'Dexterity', 
-        icon: '🎯', 
+        icon: '<i class="pai-target"></i>',
+        iconName: 'target',
         color: '#f59e0b',
         desc: 'Ketangkasan & presisi, meningkatkan Hit Rate, Critical Rate, Critical Damage, dan ATK Finesse',
         formula: 'Actor Species Base + Class IV Rating + Actor Growth + Class Growth + Equip'
@@ -107,7 +118,8 @@ const CORE_ATTRIBUTES = [
     { 
         code: 'AGI', 
         name: 'Agility', 
-        icon: '⚡', 
+        icon: '<i class="pai-speed-fast"></i>',
+        iconName: 'speed-fast',
         color: '#10b981',
         desc: 'Kelincahan gerak, meningkatkan Kecepatan (Speed), Evasion, dan SP Regen',
         formula: 'Actor Species Base + Class IV Rating + Actor Growth + Class Growth + Equip'
@@ -115,7 +127,8 @@ const CORE_ATTRIBUTES = [
     { 
         code: 'VIT', 
         name: 'Vitality', 
-        icon: '🛡️', 
+        icon: '<i class="pai-shield"></i>',
+        iconName: 'shield',
         color: '#06b6d4',
         desc: 'Ketahanan tubuh alami, meningkatkan Max HP, P.DEF, Guard Mitigation, dan HP Regen',
         formula: 'Actor Species Base + Class IV Rating + Actor Growth + Class Growth + Equip'
@@ -123,7 +136,8 @@ const CORE_ATTRIBUTES = [
     { 
         code: 'LUK', 
         name: 'Luck', 
-        icon: '🎲', 
+        icon: '<i class="pai-coins"></i>',
+        iconName: 'coins',
         color: '#a855f7',
         desc: 'Keberuntungan, meningkatkan Critical Rate, Evasion Kritis (CEV), dan peluang status',
         formula: 'Actor Species Base + Class IV Rating + Actor Growth + Class Growth + Equip'
@@ -134,31 +148,31 @@ const CORE_ATTRIBUTES = [
 
 const DERIVED_STAT_DEFS = [
     // Vitalitas & Regen
-    { key: 'Max SP', name: 'Max SP (Stamina)', icon: '⚡', color: '#38bdf8', group: 'vital', placeholder: '+20' },
-    { key: 'HRG Plus', name: 'HP Regen / Turn', icon: '❤️', color: '#f87171', group: 'vital', placeholder: '+3%' },
-    { key: 'MRG Plus', name: 'MP Regen / Turn', icon: '💧', color: '#60a5fa', group: 'vital', placeholder: '+2%' },
-    { key: 'TRG Plus', name: 'SP Regen / Turn', icon: '🔋', color: '#34d399', group: 'vital', placeholder: '+3%' },
+    { key: 'Max SP', name: 'Max SP (Stamina)', icon: '<i class="pai-zap"></i>', color: '#38bdf8', group: 'vital', placeholder: '+20' },
+    { key: 'HRG Plus', name: 'HP Regen / Turn', icon: '<i class="pai-heart"></i>', color: '#f87171', group: 'vital', placeholder: '+3%' },
+    { key: 'MRG Plus', name: 'MP Regen / Turn', icon: '<i class="pai-sparkles"></i>', color: '#60a5fa', group: 'vital', placeholder: '+2%' },
+    { key: 'TRG Plus', name: 'SP Regen / Turn', icon: '<i class="pai-battery-full"></i>', color: '#34d399', group: 'vital', placeholder: '+3%' },
 
     // Presisi & Kritis
-    { key: 'HIT Plus', name: 'Hit Rate', desc: 'Bonus akurasi serangan fisik (<HIT Plus: +X%>)', icon: '🎯', color: '#facc15', group: 'offensive', placeholder: '+5%' },
-    { key: 'CRI Plus', name: 'Critical Rate', icon: '💥', color: '#fb923c', group: 'offensive', placeholder: '+5%' },
-    { key: 'Critical Damage', name: 'Critical Damage', icon: '🗡️', color: '#ef4444', group: 'offensive', placeholder: '+25%' },
-    { key: 'Armor Penetration', name: 'Armor Penetration', desc: 'Mengabaikan persentase pertahanan fisik target (<Armor Penetration: +X%>)', icon: '🏹', color: '#f59e0b', group: 'offensive', placeholder: '15%' },
-    { key: 'Magic Penetration', name: 'Magic Penetration', desc: 'Mengabaikan persentase pertahanan sihir target (<Magic Penetration: +X%>)', icon: '🔮', color: '#a78bfa', group: 'offensive', placeholder: '15%' },
+    { key: 'HIT Plus', name: 'Hit Rate', desc: 'Bonus akurasi serangan fisik (<HIT Plus: +X%>)', icon: '<i class="pai-target"></i>', color: '#facc15', group: 'offensive', placeholder: '+5%' },
+    { key: 'CRI Plus', name: 'Critical Rate', icon: '<i class="pai-sparkle"></i>', color: '#fb923c', group: 'offensive', placeholder: '+5%' },
+    { key: 'Critical Damage', name: 'Critical Damage', icon: '<i class="pai-sword"></i>', color: '#ef4444', group: 'offensive', placeholder: '+25%' },
+    { key: 'Armor Penetration', name: 'Armor Penetration', desc: 'Mengabaikan persentase pertahanan fisik target (<Armor Penetration: +X%>)', icon: '<i class="pai-arrow-right"></i>', color: '#f59e0b', group: 'offensive', placeholder: '15%' },
+    { key: 'Magic Penetration', name: 'Magic Penetration', desc: 'Mengabaikan persentase pertahanan sihir target (<Magic Penetration: +X%>)', icon: '<i class="pai-wand"></i>', color: '#a78bfa', group: 'offensive', placeholder: '15%' },
 
     // Pertahanan & Mitigasi
-    { key: 'PDR Plus', name: 'Physical Damage Reduction', desc: 'Pengurangan damage fisik yang diterima (<PDR Plus: +X%>)', icon: '🔰', color: '#34d399', group: 'defensive', placeholder: '-10%' },
-    { key: 'MDR Plus', name: 'Magical Damage Reduction', desc: 'Pengurangan damage sihir yang diterima (<MDR Plus: +X%>)', icon: '💠', color: '#38bdf8', group: 'defensive', placeholder: '-10%' },
-    { key: 'GRD Plus', name: 'Guard Mitigation', desc: 'Efisiensi pengurangan damage saat mode bertahan (<GRD Plus: +X%>)', icon: '🛡️', color: '#60a5fa', group: 'defensive', placeholder: '+20%' },
-    { key: 'EVA Plus', name: 'Evasion Rate', desc: 'Peluang menghindari serangan fisik musuh (<EVA Plus: +X%>)', icon: '💨', color: '#10b981', group: 'defensive', placeholder: '+5%' },
-    { key: 'CEV Plus', name: 'Critical Evasion', desc: 'Resistensi terhadap serangan kritikal musuh (<CEV Plus: +X%>)', icon: '🛡️', color: '#4ade80', group: 'defensive', placeholder: '+5%' },
-    { key: 'MEV Plus', name: 'Magic Evasion', desc: 'Peluang menghindari serangan sihir musuh (<MEV Plus: +X%>)', icon: '🍃', color: '#a3e635', group: 'defensive', placeholder: '+5%' },
-    { key: 'MRF Plus', name: 'Magic Reflection', desc: 'Peluang memantulkan serangan sihir (<MRF Plus: +X%>)', icon: '🪞', color: '#2dd4bf', group: 'defensive', placeholder: '+5%' },
-    { key: 'CNT Plus', name: 'Counter Attack Rate', desc: 'Peluang membalas serangan fisik langsung (<CNT Plus: +X%>)', icon: '⚔️', color: '#f43f5e', group: 'defensive', placeholder: '+10%' },
+    { key: 'PDR Plus', name: 'Physical Damage Reduction', desc: 'Pengurangan damage fisik yang diterima (<PDR Plus: +X%>)', icon: '<i class="pai-shield"></i>', color: '#34d399', group: 'defensive', placeholder: '-10%' },
+    { key: 'MDR Plus', name: 'Magical Damage Reduction', desc: 'Pengurangan damage sihir yang diterima (<MDR Plus: +X%>)', icon: '<i class="pai-shield-sharp"></i>', color: '#38bdf8', group: 'defensive', placeholder: '-10%' },
+    { key: 'GRD Plus', name: 'Guard Mitigation', desc: 'Efisiensi pengurangan damage saat mode bertahan (<GRD Plus: +X%>)', icon: '<i class="pai-shield"></i>', color: '#60a5fa', group: 'defensive', placeholder: '+20%' },
+    { key: 'EVA Plus', name: 'Evasion Rate', desc: 'Peluang menghindari serangan fisik musuh (<EVA Plus: +X%>)', icon: '<i class="pai-wind"></i>', color: '#10b981', group: 'defensive', placeholder: '+5%' },
+    { key: 'CEV Plus', name: 'Critical Evasion', desc: 'Resistensi terhadap serangan kritikal musuh (<CEV Plus: +X%>)', icon: '<i class="pai-shield-sharp"></i>', color: '#4ade80', group: 'defensive', placeholder: '+5%' },
+    { key: 'MEV Plus', name: 'Magic Evasion', desc: 'Peluang menghindari serangan sihir musuh (<MEV Plus: +X%>)', icon: '<i class="pai-leaf"></i>', color: '#a3e635', group: 'defensive', placeholder: '+5%' },
+    { key: 'MRF Plus', name: 'Magic Reflection', desc: 'Peluang memantulkan serangan sihir (<MRF Plus: +X%>)', icon: '<i class="pai-undo"></i>', color: '#2dd4bf', group: 'defensive', placeholder: '+5%' },
+    { key: 'CNT Plus', name: 'Counter Attack Rate', desc: 'Peluang membalas serangan fisik langsung (<CNT Plus: +X%>)', icon: '<i class="pai-sword"></i>', color: '#f43f5e', group: 'defensive', placeholder: '+10%' },
 
     // Utilitas & Aggro
-    { key: 'MCR Plus', name: 'MP Cost Rate', desc: 'Tingkat efisiensi konsumsi MP (minus = hemat) (<MCR Plus: -X%>)', icon: '🧪', color: '#818cf8', group: 'utility', placeholder: '-10%' },
-    { key: 'TGR Plus', name: 'Target Rate / Aggro', desc: 'Tingkat kecenderungan musuh menarget karakter ini (<TGR Plus: +X%>)', icon: '👁️', color: '#c084fc', group: 'utility', placeholder: '+20%' }
+    { key: 'MCR Plus', name: 'MP Cost Rate', desc: 'Tingkat efisiensi konsumsi MP (minus = hemat) (<MCR Plus: -X%>)', icon: '<i class="pai-potion"></i>', color: '#818cf8', group: 'utility', placeholder: '-10%' },
+    { key: 'TGR Plus', name: 'Target Rate / Aggro', desc: 'Tingkat kecenderungan musuh menarget karakter ini (<TGR Plus: +X%>)', icon: '<i class="pai-eye"></i>', color: '#c084fc', group: 'utility', placeholder: '+20%' }
 ];
 
 

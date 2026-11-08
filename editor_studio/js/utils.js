@@ -410,6 +410,17 @@ function formatEffect(eff) {
 
 
 
+/**
+ * Renders a crisp Pixel Art Icon HTML string using pixelarticons.
+ * @param {string} name - The icon name without prefix (e.g. 'sword', 'shield', 'heart')
+ * @param {string} extraClass - Additional CSS classes
+ * @param {string} style - Inline CSS style
+ */
+function pai(name, extraClass = '', style = '') {
+    if (!name) return '';
+    return `<i class="pai-${name}${extraClass ? ' ' + extraClass : ''}"${style ? ` style="${style}"` : ''}></i>`;
+}
+
 function showToast(message, type = 'info', duration = 3200) {
     let container = document.getElementById('toastContainer');
     if (!container) {
@@ -422,14 +433,17 @@ function showToast(message, type = 'info', duration = 3200) {
     const toast = document.createElement('div');
     toast.className = `toast-item ${type}`;
 
-    let icon = 'ℹ️';
-    if (type === 'success') icon = '✅';
-    else if (type === 'error') icon = '❌';
-    else if (type === 'warning') icon = '⚠️';
+    let icon = '<i class="pai-circle-info"></i>';
+    if (type === 'success') icon = '<i class="pai-check"></i>';
+    else if (type === 'error') icon = '<i class="pai-close"></i>';
+    else if (type === 'warning') icon = '<i class="pai-warning-diamond"></i>';
+
+    // Clean any accidental unicode emojis from the toast message string
+    const cleanMsg = String(message || '').replace(/[\u{1F300}-\u{1FAFF}]|[\u2600-\u27BF]|[\u2300-\u23FF]/gu, '').trim();
 
     toast.innerHTML = `
         <span class="toast-icon">${icon}</span>
-        <span class="toast-msg">${typeof escapeHtml === 'function' ? escapeHtml(message) : message}</span>
+        <span class="toast-msg">${typeof escapeHtml === 'function' ? escapeHtml(cleanMsg) : cleanMsg}</span>
     `;
 
     container.appendChild(toast);

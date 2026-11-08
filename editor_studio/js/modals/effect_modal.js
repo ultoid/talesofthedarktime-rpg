@@ -15,10 +15,10 @@ function renderEffectsCard(item) {
         <div class="card">
             <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
-                    <h2 title="Efek-efek khusus saat skill atau item ini berhasil diluncurkan">✨ RPG Maker MV Effects (${effects.length})</h2>
+                    <h2 title="Efek-efek khusus saat skill atau item ini berhasil diluncurkan"><i class="pai-sparkles"></i> RPG Maker MV Effects (${effects.length})</h2>
                     <div style="font-size:0.75rem; color:var(--text-muted);">HP/MP Recovery, Apply/Remove State, Buff/Debuff, Common Event trigger, etc.</div>
                 </div>
-                <button type="button" class="btn btn-primary btn-sm" onclick="openEffectModal(-1)" title="Tambah efek baru">➕ Add Effect</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="openEffectModal(-1)" title="Tambah efek baru"><i class="pai-plus"></i> Add Effect</button>
             </div>
             <div class="card-body">
                 ${effects.length === 0 ? `<div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">Belum ada efek tambahan. Klik "+ Add Effect" untuk menambahkan aksi pemulihan, status, buff, atau common event.</div>` : `
@@ -36,8 +36,8 @@ function renderEffectsCard(item) {
                                     <td><span class="badge-cat">${(((typeof EFFECT_CATEGORIES !== 'undefined' ? EFFECT_CATEGORIES : {})[eff.code])||{}).cat || 'Effect'}</span> <strong style="font-size:0.8rem; color:#94a3b8;">#${eff.code}</strong></td>
                                     <td>${formatEffect(eff)}</td>
                                     <td style="text-align:right;">
-                                        <button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px;" onclick="openEffectModal(${idx})" title="Edit efek ini">✏️</button>
-                                        <button type="button" class="btn btn-danger btn-sm" style="padding:2px 6px;" onclick="removeEffect(${idx})" title="Hapus efek ini">🗑️</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px;" onclick="openEffectModal(${idx})" title="Edit efek ini"><i class="pai-pencil"></i></button>
+                                        <button type="button" class="btn btn-danger btn-sm" style="padding:2px 6px;" onclick="removeEffect(${idx})" title="Hapus efek ini"><i class="pai-trash"></i></button>
                                     </td>
                                 </tr>
                             `).join('')}
@@ -120,7 +120,7 @@ function onEffectCodeChange() {
             <div class="form-group">
                 <label>Pilih Parameter</label>
                 <select id="effDataId" class="form-control">
-                    ${PARAM_DEFS.map(p => `<option value="${p.id}" ${eff.dataId === p.id ? 'selected' : ''}>${p.icon} ${p.code} (${p.name})</option>`).join('')}
+                    ${PARAM_DEFS.map(p => `<option value="${p.id}" ${eff.dataId === p.id ? 'selected' : ''}>${p.code} - ${p.name}</option>`).join('')}
                 </select>
             </div>
             <div class="form-group">
@@ -133,7 +133,7 @@ function onEffectCodeChange() {
             <div class="form-group">
                 <label>Pilih Parameter</label>
                 <select id="effDataId" class="form-control">
-                    ${PARAM_DEFS.map(p => `<option value="${p.id}" ${eff.dataId === p.id ? 'selected' : ''}>${p.icon} ${p.code} (${p.name})</option>`).join('')}
+                    ${PARAM_DEFS.map(p => `<option value="${p.id}" ${eff.dataId === p.id ? 'selected' : ''}>${p.code} - ${p.name}</option>`).join('')}
                 </select>
             </div>
         `;

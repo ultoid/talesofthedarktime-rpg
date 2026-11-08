@@ -98,3 +98,12 @@ For full mechanical and balance specifications, cross-reference the dedicated sk
 * **Damage Pipeline & Mitigation Math**: [damage_pipeline_and_formulas.md](../turn-based-rpg-combat/references/damage_pipeline_and_formulas.md)
 * **Status Effects & CC Lifecycle**: [status_effects_and_cc_lifecycle.md](../turn-based-rpg-combat/references/status_effects_and_cc_lifecycle.md)
 * **Tactical AI & TTK Balancing**: [turn_based_ai_and_balancing.md](../turn-based-rpg-combat/references/turn_based_ai_and_balancing.md)
+
+---
+
+## 5. Coding Behavior Standards (Karpathy Guidelines)
+All development across the engine, studio tools, and scripts strictly follows [karpathy-guidelines](../karpathy-guidelines/SKILL.md):
+* **Think Before Coding**: Clarify ambiguities and surface assumptions explicitly.
+* **Simplicity First**: Write the leanest solution with zero speculative features or unrequested configurability.
+* **Surgical Changes**: Zero accidental diff churn; never touch or reformat unrelated working code.
+* **Goal-Driven Execution**: Every step is verifiable with concrete checks before completion.

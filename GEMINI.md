@@ -33,3 +33,9 @@ Before confirming any battle, skill, weapon, or studio modification:
 * **Deterministic Damage Pipeline**: Calculations follow a multi-stage pipeline (Base -> Trait Multipliers -> Crit Check -> Elemental Affinity -> Multiplicative Mitigation -> Shields -> Variance) instead of raw subtractive math.
 * **Status Effect Lifecycle Hooks**: States handle their own triggers (`onTurnStart`, `beforeIncomingHit`, `onDamageTaken`, `onTurnEnd`). Bosses implement diminishing returns on Hard CC (Stun/Sleep).
 * **Tactical AI & Telegraphed Attacks**: Enemies evaluate threat scores and HP thresholds (<50% phase triggers). Lethal AoE ultimates must be telegraphed 1 turn in advance with charging poses/auras.
+
+## 5. Andrej Karpathy's LLM Coding Guidelines
+* **Think Before Coding**: State assumptions explicitly. Surface ambiguity and tradeoffs instead of picking silently. Stop and ask when confused.
+* **Simplicity First**: Minimum code that solves the problem—nothing speculative. No unrequested configurability or single-use abstractions.
+* **Surgical Changes**: Touch only what you must. Never reformat or refactor adjacent working code. Every changed line must trace directly to the request.
+* **Goal-Driven Execution**: Transform tasks into verifiable criteria (Step -> Verify). Loop until verified before declaring done.
