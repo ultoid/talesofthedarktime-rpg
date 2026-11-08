@@ -377,6 +377,22 @@ Berdasarkan analisis mendalam terhadap perbedaan visual antara preview dan gamep
 
 ---
 
+## 16. 🎯 Penyelarasan Sinkronisasi Proyektil & Pembersihan Antarmuka Database Studio
+
+* **🏹 Penyelarasan Timing Proyektil & Hit VFX (Skill #436 Staff & #438 Bow)**:
+  - **Akar Masalah**: Pada skill serangan jarak jauh (khususnya Skill #436 *Attack Staff* milik senjata awal Cassian dan Skill #438 *Attack Long Bow*), notetag action sequence sebelumnya memanggil perintah animasi benturan (`attack animation: target` / `animation 4: target`) mendahului perintah `wait for projectile`.
+  - **Dampak Visual**: Animasi benturan meledak pada saat proyektil baru meluncur keluar dari aktor. Ketika proyektil akhirnya sampai membentur musuh, durasi animasi sudah habis/selesai sehingga tampak di playtest sasaran terkena damage tanpa adanya efek benturan (*hit VFX*).
+  - **Solusi**: Merestrukturisasi alur action sequence di `data/Skills.json` agar `wait for projectile` selesai terlebih dahulu, baru memicu `attack animation: target`, `wait for animation`, dan eksekusi damage `action effect: target` tepat pada frame benturan proyektil.
+  - **Klarifikasi Faktor Playtest**: Memvalidasi bahwa pada *New Game* bersih efek tebasan normal sudah tampil sempurna, namun pada save file lama (*Continue*) senjata instansiasi `YEP_ItemCore` lama masih mencatat `animationId: 0` sehingga memerlukan *New Game* atau copot-pasang ulang senjata.
+
+* **🧹 Pembersihan Total Preset Sinematik Slow-Mo pada UI Database Studio**:
+  - Menghapus tombol utama `[Apply Cinematic Slow-Mo Preset]` dari toolbar header Action Sequence.
+  - Menghapus tombol-tombol preset fase lambat (*Preset Slow-Mo Track*, *Preset Slow-Mo Strike*, dan *Preset Smooth Reset*) dari form blok *Setup Action*, *Target Action*, dan *Finish Action*.
+  - Menyederhanakan form editor agar pengguna memiliki kendali penuh atas konfigurasi aksi tanpa distraksi preset slow-mo otomatis.
+  - Bundling ulang antarmuka (`editor.html` & `editor.bundled.html`) dan verifikasi kelulusan 100% pada seluruh suite uji browser parity (`tools/test_browser_parity.py`).
+
+---
+
 ## 🎯 Target Pengembangan Besok (Roadmap & Next Steps)
 
 1. **Fiksasi State:**

@@ -817,9 +817,6 @@ function renderBattleEngineVisualizer(skill) {
                     <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(State.currentSkillId || (State.skills && State.skills[State.selectedIndex] && State.skills[State.selectedIndex].id))" style="padding:4px 12px; font-size:0.75rem; background:linear-gradient(135deg, #ec4899, #8b5cf6); border:none; font-weight:700; display:flex; align-items:center; gap:5px; box-shadow:0 2px 10px rgba(236,72,153,0.35); border-radius:6px;" title="Uji langsung skill & urutan aksi ini di engine battle asli">
                         ${pai('sword')} Test di Layar Battle
                     </button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="applyCinematicSlowMoPreset()" style="padding:4px 12px; font-size:0.75rem; background:linear-gradient(135deg, #8b5cf6, #d946ef); border:none; font-weight:600; display:flex; align-items:center; gap:5px;" title="Apply cinematic camera zoom, auto-tracking dash, slow-mo hitstop, target recoil, fade on death &amp; smooth zoom-out">
-                        ${pai('video')} Apply Cinematic Slow-Mo Preset
-                    </button>
                     <button type="button" class="btn btn-secondary btn-sm" onclick="copyBecSequenceToClipboard()" style="padding:4px 10px; font-size:0.75rem;" title="Copy all action sequences and notetags to clipboard">
                         ${pai('copy')} Copy Notetags
                     </button>
@@ -1064,7 +1061,7 @@ function renderBattleEngineVisualizer(skill) {
                         badgeColor: '#d8b4fe',
                         icon: pai('user'),
                         commands: state.setupCommands,
-                        presetTypes: ['cinematic_setup', 'standard_start']
+                        presetTypes: ['standard_start']
                     })}
 
                     <!-- ---------------------------------------------------- -->
@@ -1098,7 +1095,7 @@ function renderBattleEngineVisualizer(skill) {
                         badgeColor: '#fca5a5',
                         icon: pai('sword'),
                         commands: state.targetCommands,
-                        presetTypes: ['cinematic_target', 'standard_melee', 'ranged_missile']
+                        presetTypes: ['standard_melee', 'ranged_missile']
                     })}
 
                     <!-- ---------------------------------------------------- -->
@@ -1132,7 +1129,7 @@ function renderBattleEngineVisualizer(skill) {
                         badgeColor: '#a7f3d0',
                         icon: pai('flag'),
                         commands: state.finishCommands,
-                        presetTypes: ['cinematic_finish', 'quick_return'],
+                        presetTypes: ['quick_return'],
                         extraHtml: `
                             <div style="margin-top:12px; padding-top:12px; border-top:1px dashed #334155; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:10px;">
                                 <div>
@@ -1314,18 +1311,12 @@ function renderBecActionCanvas(cfg) {
     let presetButtonsHtml = '';
     if (cfg.presetTypes && cfg.presetTypes.length > 0) {
         presetButtonsHtml = cfg.presetTypes.map(pt => {
-            if (pt === 'cinematic_setup') {
-                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'cinematic_setup')" style="font-size:0.7rem; padding:2px 8px; color:#d8b4fe;" title="Muat Setup Sinematik: 150% Zoom + Auto-Track User">${pai('video')} Preset Slow-Mo Track</button>`;
-            } else if (pt === 'standard_start') {
+            if (pt === 'standard_start') {
                 return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'standard_start')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Setup Standar: Perform Start">${pai('speed-fast')} Preset Default Start</button>`;
-            } else if (pt === 'cinematic_target') {
-                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'cinematic_target')" style="font-size:0.7rem; padding:2px 8px; color:#fca5a5;" title="Muat Target Sinematik: Slow-Mo Dash (28f), Windup (12f), Cut Enemy (15f), Slow Recoil (20f), Slow Fade Death (50f)">${pai('video')} Preset Slow-Mo Strike</button>`;
             } else if (pt === 'standard_melee') {
                 return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'standard_melee')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Melee Standar: Maju 15f, Tebas, Mundur">${pai('sword')} Preset Melee Normal</button>`;
             } else if (pt === 'ranged_missile') {
                 return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'ranged_missile')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Ranged Standar: Diam di tempat, Tembak Peluru">${pai('target')} Preset Ranged</button>`;
-            } else if (pt === 'cinematic_finish') {
-                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'cinematic_finish')" style="font-size:0.7rem; padding:2px 8px; color:#a7f3d0;" title="Muat Finish Sinematik: Return (15f) + Smooth Zoom Out (30f)">${pai('video')} Preset Smooth Reset</button>`;
             } else if (pt === 'quick_return') {
                 return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'quick_return')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Return Standar">${pai('arrow-left')} Preset Return Fast</button>`;
             }
