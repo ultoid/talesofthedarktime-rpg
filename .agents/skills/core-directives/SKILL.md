@@ -1,3 +1,11 @@
+---
+name: core-directives
+description: >-
+  Core engineering directives, user principles, mandatory pre-flight verification checklist,
+  project architecture, and coding guidelines for Tales of The Dark Time.
+  Use whenever working on any development, debugging, refactoring, or design task in this project.
+---
+
 # Tales of The Dark Time — Core Agent Directives & Engineering Wisdom
 
 ## 1. Directives of Wisdom (User Principles)
