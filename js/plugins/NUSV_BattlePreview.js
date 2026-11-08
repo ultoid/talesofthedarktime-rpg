@@ -15,8 +15,9 @@
  *
  * When active (via ?skillPreview=ID in the URL):
  * - Boots directly into Scene_Battle bypassing title screens
+ * - 1v1 Solo Duel Sandbox: exactly 1 chosen Actor vs 1 chosen Enemy Dummy
  * - Equips/learns the selected skill on the chosen actor with infinite MP/SP
- * - Automatically executes the skill against target enemies/dummies
+ * - Native Action Pipeline: matches in-game playtest camera, zoom, and sequences
  * - Prevents premature Victory/Defeat screens (immortal dummy)
  * - Supports live unsaved notetag/action-sequence updates without page reload
  * - Supports instant replay and real-time speed scaling (0.5x, 1x, 2x)
@@ -48,6 +49,7 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
     NUSV_BattlePreview.skillId = parseInt(previewParam, 10) || 1;
     NUSV_BattlePreview.actorId = parseInt(getQueryParam('actorId'), 10) || 1;
     NUSV_BattlePreview.troopId = parseInt(getQueryParam('troopId'), 10) || 2;
+    NUSV_BattlePreview.enemyId = parseInt(getQueryParam('enemyId'), 10) || NUSV_BattlePreview.troopId || 2;
     NUSV_BattlePreview.autoCast = getQueryParam('autoCast') !== '0' && getQueryParam('autoCast') !== 'false';
     NUSV_BattlePreview.mute = getQueryParam('mute') === '1' || getQueryParam('mute') === 'true';
     NUSV_BattlePreview.speedMultiplier = parseFloat(getQueryParam('speed')) || 1.0;
@@ -66,10 +68,10 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
 
     console.log('[NUSV_BattlePreview] Activated for Skill #' + NUSV_BattlePreview.skillId + 
                 ', Actor #' + NUSV_BattlePreview.actorId + 
-                ', Troop #' + NUSV_BattlePreview.troopId);
+                ', Enemy #' + NUSV_BattlePreview.enemyId);
 
     // ========================================================================
-    // 2. ENGINE BOOT HOOKS
+    // 2. ENGINE BOOT HOOKS & RESTRICTION BYPASS
     // ========================================================================
 
     var _DataManager_loadDatabase = DataManager.loadDatabase;
@@ -105,14 +107,42 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
         }
     };
 
-    NUSV_BattlePreview.ensureWeaponEquipped = function(actor) {
-        if (!actor || (actor.weapons && actor.weapons().length > 0)) return;
-        if (!$dataWeapons) return;
+    // Regardless of equipment or requirements, always allow the previewed skill to be cast
+    var _Game_BattlerBase_meetsSkillConditions = Game_BattlerBase.prototype.meetsSkillConditions;
+    Game_BattlerBase.prototype.meetsSkillConditions = function(skill) {
+        if (NUSV_BattlePreview.isActive()) return true;
+        return _Game_BattlerBase_meetsSkillConditions.call(this, skill);
+    };
+
+    var _Game_BattlerBase_canPaySkillCost = Game_BattlerBase.prototype.canPaySkillCost;
+    Game_BattlerBase.prototype.canPaySkillCost = function(skill) {
+        if (NUSV_BattlePreview.isActive()) return true;
+        return _Game_BattlerBase_canPaySkillCost.call(this, skill);
+    };
+
+    NUSV_BattlePreview.ensureWeaponEquipped = function(actor, skillId) {
+        if (!actor || !$dataWeapons) return;
+        var targetWtype = 0;
+        if (skillId >= 431 && skillId <= 440) {
+            targetWtype = skillId - 430;
+        } else if ($dataSkills && $dataSkills[skillId]) {
+            targetWtype = $dataSkills[skillId].requiredWtypeId1 || 0;
+        }
+        if (targetWtype > 0) {
+            for (var wId = 1; wId < $dataWeapons.length; wId++) {
+                var w = $dataWeapons[wId];
+                if (w && w.name && w.wtypeId === targetWtype) {
+                    actor.changeEquip(0, w);
+                    return;
+                }
+            }
+        }
+        if (actor.weapons && actor.weapons().length > 0 && actor.weapons()[0]) return;
         for (var wId = 1; wId < $dataWeapons.length; wId++) {
             var w = $dataWeapons[wId];
-            if (w && w.name && typeof actor.isEquipWtypeOk === 'function' && actor.isEquipWtypeOk(w.wtypeId)) {
+            if (w && w.name) {
                 actor.changeEquip(0, w);
-                break;
+                return;
             }
         }
     };
@@ -126,7 +156,7 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             }
         }
 
-        // 2. Configure Party with chosen Actor (Solo Actor - No Squad Companions by default)
+        // 2. Configure Party with EXACTLY ONE Actor (1v1 Solo Duel)
         $gameParty._actors = [];
         var mainActorId = NUSV_BattlePreview.actorId;
         var leaderActor = $gameActors.actor(mainActorId);
@@ -146,7 +176,7 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             if (testBattler && testBattler.equips && testBattler.equips.length > 0) {
                 leaderActor.initEquips(testBattler.equips);
             }
-            NUSV_BattlePreview.ensureWeaponEquipped(leaderActor);
+            NUSV_BattlePreview.ensureWeaponEquipped(leaderActor, NUSV_BattlePreview.skillId);
             leaderActor.recoverAll();
             leaderActor.gainHp(9999);
             leaderActor.gainMp(9999);
@@ -155,48 +185,22 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             $gameParty.addActor(mainActorId);
         }
 
-        // Only add companions if soloMode is explicitly false
-        if (!NUSV_BattlePreview.soloMode && $dataSystem && $dataSystem.testBattlers) {
-            $dataSystem.testBattlers.forEach(function(tb) {
-                if (tb && tb.actorId > 0 && tb.actorId !== mainActorId && $gameParty.members().length < 4) {
-                    var companion = $gameActors.actor(tb.actorId);
-                    if (companion) {
-                        companion.changeLevel(tb.level || 50, false);
-                        if (tb.equips) companion.initEquips(tb.equips);
-                        NUSV_BattlePreview.ensureWeaponEquipped(companion);
-                        companion.recoverAll();
-                        $gameParty.addActor(tb.actorId);
-                    }
-                }
-            });
+        // 3. Configure Troop with EXACTLY ONE Enemy Dummy (1v1 Solo Duel)
+        BattleManager.setup(1, true, false);
+        BattleManager.setBattleTest(true);
+        $gameTroop.setup(1);
+
+        var enemyId = NUSV_BattlePreview.enemyId || 2;
+        if (!$dataEnemies || !$dataEnemies[enemyId] || !$dataEnemies[enemyId].name) {
+            enemyId = 2; // Default to Babi Hutan
         }
+        NUSV_BattlePreview.enemyId = enemyId;
 
-        // 3. Configure Troop (Solo Target 1v1 by default)
-        var troopId = NUSV_BattlePreview.troopId;
-        if (troopId > 0) {
-            BattleManager.setup(troopId, true, false);
-            BattleManager.setBattleTest(true);
-            $gameTroop.setup(troopId);
-
-            // In Solo mode: only keep 1 target enemy for clean 1v1 skill preview
-            if (NUSV_BattlePreview.soloMode && $gameTroop._enemies && $gameTroop._enemies.length > 1) {
-                $gameTroop._enemies = [$gameTroop._enemies[0]];
-            }
-
-            $gameTroop.members().forEach(function(enemy) {
-                if (enemy) {
-                    enemy.recoverAll();
-                    enemy.gainHp(999999);
-                    if (NUSV_BattlePreview.soloMode) {
-                        enemy._screenX = 340;
-                        enemy._screenY = 440;
-                    } else if (enemy._screenX !== undefined && enemy._screenX < 260) {
-                        enemy._screenX = Math.round(enemy._screenX * (1080 / 816));
-                        if (enemy._screenX < 260) enemy._screenX = 260;
-                    }
-                }
-            });
-        }
+        var dummyEnemy = new Game_Enemy(enemyId, 280, 440);
+        dummyEnemy.recoverAll();
+        dummyEnemy.gainHp(999999);
+        $gameTroop._enemies = [dummyEnemy];
+        $gameTroop.makeUniqueNames();
 
         // 4. Mute BGM/BGS if requested
         if (NUSV_BattlePreview.mute) {
@@ -222,15 +226,6 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
     NUSV_BattlePreview.setHud = function(visible) {
         NUSV_BattlePreview.showHud = Boolean(visible);
         NUSV_BattlePreview.applyHudVisibility();
-    };
-
-    NUSV_BattlePreview.setSolo = function(isSolo) {
-        NUSV_BattlePreview.soloMode = Boolean(isSolo);
-        NUSV_BattlePreview.setupPreviewBattle();
-        if (SceneManager._scene instanceof Scene_Battle && typeof SceneManager._scene.refreshStatus === 'function') {
-            SceneManager._scene.refreshStatus();
-        }
-        NUSV_BattlePreview.replaySkill();
     };
 
     // ========================================================================
@@ -275,16 +270,8 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
     };
 
     // ========================================================================
-    // 4. SCENE BATTLE START & AUTO-CAST
+    // 4. SCENE BATTLE START & HUD HOOKS
     // ========================================================================
-
-    var _Sprite_Actor_setActorHome = Sprite_Actor.prototype.setActorHome;
-    Sprite_Actor.prototype.setActorHome = function(index) {
-        _Sprite_Actor_setActorHome.call(this, index);
-        if (NUSV_BattlePreview.isActive() && NUSV_BattlePreview.soloMode && index === 0) {
-            this.setHome(840, 440);
-        }
-    };
 
     var _Scene_Battle_start = Scene_Battle.prototype.start;
     Scene_Battle.prototype.start = function() {
@@ -305,7 +292,7 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             if (NUSV_BattlePreview.autoCast) {
                 setTimeout(function() {
                     NUSV_BattlePreview.replaySkill();
-                }, 400);
+                }, 100);
             }
         }
     };
@@ -383,8 +370,41 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
         _Game_Enemy_die.call(this);
     };
 
+    var _Game_Troop_setupBattleEvent = Game_Troop.prototype.setupBattleEvent;
+    Game_Troop.prototype.setupBattleEvent = function() {
+        if (NUSV_BattlePreview.isActive()) return;
+        _Game_Troop_setupBattleEvent.call(this);
+    };
+
+    // Disable background CTB ticks during preview to prevent turn clock desync
+    if (typeof BattleManager.updateCTBPhase === 'function') {
+        var _BattleManager_updateCTBPhase = BattleManager.updateCTBPhase;
+        BattleManager.updateCTBPhase = function() {
+            if (NUSV_BattlePreview.isActive()) return;
+            _BattleManager_updateCTBPhase.call(this);
+        };
+    }
+
+    // Intercept BattleManager.endAction so the preview returns gracefully to idle pose
+    var _BattleManager_endAction = BattleManager.endAction;
+    BattleManager.endAction = function() {
+        if (NUSV_BattlePreview.isActive()) {
+            if (this._subject) {
+                this._subject.onAllActionsEnd();
+            }
+            this._phase = 'previewIdle';
+            if (typeof window !== 'undefined' && window.parent && window.parent.BattlePreviewModal) {
+                try {
+                    window.parent.BattlePreviewModal.onSkillCompleted();
+                } catch (e) {}
+            }
+            return;
+        }
+        _BattleManager_endAction.call(this);
+    };
+
     // ========================================================================
-    // 6. ACTION EXECUTION & REPLAY CONTROLLER
+    // 6. ACTION EXECUTION & REPLAY CONTROLLER (NATIVE PIPELINE)
     // ========================================================================
 
     NUSV_BattlePreview.replaySkill = function() {
@@ -400,30 +420,25 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
         actor.gainMp(9999);
         actor.gainTp(100);
         actor.learnSkill(skillId);
-        NUSV_BattlePreview.ensureWeaponEquipped(actor);
+        NUSV_BattlePreview.ensureWeaponEquipped(actor, skillId);
 
-        // 2. Ensure enemy is alive and healthy
+        // 2. Ensure enemy dummy is alive and healthy at home position
         if ($gameTroop && $gameTroop.members) {
             $gameTroop.members().forEach(function(enemy) {
                 if (enemy) {
                     if (enemy.isDead()) enemy.revive();
                     enemy.recoverAll();
                     enemy.gainHp(999999);
+                    if (enemy.spriteReturnHome) {
+                        try { enemy.spriteReturnHome(); } catch (e) {}
+                    }
                     if (typeof enemy.performFinish === 'function') enemy.performFinish();
                     if (typeof enemy.setActionState === 'function') enemy.setActionState('undecided');
                 }
             });
         }
 
-        // 3. Reset ASP3 camera/zoom if present
-        if (typeof BattleManager.actionResetCamera === 'function') {
-            try {
-                BattleManager.actionResetCamera([0]);
-                BattleManager.actionResetZoom([0]);
-            } catch (err) {}
-        }
-
-        // 4. Reset battler position and motion
+        // 3. Reset battler position and motion
         if (actor.spriteReturnHome) {
             try { actor.spriteReturnHome(); } catch(e) {}
         }
@@ -434,35 +449,48 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             actor.setActionState('undecided');
         }
 
-        // 5. Clear old action queue
+        // 4. Reset ASP3 camera/zoom INSTANTLY (0 frames - NO background tweens or clamp triggers!)
+        if ($gameScreen) {
+            $gameScreen.clearZoom();
+            $gameScreen._cameraDuration = 0;
+            $gameScreen._zoomDuration = 0;
+            $gameScreen._zoomScaleTarget = 1.0;
+            $gameScreen._zoomScale = 1.0;
+            $gameScreen._zoomX = Graphics.boxWidth / 2;
+            $gameScreen._zoomY = Graphics.boxHeight / 2;
+        }
+        BattleManager._cameraX = Graphics.boxWidth / 2;
+        BattleManager._cameraY = Graphics.boxHeight / 2;
+        BattleManager._cameraOffsetX = 0;
+        BattleManager._cameraOffsetY = 0;
+        BattleManager._cameraFocusGroup = [];
+        BattleManager._cameraFocusPosX = 'BASE';
+        BattleManager._cameraFocusPosY = 'BASE';
+        BattleManager._cameraClamp = true;
+        BattleManager._cameraResettingClamp = false;
+
+        // 5. Clean action queue and busy state
         BattleManager._actionList = [];
         BattleManager._targets = [];
         BattleManager._action = null;
+        BattleManager._subject = null;
+        BattleManager._processingForcedAction = false;
+        if (BattleManager._logWindow) {
+            BattleManager._logWindow.clear();
+        }
 
-        // 6. Determine target index based on scope
-        var targetIndex = 0;
+        // 6. Build valid Game_Action natively
+        var action = new Game_Action(actor);
+        action.setSkill(skillId);
         var isForFriend = [7, 8, 9, 10, 11].indexOf(skill.scope) >= 0;
-        if (isForFriend) {
-            targetIndex = 0;
-        } else {
-            var aliveEnemies = $gameTroop.aliveMembers();
-            if (aliveEnemies.length > 0) {
-                targetIndex = aliveEnemies[0].index();
-            } else {
-                targetIndex = 0;
-            }
-        }
+        action.setTarget(isForFriend ? 0 : 0);
+        actor._actions = [action];
 
-        // 7. Force Action & Process Immediately (Bypass CTB Wait Phase)
-        actor.clearActions();
-        actor.forceAction(skillId, targetIndex);
-        BattleManager.forceAction(actor);
-        if (typeof BattleManager.processForcedAction === 'function') {
-            BattleManager.processForcedAction();
-        }
-        if (typeof BattleManager.isTickBased === 'function' && BattleManager.isTickBased()) {
-            BattleManager._phase = 'action';
-        }
+        // 7. Start Action through Yanfly's NATIVE startAction pipeline
+        // (Identical to in-game playtest: setup -> whole -> target -> follow -> finish)
+        BattleManager._subject = actor;
+        BattleManager._action = action;
+        BattleManager.startAction();
 
         // Notify parent modal
         if (typeof window !== 'undefined' && window.parent && window.parent.BattlePreviewModal) {
@@ -471,7 +499,7 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             } catch (e) {}
         }
 
-        console.log('[NUSV_BattlePreview] Replaying Skill #' + skillId + ' (' + skill.name + ')');
+        console.log('[NUSV_BattlePreview] Replaying Skill #' + skillId + ' (' + skill.name + ') natively');
     };
 
     // ========================================================================
@@ -505,22 +533,41 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
     };
 
     // ========================================================================
-    // 8. DYNAMIC ACTOR / TROOP SWITCHING
+    // 8. DYNAMIC ACTOR / ENEMY SWITCHING
     // ========================================================================
 
     NUSV_BattlePreview.switchActor = function(newActorId) {
         NUSV_BattlePreview.actorId = parseInt(newActorId, 10) || 1;
         NUSV_BattlePreview.setupPreviewBattle();
-        if (SceneManager._scene instanceof Scene_Battle && typeof SceneManager._scene.refreshStatus === 'function') {
-            SceneManager._scene.refreshStatus();
+        if (SceneManager._scene && SceneManager._scene._spriteset) {
+            var spriteset = SceneManager._scene._spriteset;
+            if (spriteset._actorSprites) {
+                spriteset._actorSprites.forEach(function(sp) {
+                    if (sp && sp.parent) sp.parent.removeChild(sp);
+                });
+            }
+            spriteset.createActors();
+        }
+        NUSV_BattlePreview.replaySkill();
+    };
+
+    NUSV_BattlePreview.switchEnemy = function(newEnemyId) {
+        NUSV_BattlePreview.enemyId = parseInt(newEnemyId, 10) || 2;
+        NUSV_BattlePreview.setupPreviewBattle();
+        if (SceneManager._scene && SceneManager._scene._spriteset) {
+            var spriteset = SceneManager._scene._spriteset;
+            if (spriteset._enemySprites) {
+                spriteset._enemySprites.forEach(function(sp) {
+                    if (sp && sp.parent) sp.parent.removeChild(sp);
+                });
+            }
+            spriteset.createEnemies();
         }
         NUSV_BattlePreview.replaySkill();
     };
 
     NUSV_BattlePreview.switchTroop = function(newTroopId) {
-        NUSV_BattlePreview.troopId = parseInt(newTroopId, 10) || 2;
-        NUSV_BattlePreview.setupPreviewBattle();
-        NUSV_BattlePreview.replaySkill();
+        NUSV_BattlePreview.switchEnemy(newTroopId);
     };
 
 })();

@@ -324,19 +324,29 @@ Setelah selesai meracik perintah:
 
 ---
 
-## 14. ⚔️ Native Battle Preview Sandbox (100% Real Engine)
+## 14. ⚔️ Native Battle Preview Sandbox (100% Real Engine — 1v1 Solo Duel & Smooth Camera)
 
 Database Studio kini terintegrasi langsung dengan runtime RPG Maker MV (`Scene_Battle`) asli untuk memberikan pratinjau skill dan aksi tempur **100% akurat tanpa kompromi**:
 
-* **🎮 Native Engine Execution**: Tidak menggunakan simulasi kanvas tiruan. Yang berjalan di dalam jendela pratinjau adalah engine game RPG Maker MV sesungguhnya lengkap dengan Yanfly Battle Engine Core, CTB Timeline, Action Sequences Pack 1/2/3, Flying Projectiles, damage calculation pipeline, sound effects, dan camera zoom.
-* **⚡ Auto-Cast & Instant CTB Bypass**: Begitu modal dibuka, Actor langsung mengeksekusi skill secara seketika tanpa tertahan turn queue CTB (`processForcedAction`). Musuh/dummy tidak akan mati atau memicu layar Game Over; HP otomatis terisi ulang agar sandbox tetap berjalan interaktif.
-* **🛡️ Authentic Party & Weapon Equips**: Karakter penguji dimuat lengkap dengan formasi party penuh (Level 50) dan senjata autentik sesuai kelasnya (`ensureWeaponEquipped`), menjamin sprite ayunan senjata, pose gerak (*swing motion*), dan popup damage muncul akurat 100%.
-* **📐 Absolute Directional Alignment**: Animasi serangan Hero/Actor ke musuh dijamin selalu menghadap ke KIRI (`mirror = true`), dan musuh ke Hero selalu ke KANAN (`mirror = false`), kebal terhadap sisa tag `, mirror` lama pada Action Sequence.
-* **📍 1080×720 Field Repositioning**: Koordinat posisi musuh otomatis disesuaikan secara proporsional dari layout 816×624 ke kanvas 1080×720 agar tidak terpotong di tepi kiri layar.
-* **🔁 Instant Replay**: Satu klik tombol `🔁 Replay` untuk mengulang kembali aksi skill seketika dari posisi awal.
+* **🎮 Native Engine Execution**: Tidak menggunakan simulasi kanvas tiruan. Yang berjalan di dalam jendela pratinjau adalah engine game RPG Maker MV sesungguhnya lengkap dengan Yanfly Battle Engine Core, CTB Timeline, Action Sequences Pack 1/2/3, Flying Projectiles, damage calculation pipeline, sound effects, dan battle camera tracking.
+* **🤺 Skenario Murni 1v1 Solo Duel (1 Actor vs 1 Target Dummy)**:  
+  Sesuai kebutuhan pratinjau fokus, battle preview hanya memuat **tepat 1 Actor** dan **tepat 1 Target Dummy** (tidak ada anggota squad lain yang mengganggu, tidak ada duplikat musuh).
+* **🎯 Pemilihan Bebas Actor & Enemy**:  
+  Tersedia dropdown terintegrasi di toolbar untuk memilih Actor mana pun (Cassian, Hector, Rama, dll.) dan Enemy mana pun langsung dari database `Enemies.json` (Ayam Hutan, Babi Hutan, Orc, Minotaur, dll.).
+* **🎥 Kamera & Tracking Halus 100% Akurat Playtest (Zero Stutter / Disconnect)**:  
+  Memperbaiki desinkronisasi kamera battle pada Action Sequence Pack 3:
+  - Eksekusi aksi dialihkan sepenuhnya ke pipeline native `BattleManager.startAction()`, mengeliminasi kerusakan fase `updatePhase` yang sebelumnya menyebabkan setup action dan zoom melompat.
+  - Reset kamera instan (`0 frames`) saat replay/setup sehingga tidak ada background tween yang memicu `_cameraClamp = true` di tengah eksekusi aksi.
+  - Kamera mengunci dan mengikuti pergerakan lari/dash battler secara mulus (*smooth pan & real-time sprite tracking*) dari posisi awal hingga tepat di depan target, lalu kembali ke posisi home secara alami.
+* **🛡️ Bebas dari Keterbatasan Equipment & Resource**:  
+  Actor diberikan bypass validasi skill cost (MP/SP tak terbatas) dan auto-matching weapon type sesuai kebutuhan skill sehingga skill senjata (#431–#440) maupun mantra langsung dapat diuji seketika tanpa kendala inventaris.
+* **🧹 Clean HUD Sandbox**:  
+  Jendela status HP/MP biru dan baris ikon giliran CTB disembunyikan secara default (`HUD: OFF`) agar layar pratinjau 100% terfokus pada battler, animasi VFX, pergerakan kamera, dan angka damage. Opsi `HUD: ON` tetap tersedia jika ingin memeriksa stat bar.
+* **📐 Absolute Directional Alignment**:  
+  Animasi serangan Hero/Actor ke musuh dijamin selalu menghadap ke KIRI (`mirror = true`), dan musuh ke Hero selalu ke KANAN (`mirror = false`), kebal terhadap sisa tag `, mirror` lama pada Action Sequence.
+* **🔁 Instant Replay**: Satu klik tombol `🔁 Replay` untuk mengulang kembali aksi skill seketika dari posisi awal dengan reset posisi dan HP musuh 100% bersih.
 * **⏱️ Speed Scaling (Slow-Mo)**: Opsi kecepatan dinamis **0.5x (Slow-Motion)** untuk memeriksa hit frame/keyframe animasi secara presisi, **1.0x (Normal)**, dan **2.0x (Fast)**.
-* **⚡ Live Unsaved Sync**: Perubahan formula damage, notetag action sequence, dan animasi yang sedang diketik di editor langsung diterapkan secara *hot-reload* ke memori battle engine tanpa harus menyimpan file JSON terlebih dahulu.
-* **👥 Ganti Actor & Target**: Dropdown terintegrasi untuk menguji skill dengan Actor berbeda (Cassian, Hector, Rama, dll.) dan musuh berbeda (Babi Hutan, Orc, Boss, dll.).
+* **⚡ Live Unsaved Sync**: Perubahan formula damage, notetag action sequence, dan animasi yang sedang diedit di editor langsung diterapkan secara *hot-reload* ke memori battle engine tanpa harus menyimpan file JSON terlebih dahulu.
 
 ---
 

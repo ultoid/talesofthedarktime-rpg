@@ -6,6 +6,7 @@
 var BattlePreviewModal = {
     currentSkillId: null,
     actorId: 1,
+    enemyId: 2,
     troopId: 2,
     speed: 1.0,
     mute: false,
@@ -59,12 +60,12 @@ function openBattlePreviewModal(skillId) {
         ).join('');
     }
 
-    // 3. Populate Troop Dropdown
-    const troopSelect = document.getElementById('bpTroopSelect');
-    if (troopSelect && typeof State !== 'undefined' && State.troops) {
-        const validTroops = State.troops.filter(t => t && t.id && t.name);
-        troopSelect.innerHTML = validTroops.map(t => 
-            `<option value="${t.id}" ${Number(t.id) === Number(BattlePreviewModal.troopId) ? 'selected' : ''}>${t.id}. ${escapeHtml(t.name)}</option>`
+    // 3. Populate Enemy Dropdown
+    const enemySelect = document.getElementById('bpEnemySelect') || document.getElementById('bpTroopSelect');
+    if (enemySelect && typeof State !== 'undefined' && State.enemies) {
+        const validEnemies = State.enemies.filter(e => e && e.id && e.name);
+        enemySelect.innerHTML = validEnemies.map(e => 
+            `<option value="${e.id}" ${Number(e.id) === Number(BattlePreviewModal.enemyId) ? 'selected' : ''}>${e.id}. ${escapeHtml(e.name)}</option>`
         ).join('');
     }
 
@@ -99,7 +100,7 @@ BattlePreviewModal.loadIframe = function() {
     const iframe = document.getElementById('battlePreviewIframe');
     if (!iframe) return;
 
-    const url = `index.html?skillPreview=${this.currentSkillId}&actorId=${this.actorId}&troopId=${this.troopId}&speed=${this.speed}&mute=${this.mute ? 1 : 0}&autoCast=${this.autoCast ? 1 : 0}&solo=${this.solo ? 1 : 0}&hud=${this.showHud ? 1 : 0}&_t=${Date.now()}`;
+    const url = `index.html?skillPreview=${this.currentSkillId}&actorId=${this.actorId}&enemyId=${this.enemyId}&troopId=${this.enemyId}&speed=${this.speed}&mute=${this.mute ? 1 : 0}&autoCast=${this.autoCast ? 1 : 0}&solo=1&hud=${this.showHud ? 1 : 0}&_t=${Date.now()}`;
     iframe.src = url;
 };
 
@@ -227,9 +228,19 @@ BattlePreviewModal.onActorChange = function(newActorId) {
     }
 };
 
+BattlePreviewModal.onEnemyChange = function(newEnemyId) {
+    this.enemyId = parseInt(newEnemyId, 10) || 2;
+    this.troopId = this.enemyId;
+    const iframe = document.getElementById('battlePreviewIframe');
+    if (iframe && iframe.contentWindow && iframe.contentWindow.NUSV_BattlePreview) {
+        iframe.contentWindow.NUSV_BattlePreview.switchEnemy(this.enemyId);
+    } else {
+        this.loadIframe();
+    }
+};
+
 BattlePreviewModal.onTroopChange = function(newTroopId) {
-    this.troopId = parseInt(newTroopId, 10) || 2;
-    this.loadIframe();
+    BattlePreviewModal.onEnemyChange(newTroopId);
 };
 
 BattlePreviewModal.onBattleReady = function() {
@@ -238,12 +249,11 @@ BattlePreviewModal.onBattleReady = function() {
 };
 
 BattlePreviewModal.onSkillFired = function(skill) {
-    this.updateStatus(`Menyerang target dengan "${escapeHtml(skill.name)}"`, 'active');
-    setTimeout(() => {
-        if (this.isReady) {
-            this.updateStatus('Siap untuk Replay', 'ready');
-        }
-    }, 2500);
+    this.updateStatus(`Menyerang target dummy dengan "${escapeHtml(skill.name)}"`, 'active');
+};
+
+BattlePreviewModal.onSkillCompleted = function() {
+    this.updateStatus('Aksi selesai — Siap untuk Replay', 'ready');
 };
 
 BattlePreviewModal.updateStatus = function(text, stateClass) {
