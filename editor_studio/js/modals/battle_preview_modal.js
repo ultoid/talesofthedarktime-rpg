@@ -10,6 +10,8 @@ var BattlePreviewModal = {
     speed: 1.0,
     mute: false,
     autoCast: true,
+    solo: true,
+    showHud: false,
     liveSkillData: null,
     isReady: false
 };
@@ -78,6 +80,8 @@ function openBattlePreviewModal(skillId) {
     // 5. Update Status & Speed UI
     BattlePreviewModal.updateStatus('Memuat Engine RPG Maker MV & Scene_Battle...', 'loading');
     BattlePreviewModal.updateSpeedUi();
+    BattlePreviewModal.updateSoloUi();
+    BattlePreviewModal.updateHudUi();
     BattlePreviewModal.updateMuteUi();
     BattlePreviewModal.updateAutoCastUi();
 
@@ -95,7 +99,7 @@ BattlePreviewModal.loadIframe = function() {
     const iframe = document.getElementById('battlePreviewIframe');
     if (!iframe) return;
 
-    const url = `index.html?skillPreview=${this.currentSkillId}&actorId=${this.actorId}&troopId=${this.troopId}&speed=${this.speed}&mute=${this.mute ? 1 : 0}&autoCast=${this.autoCast ? 1 : 0}&_t=${Date.now()}`;
+    const url = `index.html?skillPreview=${this.currentSkillId}&actorId=${this.actorId}&troopId=${this.troopId}&speed=${this.speed}&mute=${this.mute ? 1 : 0}&autoCast=${this.autoCast ? 1 : 0}&solo=${this.solo ? 1 : 0}&hud=${this.showHud ? 1 : 0}&_t=${Date.now()}`;
     iframe.src = url;
 };
 
@@ -172,6 +176,44 @@ BattlePreviewModal.updateAutoCastUi = function() {
     if (btn) {
         btn.innerHTML = this.autoCast ? `${pai('zap')} Auto: ON` : `${pai('pause')} Auto: OFF`;
         btn.style.color = this.autoCast ? '#facc15' : '#94a3b8';
+    }
+};
+
+BattlePreviewModal.toggleSolo = function() {
+    this.solo = !this.solo;
+    this.updateSoloUi();
+    const iframe = document.getElementById('battlePreviewIframe');
+    if (iframe && iframe.contentWindow && iframe.contentWindow.NUSV_BattlePreview) {
+        iframe.contentWindow.NUSV_BattlePreview.setSolo(this.solo);
+    } else {
+        this.loadIframe();
+    }
+};
+
+BattlePreviewModal.updateSoloUi = function() {
+    const btn = document.getElementById('bpSoloBtn');
+    if (btn) {
+        btn.innerHTML = this.solo ? `${pai('user')} 1v1 Solo` : `${pai('users')} Squad`;
+        btn.style.color = this.solo ? '#38bdf8' : '#f472b6';
+        btn.title = this.solo ? 'Mode: 1v1 Solo Duel (Hanya karakter ini)' : 'Mode: Formasi Squad Lengkap';
+    }
+};
+
+BattlePreviewModal.toggleHud = function() {
+    this.showHud = !this.showHud;
+    this.updateHudUi();
+    const iframe = document.getElementById('battlePreviewIframe');
+    if (iframe && iframe.contentWindow && iframe.contentWindow.NUSV_BattlePreview) {
+        iframe.contentWindow.NUSV_BattlePreview.setHud(this.showHud);
+    }
+};
+
+BattlePreviewModal.updateHudUi = function() {
+    const btn = document.getElementById('bpHudBtn');
+    if (btn) {
+        btn.innerHTML = this.showHud ? `${pai('eye')} HUD: ON` : `${pai('eye-off')} HUD: OFF`;
+        btn.style.color = this.showHud ? '#4ade80' : '#94a3b8';
+        btn.title = this.showHud ? 'HUD Aktif (Menampilkan bar status & antrean turn)' : 'HUD Bersih (Hanya menampilkan aksi visual & damage)';
     }
 };
 

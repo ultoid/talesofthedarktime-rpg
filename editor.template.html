@@ -357,6 +357,16 @@
                         <button type="button" id="bpSpeedBtn_2.0" class="btn btn-sm" style="padding: 2px 7px; font-size: 0.7rem; border-radius: 4px;" onclick="BattlePreviewModal.changeSpeed(2.0)" title="Fast Speed 2.0x">2.0x</button>
                     </div>
 
+                    <!-- Solo vs Squad Mode Toggle -->
+                    <button type="button" id="bpSoloBtn" class="btn btn-secondary btn-sm" style="padding: 3px 8px; font-size: 0.72rem; border-radius: 6px; color:#38bdf8;" onclick="BattlePreviewModal.toggleSolo()" title="Toggle mode 1v1 Solo Duel atau Formasi Squad Penuh">
+                        <i class="pai-user"></i> 1v1 Solo
+                    </button>
+
+                    <!-- HUD Toggle -->
+                    <button type="button" id="bpHudBtn" class="btn btn-secondary btn-sm" style="padding: 3px 8px; font-size: 0.72rem; border-radius: 6px; color:#94a3b8;" onclick="BattlePreviewModal.toggleHud()" title="Toggle tampilan UI/HUD battle (Status HP/MP Window &amp; Turn Order)">
+                        <i class="pai-eye-off"></i> HUD: OFF
+                    </button>
+
                     <!-- Mute Toggle -->
                     <button type="button" id="bpMuteBtn" class="btn btn-secondary btn-sm" style="padding: 3px 8px; font-size: 0.72rem; border-radius: 6px;" onclick="BattlePreviewModal.toggleMute()">
                         <i class="pai-volume"></i> Audio

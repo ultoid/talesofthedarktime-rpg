@@ -51,6 +51,8 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
     NUSV_BattlePreview.autoCast = getQueryParam('autoCast') !== '0' && getQueryParam('autoCast') !== 'false';
     NUSV_BattlePreview.mute = getQueryParam('mute') === '1' || getQueryParam('mute') === 'true';
     NUSV_BattlePreview.speedMultiplier = parseFloat(getQueryParam('speed')) || 1.0;
+    NUSV_BattlePreview.soloMode = getQueryParam('solo') !== '0' && getQueryParam('solo') !== 'false';
+    NUSV_BattlePreview.showHud = getQueryParam('hud') === '1' || getQueryParam('hud') === 'true';
     NUSV_BattlePreview.isBattleReady = false;
 
     NUSV_BattlePreview.isActive = function() {
@@ -124,7 +126,7 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             }
         }
 
-        // 2. Configure 4-Member Party with chosen Actor as Leader (Slot 0)
+        // 2. Configure Party with chosen Actor (Solo Actor - No Squad Companions by default)
         $gameParty._actors = [];
         var mainActorId = NUSV_BattlePreview.actorId;
         var leaderActor = $gameActors.actor(mainActorId);
@@ -153,8 +155,8 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             $gameParty.addActor(mainActorId);
         }
 
-        // Fill companion slots from test battlers (up to 4 members)
-        if ($dataSystem && $dataSystem.testBattlers) {
+        // Only add companions if soloMode is explicitly false
+        if (!NUSV_BattlePreview.soloMode && $dataSystem && $dataSystem.testBattlers) {
             $dataSystem.testBattlers.forEach(function(tb) {
                 if (tb && tb.actorId > 0 && tb.actorId !== mainActorId && $gameParty.members().length < 4) {
                     var companion = $gameActors.actor(tb.actorId);
@@ -169,18 +171,26 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             });
         }
 
-        // 3. Configure Troop
+        // 3. Configure Troop (Solo Target 1v1 by default)
         var troopId = NUSV_BattlePreview.troopId;
         if (troopId > 0) {
             BattleManager.setup(troopId, true, false);
             BattleManager.setBattleTest(true);
             $gameTroop.setup(troopId);
+
+            // In Solo mode: only keep 1 target enemy for clean 1v1 skill preview
+            if (NUSV_BattlePreview.soloMode && $gameTroop._enemies && $gameTroop._enemies.length > 1) {
+                $gameTroop._enemies = [$gameTroop._enemies[0]];
+            }
+
             $gameTroop.members().forEach(function(enemy) {
                 if (enemy) {
                     enemy.recoverAll();
                     enemy.gainHp(999999);
-                    // Reposition for 1080x720 canvas if default RPG Maker MV X coordinate is too close to left
-                    if (enemy._screenX !== undefined && enemy._screenX < 260) {
+                    if (NUSV_BattlePreview.soloMode) {
+                        enemy._screenX = 340;
+                        enemy._screenY = 440;
+                    } else if (enemy._screenX !== undefined && enemy._screenX < 260) {
                         enemy._screenX = Math.round(enemy._screenX * (1080 / 816));
                         if (enemy._screenX < 260) enemy._screenX = 260;
                     }
@@ -193,6 +203,34 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             AudioManager.stopBgm();
             AudioManager.stopBgs();
         }
+
+        NUSV_BattlePreview.applyHudVisibility();
+    };
+
+    NUSV_BattlePreview.applyHudVisibility = function() {
+        if (!SceneManager._scene || !(SceneManager._scene instanceof Scene_Battle)) return;
+        var scene = SceneManager._scene;
+        if (scene._statusWindow) {
+            scene._statusWindow.visible = NUSV_BattlePreview.showHud;
+        }
+        var battlerSprites = (scene._spriteset && scene._spriteset._battlerSprites) ? scene._spriteset._battlerSprites : [];
+        battlerSprites.forEach(function(s) {
+            if (s && s._ctbIcon) s._ctbIcon.visible = NUSV_BattlePreview.showHud;
+        });
+    };
+
+    NUSV_BattlePreview.setHud = function(visible) {
+        NUSV_BattlePreview.showHud = Boolean(visible);
+        NUSV_BattlePreview.applyHudVisibility();
+    };
+
+    NUSV_BattlePreview.setSolo = function(isSolo) {
+        NUSV_BattlePreview.soloMode = Boolean(isSolo);
+        NUSV_BattlePreview.setupPreviewBattle();
+        if (SceneManager._scene instanceof Scene_Battle && typeof SceneManager._scene.refreshStatus === 'function') {
+            SceneManager._scene.refreshStatus();
+        }
+        NUSV_BattlePreview.replaySkill();
     };
 
     // ========================================================================
@@ -240,11 +278,20 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
     // 4. SCENE BATTLE START & AUTO-CAST
     // ========================================================================
 
+    var _Sprite_Actor_setActorHome = Sprite_Actor.prototype.setActorHome;
+    Sprite_Actor.prototype.setActorHome = function(index) {
+        _Sprite_Actor_setActorHome.call(this, index);
+        if (NUSV_BattlePreview.isActive() && NUSV_BattlePreview.soloMode && index === 0) {
+            this.setHome(840, 440);
+        }
+    };
+
     var _Scene_Battle_start = Scene_Battle.prototype.start;
     Scene_Battle.prototype.start = function() {
         _Scene_Battle_start.call(this);
         if (NUSV_BattlePreview.isActive()) {
             NUSV_BattlePreview.isBattleReady = true;
+            NUSV_BattlePreview.applyHudVisibility();
 
             // Notify parent modal that battle engine is live
             if (typeof window !== 'undefined' && window.parent && window.parent.BattlePreviewModal) {
@@ -258,10 +305,44 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             if (NUSV_BattlePreview.autoCast) {
                 setTimeout(function() {
                     NUSV_BattlePreview.replaySkill();
-                }, 500);
+                }, 400);
             }
         }
     };
+
+    var _Scene_Battle_updateStatusWindow = Scene_Battle.prototype.updateStatusWindow;
+    Scene_Battle.prototype.updateStatusWindow = function() {
+        if (NUSV_BattlePreview.isActive() && !NUSV_BattlePreview.showHud) {
+            if (this._statusWindow) this._statusWindow.visible = false;
+            return;
+        }
+        _Scene_Battle_updateStatusWindow.call(this);
+    };
+
+    var _Window_BattleStatus_isOpen = Window_BattleStatus.prototype.isOpen;
+    Window_BattleStatus.prototype.isOpen = function() {
+        if (NUSV_BattlePreview.isActive() && !NUSV_BattlePreview.showHud) return false;
+        return _Window_BattleStatus_isOpen.call(this);
+    };
+
+    var _Window_BattleStatus_update = Window_BattleStatus.prototype.update;
+    Window_BattleStatus.prototype.update = function() {
+        _Window_BattleStatus_update.call(this);
+        if (NUSV_BattlePreview.isActive() && !NUSV_BattlePreview.showHud) {
+            this.visible = false;
+        }
+    };
+
+    if (typeof Window_CTBIcon !== 'undefined') {
+        var _Window_CTBIcon_update = Window_CTBIcon.prototype.update;
+        Window_CTBIcon.prototype.update = function() {
+            if (NUSV_BattlePreview.isActive() && !NUSV_BattlePreview.showHud) {
+                this.visible = false;
+                return;
+            }
+            _Window_CTBIcon_update.call(this);
+        };
+    }
 
     // ========================================================================
     // 5. IMMORTAL DUMMY & BATTLE CONTINUITY
@@ -429,20 +510,7 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
 
     NUSV_BattlePreview.switchActor = function(newActorId) {
         NUSV_BattlePreview.actorId = parseInt(newActorId, 10) || 1;
-        var currentActors = $gameParty._actors.slice();
-        var filtered = currentActors.filter(function(id) { return id !== NUSV_BattlePreview.actorId; });
-        $gameParty._actors = [NUSV_BattlePreview.actorId].concat(filtered);
-
-        var actor = $gameParty.leader();
-        if (actor) {
-            if (actor.level < 50) actor.changeLevel(50, false);
-            NUSV_BattlePreview.ensureWeaponEquipped(actor);
-            actor.recoverAll();
-            actor.gainHp(9999);
-            actor.gainMp(9999);
-            actor.gainTp(100);
-            actor.learnSkill(NUSV_BattlePreview.skillId);
-        }
+        NUSV_BattlePreview.setupPreviewBattle();
         if (SceneManager._scene instanceof Scene_Battle && typeof SceneManager._scene.refreshStatus === 'function') {
             SceneManager._scene.refreshStatus();
         }
@@ -451,22 +519,8 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
 
     NUSV_BattlePreview.switchTroop = function(newTroopId) {
         NUSV_BattlePreview.troopId = parseInt(newTroopId, 10) || 2;
-        if (SceneManager._scene instanceof Scene_Battle) {
-            BattleManager.setup(NUSV_BattlePreview.troopId, true, false);
-            BattleManager.setBattleTest(true);
-            $gameTroop.setup(NUSV_BattlePreview.troopId);
-            $gameTroop.members().forEach(function(enemy) {
-                if (enemy) {
-                    enemy.recoverAll();
-                    enemy.gainHp(999999);
-                    if (enemy._screenX !== undefined && enemy._screenX < 260) {
-                        enemy._screenX = Math.round(enemy._screenX * (1080 / 816));
-                        if (enemy._screenX < 260) enemy._screenX = 260;
-                    }
-                }
-            });
-            SceneManager.goto(Scene_Battle);
-        }
+        NUSV_BattlePreview.setupPreviewBattle();
+        NUSV_BattlePreview.replaySkill();
     };
 
 })();
