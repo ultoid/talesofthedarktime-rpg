@@ -31,8 +31,14 @@ function openBattlePreviewModal(skillId) {
         ? State.skills[skillId] 
         : { id: skillId, name: 'Skill #' + skillId };
 
-    // 1. Capture live unsaved edits from active editor
+    // 1. Capture live unsaved edits from active editor (Skills tab or BEC Sequence tab)
     let liveSkill = Object.assign({}, skill);
+    if (typeof getBecActiveSkill === 'function') {
+        const becSkill = getBecActiveSkill();
+        if (becSkill && Number(becSkill.id) === skillId) {
+            liveSkill = Object.assign({}, becSkill);
+        }
+    }
     if (typeof State !== 'undefined' && State.currentTab === 'skills' && Number(State.selectedIndex) === skillId) {
         if (typeof parseBecSkillState === 'function' && typeof generateBecSkillNote === 'function') {
             const becState = parseBecSkillState(liveSkill.note || '');
@@ -65,7 +71,7 @@ function openBattlePreviewModal(skillId) {
     if (skillBadge) {
         const iconHtml = (typeof renderIconHtml === 'function' && skill.iconIndex) 
             ? renderIconHtml(skill.iconIndex, 0.75) 
-            : '⚔️';
+            : pai('sword');
         skillBadge.innerHTML = `${iconHtml} <strong style="color:#fff; font-size:0.95rem;">#${skill.id} ${escapeHtml(skill.name || 'Unnamed')}</strong>`;
     }
 
@@ -100,7 +106,7 @@ BattlePreviewModal.replay = function() {
             iframe.contentWindow.NUSV_BattlePreview.applyLiveSkill(this.liveSkillData);
         }
         iframe.contentWindow.NUSV_BattlePreview.replaySkill();
-        this.updateStatus('⚔️ Mengeksekusi ulang aksi skill...', 'active');
+        this.updateStatus('Mengeksekusi ulang aksi skill...', 'active');
     } else {
         this.loadIframe();
     }
@@ -146,7 +152,7 @@ BattlePreviewModal.toggleMute = function() {
 BattlePreviewModal.updateMuteUi = function() {
     const btn = document.getElementById('bpMuteBtn');
     if (btn) {
-        btn.innerHTML = this.mute ? '🔇 Mute' : '🔊 Audio';
+        btn.innerHTML = this.mute ? `${pai('volume-x')} Mute` : `${pai('volume-3')} Audio`;
         btn.style.color = this.mute ? '#f87171' : '#38bdf8';
         btn.style.borderColor = this.mute ? '#ef444455' : '#0284c755';
     }
@@ -164,7 +170,7 @@ BattlePreviewModal.toggleAutoCast = function() {
 BattlePreviewModal.updateAutoCastUi = function() {
     const btn = document.getElementById('bpAutoCastBtn');
     if (btn) {
-        btn.innerHTML = this.autoCast ? '⚡ Auto: ON' : '⏸️ Auto: OFF';
+        btn.innerHTML = this.autoCast ? `${pai('zap')} Auto: ON` : `${pai('pause')} Auto: OFF`;
         btn.style.color = this.autoCast ? '#facc15' : '#94a3b8';
     }
 };
@@ -186,14 +192,14 @@ BattlePreviewModal.onTroopChange = function(newTroopId) {
 
 BattlePreviewModal.onBattleReady = function() {
     this.isReady = true;
-    this.updateStatus('🟢 Engine Aktif & Siap Tempur', 'ready');
+    this.updateStatus('Engine Aktif & Siap Tempur', 'ready');
 };
 
 BattlePreviewModal.onSkillFired = function(skill) {
-    this.updateStatus(`⚔️ Menyerang target dengan "${escapeHtml(skill.name)}"`, 'active');
+    this.updateStatus(`Menyerang target dengan "${escapeHtml(skill.name)}"`, 'active');
     setTimeout(() => {
         if (this.isReady) {
-            this.updateStatus('🟢 Siap untuk Replay', 'ready');
+            this.updateStatus('Siap untuk Replay', 'ready');
         }
     }, 2500);
 };
@@ -201,14 +207,17 @@ BattlePreviewModal.onSkillFired = function(skill) {
 BattlePreviewModal.updateStatus = function(text, stateClass) {
     const statusEl = document.getElementById('bpStatusIndicator');
     if (!statusEl) return;
-    statusEl.innerText = text;
+    let icon = pai('clock');
     if (stateClass === 'ready') {
+        icon = pai('check');
         statusEl.style.color = '#4ade80';
     } else if (stateClass === 'active') {
+        icon = pai('sword');
         statusEl.style.color = '#facc15';
     } else {
         statusEl.style.color = '#94a3b8';
     }
+    statusEl.innerHTML = `${icon} <span>${text}</span>`;
 };
 
 function closeBattlePreviewModal() {

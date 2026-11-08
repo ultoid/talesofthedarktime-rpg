@@ -38,22 +38,22 @@ function renderArmorEditor(container, armor) {
     const atypes = State.system.armorTypes || [];
     const slotNames = {
         1: 'Weapon Slot (Khusus)',
-        2: '🛡️ Shield / Secondary (Slot 2)',
-        3: '🎩 Helm / Kepala (Slot 3)',
-        4: '🥋 Armor / Baju (Slot 4)',
-        5: '👢 Footwear / Boots (Slot 5)',
-        6: '💍 Accessory (Slot 6)',
-        7: '🔮 Relic (Slot 7)'
+        2: 'Shield / Secondary (Slot 2)',
+        3: 'Helm / Kepala (Slot 3)',
+        4: 'Armor / Baju (Slot 4)',
+        5: 'Footwear / Boots (Slot 5)',
+        6: 'Accessory (Slot 6)',
+        7: 'Relic (Slot 7)'
     };
 
     container.innerHTML = `
         <!-- IDENTITAS & TIPE PELINDUNG -->
         <div class="card">
             <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-                <h2 title="Pengaturan spesifikasi perlindungan dan aksesoris">${armor.etypeId === 6 ? '💍 Accessory' : (armor.etypeId === 7 ? '🔮 Relic' : '🛡️ Armor')}: #${armor.id} ${escapeHtml(armor.name)}</h2>
+                <h2 title="Pengaturan spesifikasi perlindungan dan aksesoris">${armor.etypeId === 6 ? `${pai('diamond-gem')} Accessory` : (armor.etypeId === 7 ? `${pai('wand')} Relic` : `${pai('shield')} Armor`)}: #${armor.id} ${escapeHtml(armor.name)}</h2>
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.3); font-size:0.8rem; padding:3px 8px;">${slotNames[armor.etypeId] || `Slot ${armor.etypeId}`}</span>
-                    <span class="list-badge" style="color:${getRarityColor(rarity)}; border-color:${getRarityColor(rarity)}55; font-size:0.8rem; padding:3px 8px; font-weight:700;">★ ${escapeHtml(rarity)}</span>
+                    <span class="list-badge" style="color:${getRarityColor(rarity)}; border-color:${getRarityColor(rarity)}55; font-size:0.8rem; padding:3px 8px; font-weight:700;">${escapeHtml(rarity)}</span>
                 </div>
             </div>
             <div class="card-body">
@@ -135,47 +135,47 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
             </div>
         </div>
 
-        <!-- 📊 SISTEM STAT TERPADU NUSVANIR -->
+        <!-- SISTEM STAT TERPADU NUSVANIR -->
         <div class="card">
             <div class="card-header">
-                <h2>📊 Spesifikasi Stat &amp; Pertahanan Nusvanir</h2>
+                <h2>${pai('chart-bar')} Spesifikasi Stat &amp; Pertahanan Nusvanir</h2>
                 <span style="font-size:0.8rem; color:var(--text-muted);">Unified stat system (Protection, 6 Core Attributes &amp; Derived Stats).</span>
             </div>
             <div class="card-body">
                 <!-- 1. DAYA PERTAHANAN & VITAL LANGSUNG -->
-                <div style="font-size:0.82rem; font-weight:700; color:#34d399; margin-bottom:8px;">🛡️ Nilai Proteksi &amp; Kapasitas Vital:</div>
+                <div style="font-size:0.82rem; font-weight:700; color:#34d399; margin-bottom:8px;">${pai('shield')} Nilai Proteksi &amp; Kapasitas Vital:</div>
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:10px; margin-bottom:16px;">
                     <div class="stat-card-input" style="border-left: 3px solid #34d399;">
                         <label style="color:#34d399;">
-                            <span>🛡️ Armor DEF</span>
+                            <span>${pai('shield')} Armor DEF</span>
                             <span style="font-size:0.75rem; color:var(--text-muted);" title="Daya tahan fisik murni dari pelindung (params[3])">Armor Physical DEF</span>
                         </label>
                         <input type="number" class="form-control" value="${armor.params[3] || 0}" onchange="armor.params[3]=parseInt(this.value,10)||0; setUnsaved(true);">
                     </div>
                     <div class="stat-card-input" style="border-left: 3px solid #38bdf8;">
                         <label style="color:#38bdf8;">
-                            <span>🔰 Armor MDF</span>
+                            <span>${pai('shield')} Armor MDF</span>
                             <span style="font-size:0.75rem; color:var(--text-muted);" title="Daya tahan sihir murni dari pelindung (params[5])">Armor Magical MDF</span>
                         </label>
                         <input type="number" class="form-control" value="${armor.params[5] || 0}" onchange="armor.params[5]=parseInt(this.value,10)||0; setUnsaved(true);">
                     </div>
                     <div class="stat-card-input" style="border-left: 3px solid #f87171;">
                         <label style="color:#f87171;">
-                            <span>❤️ Max HP</span>
+                            <span>${pai('heart')} Max HP</span>
                             <span style="font-size:0.75rem; color:var(--text-muted);" title="Bonus kapasitas darah maksimal (params[0])">Max HP Bonus</span>
                         </label>
                         <input type="number" class="form-control" value="${armor.params[0] || 0}" onchange="armor.params[0]=parseInt(this.value,10)||0; setUnsaved(true);">
                     </div>
                     <div class="stat-card-input" style="border-left: 3px solid #60a5fa;">
                         <label style="color:#60a5fa;">
-                            <span>💧 Max MP</span>
+                            <span>${pai('drop')} Max MP</span>
                             <span style="font-size:0.75rem; color:var(--text-muted);" title="Bonus kapasitas mana maksimal (params[1])">Max MP Bonus</span>
                         </label>
                         <input type="number" class="form-control" value="${armor.params[1] || 0}" onchange="armor.params[1]=parseInt(this.value,10)||0; setUnsaved(true);">
                     </div>
                     <div class="stat-card-input" style="border-left: 3px solid #facc15;">
                         <label style="color:#facc15;">
-                            <span>⚡ Action Speed</span>
+                            <span>${pai('speed-fast')} Action Speed</span>
                             <span style="font-size:0.75rem; color:var(--text-muted);" title="Bonus kecepatan inisiatif giliran (params[6])">Movement Speed Bonus</span>
                         </label>
                         <input type="number" class="form-control" value="${armor.params[6] || 0}" onchange="armor.params[6]=parseInt(this.value,10)||0; setUnsaved(true);">
@@ -183,7 +183,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                     ${armor.etypeId === 2 ? `
                     <div class="stat-card-input" style="border-left: 3px solid #fb923c;">
                         <label style="color:#fb923c;">
-                            <span>⚔️ Shield ATK</span>
+                            <span>${pai('sword')} Shield ATK</span>
                             <span style="font-size:0.75rem; color:var(--text-muted);" title="Daya serang saat menggunakan teknik hantaman perisai">Shield Bash ATK</span>
                         </label>
                         <input type="number" class="form-control" value="${armor.params[2] || 0}" onchange="armor.params[2]=parseInt(this.value,10)||0; setUnsaved(true);">
@@ -191,7 +191,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                 </div>
 
                 <!-- 2. ENAM ATRIBUT DASAR NUSVANIR -->
-                <div style="font-size:0.82rem; font-weight:700; color:#f59e0b; margin-bottom:8px;" title="Bonus atribut STR, INT, DEX, AGI, VIT, LUK dari perlengkapan ini">💪 6 Core Attributes Bonus:</div>
+                <div style="font-size:0.82rem; font-weight:700; color:#f59e0b; margin-bottom:8px;" title="Bonus atribut STR, INT, DEX, AGI, VIT, LUK dari perlengkapan ini">${pai('user')} 6 Core Attributes Bonus:</div>
                 <div class="stat-grid-6" style="margin-bottom:16px;">
                     ${CORE_ATTRIBUTES.map(attr => `
                         <div class="stat-card-input">
@@ -205,7 +205,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                 </div>
 
                 <!-- 3. STAT TURUNAN NUSVANIR -->
-                <div style="font-size:0.82rem; font-weight:700; color:#38bdf8; margin-bottom:6px;">💧 Vitalitas &amp; Regenerasi per Giliran:</div>
+                <div style="font-size:0.82rem; font-weight:700; color:#38bdf8; margin-bottom:6px;">${pai('drop')} Vitalitas &amp; Regenerasi per Giliran:</div>
                 <div class="stat-grid-8" style="margin-bottom:16px;">
                     ${DERIVED_STAT_DEFS.filter(d => d.group === 'vital').map(d => `
                         <div class="stat-card-input">
@@ -217,7 +217,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                     `).join('')}
                 </div>
 
-                <div style="font-size:0.82rem; font-weight:700; color:#34d399; margin-bottom:6px;" title="Bonus mitigasi kerusakan, penghindaran, dan tangkisan">🛡️ Defense, Evasion &amp; Mitigation:</div>
+                <div style="font-size:0.82rem; font-weight:700; color:#34d399; margin-bottom:6px;" title="Bonus mitigasi kerusakan, penghindaran, dan tangkisan">${pai('shield')} Defense, Evasion &amp; Mitigation:</div>
                 <div class="stat-grid-8" style="margin-bottom:16px;">
                     ${DERIVED_STAT_DEFS.filter(d => d.group === 'defensive').map(d => `
                         <div class="stat-card-input">
@@ -229,7 +229,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                     `).join('')}
                 </div>
 
-                <div style="font-size:0.82rem; font-weight:700; color:#fb923c; margin-bottom:6px;" title="Bonus akurasi, kritikal, dan penetrasi armor musuh">🎯 Precision, Critical &amp; Penetration:</div>
+                <div style="font-size:0.82rem; font-weight:700; color:#fb923c; margin-bottom:6px;" title="Bonus akurasi, kritikal, dan penetrasi armor musuh">${pai('target')} Precision, Critical &amp; Penetration:</div>
                 <div class="stat-grid-8" style="margin-bottom:16px;">
                     ${DERIVED_STAT_DEFS.filter(d => d.group === 'offensive').map(d => `
                         <div class="stat-card-input">
@@ -241,7 +241,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                     `).join('')}
                 </div>
 
-                <div style="font-size:0.82rem; font-weight:700; color:#a855f7; margin-bottom:6px;">✨ Utilitas &amp; Penguatan Elemen:</div>
+                <div style="font-size:0.82rem; font-weight:700; color:#a855f7; margin-bottom:6px;">${pai('sparkles')} Utilitas &amp; Penguatan Elemen:</div>
                 <div class="grid-3">
                     ${DERIVED_STAT_DEFS.filter(d => d.group === 'utility').map(d => `
                         <div class="stat-card-input">
@@ -253,7 +253,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                     `).join('')}
                     <div class="stat-card-input">
                         <label style="color:#f59e0b;">
-                            <span>🔥 Amplifikasi Elemen</span>
+                            <span>${pai('fire')} Amplifikasi Elemen</span>
                         </label>
                         <div style="display:flex; gap:6px;">
                             <input type="text" class="form-control" placeholder="Elemen (Fire/Holy...)" value="${escapeHtml(eleName)}" id="armEleName" onchange="onArmorElementAmplifyChange()">
@@ -266,7 +266,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
 
         <!-- SOKET & TEMPA -->
         <div class="card">
-            <div class="card-header"><h2 title="Pengaturan soket permata dan sistem penempaan pandai besi">💎 Gem Sockets &amp; Refining</h2></div>
+            <div class="card-header"><h2 title="Pengaturan soket permata dan sistem penempaan pandai besi">${pai('diamond-gem')} Gem Sockets &amp; Refining</h2></div>
             <div class="card-body">
                 <div class="grid-2">
                     <div class="form-group">
@@ -299,7 +299,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
         ${renderTraitsCard(armor, 'armors')}
 
         <div class="card">
-            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">📝 Raw Notetags (Direct Edit)</h2></div>
+            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">${pai('notes')} Raw Notetags (Direct Edit)</h2></div>
             <div class="card-body">
                 <textarea id="rawNoteTextarea" class="form-control" rows="6" onchange="onRawNoteInput(this.value)">${escapeHtml(armor.note || '')}</textarea>
             </div>

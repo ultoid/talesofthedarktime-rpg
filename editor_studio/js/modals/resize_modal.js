@@ -30,7 +30,7 @@ function applyResizeFromModal() {
     if (newCount < currentCount) {
         closeModal('resizeModal');
         showConfirmDialog({
-            title: '⚠️ Konfirmasi Pemangkasan Kapasitas',
+            title: '<i class="pai-warning-diamond"></i> Konfirmasi Pemangkasan Kapasitas',
             message: `Apakah Anda yakin ingin memotong kapasitas ${State.currentTab} dari ${currentCount} menjadi ${newCount}?\n\nEntri dari #${newCount + 1} ke atas akan dihapus permanen dari memori database saat ini!`,
             confirmText: 'Ya, Pangkas Kapasitas',
             confirmClass: 'btn-danger',

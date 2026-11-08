@@ -119,7 +119,7 @@ function renderRaceEditor(container, race) {
             <div class="card-header">
                 <div>
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <h2 style="font-size:1.3rem; font-weight:800; color:#fff;">🧬 ${escapeHtml(race.name)}</h2>
+                        <h2 style="font-size:1.3rem; font-weight:800; color:#fff;"><i class="pai-human"></i> ${escapeHtml(race.name)}</h2>
                         <span class="badge" style="background:${groupColor}22; color:${groupColor}; border:1px solid ${groupColor}44; font-weight:700;">
                             ${escapeHtml(race.group || 'Suku Bumi')}
                         </span>
@@ -163,7 +163,7 @@ function renderRaceEditor(container, race) {
                                    value="${race.iconIndex || 0}" 
                                    onchange="onRaceFieldChange(window.currentItem, 'iconIndex', parseInt(this.value, 10) || 0)">
                             <button class="btn btn-secondary btn-sm" onclick="openIconPicker((idx) => { onRaceFieldChange(window.currentItem, 'iconIndex', idx); renderRaceEditor(container, window.currentItem); })">
-                                🎨 Pilih Icon (#${race.iconIndex || 0})
+                                <i class="pai-image"></i> Pilih Icon (#${race.iconIndex || 0})
                             </button>
                         </div>
                     </div>
@@ -181,7 +181,7 @@ function renderRaceEditor(container, race) {
         <div class="card">
             <div class="card-header">
                 <div>
-                    <h2 style="font-size:1.1rem; font-weight:700; color:#fff;">📊 Nature Stat Matrix (Modifikasi 6 Core Stats)</h2>
+                    <h2 style="font-size:1.1rem; font-weight:700; color:#fff;"><i class="pai-chart-bar-big"></i> Nature Stat Matrix (Modifikasi 6 Core Stats)</h2>
                     <p style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">
                         Mempengaruhi total stat akhir karakter secara persentase (<span style="color:#10b981; font-weight:700;">▲ +10%</span>, 
                         <span style="color:#94a3b8; font-weight:700;">● Netral 100%</span>, atau 
@@ -250,7 +250,7 @@ function renderRaceEditor(container, race) {
         <!-- LORE & DESKRIPSI DUNIA NUSVANIR -->
         <div class="card">
             <div class="card-header">
-                <h2 style="font-size:1.1rem; font-weight:700; color:#fff;">📜 Lore &amp; Fisiologi Ras (Nusvanir Compendium)</h2>
+                <h2 style="font-size:1.1rem; font-weight:700; color:#fff;"><i class="pai-book-open"></i> Lore &amp; Fisiologi Ras (Nusvanir Compendium)</h2>
             </div>
             <div class="card-body">
                 <div class="form-group">
@@ -259,7 +259,7 @@ function renderRaceEditor(container, race) {
                               onchange="onRaceFieldChange(window.currentItem, 'description', this.value)">${escapeHtml(race.description || '')}</textarea>
                 </div>
                 <div style="margin-top:10px; background:rgba(0,0,0,0.2); border-radius:6px; padding:10px;">
-                    <div style="font-size:0.78rem; font-weight:700; color:#38bdf8; margin-bottom:4px;">🎯 Rekomendasi Sinergi Profesi:</div>
+                    <div style="font-size:0.78rem; font-weight:700; color:#38bdf8; margin-bottom:4px;"><i class="pai-target"></i> Rekomendasi Sinergi Profesi:</div>
                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
                         ${synergies.map(s => `<span class="badge" style="background:#1e293b; color:#cbd5e1; border:1px solid #334155; font-size:0.75rem;">${escapeHtml(s)}</span>`).join('')}
                     </div>
@@ -289,7 +289,7 @@ function renderRaceStatPreview(container, race) {
     container.innerHTML = `
         <div style="background:#0f172a; border:1px solid #1e293b; border-radius:8px; padding:16px;">
             <div style="text-align:center; padding-bottom:12px; border-bottom:1px solid #1e293b; margin-bottom:12px;">
-                <div style="font-size:2rem; margin-bottom:4px;">🧬</div>
+                <div style="font-size:2rem; margin-bottom:4px;"><i class="pai-human" style="font-size:2rem;"></i></div>
                 <h3 style="font-size:1.15rem; font-weight:800; color:#fff;">${escapeHtml(race.name)}</h3>
                 <span class="badge" style="background:${groupColor}22; color:${groupColor}; border:1px solid ${groupColor}44; font-size:0.75rem;">
                     ${escapeHtml(race.group || 'Suku Bumi')}

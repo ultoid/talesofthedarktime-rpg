@@ -117,7 +117,7 @@ function renderClassRightTreeList(cls, lvl) {
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                     <div style="display:flex; align-items:center; gap:6px;">
                         <span class="badge" style="background:${isUnlocked ? '#10b98133' : 'rgba(148,163,184,0.15)'}; color:${isUnlocked ? '#34d399' : '#94a3b8'}; border:1px solid ${isUnlocked ? '#10b98155' : 'rgba(148,163,184,0.3)'}; font-weight:700; font-size:0.7rem; padding:1px 6px;">
-                            ${isUnlocked ? `✔ Lv ${l.level}` : `🔒 Lv ${l.level}`}
+                            ${isUnlocked ? `${pai('check')} Lv ${l.level}` : `${pai('lock')} Lv ${l.level}`}
                         </span>
                         ${renderIconInline(iconIdx, 22)}
                         <span style="font-weight:700; font-size:0.8rem; color:${isUnlocked ? '#38bdf8' : '#cbd5e1'}; cursor:pointer; text-decoration:underline;" onclick="navigateToSkill(${l.skillId})" title="Klik untuk membuka Skill #${l.skillId} di Skill Editor">
@@ -138,7 +138,7 @@ function renderClassRightScrollsList(compats) {
     
     container.innerHTML = `
         <div style="margin-bottom:8px;">
-            <input type="text" id="cls-right-scroll-search" placeholder="🔍 Cari scroll jurus..." class="form-control" 
+            <input type="text" id="cls-right-scroll-search" placeholder="Cari scroll jurus..." class="form-control" 
                    style="padding:4px 8px; font-size:0.75rem; width:100%; border-radius:6px;" 
                    value="${escapeHtml(currentRightScrollQuery)}" oninput="onFilterRightScrolls(this.value)">
         </div>
@@ -259,7 +259,7 @@ function renderClassMainScrollGrid() {
                 <div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                         <span class="badge" style="background:${isMagic ? '#8b5cf622' : '#3b82f622'}; color:${isMagic ? '#c4b5fd' : '#60a5fa'}; border:1px solid ${isMagic ? '#8b5cf644' : '#3b82f644'}; font-size:0.7rem; font-weight:700;">
-                            ${isMagic ? '✨ Sihir' : '⚔️ Fisik'} • Scroll Tier ${tier}
+                            ${isMagic ? `${pai('sparkles')} Sihir` : `${pai('sword')} Fisik`} • Scroll Tier ${tier}
                         </span>
                         <span class="badge" style="background:${isNatural ? '#10b98122' : '#f59e0b22'}; color:${isNatural ? '#34d399' : '#fbbf24'}; border:1px solid ${isNatural ? '#10b98144' : '#f59e0b44'}; font-size:0.65rem;">
                             ${isNatural ? 'Bawaan Alami' : 'Lintas Profesi'}
@@ -288,8 +288,8 @@ function renderClassMainScrollGrid() {
                         ${origClass ? `Asal: <strong style="color:#cbd5e1;">${escapeHtml(origClass)}</strong>` : ''}
                     </span>
                     <div style="display:flex; gap:4px;">
-                        ${skill ? `<button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px; font-size:0.7rem;" onclick="navigateToSkill(${skill.id})" title="Buka skill ini di Skill Editor">⚡ Skill</button>` : ''}
-                        <button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px; font-size:0.7rem;" onclick="navigateToItem(${item.id})" title="Buka item ini di Item Editor">📜 Item</button>
+                        ${skill ? `<button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px; font-size:0.7rem;" onclick="navigateToSkill(${skill.id})" title="Buka skill ini di Skill Editor">${pai('zap')} Skill</button>` : ''}
+                        <button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px; font-size:0.7rem;" onclick="navigateToItem(${item.id})" title="Buka item ini di Item Editor">${pai('book')} Item</button>
                     </div>
                 </div>
             </div>
@@ -362,7 +362,7 @@ Rincian: IV ${iv} (Grade ${ivInfo.grade}, +${rate}/Lv) + Pertumbuhan ${growth} (
         if (abName) {
             abilityContainer.innerHTML = `
                 <div style="font-weight:700; font-size:0.85rem; color:#fde047; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
-                    <span>⚡</span> <span>${escapeHtml(abName)}</span>
+                    <span>${pai('zap')}</span> <span>${escapeHtml(abName)}</span>
                 </div>
                 <div style="font-size:0.75rem; color:#cbd5e1; line-height:1.4;">
                     ${escapeHtml(abDesc || '(Deskripsi belum diisi)')}
@@ -394,7 +394,7 @@ function renderClassSkillTreeRoadmap(cls) {
     if (learnings.length === 0) {
         return `
             <div style="background:rgba(0,0,0,0.25); border:1px dashed rgba(255,255,255,0.15); border-radius:8px; padding:16px; text-align:center; color:var(--text-muted); font-size:0.8rem;">
-                Belum ada alur skill tree yang didaftarkan untuk kelas ini. Klik "➕ Add Skill Learning" di bawah untuk menambahkan.
+                Belum ada alur skill tree yang didaftarkan untuk kelas ini. Klik "+ Add Skill Learning" di bawah untuk menambahkan.
             </div>
         `;
     }
@@ -432,7 +432,7 @@ function renderClassSkillTreeRoadmap(cls) {
                 </div>
                 ${!isLast ? `
                     <div style="display:flex; align-items:center; justify-content:center; padding:0 8px; color:#38bdf8; font-size:1.2rem; font-weight:bold; flex-shrink:0;">
-                        ➔
+                        ${pai('arrow-right')}
                     </div>
                 ` : ''}
             </div>
@@ -486,7 +486,7 @@ function renderClassEditor(container, cls) {
         <!-- CLASS PROFILE & SETTINGS -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Pengaturan spesifikasi kelas dan pertumbuhan stat">🛡️ Class: #${cls.id} ${escapeHtml(cls.name)}</h2>
+                <h2 title="Pengaturan spesifikasi kelas dan pertumbuhan stat">${pai('shield')} Class: #${cls.id} ${escapeHtml(cls.name)}</h2>
                 <span style="font-size:0.85rem; color:var(--text-muted);">Tier ${currentTier}</span>
             </div>
             <div class="card-body">
@@ -553,11 +553,11 @@ function renderClassEditor(container, cls) {
             </div>
         </div>
 
-        <!-- ✨ CLASS PASSIVE ABILITY (INNATE CLASS ABILITY) -->
+        <!-- CLASS PASSIVE ABILITY (INNATE CLASS ABILITY) -->
         <div class="card" style="border-left: 3px solid #f59e0b; box-shadow: 0 4px 20px rgba(245, 158, 11, 0.08);">
             <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <h2 title="Kemampuan pasif bawaan khusus yang aktif selama karakter berada di kelas/profesi ini">✨ Class Passive Ability (Innate Ability)</h2>
+                    <h2 title="Kemampuan pasif bawaan khusus yang aktif selama karakter berada di kelas/profesi ini">${pai('sparkles')} Class Passive Ability (Innate Ability)</h2>
                     <span class="badge" style="background:rgba(245,158,11,0.2); color:#fbbf24; font-size:0.75rem;">1 Active per Class (Evolution)</span>
                 </div>
                 <span style="font-size:0.8rem; color:var(--text-muted);">Aktif otomatis di pertempuran saat karakter menggunakan kelas ini</span>
@@ -591,7 +591,7 @@ function renderClassEditor(container, cls) {
         <div class="card">
             <div class="card-header">
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <h2 title="Aptitude profesi berskala 1 - 10 (Potensi Pertumbuhan Stat)">⭐ Class Stat Aptitude Rating (Skala 1 - 10)</h2>
+                    <h2 title="Aptitude profesi berskala 1 - 10 (Potensi Pertumbuhan Stat)">${pai('trophy')} Class Stat Aptitude Rating (Skala 1 - 10)</h2>
                     <span class="badge" style="background:rgba(59,130,246,0.2); color:#60a5fa; font-size:0.75rem;">Stat Aptitude Model</span>
                 </div>
                 <span style="font-size:0.8rem; color:var(--text-muted);">Menentukan stat awal Lv 1 &amp; scaling stat per Job Level</span>
@@ -635,7 +635,7 @@ function renderClassEditor(container, cls) {
                 <div class="form-group" style="margin-top:16px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <label title="Override manual jika ingin pertumbuhan stat berbeda dari formula IV bawaan">
-                            ⚙️ Override Manual Stat Growth per Level (&lt;Class Stat Growth&gt;)
+                            ${pai('sliders')} Override Manual Stat Growth per Level (&lt;Class Stat Growth&gt;)
                         </label>
                         <span style="font-size:0.75rem; color:var(--text-muted);">(Opsional)</span>
                     </div>
@@ -648,20 +648,20 @@ function renderClassEditor(container, cls) {
             </div>
         </div>
 
-        <!-- 🌳 CLASS SKILL TREE & LEVEL PROGRESSION -->
+        <!-- CLASS SKILL TREE & LEVEL PROGRESSION -->
         <div class="card">
             <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
-                    <h2 title="Alur Skill Tree dan pohon keahlian profesi yang terbuka seiring kenaikan level">🌳 Class Skill Tree &amp; Level Progression</h2>
+                    <h2 title="Alur Skill Tree dan pohon keahlian profesi yang terbuka seiring kenaikan level">${pai('list')} Class Skill Tree &amp; Level Progression</h2>
                     <div style="font-size:0.75rem; color:var(--text-muted);">Peta alur jurus yang otomatis dipelajari saat mencapai level tertentu</div>
                 </div>
-                <button class="btn btn-secondary btn-sm" onclick="addClassLearning();" title="Tambah skill baru yang dipelajari pada level tertentu">➕ Add Skill Learning</button>
+                <button class="btn btn-secondary btn-sm" onclick="addClassLearning();" title="Tambah skill baru yang dipelajari pada level tertentu">${pai('plus')} Add Skill Learning</button>
             </div>
             <div class="card-body">
-                <div style="font-size:0.8rem; font-weight:700; color:#38bdf8; margin-bottom:4px;">🗺️ Visual Skill Tree Roadmap:</div>
+                <div style="font-size:0.8rem; font-weight:700; color:#38bdf8; margin-bottom:4px;">${pai('map')} Visual Skill Tree Roadmap:</div>
                 ${renderClassSkillTreeRoadmap(cls)}
 
-                <div style="font-size:0.8rem; font-weight:700; color:#cbd5e1; margin-bottom:8px; margin-top:10px;">📋 Tabel Level Belajar (Editable):</div>
+                <div style="font-size:0.8rem; font-weight:700; color:#cbd5e1; margin-bottom:8px; margin-top:10px;">${pai('list')} Tabel Level Belajar (Editable):</div>
                 <div style="overflow-x:auto;">
                     <table class="stat-table">
                         <thead>
@@ -688,7 +688,7 @@ function renderClassEditor(container, cls) {
                                         <input type="text" class="form-control" style="padding:4px 8px; font-size:0.85rem;" value="${escapeHtml(l.note || '')}" onchange="cls.learnings[${i}].note=this.value; setUnsaved(true);">
                                     </td>
                                     <td style="text-align:right;">
-                                        <button class="btn btn-danger btn-sm" onclick="removeClassLearning(${i});">🗑️</button>
+                                        <button class="btn btn-danger btn-sm" onclick="removeClassLearning(${i});">${pai('trash')}</button>
                                     </td>
                                 </tr>
                             `).join('')}
@@ -698,12 +698,12 @@ function renderClassEditor(container, cls) {
             </div>
         </div>
 
-        <!-- 📜 SCROLL KOMPATIBEL (SEMUA SKILL YANG DAPAT DIPELAJARI) -->
+        <!-- SCROLL KOMPATIBEL (SEMUA SKILL YANG DAPAT DIPELAJARI) -->
         <div class="card" style="margin-top:16px; border: 1px solid rgba(139, 92, 246, 0.4); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);">
             <div class="card-header" style="background: linear-gradient(90deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                 <div>
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <h2 title="Daftar Scroll jurus yang dapat dipelajari oleh kelas ini (habis pakai)">📜 Scroll Kompatibel (Semua Skill yang Dapat Dipelajari)</h2>
+                        <h2 title="Daftar Scroll jurus yang dapat dipelajari oleh kelas ini (habis pakai)">${pai('book')} Scroll Kompatibel (Semua Skill yang Dapat Dipelajari)</h2>
                         <span class="badge" style="background:rgba(139,92,246,0.2); color:#c4b5fd; border:1px solid rgba(139,92,246,0.4); font-size:0.75rem;" id="classScrollCountBadge">
                             ${(getClassCompatibleScrollItems(cls.name) || []).length} Scroll Tersedia
                         </span>
@@ -716,10 +716,10 @@ function renderClassEditor(container, cls) {
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                     <div style="display:flex; gap:4px;">
                         <button type="button" id="clsMainScrollCatAll" class="btn btn-sm ${classMainScrollCategory === 'all' ? 'btn-primary' : 'btn-secondary'}" onclick="onClassMainScrollCategory('all')" style="font-size:0.75rem; padding:3px 8px;">Semua</button>
-                        <button type="button" id="clsMainScrollCatPhys" class="btn btn-sm ${classMainScrollCategory === 'phys' ? 'btn-primary' : 'btn-secondary'}" onclick="onClassMainScrollCategory('phys')" style="font-size:0.75rem; padding:3px 8px;">⚔️ Jurus Fisik</button>
-                        <button type="button" id="clsMainScrollCatMagic" class="btn btn-sm ${classMainScrollCategory === 'magic' ? 'btn-primary' : 'btn-secondary'}" onclick="onClassMainScrollCategory('magic')" style="font-size:0.75rem; padding:3px 8px;">✨ Sihir &amp; Khusus</button>
+                        <button type="button" id="clsMainScrollCatPhys" class="btn btn-sm ${classMainScrollCategory === 'phys' ? 'btn-primary' : 'btn-secondary'}" onclick="onClassMainScrollCategory('phys')" style="font-size:0.75rem; padding:3px 8px;">${pai('sword')} Jurus Fisik</button>
+                        <button type="button" id="clsMainScrollCatMagic" class="btn btn-sm ${classMainScrollCategory === 'magic' ? 'btn-primary' : 'btn-secondary'}" onclick="onClassMainScrollCategory('magic')" style="font-size:0.75rem; padding:3px 8px;">${pai('sparkles')} Sihir &amp; Khusus</button>
                     </div>
-                    <input type="text" class="form-control" style="width:180px; font-size:0.75rem; padding:4px 8px;" placeholder="🔍 Filter nama / jurus..." value="${escapeHtml(classMainScrollQuery)}" oninput="onClassMainScrollSearch(this.value)">
+                    <input type="text" class="form-control" style="width:180px; font-size:0.75rem; padding:4px 8px;" placeholder="Filter nama / jurus..." value="${escapeHtml(classMainScrollQuery)}" oninput="onClassMainScrollSearch(this.value)">
                 </div>
             </div>
             <div class="card-body">
@@ -731,23 +731,22 @@ function renderClassEditor(container, cls) {
 
         <!-- NOTETAG MENTAH -->
         
-        <!-- 📈 INTERACTIVE EXP PROGRESSION CURVE & GRAPH -->
-        <!-- 📈 INTERACTIVE EXP PROGRESSION CURVE & GRAPH -->
+        <!-- INTERACTIVE EXP PROGRESSION CURVE & GRAPH -->
         <div class="card" style="margin-top:16px; border: 1px solid rgba(56, 189, 248, 0.4); box-shadow: 0 4px 20px rgba(56, 189, 248, 0.1);">
             <div class="card-header" style="background: linear-gradient(90deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                 <div>
-                    <h2 title="Kurva visual perkembangan EXP yang dibutuhkan untuk naik level dari Lv 1 sampai Lv 99">📈 Class EXP Progression Curve &amp; Visual Graph</h2>
+                    <h2 title="Kurva visual perkembangan EXP yang dibutuhkan untuk naik level dari Lv 1 sampai Lv 99">${pai('chart-line')} Class EXP Progression Curve &amp; Visual Graph</h2>
                     <div style="font-size:0.8rem; color:var(--text-muted);">Interactive real-time graph plotting Total EXP and Level scaling.</div>
                 </div>
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <button type="button" class="btn btn-sm btn-secondary" onclick="toggleExpTableModal()" title="Lihat tabel rincian EXP per level (Lv 1 - 99)">📋 View Lv 1-99 Table</button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="toggleExpTableModal()" title="Lihat tabel rincian EXP per level (Lv 1 - 99)">${pai('list')} View Lv 1-99 Table</button>
                 </div>
             </div>
             <div class="card-body">
                 <div class="grid-2" style="gap:20px; align-items:start;">
                     <!-- LEFT: 4 PARAMETERS & SLIDERS -->
                     <div>
-                        <div style="font-size:0.82rem; font-weight:700; color:#38bdf8; margin-bottom:12px;">🎛️ EXP Formula Parameters (Curve Controls):</div>
+                        <div style="font-size:0.82rem; font-weight:700; color:#38bdf8; margin-bottom:12px;">${pai('sliders')} EXP Formula Parameters (Curve Controls):</div>
 
                         <!-- Param 1: Base Value -->
                         <div class="form-group" style="margin-bottom:12px;">
@@ -808,17 +807,17 @@ function renderClassEditor(container, cls) {
                         <!-- Presets -->
                         <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">Quick Curve Presets:</div>
                         <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="applyExpPreset([20, 10, 20, 20])" title="Kurva cepat: naik level lebih mudah">🚀 Fast (Easy)</button>
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="applyExpPreset([30, 20, 30, 30])" title="Kurva seimbang standar RPG Maker">⚖️ Normal (Standard)</button>
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="applyExpPreset([40, 25, 35, 30])" title="Kurva lambat: butuh grinding lebih banyak">⛰️ Hard (Steep)</button>
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="applyExpPreset([25, 10, 45, 25])" title="Kurva lambat di awal, eksponensial di akhir">👑 Late Bloomer</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="applyExpPreset([20, 10, 20, 20])" title="Kurva cepat: naik level lebih mudah">${pai('speed-fast')} Fast (Easy)</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="applyExpPreset([30, 20, 30, 30])" title="Kurva seimbang standar RPG Maker">${pai('sliders')} Normal (Standard)</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="applyExpPreset([40, 25, 35, 30])" title="Kurva lambat: butuh grinding lebih banyak">${pai('shield')} Hard (Steep)</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="applyExpPreset([25, 10, 45, 25])" title="Kurva lambat di awal, eksponensial di akhir">${pai('crown')} Late Bloomer</button>
                         </div>
                     </div>
 
                     <!-- RIGHT: LIVE CANVAS GRAPH -->
                     <div>
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <div style="font-size:0.82rem; font-weight:700; color:#38bdf8;">📈 Live Progression Graph (Lv 1 - 99):</div>
+                            <div style="font-size:0.82rem; font-weight:700; color:#38bdf8;">${pai('chart-line')} Live Progression Graph (Lv 1 - 99):</div>
                             <div id="expHoverTooltip" style="font-size:0.75rem; color:#facc15; font-weight:600; min-height:18px;">Hover graph to view level details</div>
                         </div>
 
@@ -850,14 +849,14 @@ function renderClassEditor(container, cls) {
             </div>
         </div>
 
-        <!-- 📈 CLASS PARAMETER CURVES (LV 1 - 99) -->
+        <!-- CLASS PARAMETER CURVES (LV 1 - 99) -->
         <div class="card">
             <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
-                    <h2 title="Kurva nilai 8 parameter RPG Maker MV dari Level 1 sampai 99">📈 Class Parameter Curves (Lv 1 - 99)</h2>
+                    <h2 title="Kurva nilai 8 parameter RPG Maker MV dari Level 1 sampai 99">${pai('chart-line')} Class Parameter Curves (Lv 1 - 99)</h2>
                     <div style="font-size:0.75rem; color:var(--text-muted);">Nilai parameter MHP, MMP, ATK, DEF, MAT, MDF, AGI, LUK pada setiap level</div>
                 </div>
-                <button type="button" class="btn btn-primary btn-sm" onclick="openClassParamsCurveModal(0)" title="Buka generator kalkulasi kurva otomatis untuk level 1 - 99">⚡ Quick Curve Generator...</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="openClassParamsCurveModal(0)" title="Buka generator kalkulasi kurva otomatis untuk level 1 - 99">${pai('zap')} Quick Curve Generator...</button>
             </div>
             <div class="card-body">
                 <div style="overflow-x:auto;">
@@ -901,7 +900,7 @@ function renderClassEditor(container, cls) {
         ${renderTraitsCard(cls, 'classes')}
 
         <div class="card">
-            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">📝 Raw Notetags (Direct Edit)</h2></div>
+            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">${pai('notes')} Raw Notetags (Direct Edit)</h2></div>
             <div class="card-body">
                 <textarea id="rawNoteTextarea" class="form-control" rows="6" onchange="onRawNoteInput(this.value); updateClassSimulationLive();">${escapeHtml(cls.note || '')}</textarea>
             </div>
@@ -957,7 +956,7 @@ function renderClassStatPreview(container, cls) {
         <div class="card" style="margin-bottom:0;">
             <div class="card-header" style="padding:10px 14px;">
                 <div>
-                    <h2 style="font-size:0.85rem; margin:0;">🎯 Job Level Simulation</h2>
+                    <h2 style="font-size:0.85rem; margin:0;">${pai('sliders')} Job Level Simulation</h2>
                     <div style="font-size:0.75rem; color:var(--text-muted);">Simulasi pertumbuhan profesi murni</div>
                 </div>
                 <span id="classSimLevelBadge" class="badge-sub" style="font-size:0.85rem; font-weight:700; color:#c084fc; background:rgba(192,132,252,0.15); border-color:rgba(192,132,252,0.3); padding:3px 10px;">
@@ -978,7 +977,7 @@ function renderClassStatPreview(container, cls) {
         <div class="card" style="margin-bottom:0; border: 1px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.05);">
             <div class="card-header" style="padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; align-items:center; gap:6px;">
-                    <span style="font-size:0.95rem;">✨</span>
+                    <span style="font-size:0.95rem;">${pai('sparkles')}</span>
                     <h2 style="font-size:0.85rem; margin:0; color:#fbbf24;">Class Passive Ability</h2>
                 </div>
                 <span class="badge" style="background:rgba(245,158,11,0.2); color:#fbbf24; font-size:0.7rem; font-weight:700; border:1px solid rgba(245,158,11,0.3);">Innate</span>
@@ -991,7 +990,7 @@ function renderClassStatPreview(container, cls) {
         <!-- 2. TOTAL ATTRIBUTE BONUSES FROM THIS CLASS AT CURRENT JOB LEVEL -->
         <div class="card" style="margin-bottom:0;">
             <div class="card-header" style="padding:8px 14px;">
-                <h2 style="font-size:0.85rem; margin:0; color:#38bdf8;">📊 Bonus Atribut Kelas (Lv ${simLvl})</h2>
+                <h2 style="font-size:0.85rem; margin:0; color:#38bdf8;">${pai('chart-bar')} Bonus Atribut Kelas (Lv ${simLvl})</h2>
             </div>
             <div class="card-body" style="padding:10px 14px;">
                 <div class="stat-grid-6">
@@ -1010,7 +1009,7 @@ function renderClassStatPreview(container, cls) {
         <!-- 3. RPG MAKER BASE CURVES PREVIEW -->
         <div class="card" style="margin-bottom:0;">
             <div class="card-header" style="padding:8px 14px;">
-                <h2 style="font-size:0.85rem; margin:0; color:#10b981;">📈 Baseline Class Params (Lv ${simLvl})</h2>
+                <h2 style="font-size:0.85rem; margin:0; color:#10b981;">${pai('chart-line')} Baseline Class Params (Lv ${simLvl})</h2>
             </div>
             <div class="card-body" style="padding:10px 14px;">
                 <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px;">
@@ -1034,17 +1033,17 @@ function renderClassStatPreview(container, cls) {
         <div class="card" style="margin-bottom:0;">
             <div class="card-header" style="padding:8px 12px; display:flex; flex-direction:column; gap:8px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h2 style="font-size:0.85rem; margin:0; color:#eab308;">🌟 Jurus &amp; Kemampuan Kelas</h2>
+                    <h2 style="font-size:0.85rem; margin:0; color:#eab308;">${pai('sparkles')} Jurus &amp; Kemampuan Kelas</h2>
                     <span id="classRightTabBadge" class="badge-sub" style="font-size:0.75rem; font-weight:700;">
                         ${isScrolls ? `Kompatibel (${compats.length})` : `Job Lv 1 - ${simLvl}`}
                     </span>
                 </div>
                 <div style="display:flex; gap:6px;">
                     <button type="button" id="classRightTabTreeBtn" class="btn btn-sm ${!isScrolls ? 'btn-primary' : 'btn-secondary'}" style="flex:1; font-size:0.72rem; padding:4px 6px;" onclick="onClassRightTabChange('tree')" title="Lihat alur Skill Tree alami yang dipelajari saat naik Job Level">
-                        🌳 Skill Tree (${(cls.learnings || []).length})
+                        ${pai('list')} Skill Tree (${(cls.learnings || []).length})
                     </button>
                     <button type="button" id="classRightTabScrollBtn" class="btn btn-sm ${isScrolls ? 'btn-primary' : 'btn-secondary'}" style="flex:1; font-size:0.72rem; padding:4px 6px;" onclick="onClassRightTabChange('scrolls')" title="Lihat Scroll jurus yang bisa dipelajari kelas ini (habis pakai)">
-                        📜 Scroll (${compats.length})
+                        ${pai('book')} Scroll (${compats.length})
                     </button>
                 </div>
             </div>
@@ -1267,7 +1266,7 @@ function drawExpCurveGraph(hoverX = null) {
             const nextLvExp = targetLv < 99 ? (calculateExpForLevel(targetLv + 1, p) - pt.exp) : 0;
             const tooltipEl = document.getElementById('expHoverTooltip');
             if (tooltipEl) {
-                tooltipEl.innerHTML = `🎯 <strong style="color:#fff;">Level ${targetLv}</strong> • Total EXP: <span style="color:#38bdf8;">${pt.exp.toLocaleString()}</span> • Next Lv: <span style="color:#a78bfa;">+${nextLvExp.toLocaleString()} EXP</span>`;
+                tooltipEl.innerHTML = `${pai('target')} <strong style="color:#fff;">Level ${targetLv}</strong> • Total EXP: <span style="color:#38bdf8;">${pt.exp.toLocaleString()}</span> • Next Lv: <span style="color:#a78bfa;">+${nextLvExp.toLocaleString()} EXP</span>`;
             }
         }
     }

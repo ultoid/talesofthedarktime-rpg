@@ -104,7 +104,7 @@ function renderEnemyEditor(container, enemy) {
         <!-- ENEMY IDENTITY & GRAPHICS -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Pengaturan parameter tempur dan perilaku AI musuh">👾 Enemy: #${enemy.id} ${escapeHtml(enemy.name)}</h2>
+                <h2 title="Pengaturan parameter tempur dan perilaku AI musuh">${pai('skull')} Enemy: #${enemy.id} ${escapeHtml(enemy.name)}</h2>
                 <span style="font-size:0.85rem; color:var(--text-muted);">${escapeHtml(enemyRank)} • Tier ${tier}</span>
             </div>
             <div class="card-body">
@@ -141,7 +141,7 @@ function renderEnemyEditor(container, enemy) {
                     <div>
                         <div class="form-group" style="margin-bottom:8px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                <label style="margin-bottom:0;" title="Pilih gambar battler monster tempur samping (SV) dari folder img/sv_enemies/">⚔️ Select SV Battler Graphic</label>
+                                <label style="margin-bottom:0;" title="Pilih gambar battler monster tempur samping (SV) dari folder img/sv_enemies/">${pai('sword')} Select SV Battler Graphic</label>
                                 <span id="enemyBattlerTypeBadge" class="badge" style="font-size:0.7rem; padding:2px 7px; background:#1e293b; color:#93c5fd; border:1px solid rgba(59, 130, 246, 0.4); border-radius:4px;">Detecting...</span>
                             </div>
                             <select id="enemyBattlerSelect" class="form-control" onchange="onEnemyBattlerChange(this.value)">
@@ -158,7 +158,7 @@ function renderEnemyEditor(container, enemy) {
                             <canvas id="enemyBattlerCanvas" width="400" height="180" style="width:100%; height:100%; image-rendering:pixelated; display:block;"></canvas>
                             
                             <div id="enemyBattlerEmpty" class="portrait-empty" style="display:none; color:var(--text-muted); font-size:0.85rem; text-align:center; position:absolute;">
-                                <span>👾 Tidak ada gambar battler</span><br>
+                                <span>${pai('skull')} Tidak ada gambar battler</span><br>
                                 <span style="font-size:0.75rem; color:#64748b;">Pilih file battler pada daftar di atas</span>
                             </div>
 
@@ -178,10 +178,10 @@ function renderEnemyEditor(container, enemy) {
                             <div style="display:flex; gap:6px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
                                 <div style="display:flex; gap:4px; align-items:center;">
                                     <button type="button" id="enemyAnimPlayPauseBtn" class="btn btn-secondary btn-sm" style="font-size:0.75rem; padding:4px 8px;" onclick="toggleEnemyAnimPlayPause()" title="Jeda atau lanjutkan animasi">
-                                        ⏸ Pause
+                                        ${pai('pause')} Pause
                                     </button>
                                     <button type="button" class="btn btn-secondary btn-sm" style="font-size:0.75rem; padding:4px 7px;" onclick="stepEnemyAnimFrame()" title="Maju 1 frame berikutnya">
-                                        ⏭ Step
+                                        ${pai('arrow-bar-right')} Step
                                     </button>
                                 </div>
 
@@ -245,7 +245,7 @@ function renderEnemyEditor(container, enemy) {
         <!-- ENEMY BASE PARAMETERS -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Parameter tempur dasar musuh">📊 Enemy Base Parameters</h2>
+                <h2 title="Parameter tempur dasar musuh">${pai('chart-bar')} Enemy Base Parameters</h2>
                 <span style="font-size:0.8rem; color:var(--text-muted);">Base combat parameter values for this enemy.</span>
             </div>
             <div class="card-body">
@@ -267,7 +267,7 @@ function renderEnemyEditor(container, enemy) {
         <!-- DROP ITEMS (3 SLOTS) -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Daftar barang rampasan yang dijatuhkan saat musuh ini dikalahkan">🎁 Drop Items (Spoils of War)</h2>
+                <h2 title="Daftar barang rampasan yang dijatuhkan saat musuh ini dikalahkan">${pai('gift')} Drop Items (Spoils of War)</h2>
             </div>
             <div class="card-body">
                 <table class="data-table">
@@ -328,8 +328,8 @@ function renderEnemyEditor(container, enemy) {
         <!-- ACTION PATTERNS (AI) -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Daftar pola aksi kecerdasan buatan (AI) musuh dalam pertarungan">⚔️ Enemy Action Patterns (AI)</h2>
-                <button class="btn btn-secondary btn-sm" onclick="addEnemyAction();" title="Tambah pola aksi baru ke daftar kecerdasan buatan musuh">➕ Add Action Pattern</button>
+                <h2 title="Daftar pola aksi kecerdasan buatan (AI) musuh dalam pertarungan">${pai('sword')} Enemy Action Patterns (AI)</h2>
+                <button class="btn btn-secondary btn-sm" onclick="addEnemyAction();" title="Tambah pola aksi baru ke daftar kecerdasan buatan musuh">${pai('plus')} Add Action Pattern</button>
             </div>
             <div class="card-body">
                 <div style="overflow-x:auto;">
@@ -399,7 +399,7 @@ function renderEnemyEditor(container, enemy) {
                                         </div>
                                     </td>
                                     <td style="text-align:right;">
-                                        <button class="btn btn-danger btn-sm" onclick="removeEnemyAction(${i});">🗑️</button>
+                                        <button class="btn btn-danger btn-sm" onclick="removeEnemyAction(${i});">${pai('trash')}</button>
                                     </td>
                                 </tr>
                             `).join('')}
@@ -412,7 +412,7 @@ function renderEnemyEditor(container, enemy) {
         <!-- LEVEL SCALING & HADIAH NUSVANIR -->
         <div class="grid-2">
             <div class="card">
-                <div class="card-header"><h2 title="Pengaturan penyesuaian level musuh berdasarkan party pemain">📈 Enemy Level Scaling</h2></div>
+                <div class="card-header"><h2 title="Pengaturan penyesuaian level musuh berdasarkan party pemain">${pai('chart-line')} Enemy Level Scaling</h2></div>
                 <div class="card-body">
                     <div class="form-group">
                         <label title="Metode penentuan level musuh: Tetap (Fixed), Skala Party, atau Rentang Level">Enemy Level Scaling Mode</label>
@@ -436,7 +436,7 @@ function renderEnemyEditor(container, enemy) {
             </div>
 
             <div class="card">
-                <div class="card-header"><h2 title="Hadiah pengalaman kelas, job points, dan drop batu jiwa monster">🎁 Nusvanir Special Rewards</h2></div>
+                <div class="card-header"><h2 title="Hadiah pengalaman kelas, job points, dan drop batu jiwa monster">${pai('gift')} Nusvanir Special Rewards</h2></div>
                 <div class="card-body">
                     <div class="grid-2">
                         <div class="form-group">
@@ -456,7 +456,7 @@ function renderEnemyEditor(container, enemy) {
         ${renderTraitsCard(enemy, 'enemies')}
 
         <div class="card">
-            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">📝 Raw Notetags (Direct Edit)</h2></div>
+            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">${pai('notes')} Raw Notetags (Direct Edit)</h2></div>
             <div class="card-body">
                 <textarea id="rawNoteTextarea" class="form-control" rows="6" onchange="onRawNoteInput(this.value)">${escapeHtml(enemy.note || '')}</textarea>
             </div>
@@ -627,15 +627,15 @@ function initEnemyBattlerAnimation(enemy) {
         // Update Type Badge & Controls
         if (typeBadge) {
             if (currentEnemyAnim.type === 'custom_strip') {
-                typeBadge.textContent = `🎞️ Strip (${currentEnemyAnim.frames} F)`;
+                typeBadge.innerHTML = `${pai('video')} Strip (${currentEnemyAnim.frames} F)`;
                 typeBadge.style.color = '#67e8f9';
                 typeBadge.style.borderColor = '#06b6d4';
             } else if (currentEnemyAnim.type === 'mv_sv_actor') {
-                typeBadge.textContent = '⚔️ MV SV Actor (9×6)';
+                typeBadge.innerHTML = `${pai('sword')} MV SV Actor (9×6)`;
                 typeBadge.style.color = '#a78bfa';
                 typeBadge.style.borderColor = '#8b5cf6';
             } else {
-                typeBadge.textContent = '🖼️ Static Battler';
+                typeBadge.innerHTML = `${pai('image')} Static Battler`;
                 typeBadge.style.color = '#94a3b8';
                 typeBadge.style.borderColor = 'rgba(255,255,255,0.15)';
             }
@@ -650,7 +650,7 @@ function initEnemyBattlerAnimation(enemy) {
         currentEnemyAnim.lastTickTime = performance.now();
 
         const playBtn = document.getElementById('enemyAnimPlayPauseBtn');
-        if (playBtn) playBtn.textContent = '⏸ Pause';
+        if (playBtn) playBtn.innerHTML = `${pai('pause')} Pause`;
 
         updateEnemyFrameBadge();
         startEnemyAnimLoop();
@@ -661,7 +661,7 @@ function initEnemyBattlerAnimation(enemy) {
             img.src = fallbackSrc;
         } else {
             if (emptyEl) {
-                emptyEl.innerHTML = `<span>⚠️ Gagal memuat file: ${escapeHtml(enemy.battlerName)}.png</span>`;
+                emptyEl.innerHTML = `<span>${pai('warning-diamond')} Gagal memuat file: ${escapeHtml(enemy.battlerName)}.png</span>`;
                 emptyEl.style.display = 'block';
             }
             if (typeBadge) {
@@ -803,7 +803,7 @@ function toggleEnemyAnimPlayPause() {
     currentEnemyAnim.isPlaying = !currentEnemyAnim.isPlaying;
     const btn = document.getElementById('enemyAnimPlayPauseBtn');
     if (btn) {
-        btn.textContent = currentEnemyAnim.isPlaying ? '⏸ Pause' : '▶ Play';
+        btn.innerHTML = currentEnemyAnim.isPlaying ? `${pai('pause')} Pause` : `${pai('play')} Play`;
     }
 }
 
@@ -814,7 +814,7 @@ function stepEnemyAnimFrame() {
     currentEnemyAnim.isPlaying = false;
     currentEnemyAnim.currentFrame++;
     const btn = document.getElementById('enemyAnimPlayPauseBtn');
-    if (btn) btn.textContent = '▶ Play';
+    if (btn) btn.innerHTML = `${pai('play')} Play`;
     updateEnemyFrameBadge();
     renderEnemyBattlerFrame();
 }
@@ -870,7 +870,7 @@ function onEnemySvFramesChange(val) {
 
     const typeBadge = document.getElementById('enemyBattlerTypeBadge');
     if (typeBadge) {
-        typeBadge.textContent = num > 1 ? `🎞️ Strip (${num} F)` : '🖼️ Static Battler';
+        typeBadge.innerHTML = num > 1 ? `${pai('video')} Strip (${num} F)` : `${pai('image')} Static Battler`;
     }
 
     updateEnemyFrameBadge();

@@ -506,10 +506,10 @@ Rincian: Class Base + LUK(${res.totalCore.LUK}) + Eq = ${res.totalLuk}`;
     if (extraBox) {
         const badges = [];
         res.amplifiedElements.forEach(e => {
-            badges.push(`<span class="list-badge" style="color:#f59e0b; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); padding:3px 8px;">🔥 Amplify: ${escapeHtml(e)}</span>`);
+            badges.push(`<span class="list-badge" style="color:#f59e0b; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); padding:3px 8px;">${pai('fire')} Amplify: ${escapeHtml(e)}</span>`);
         });
         res.activeSets.forEach(s => {
-            badges.push(`<span class="list-badge" style="color:#10b981; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); padding:3px 8px;">🛡️ Set: ${escapeHtml(s)}</span>`);
+            badges.push(`<span class="list-badge" style="color:#10b981; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); padding:3px 8px;">${pai('shield')} Set: ${escapeHtml(s)}</span>`);
         });
         extraBox.innerHTML = badges.length ? badges.join(' ') : `<span style="font-size:0.75rem; color:var(--text-muted);">No elemental amplification or active set bonuses.</span>`;
     }
@@ -569,7 +569,7 @@ function renderActorEditor(container, actor) {
         <!-- GENERAL SETTINGS & IDENTITY -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Pengaturan identitas dan profil karakter pahlawan">🎭 Actor: #${actor.id} ${escapeHtml(actor.name)}</h2>
+                <h2 title="Pengaturan identitas dan profil karakter pahlawan">${pai('user')} Actor: #${actor.id} ${escapeHtml(actor.name)}</h2>
                 <span style="font-size:0.85rem; color:var(--text-muted);">${escapeHtml(actor.nickname || '')}</span>
             </div>
             <div class="card-body">
@@ -644,7 +644,7 @@ function renderActorEditor(container, actor) {
                             <div class="form-group" style="display:flex; align-items:center;">
                                 <label class="checkbox-label" style="margin-top:16px;">
                                     <input type="checkbox" ${isLocked ? 'checked' : ''} onchange="setBoolTag(actor, 'LockActor', this.checked);">
-                                    <span title="Mencegah karakter ini dikeluarkan atau ditukar dari susunan party aktif">🔒 Lock in Party (&lt;LockActor&gt;)</span>
+                                    <span title="Mencegah karakter ini dikeluarkan atau ditukar dari susunan party aktif">${pai('lock')} Lock in Party (&lt;LockActor&gt;)</span>
                                 </label>
                             </div>
                         </div>
@@ -653,7 +653,7 @@ function renderActorEditor(container, actor) {
                     <div>
                         <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:6px;" title="Pratinjau gambar potret besar karakter untuk menu status Nusvanir">Portrait Preview (&lt;Portrait: ...&gt;)</label>
                         <div class="portrait-preview-box">
-                            ${portrait ? `<img src="img/pictures/${portrait}.png" class="portrait-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'portrait-empty\\'>⚠️ File tidak ditemukan: img/pictures/${portrait}.png</div>';">` : `<div class="portrait-empty">No portrait selected.<br>Choose from the list below.</div>`}
+                            ${portrait ? `<img src="img/pictures/${portrait}.png" class="portrait-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'portrait-empty\\'>${pai('warning-diamond')} File tidak ditemukan: img/pictures/${portrait}.png</div>';">` : `<div class="portrait-empty">No portrait selected.<br>Choose from the list below.</div>`}
                         </div>
                         <div class="form-group" style="margin-top:10px;">
                             <label title="Pilih file ilustrasi potret karakter dari folder img/pictures/">Select Portrait Image (img/pictures/)</label>
@@ -668,10 +668,10 @@ function renderActorEditor(container, actor) {
                     </div>
                 </div>
 
-                <!-- 🎨 VISUAL GRAPHICS & SPRITES WITH LIVE PREVIEWS -->
+                <!-- VISUAL GRAPHICS & SPRITES WITH LIVE PREVIEWS -->
                 <div style="margin-top:16px;">
                     <div style="font-size:0.85rem; font-weight:700; color:#38bdf8; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                        <span>🎨 RPG Maker MV Visual Graphics &amp; Sprites</span>
+                        <span>${pai('image')} RPG Maker MV Visual Graphics &amp; Sprites</span>
                         <span style="font-size:0.75rem; color:var(--text-muted);">Click any preview box to open visual sheet picker</span>
                     </div>
                     <div class="grid-3" style="gap:14px;">
@@ -776,13 +776,13 @@ function renderActorEditor(container, actor) {
         <!-- BASE ACTOR STATS & INNATE GROWTH (SPECIES BASE) -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Stat dasar bawaan alami karakter (Species Base) dan pertumbuhannya per Base Level">📊 Actor Baseline Stats (Species Base)</h2>
+                <h2 title="Stat dasar bawaan alami karakter (Species Base) dan pertumbuhannya per Base Level">${pai('chart-bar')} Actor Baseline Stats (Species Base)</h2>
                 <span style="font-size:0.8rem; color:var(--text-muted);">&lt;Base STR: X&gt; &amp; &lt;Actor Stat Growth&gt;</span>
             </div>
             <div class="card-body">
                 <div class="form-group" style="margin-bottom:14px;">
                     <label title="Pertumbuhan stat alami karakter setiap kali Base Level naik (+Stat per Base Level)">
-                        📈 Innate Actor Growth per Base Level (&lt;Actor Stat Growth: +X STR, +Y INT, ...&gt;)
+                        ${pai('chart-line')} Innate Actor Growth per Base Level (&lt;Actor Stat Growth: +X STR, +Y INT, ...&gt;)
                     </label>
                     <input type="text" class="form-control" placeholder="Contoh: +1 STR, +1 VIT, +0.5 AGI" 
                            value="${escapeHtml(getTagVal(note, 'Actor Stat Growth', ''))}" 
@@ -818,13 +818,13 @@ function renderActorEditor(container, actor) {
         <!-- INITIAL EQUIPS -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Perlengkapan bawaan awal karakter saat petualangan dimulai">🛡️ Initial Equipment (8 Nusvanir Slots)</h2>
+                <h2 title="Perlengkapan bawaan awal karakter saat petualangan dimulai">${pai('shield')} Initial Equipment (8 Nusvanir Slots)</h2>
                 <span style="font-size:0.8rem; color:var(--text-muted);" title="Perubahan perlengkapan langsung memperbarui simulasi stat di atas">Modifying equipment instantly updates the simulation above.</span>
             </div>
             <div class="card-body">
                 <div class="equip-grid">
                     <div class="equip-slot-item">
-                        <div class="slot-title">⚔️ 1. Weapon (Utama)</div>
+                        <div class="slot-title">${pai('sword')} 1. Weapon (Utama)</div>
                         <select class="form-control" onchange="actor.equips[0]=parseInt(this.value,10); setUnsaved(true); updateActorSimulationLive();">
                             <option value="0">(Kosong)</option>
                             ${weaponsList.map(w => `<option value="${w.id}" ${actor.equips[0] === w.id ? 'selected' : ''}>#${w.id} ${escapeHtml(w.name)}</option>`).join('')}
@@ -832,7 +832,7 @@ function renderActorEditor(container, actor) {
                     </div>
 
                     <div class="equip-slot-item">
-                        <div class="slot-title">🛡️ 2. Secondary (Off-Hand)</div>
+                        <div class="slot-title">${pai('shield')} 2. Secondary (Off-Hand)</div>
                         <select class="form-control" onchange="actor.equips[1]=parseInt(this.value,10); setUnsaved(true); updateActorSimulationLive();">
                             <option value="0">(Kosong)</option>
                             ${secondaryList.map(s => `<option value="${s.id}" ${actor.equips[1] === s.id ? 'selected' : ''}>#${s.id} ${escapeHtml(s.name)}</option>`).join('')}
@@ -840,7 +840,7 @@ function renderActorEditor(container, actor) {
                     </div>
 
                     <div class="equip-slot-item">
-                        <div class="slot-title">🎩 3. Helm (Kepala)</div>
+                        <div class="slot-title">${pai('user')} 3. Helm (Kepala)</div>
                         <select class="form-control" onchange="actor.equips[2]=parseInt(this.value,10); setUnsaved(true); updateActorSimulationLive();">
                             <option value="0">(Kosong)</option>
                             ${helms.map(h => `<option value="${h.id}" ${actor.equips[2] === h.id ? 'selected' : ''}>#${h.id} ${escapeHtml(h.name)}</option>`).join('')}
@@ -848,7 +848,7 @@ function renderActorEditor(container, actor) {
                     </div>
 
                     <div class="equip-slot-item">
-                        <div class="slot-title">🥋 4. Armor (Badan)</div>
+                        <div class="slot-title">${pai('shirt')} 4. Armor (Badan)</div>
                         <select class="form-control" onchange="actor.equips[3]=parseInt(this.value,10); setUnsaved(true); updateActorSimulationLive();">
                             <option value="0">(Kosong)</option>
                             ${bodyArmors.map(b => `<option value="${b.id}" ${actor.equips[3] === b.id ? 'selected' : ''}>#${b.id} ${escapeHtml(b.name)}</option>`).join('')}
@@ -856,7 +856,7 @@ function renderActorEditor(container, actor) {
                     </div>
 
                     <div class="equip-slot-item">
-                        <div class="slot-title">👢 5. Boots (Kaki)</div>
+                        <div class="slot-title">${pai('speed-fast')} 5. Boots (Kaki)</div>
                         <select class="form-control" onchange="actor.equips[4]=parseInt(this.value,10); setUnsaved(true); updateActorSimulationLive();">
                             <option value="0">(Kosong)</option>
                             ${boots.map(b => `<option value="${b.id}" ${actor.equips[4] === b.id ? 'selected' : ''}>#${b.id} ${escapeHtml(b.name)}</option>`).join('')}
@@ -864,7 +864,7 @@ function renderActorEditor(container, actor) {
                     </div>
 
                     <div class="equip-slot-item">
-                        <div class="slot-title">💍 6. Accessory 1</div>
+                        <div class="slot-title">${pai('diamond-gem')} 6. Accessory 1</div>
                         <select class="form-control" onchange="actor.equips[5]=parseInt(this.value,10); setUnsaved(true); updateActorSimulationLive();">
                             <option value="0">(Kosong)</option>
                             ${accessories.map(a => `<option value="${a.id}" ${actor.equips[5] === a.id ? 'selected' : ''}>#${a.id} ${escapeHtml(a.name)}</option>`).join('')}
@@ -872,7 +872,7 @@ function renderActorEditor(container, actor) {
                     </div>
 
                     <div class="equip-slot-item" style="border-color:var(--accent); background:rgba(59,130,246,0.1);">
-                        <div class="slot-title" style="color:#60a5fa;">💍 6. Accessory 2 (&lt;Second Accessory&gt;)</div>
+                        <div class="slot-title" style="color:#60a5fa;">${pai('diamond-gem')} 6. Accessory 2 (&lt;Second Accessory&gt;)</div>
                         <select class="form-control" onchange="setTagVal(actor, 'Second Accessory', this.value); updateActorSimulationLive();">
                             <option value="">(Kosong)</option>
                             ${accessories.map(a => {
@@ -883,7 +883,7 @@ function renderActorEditor(container, actor) {
                     </div>
 
                     <div class="equip-slot-item">
-                        <div class="slot-title">🔮 7. Relic</div>
+                        <div class="slot-title">${pai('wand')} 7. Relic</div>
                         <select class="form-control" onchange="actor.equips[6]=parseInt(this.value,10); setUnsaved(true); updateActorSimulationLive();">
                             <option value="0">(Kosong)</option>
                             ${relics.map(r => `<option value="${r.id}" ${actor.equips[6] === r.id ? 'selected' : ''}>#${r.id} ${escapeHtml(r.name)}</option>`).join('')}
@@ -897,7 +897,7 @@ function renderActorEditor(container, actor) {
         ${renderTraitsCard(actor, 'actors')}
 
         <div class="card">
-            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">📝 Raw Notetags (Direct Edit)</h2></div>
+            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">${pai('notes')} Raw Notetags (Direct Edit)</h2></div>
             <div class="card-body">
                 <textarea id="rawNoteTextarea" class="form-control" rows="6" onchange="onRawNoteInput(this.value); updateActorSimulationLive();">${escapeHtml(actor.note || '')}</textarea>
             </div>
@@ -920,7 +920,7 @@ function renderActorStatPreview(container, actor) {
         <!-- 1. DUAL LEVEL SLIDERS (BASE LEVEL & CLASS LEVEL) -->
         <div class="card" style="border: 1px solid rgba(59, 130, 246, 0.4); margin-bottom: 0;">
             <div class="card-header" style="background: linear-gradient(90deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); padding: 8px 12px;">
-                <h2 style="font-size:0.85rem; margin:0; display:flex; align-items:center; gap:6px;">🎚️ Level Simulation</h2>
+                <h2 style="font-size:0.85rem; margin:0; display:flex; align-items:center; gap:6px;">${pai('sliders')} Level Simulation</h2>
                 <div style="display:flex; gap:6px;">
                     <span class="badge-sub" style="font-size:0.75rem; font-weight:700; color:#38bdf8;" id="actorSimBaseBadge">Base Lv ${simBaseLevel}</span>
                     <span class="badge-sub" style="font-size:0.75rem; font-weight:700; color:#c084fc;" id="actorSimClassBadge">Class Lv ${simClassLevel} / ${classMaxLvl}</span>
@@ -930,7 +930,7 @@ function renderActorStatPreview(container, actor) {
                 <!-- Base Level Slider -->
                 <div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;">👤 Base Level (1 - 99):</label>
+                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;">${pai('user')} Base Level (1 - 99):</label>
                     </div>
                     <div style="display:flex; gap:8px; align-items:center;">
                         <input type="range" min="1" max="99" value="${simBaseLevel}" class="form-control" style="flex:1; cursor:pointer;" 
@@ -943,7 +943,7 @@ function renderActorStatPreview(container, actor) {
                 <!-- Class Level Slider -->
                 <div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;">🛡️ Class Level (1 - ${classMaxLvl}):</label>
+                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;">${pai('shield')} Class Level (1 - ${classMaxLvl}):</label>
                         <span class="badge-sub" style="font-size:0.72rem; color:#a78bfa; padding:1px 6px;">${escapeHtml(actorClass.name)}</span>
                     </div>
                     <div style="display:flex; gap:8px; align-items:center;">
@@ -959,22 +959,22 @@ function renderActorStatPreview(container, actor) {
                 <!-- 2. VITAL RESOURCES & 6 CORE STATS -->
         <div class="card" style="margin-bottom:0;">
             <div class="card-header" style="padding:8px 12px;">
-                <h2 style="font-size:0.85rem; margin:0; color:#38bdf8;">📊 Vital Resources &amp; 6 Core Stats</h2>
+                <h2 style="font-size:0.85rem; margin:0; color:#38bdf8;">${pai('chart-bar')} Vital Resources &amp; 6 Core Stats</h2>
                 <span style="font-size:0.7rem; color:var(--text-muted);">Hover untuk rincian formula</span>
             </div>
             <div class="card-body" style="padding:10px 12px; display:flex; flex-direction:column; gap:10px;">
                 <!-- Row Vitals: HP, MP, SP -->
                 <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
                     <div class="stat-card-input" id="sim-mhp-card" style="border-left: 3px solid #f87171; padding:6px 8px; cursor:help;" data-hover-name="Max HP (Vitality & STR)" title="Poin Kesehatan Maksimal&#10;Rumus: Class Base HP + (VIT × 15) + (STR × 5) + Bonus Equipment">
-                        <div style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">❤️ Max HP</div>
+                        <div style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">${pai('heart')} Max HP</div>
                         <div style="font-size:1.15rem; font-weight:700; color:#f87171; line-height:1.1; margin-top:3px;" id="sim-mhp">0</div>
                     </div>
                     <div class="stat-card-input" id="sim-mmp-card" style="border-left: 3px solid #60a5fa; padding:6px 8px; cursor:help;" data-hover-name="Max MP (Intelligence)" title="Poin Mana / Energi Sihir Maksimal&#10;Rumus: Class Base MP + (INT × 8) + Bonus Equipment">
-                        <div style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">💧 Max MP</div>
+                        <div style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">${pai('drop')} Max MP</div>
                         <div style="font-size:1.15rem; font-weight:700; color:#60a5fa; line-height:1.1; margin-top:3px;" id="sim-mmp">0</div>
                     </div>
                     <div class="stat-card-input" id="sim-msp-card" style="border-left: 3px solid #38bdf8; padding:6px 8px; cursor:help;" data-hover-name="Max SP (Stamina)" title="Poin Stamina Tempur Maksimal&#10;Rumus: Base 50 + (VIT × 1.5) + (STR × 0.5) + Bonus Equipment">
-                        <div style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">⚡ Max SP</div>
+                        <div style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">${pai('zap')} Max SP</div>
                         <div style="font-size:1.15rem; font-weight:700; color:#38bdf8; line-height:1.1; margin-top:3px;" id="sim-msp">0</div>
                     </div>
                 </div>
@@ -996,86 +996,86 @@ function renderActorStatPreview(container, actor) {
         <!-- 3. PARAMETER TEMPUR & MITIGASI -->
         <div class="card" style="margin-bottom:0;">
             <div class="card-header" style="padding:8px 12px;">
-                <h2 style="font-size:0.85rem; margin:0; color:#fb923c;">⚔️ Combat Parameters &amp; Mitigation</h2>
+                <h2 style="font-size:0.85rem; margin:0; color:#fb923c;">${pai('sword')} Combat Parameters &amp; Mitigation</h2>
                 <span style="font-size:0.7rem; color:var(--text-muted);">Hover untuk rincian formula</span>
             </div>
             <div class="card-body" style="padding:10px 12px; display:flex; flex-direction:column; gap:10px;">
                 <!-- Primary Combat Parameters (3 columns) -->
                 <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px;">
-                    <div class="stat-card-input" id="sim-atk-card" style="border-left: 2px solid #fb923c; padding:5px 6px; cursor:help;" data-hover-name="⚔️ P.ATK (Physical Attack)" title="Daya Serang Fisik Utama&#10;Rumus: Weapon ATK + (STR × 2.0) + (DEX × 0.5) + Equip">
-                        <div style="font-size:0.68rem; color:var(--text-muted);">⚔️ P.ATK</div>
+                    <div class="stat-card-input" id="sim-atk-card" style="border-left: 2px solid #fb923c; padding:5px 6px; cursor:help;" data-hover-name="P.ATK (Physical Attack)" title="Daya Serang Fisik Utama&#10;Rumus: Weapon ATK + (STR × 2.0) + (DEX × 0.5) + Equip">
+                        <div style="font-size:0.68rem; color:var(--text-muted);">${pai('sword')} P.ATK</div>
                         <div style="font-size:1.05rem; font-weight:700; color:#fb923c; line-height:1.1; margin-top:3px;" id="sim-atk">0</div>
                     </div>
-                    <div class="stat-card-input" id="sim-def-card" style="border-left: 2px solid #34d399; padding:5px 6px; cursor:help;" data-hover-name="🛡️ P.DEF (Physical Defense)" title="Ketahanan Pertahanan Fisik&#10;Rumus: Class Base DEF + (VIT × 1.5) + (STR × 0.5) + Bonus Armor">
-                        <div style="font-size:0.68rem; color:var(--text-muted);">🛡️ P.DEF</div>
+                    <div class="stat-card-input" id="sim-def-card" style="border-left: 2px solid #34d399; padding:5px 6px; cursor:help;" data-hover-name="P.DEF (Physical Defense)" title="Ketahanan Pertahanan Fisik&#10;Rumus: Class Base DEF + (VIT × 1.5) + (STR × 0.5) + Bonus Armor">
+                        <div style="font-size:0.68rem; color:var(--text-muted);">${pai('shield')} P.DEF</div>
                         <div style="font-size:1.05rem; font-weight:700; color:#34d399; line-height:1.1; margin-top:3px;" id="sim-def">0</div>
                     </div>
-                    <div class="stat-card-input" id="sim-mat-card" style="border-left: 2px solid #a78bfa; padding:5px 6px; cursor:help;" data-hover-name="🔮 M.ATK (Magic Attack)" title="Daya Serang Kekuatan Sihir&#10;Rumus: Class Base MAT + (INT × 2.0) + Bonus Equipment">
-                        <div style="font-size:0.68rem; color:var(--text-muted);">🔮 M.ATK</div>
+                    <div class="stat-card-input" id="sim-mat-card" style="border-left: 2px solid #a78bfa; padding:5px 6px; cursor:help;" data-hover-name="M.ATK (Magic Attack)" title="Daya Serang Kekuatan Sihir&#10;Rumus: Class Base MAT + (INT × 2.0) + Bonus Equipment">
+                        <div style="font-size:0.68rem; color:var(--text-muted);">${pai('wand')} M.ATK</div>
                         <div style="font-size:1.05rem; font-weight:700; color:#a78bfa; line-height:1.1; margin-top:3px;" id="sim-mat">0</div>
                     </div>
-                    <div class="stat-card-input" id="sim-mdf-card" style="border-left: 2px solid #38bdf8; padding:5px 6px; cursor:help;" data-hover-name="🔰 M.MDF (Magic Defense)" title="Ketahanan Pertahanan Sihir&#10;Rumus: Class Base MDF + (INT × 1.2) + (VIT × 0.8) + Bonus Equipment">
-                        <div style="font-size:0.68rem; color:var(--text-muted);">🔰 M.MDF</div>
+                    <div class="stat-card-input" id="sim-mdf-card" style="border-left: 2px solid #38bdf8; padding:5px 6px; cursor:help;" data-hover-name="M.MDF (Magic Defense)" title="Ketahanan Pertahanan Sihir&#10;Rumus: Class Base MDF + (INT × 1.2) + (VIT × 0.8) + Bonus Equipment">
+                        <div style="font-size:0.68rem; color:var(--text-muted);">${pai('shield')} M.MDF</div>
                         <div style="font-size:1.05rem; font-weight:700; color:#38bdf8; line-height:1.1; margin-top:3px;" id="sim-mdf">0</div>
                     </div>
-                    <div class="stat-card-input" id="sim-spd-card" style="border-left: 2px solid #facc15; padding:5px 6px; cursor:help;" data-hover-name="⚡ Speed (Action Agility)" title="Kecepatan Giliran & Inisiatif Tempur&#10;Rumus: Class Base AGI + (AGI × 1.5) + Bonus Equipment">
-                        <div style="font-size:0.68rem; color:var(--text-muted);">⚡ Speed</div>
+                    <div class="stat-card-input" id="sim-spd-card" style="border-left: 2px solid #facc15; padding:5px 6px; cursor:help;" data-hover-name="Speed (Action Agility)" title="Kecepatan Giliran & Inisiatif Tempur&#10;Rumus: Class Base AGI + (AGI × 1.5) + Bonus Equipment">
+                        <div style="font-size:0.68rem; color:var(--text-muted);">${pai('speed-fast')} Speed</div>
                         <div style="font-size:1.05rem; font-weight:700; color:#facc15; line-height:1.1; margin-top:3px;" id="sim-spd">0</div>
                     </div>
-                    <div class="stat-card-input" id="sim-luk-card" style="border-left: 2px solid #4ade80; padding:5px 6px; cursor:help;" data-hover-name="🍀 Luck (LUK)" title="Keberuntungan, Evasion Kritis & Efek Status&#10;Rumus: Class Base LUK + LUK + Bonus Equipment">
-                        <div style="font-size:0.68rem; color:var(--text-muted);">🍀 Luck</div>
+                    <div class="stat-card-input" id="sim-luk-card" style="border-left: 2px solid #4ade80; padding:5px 6px; cursor:help;" data-hover-name="Luck (LUK)" title="Keberuntungan, Evasion Kritis & Efek Status&#10;Rumus: Class Base LUK + LUK + Bonus Equipment">
+                        <div style="font-size:0.68rem; color:var(--text-muted);">${pai('sparkles')} Luck</div>
                         <div style="font-size:1.05rem; font-weight:700; color:#4ade80; line-height:1.1; margin-top:3px;" id="sim-luk">0</div>
                     </div>
                 </div>
 
                 <!-- Precision & Mitigation (4 columns chip badges) with hover details -->
                 <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:4px; background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:6px;">
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="🎯 HIT (Hit Rate)" title="Akurasi Serangan Fisik&#10;Rumus: 85% + (DEX × 0.2%) + Bonus Equipment (Maks 100%)">
-                        <div style="font-size:0.65rem; color:#facc15;">🎯 HIT</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="HIT (Hit Rate)" title="Akurasi Serangan Fisik&#10;Rumus: 85% + (DEX × 0.2%) + Bonus Equipment (Maks 100%)">
+                        <div style="font-size:0.65rem; color:#facc15;">${pai('target')} HIT</div>
                         <div style="font-size:0.85rem; font-weight:700; color:#facc15;" id="sim-hit">0%</div>
                     </div>
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="💨 EVA (Evasion Rate)" title="Peluang Menghindari Serangan Fisik&#10;Rumus: 2% + (AGI × 0.2%) + (LUK × 0.05%) + Bonus Equipment (Maks 80%)">
-                        <div style="font-size:0.65rem; color:#10b981;">💨 EVA</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="EVA (Evasion Rate)" title="Peluang Menghindari Serangan Fisik&#10;Rumus: 2% + (AGI × 0.2%) + (LUK × 0.05%) + Bonus Equipment (Maks 80%)">
+                        <div style="font-size:0.65rem; color:#10b981;">${pai('speed-fast')} EVA</div>
                         <div style="font-size:0.85rem; font-weight:700; color:#10b981;" id="sim-eva">0%</div>
                     </div>
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="💥 CRI (Critical Rate)" title="Peluang Serangan Kritikal&#10;Rumus: 3% + (DEX × 0.2%) + (LUK × 0.1%) + Bonus Equipment (Maks 85%)">
-                        <div style="font-size:0.65rem; color:#fb923c;">💥 CRI</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="CRI (Critical Rate)" title="Peluang Serangan Kritikal&#10;Rumus: 3% + (DEX × 0.2%) + (LUK × 0.1%) + Bonus Equipment (Maks 85%)">
+                        <div style="font-size:0.65rem; color:#fb923c;">${pai('zap')} CRI</div>
                         <div style="font-size:0.85rem; font-weight:700; color:#fb923c;" id="sim-cri">0%</div>
                     </div>
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="🗡️ CDMG (Critical Damage)" title="Pengali Kerusakan Serangan Kritis&#10;Rumus: 150% + (STR × 0.3%) + (DEX × 0.2%) + Bonus Equipment">
-                        <div style="font-size:0.65rem; color:#ef4444;">🗡️ CDMG</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="CDMG (Critical Damage)" title="Pengali Kerusakan Serangan Kritis&#10;Rumus: 150% + (STR × 0.3%) + (DEX × 0.2%) + Bonus Equipment">
+                        <div style="font-size:0.65rem; color:#ef4444;">${pai('sword')} CDMG</div>
                         <div style="font-size:0.85rem; font-weight:700; color:#ef4444;" id="sim-cdmg">150%</div>
                     </div>
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="🛡️ CEV (Critical Evasion)" title="Resistensi Terhadap Serangan Kritis Musuh&#10;Rumus: (LUK × 0.15%) + (VIT × 0.1%) + Bonus Equipment">
-                        <div style="font-size:0.65rem; color:#4ade80;">🛡️ CEV</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="CEV (Critical Evasion)" title="Resistensi Terhadap Serangan Kritis Musuh&#10;Rumus: (LUK × 0.15%) + (VIT × 0.1%) + Bonus Equipment">
+                        <div style="font-size:0.65rem; color:#4ade80;">${pai('shield')} CEV</div>
                         <div style="font-size:0.85rem; font-weight:700; color:#4ade80;" id="sim-cev">0%</div>
                     </div>
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="🛡️ GRD (Guard Mitigation)" title="Efisiensi Pengurangan Damage Saat Guard / Bertahan&#10;Rumus: 100% + (VIT × 0.5%) + Bonus Equipment">
-                        <div style="font-size:0.65rem; color:#60a5fa;">🛡️ GRD</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="GRD (Guard Mitigation)" title="Efisiensi Pengurangan Damage Saat Guard / Bertahan&#10;Rumus: 100% + (VIT × 0.5%) + Bonus Equipment">
+                        <div style="font-size:0.65rem; color:#60a5fa;">${pai('shield')} GRD</div>
                         <div style="font-size:0.85rem; font-weight:700; color:#60a5fa;" id="sim-grd">100%</div>
                     </div>
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="🔰 PDR (Physical Damage Reduction)" title="Pengurangan Damage Fisik yang Diterima&#10;Rumus: Dari Notetag Perlengkapan <PDR Plus: +X%>">
-                        <div style="font-size:0.65rem; color:#34d399;">🔰 PDR</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="PDR (Physical Damage Reduction)" title="Pengurangan Damage Fisik yang Diterima&#10;Rumus: Dari Notetag Perlengkapan <PDR Plus: +X%>">
+                        <div style="font-size:0.65rem; color:#34d399;">${pai('shield')} PDR</div>
                         <div style="font-size:0.85rem; font-weight:700; color:#34d399;" id="sim-pdr">0%</div>
                     </div>
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="💠 MDR (Magical Damage Reduction)" title="Pengurangan Damage Sihir yang Diterima&#10;Rumus: Dari Notetag Perlengkapan <MDR Plus: +X%>">
-                        <div style="font-size:0.65rem; color:#38bdf8;">💠 MDR</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="MDR (Magical Damage Reduction)" title="Pengurangan Damage Sihir yang Diterima&#10;Rumus: Dari Notetag Perlengkapan <MDR Plus: +X%>">
+                        <div style="font-size:0.65rem; color:#38bdf8;">${pai('shield')} MDR</div>
                         <div style="font-size:0.85rem; font-weight:700; color:#38bdf8;" id="sim-mdr">0%</div>
                     </div>
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="❤️ HRG (HP Regen / Turn)" title="Pemulihan HP Otomatis Setiap Giliran&#10;Rumus: (VIT × 0.03%) + Bonus Equipment">
-                        <div style="font-size:0.65rem; color:#f87171;">❤️ HRG</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="HRG (HP Regen / Turn)" title="Pemulihan HP Otomatis Setiap Giliran&#10;Rumus: (VIT × 0.03%) + Bonus Equipment">
+                        <div style="font-size:0.65rem; color:#f87171;">${pai('heart')} HRG</div>
                         <div style="font-size:0.82rem; font-weight:700; color:#f87171;" id="sim-hrg">0%/T</div>
                     </div>
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="🔋 TRG (SP Regen / Turn)" title="Pemulihan Stamina (SP) Otomatis Setiap Giliran&#10;Rumus: 3% + (AGI × 0.04%) + (VIT × 0.02%) + Bonus Equipment">
-                        <div style="font-size:0.65rem; color:#38bdf8;">🔋 TRG</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="TRG (SP Regen / Turn)" title="Pemulihan Stamina (SP) Otomatis Setiap Giliran&#10;Rumus: 3% + (AGI × 0.04%) + (VIT × 0.02%) + Bonus Equipment">
+                        <div style="font-size:0.65rem; color:#38bdf8;">${pai('zap')} TRG</div>
                         <div style="font-size:0.82rem; font-weight:700; color:#38bdf8;" id="sim-trg">3%/T</div>
                     </div>
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="🏹 ArPen (Armor Penetration)" title="Penetrasi Pertahanan Fisik Target&#10;Rumus: Dari Notetag Perlengkapan <Armor Penetration: +X%>">
-                        <div style="font-size:0.65rem; color:#f59e0b;">🏹 ArPen</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="ArPen (Armor Penetration)" title="Penetrasi Pertahanan Fisik Target&#10;Rumus: Dari Notetag Perlengkapan <Armor Penetration: +X%>">
+                        <div style="font-size:0.65rem; color:#f59e0b;">${pai('sword')} ArPen</div>
                         <div style="font-size:0.82rem; font-weight:700; color:#f59e0b;" id="sim-armpen">0%</div>
                     </div>
-                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="🔮 MgPen (Magic Penetration)" title="Penetrasi Pertahanan Sihir Target&#10;Rumus: Dari Notetag Perlengkapan <Magic Penetration: +X%>">
-                        <div style="font-size:0.65rem; color:#a78bfa;">🔮 MgPen</div>
+                    <div style="padding:3px 4px; text-align:center; cursor:help;" data-hover-name="MgPen (Magic Penetration)" title="Penetrasi Pertahanan Sihir Target&#10;Rumus: Dari Notetag Perlengkapan <Magic Penetration: +X%>">
+                        <div style="font-size:0.65rem; color:#a78bfa;">${pai('wand')} MgPen</div>
                         <div style="font-size:0.82rem; font-weight:700; color:#a78bfa;" id="sim-magpen">0%</div>
                     </div>
                 </div>
@@ -1084,7 +1084,7 @@ function renderActorStatPreview(container, actor) {
 
         <!-- 4. ACTIVE SETS & ELEMENTS -->
         <div class="card" style="margin-bottom:0;">
-            <div class="card-header" style="padding:8px 12px;"><h2 style="font-size:0.85rem; margin:0; color:#eab308;">✨ Active Sets &amp; Elements</h2></div>
+            <div class="card-header" style="padding:8px 12px;"><h2 style="font-size:0.85rem; margin:0; color:#eab308;">${pai('sparkles')} Active Sets &amp; Elements</h2></div>
             <div class="card-body" style="padding:8px 12px;">
                 <div id="sim-extra-tags" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
                     <span style="font-size:0.75rem; color:var(--text-muted);">(None)</span>

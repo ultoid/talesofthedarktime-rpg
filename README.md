@@ -329,7 +329,10 @@ Setelah selesai meracik perintah:
 Database Studio kini terintegrasi langsung dengan runtime RPG Maker MV (`Scene_Battle`) asli untuk memberikan pratinjau skill dan aksi tempur **100% akurat tanpa kompromi**:
 
 * **🎮 Native Engine Execution**: Tidak menggunakan simulasi kanvas tiruan. Yang berjalan di dalam jendela pratinjau adalah engine game RPG Maker MV sesungguhnya lengkap dengan Yanfly Battle Engine Core, CTB Timeline, Action Sequences Pack 1/2/3, Flying Projectiles, damage calculation pipeline, sound effects, dan camera zoom.
-* **⚡ Auto-Cast & Immortal Dummy**: Begitu modal dibuka, Actor langsung otomatis melancarkan skill ke target tanpa perlu navigasi menu battle. Musuh/dummy tidak akan mati atau memicu layar Game Over; HP otomatis terisi ulang agar sandbox tetap berjalan interaktif.
+* **⚡ Auto-Cast & Instant CTB Bypass**: Begitu modal dibuka, Actor langsung mengeksekusi skill secara seketika tanpa tertahan turn queue CTB (`processForcedAction`). Musuh/dummy tidak akan mati atau memicu layar Game Over; HP otomatis terisi ulang agar sandbox tetap berjalan interaktif.
+* **🛡️ Authentic Party & Weapon Equips**: Karakter penguji dimuat lengkap dengan formasi party penuh (Level 50) dan senjata autentik sesuai kelasnya (`ensureWeaponEquipped`), menjamin sprite ayunan senjata, pose gerak (*swing motion*), dan popup damage muncul akurat 100%.
+* **📐 Absolute Directional Alignment**: Animasi serangan Hero/Actor ke musuh dijamin selalu menghadap ke KIRI (`mirror = true`), dan musuh ke Hero selalu ke KANAN (`mirror = false`), kebal terhadap sisa tag `, mirror` lama pada Action Sequence.
+* **📍 1080×720 Field Repositioning**: Koordinat posisi musuh otomatis disesuaikan secara proporsional dari layout 816×624 ke kanvas 1080×720 agar tidak terpotong di tepi kiri layar.
 * **🔁 Instant Replay**: Satu klik tombol `🔁 Replay` untuk mengulang kembali aksi skill seketika dari posisi awal.
 * **⏱️ Speed Scaling (Slow-Mo)**: Opsi kecepatan dinamis **0.5x (Slow-Motion)** untuk memeriksa hit frame/keyframe animasi secara presisi, **1.0x (Normal)**, dan **2.0x (Fast)**.
 * **⚡ Live Unsaved Sync**: Perubahan formula damage, notetag action sequence, dan animasi yang sedang diketik di editor langsung diterapkan secara *hot-reload* ke memori battle engine tanpa harus menyimpan file JSON terlebih dahulu.

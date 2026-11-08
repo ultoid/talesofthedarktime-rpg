@@ -19,184 +19,184 @@ function parseActionBlockCommands(blockText) {
         if (!line || line.startsWith('#') || line.startsWith('//')) continue;
 
         let lower = line.toLowerCase();
-        let icon = '⚙️';
+        let icon = pai('sliders');
         let color = '#94a3b8';
         let display = line;
         let type = 'raw';
 
         if (lower === 'end') {
             indentLevel = Math.max(0, indentLevel - 1);
-            icon = '🔀';
+            icon = pai('git-branch');
             color = '#f59e0b';
             display = 'END (End of IF block)';
             type = 'end';
         } else if (lower.startsWith('else')) {
-            icon = '🔀';
+            icon = pai('git-branch');
             color = '#f59e0b';
             display = 'ELSE';
             type = 'else';
         } else if (lower.startsWith('if ')) {
-            icon = '🔀';
+            icon = pai('git-branch');
             color = '#f59e0b';
             display = 'IF ' + line.substring(3).trim();
             type = 'if';
         } else if (lower.startsWith('zoom:')) {
-            icon = '🎥';
+            icon = pai('camera');
             color = '#c084fc';
             display = 'Zoom Screen: ' + line.substring(5).trim();
             type = 'zoom';
         } else if (lower.startsWith('camera focus:')) {
-            icon = '🎥';
+            icon = pai('camera');
             color = '#c084fc';
             display = 'Camera Focus: ' + line.substring(13).trim();
             type = 'camera_focus';
         } else if (lower.startsWith('camera clamp')) {
-            icon = '🎥';
+            icon = pai('camera');
             color = '#c084fc';
             display = 'Camera Clamp: ' + line.substring(12).trim();
             type = 'camera_clamp';
         } else if (lower.startsWith('reset camera')) {
-            icon = '🎥';
+            icon = pai('camera');
             color = '#c084fc';
             display = 'Reset Camera' + (line.includes(':') ? ' (' + line.split(':')[1].trim() + 'f)' : '');
             type = 'reset_camera';
         } else if (lower.startsWith('reset zoom')) {
-            icon = '🎥';
+            icon = pai('camera');
             color = '#c084fc';
             display = 'Reset Zoom' + (line.includes(':') ? ' (' + line.split(':')[1].trim() + 'f)' : '');
             type = 'reset_zoom';
         } else if (lower.startsWith('move ')) {
-            icon = '🏃';
+            icon = pai('speed-fast');
             color = '#38bdf8';
             display = 'Move ' + line.substring(5).trim();
             type = 'move';
         } else if (lower.startsWith('jump ')) {
-            icon = '🦘';
+            icon = pai('arrow-up');
             color = '#38bdf8';
             display = 'Jump ' + line.substring(5).trim();
             type = 'jump';
         } else if (lower.startsWith('face ')) {
-            icon = '👀';
+            icon = pai('eye');
             color = '#38bdf8';
             display = 'Face ' + line.substring(5).trim();
             type = 'face';
         } else if (lower.startsWith('opacity ')) {
-            icon = '👻';
+            icon = pai('eye-off');
             color = '#38bdf8';
             display = 'Opacity ' + line.substring(8).trim();
             type = 'opacity';
         } else if (lower.startsWith('perform start')) {
-            icon = '🏃';
+            icon = pai('user');
             color = '#38bdf8';
             display = 'Perform Start Motion';
             type = 'perform_start';
         } else if (lower.startsWith('perform finish')) {
-            icon = '🏃';
+            icon = pai('user');
             color = '#38bdf8';
             display = 'Perform Finish Motion';
             type = 'perform_finish';
         } else if (lower.startsWith('motion ')) {
-            icon = '⚔️';
+            icon = pai('sword');
             color = '#f87171';
             display = 'Motion: ' + line.substring(7).trim();
             type = 'motion';
         } else if (lower.startsWith('projectile weapon')) {
-            icon = '🚀';
+            icon = pai('speed-fast');
             color = '#38bdf8';
             display = 'Projectile Weapon: ' + (line.includes(':') ? line.split(':')[1].trim() : 'Auto Ranged / Magic');
             type = 'projectile_weapon';
         } else if (lower.startsWith('projectile animation')) {
-            icon = '✨';
+            icon = pai('sparkles');
             color = '#a855f7';
             display = 'Projectile Animation: ' + (line.includes(':') ? line.split(':')[1].trim() : line.substring(20).trim());
             type = 'projectile_animation';
         } else if (lower.startsWith('projectile icon')) {
-            icon = '🏹';
+            icon = pai('target');
             color = '#f97316';
             display = 'Projectile Icon: ' + (line.includes(':') ? line.split(':')[1].trim() : line.substring(15).trim());
             type = 'projectile_icon';
         } else if (lower.startsWith('wait for projectile')) {
-            icon = '⏱️';
+            icon = pai('clock');
             color = '#38bdf8';
             display = 'Wait for Projectile (Impact Sync)';
             type = 'wait_projectile';
         } else if (lower.startsWith('attack animation:')) {
-            icon = '✨';
+            icon = pai('sparkles');
             color = '#c084fc';
             display = 'Attack Animation (Equipped Weapon): ' + line.split(':')[1].trim();
             type = 'attack_animation';
         } else if (lower.startsWith('action animation:')) {
-            icon = '✨';
+            icon = pai('sparkles');
             color = '#c084fc';
             display = 'Action Animation (Database Skill): ' + line.split(':')[1].trim();
             type = 'action_animation';
         } else if (lower.startsWith('animation ')) {
-            icon = '✨';
+            icon = pai('sparkles');
             color = '#c084fc';
             display = 'Direct Animation ' + line.substring(10).trim();
             type = 'direct_animation';
         } else if (lower.startsWith('cast animation')) {
-            icon = '✨';
+            icon = pai('sparkles');
             color = '#c084fc';
             display = 'Cast Animation';
             type = 'cast_animation';
         } else if (lower.startsWith('action effect:')) {
-            icon = '💥';
+            icon = pai('zap');
             color = '#ef4444';
             display = 'Action Effect (Deal Damage): ' + line.split(':')[1].trim();
             type = 'action_effect';
         } else if (lower.startsWith('immortal:')) {
-            icon = '🔒';
+            icon = pai('lock');
             color = '#ef4444';
             display = 'Immortal: ' + line.substring(9).trim();
             type = 'immortal';
         } else if (lower.startsWith('collapse:')) {
-            icon = '💀';
+            icon = pai('skull');
             color = '#ef4444';
             display = 'Collapse: ' + line.substring(9).trim();
             type = 'collapse';
         } else if (lower.startsWith('death break')) {
-            icon = '🚫';
+            icon = pai('close');
             color = '#ef4444';
             display = 'Death Break (Stop if dead)';
             type = 'death_break';
         } else if (lower.startsWith('wait for ')) {
-            icon = '⏱️';
+            icon = pai('clock');
             color = '#fbbf24';
             display = 'Wait for ' + line.substring(9).trim();
             type = 'wait_for';
         } else if (lower.startsWith('wait:')) {
-            icon = '⏱️';
+            icon = pai('clock');
             color = '#fbbf24';
             display = 'Wait: ' + line.substring(5).trim() + ' frames';
             type = 'wait';
         } else if (lower.startsWith('shake screen:')) {
-            icon = '📳';
+            icon = pai('zap');
             color = '#fb923c';
             display = 'Shake Screen: ' + line.substring(13).trim();
             type = 'shake_screen';
         } else if (lower.startsWith('flash screen:')) {
-            icon = '⚡';
+            icon = pai('zap');
             color = '#fb923c';
             display = 'Flash Screen: ' + line.substring(13).trim();
             type = 'flash_screen';
         } else if (lower.startsWith('tint screen:')) {
-            icon = '🌑';
+            icon = pai('moon');
             color = '#fb923c';
             display = 'Tint Screen: ' + line.substring(12).trim();
             type = 'tint_screen';
         } else if (lower.startsWith('se:')) {
-            icon = '🔊';
+            icon = pai('volume-3');
             color = '#fb923c';
             display = 'Play Sound Effect (SE): ' + line.substring(3).trim();
             type = 'se';
         } else if (lower.startsWith('clear battle log')) {
-            icon = '📜';
+            icon = pai('notes');
             color = '#64748b';
             display = 'Clear Battle Log';
             type = 'clear_battle_log';
         } else if (lower.startsWith('display action')) {
-            icon = '📜';
+            icon = pai('notes');
             color = '#64748b';
             display = 'Display Action Name';
             type = 'display_action';
@@ -249,7 +249,7 @@ function getBlockTag(note, tag) {
 }
 
 // ============================================================================
-// 2. PARSER: SKILL NOTE ➔ 6-PHASE STATE & COMMAND LISTS
+// 2. PARSER: SKILL NOTE -> 6-PHASE STATE & COMMAND LISTS
 // ============================================================================
 
 function parseBecSkillState(note) {
@@ -493,7 +493,7 @@ function parseBecSkillState(note) {
 }
 
 // ============================================================================
-// 3. GENERATOR: 6-PHASE STATE & COMMANDS ➔ CLEAN SKILL NOTE
+// 3. GENERATOR: 6-PHASE STATE & COMMANDS -> CLEAN SKILL NOTE
 // ============================================================================
 
 function generateBecSkillNote(skill, state) {
@@ -789,7 +789,7 @@ function renderBattleEngineVisualizer(skill) {
             <!-- HEADER -->
             <div class="card-header" style="background:linear-gradient(135deg, rgba(30,27,75,0.7) 0%, rgba(15,23,42,0.85) 100%); padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <span style="font-size:1.4rem;">⚔️</span>
+                    <span style="font-size:1.4rem;">${pai('sword')}</span>
                     <div>
                         <div style="font-size:0.7rem; color:#c084fc; font-weight:700; letter-spacing:0.5px;">BATTLE ENGINE CORE &amp; ACTION SEQUENCES STUDIO</div>
                         <h2 style="font-size:1.05rem; margin:0; color:#fff; font-weight:700;">Modular 6-Phase Event-Command Builder</h2>
@@ -798,33 +798,33 @@ function renderBattleEngineVisualizer(skill) {
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                     <!-- 10 WEAPON ATTACK PRESETS DROPDOWN -->
                     <div style="display:flex; align-items:center; gap:5px; background:rgba(0,0,0,0.35); border:1px solid #818cf855; border-radius:6px; padding:2px 8px;">
-                        <span style="font-size:0.73rem; color:#c7d2fe; font-weight:700;">📦 Preset Senjata:</span>
+                        <span style="font-size:0.73rem; color:#c7d2fe; font-weight:700;">${pai('package')} Preset Senjata:</span>
                         <select class="form-control" style="font-size:0.75rem; padding:2px 6px; width:auto; max-width:210px; background:#1e1b4b; border-color:#818cf8; color:#e0e7ff; font-weight:600;" onchange="if(this.value){applyBecWeaponTypePreset(this.value); this.value='';}">
                             <option value="">-- Muat 10 Preset Senjata --</option>
-                            <option value="long_sword">01. 🗡️ Long Sword (Heavy + Knockback)</option>
-                            <option value="sword">02. ⚔️ Sword (Slashing Dash)</option>
-                            <option value="gloves">03. 🥊 Gloves (1-2x Multi-Punch)</option>
-                            <option value="spear">04. 🔱 Spear (Leap Thrust + Knockback)</option>
-                            <option value="axe">05. 🪓 Axe (Leap Heavy Chop + Knockback)</option>
-                            <option value="staff">06. 🪄 Staff (Step, Chant &amp; Mana Bolt)</option>
-                            <option value="rune">07. 🔮 Rune (1-2x Rune Magic Bolts)</option>
-                            <option value="long_bow">08. 🏹 Long Bow (Draw &amp; Piercing Shot)</option>
-                            <option value="crossbow">09. 🎯 Crossbow (1-3x Rapid Volley)</option>
-                            <option value="dagger">10. 🗡️ Dagger (Behind Shadowstep &amp; Dual)</option>
+                            <option value="long_sword">01. Long Sword (Heavy + Knockback)</option>
+                            <option value="sword">02. Sword (Slashing Dash)</option>
+                            <option value="gloves">03. Gloves (1-2x Multi-Punch)</option>
+                            <option value="spear">04. Spear (Leap Thrust + Knockback)</option>
+                            <option value="axe">05. Axe (Leap Heavy Chop + Knockback)</option>
+                            <option value="staff">06. Staff (Step, Chant &amp; Mana Bolt)</option>
+                            <option value="rune">07. Rune (1-2x Rune Magic Bolts)</option>
+                            <option value="long_bow">08. Long Bow (Draw &amp; Piercing Shot)</option>
+                            <option value="crossbow">09. Crossbow (1-3x Rapid Volley)</option>
+                            <option value="dagger">10. Dagger (Behind Shadowstep &amp; Dual)</option>
                         </select>
                     </div>
 
                     <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(State.currentSkillId || (State.skills && State.skills[State.selectedIndex] && State.skills[State.selectedIndex].id))" style="padding:4px 12px; font-size:0.75rem; background:linear-gradient(135deg, #ec4899, #8b5cf6); border:none; font-weight:700; display:flex; align-items:center; gap:5px; box-shadow:0 2px 10px rgba(236,72,153,0.35); border-radius:6px;" title="Uji langsung skill & urutan aksi ini di engine battle asli">
-                        ⚔️ Test di Layar Battle
+                        ${pai('sword')} Test di Layar Battle
                     </button>
                     <button type="button" class="btn btn-primary btn-sm" onclick="applyCinematicSlowMoPreset()" style="padding:4px 12px; font-size:0.75rem; background:linear-gradient(135deg, #8b5cf6, #d946ef); border:none; font-weight:600; display:flex; align-items:center; gap:5px;" title="Apply cinematic camera zoom, auto-tracking dash, slow-mo hitstop, target recoil, fade on death &amp; smooth zoom-out">
-                        🎬 Apply Cinematic Slow-Mo Preset
+                        ${pai('video')} Apply Cinematic Slow-Mo Preset
                     </button>
                     <button type="button" class="btn btn-secondary btn-sm" onclick="copyBecSequenceToClipboard()" style="padding:4px 10px; font-size:0.75rem;" title="Copy all action sequences and notetags to clipboard">
-                        📋 Copy Notetags
+                        ${pai('copy')} Copy Notetags
                     </button>
                     <button type="button" class="btn btn-secondary btn-sm" onclick="resetBecSequenceToDefault()" style="padding:4px 10px; font-size:0.75rem; color:#f87171; border:1px solid #ef444444;" title="Clear all custom action sequence blocks and reset to standard RPG Maker MV flow">
-                        🔄 Reset to Default MV
+                        ${pai('repeat')} Reset to Default MV
                     </button>
                 </div>
             </div>
@@ -837,7 +837,7 @@ function renderBattleEngineVisualizer(skill) {
                 <div style="background:rgba(0,0,0,0.4); border:1px solid #334155; border-radius:10px; padding:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #334155;">
                         <div style="display:flex; align-items:center; gap:8px;">
-                            <span style="font-size:1.1rem;">⏱️</span>
+                            <span style="font-size:1.1rem;">${pai('clock')}</span>
                             <div>
                                 <strong style="color:#f8fafc; font-size:0.88rem;">Action Sequence Execution Flowchart</strong>
                                 <div style="font-size:0.72rem; color:var(--text-muted);">Klik node mana saja untuk langsung lompat ke kanvas perintah fase tersebut.</div>
@@ -863,7 +863,7 @@ function renderBattleEngineVisualizer(skill) {
                             </div>
                         </div>
 
-                        <div style="display:flex; align-items:center; color:#64748b; font-size:0.9rem;">➔</div>
+                        <div style="display:flex; align-items:center; color:#64748b; font-size:0.9rem;">${pai('arrow-right')}</div>
 
                         <!-- NODE 2 -->
                         <div class="bec-node-btn" onclick="scrollToBecSection('becSec_setup')" 
@@ -877,11 +877,11 @@ function renderBattleEngineVisualizer(skill) {
                                 <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Opening &amp; Framing</div>
                             </div>
                             <div style="margin-top:6px; padding-top:4px; border-top:1px dashed #334155; font-size:0.62rem; color:#d8b4fe;">
-                                📜 ${state.setupCommands.length} Commands
+                                ${pai('notes')} ${state.setupCommands.length} Commands
                             </div>
                         </div>
 
-                        <div style="display:flex; align-items:center; color:#64748b; font-size:0.9rem;">➔</div>
+                        <div style="display:flex; align-items:center; color:#64748b; font-size:0.9rem;">${pai('arrow-right')}</div>
 
                         <!-- NODE 3 -->
                         <div class="bec-node-btn" onclick="scrollToBecSection('becSec_whole')" 
@@ -895,11 +895,11 @@ function renderBattleEngineVisualizer(skill) {
                                 <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Mass AoE &amp; Screen FX</div>
                             </div>
                             <div style="margin-top:6px; padding-top:4px; border-top:1px dashed #334155; font-size:0.62rem; color:#7dd3fc;">
-                                📜 ${state.wholeCommands.length} Commands
+                                ${pai('notes')} ${state.wholeCommands.length} Commands
                             </div>
                         </div>
 
-                        <div style="display:flex; align-items:center; color:#64748b; font-size:0.9rem;">➔</div>
+                        <div style="display:flex; align-items:center; color:#64748b; font-size:0.9rem;">${pai('arrow-right')}</div>
 
                         <!-- NODE 4 -->
                         <div class="bec-node-btn" onclick="scrollToBecSection('becSec_target')" 
@@ -913,11 +913,11 @@ function renderBattleEngineVisualizer(skill) {
                                 <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Core Strike &amp; Damage</div>
                             </div>
                             <div style="margin-top:6px; padding-top:4px; border-top:1px dashed #334155; font-size:0.62rem; color:#fca5a5;">
-                                📜 ${state.targetCommands.length} Commands
+                                ${pai('notes')} ${state.targetCommands.length} Commands
                             </div>
                         </div>
 
-                        <div style="display:flex; align-items:center; color:#64748b; font-size:0.9rem;">➔</div>
+                        <div style="display:flex; align-items:center; color:#64748b; font-size:0.9rem;">${pai('arrow-right')}</div>
 
                         <!-- NODE 5 -->
                         <div class="bec-node-btn" onclick="scrollToBecSection('becSec_follow')" 
@@ -931,11 +931,11 @@ function renderBattleEngineVisualizer(skill) {
                                 <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Follow-up Combo &amp; Pause</div>
                             </div>
                             <div style="margin-top:6px; padding-top:4px; border-top:1px dashed #334155; font-size:0.62rem; color:#fde047;">
-                                📜 ${state.followCommands.length} Commands
+                                ${pai('notes')} ${state.followCommands.length} Commands
                             </div>
                         </div>
 
-                        <div style="display:flex; align-items:center; color:#64748b; font-size:0.9rem;">➔</div>
+                        <div style="display:flex; align-items:center; color:#64748b; font-size:0.9rem;">${pai('arrow-right')}</div>
 
                         <!-- NODE 6 -->
                         <div class="bec-node-btn" onclick="scrollToBecSection('becSec_finish')" 
@@ -949,7 +949,7 @@ function renderBattleEngineVisualizer(skill) {
                                 <div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Return &amp; Recovery</div>
                             </div>
                             <div style="margin-top:6px; padding-top:4px; border-top:1px dashed #334155; font-size:0.62rem; color:#a7f3d0;">
-                                📜 ${state.finishCommands.length} Commands
+                                ${pai('notes')} ${state.finishCommands.length} Commands
                             </div>
                         </div>
 
@@ -967,7 +967,7 @@ function renderBattleEngineVisualizer(skill) {
                     <div id="becSec_pre" style="background:rgba(15,23,42,0.6); border:1px solid #0284c7; border-radius:8px; padding:12px 14px;">
                         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #334155; padding-bottom:6px;">
                             <div style="display:flex; align-items:center; gap:8px;">
-                                <span style="font-size:1.1rem;">🎯</span>
+                                <span style="font-size:1.1rem;">${pai('target')}</span>
                                 <div>
                                     <strong style="color:#38bdf8; font-size:0.88rem;">1. PRE CONDITION (Targeting, CTB Speed &amp; Cast Timing)</strong>
                                     <div style="font-size:0.7rem; color:var(--text-muted);">Skill target restrictions, CTB casting speeds, and cast animation notetags.</div>
@@ -1006,9 +1006,9 @@ function renderBattleEngineVisualizer(skill) {
                                 <label style="font-size:0.75rem; color:#cbd5e1; font-weight:600; display:block; margin-bottom:3px;">Instant Cast Execution:</label>
                                 <select class="form-control" style="font-size:0.78rem; padding:4px 8px; color:#38bdf8;" onchange="onBecStateFieldChange('pre', 'instantCast', this.value)">
                                     <option value="" ${!state.pre.instantCast ? 'selected' : ''}>-- Normal Turn Consumption --</option>
-                                    <option value="free" ${state.pre.instantCast === 'free' ? 'selected' : ''}>⚡ Instant Cast (Does NOT consume turn)</option>
-                                    <option value="turn" ${state.pre.instantCast === 'turn' ? 'selected' : ''}>⚡ Instant Cast: Turn (Per-turn limited)</option>
-                                    <option value="no_instant" ${state.pre.instantCast === 'no_instant' ? 'selected' : ''}>🚫 Prohibit Instant Cast</option>
+                                    <option value="free" ${state.pre.instantCast === 'free' ? 'selected' : ''}>Instant Cast (Does NOT consume turn)</option>
+                                    <option value="turn" ${state.pre.instantCast === 'turn' ? 'selected' : ''}>Instant Cast: Turn (Per-turn limited)</option>
+                                    <option value="no_instant" ${state.pre.instantCast === 'no_instant' ? 'selected' : ''}>Prohibit Instant Cast</option>
                                 </select>
                                 <div style="font-size:0.67rem; color:var(--text-muted); margin-top:2px;">Notetag: &lt;Instant Cast&gt;</div>
                             </div>
@@ -1062,7 +1062,7 @@ function renderBattleEngineVisualizer(skill) {
                         headerColor: '#c084fc',
                         badgeBg: '#581c8744',
                         badgeColor: '#d8b4fe',
-                        icon: '🎭',
+                        icon: pai('user'),
                         commands: state.setupCommands,
                         presetTypes: ['cinematic_setup', 'standard_start']
                     })}
@@ -1079,7 +1079,7 @@ function renderBattleEngineVisualizer(skill) {
                         headerColor: '#38bdf8',
                         badgeBg: '#07598544',
                         badgeColor: '#7dd3fc',
-                        icon: '🌐',
+                        icon: pai('earth'),
                         commands: state.wholeCommands,
                         presetTypes: ['aoe_blast', 'dark_arena']
                     })}
@@ -1096,7 +1096,7 @@ function renderBattleEngineVisualizer(skill) {
                         headerColor: '#f87171',
                         badgeBg: '#7f1d1d44',
                         badgeColor: '#fca5a5',
-                        icon: '⚔️',
+                        icon: pai('sword'),
                         commands: state.targetCommands,
                         presetTypes: ['cinematic_target', 'standard_melee', 'ranged_missile']
                     })}
@@ -1113,7 +1113,7 @@ function renderBattleEngineVisualizer(skill) {
                         headerColor: '#facc15',
                         badgeBg: '#713f1244',
                         badgeColor: '#fde047',
-                        icon: '⚡',
+                        icon: pai('zap'),
                         commands: state.followCommands,
                         presetTypes: ['pause_20', 'extra_burst']
                     })}
@@ -1130,7 +1130,7 @@ function renderBattleEngineVisualizer(skill) {
                         headerColor: '#34d399',
                         badgeBg: '#064e3b44',
                         badgeColor: '#a7f3d0',
-                        icon: '🏁',
+                        icon: pai('flag'),
                         commands: state.finishCommands,
                         presetTypes: ['cinematic_finish', 'quick_return'],
                         extraHtml: `
@@ -1166,12 +1166,12 @@ function renderBattleEngineVisualizer(skill) {
                 <!-- ========================================================= -->
                 <details style="background:rgba(0,0,0,0.5); border:1px solid #334155; border-radius:8px; padding:10px 14px;">
                     <summary style="cursor:pointer; color:#94a3b8; font-size:0.8rem; font-weight:600; display:flex; align-items:center; gap:6px;">
-                        <span>📝</span> Raw Action Sequence Notetags View &amp; Direct Editor
+                        <span>${pai('notes')}</span> Raw Action Sequence Notetags View &amp; Direct Editor
                     </summary>
                     <div style="margin-top:10px;">
                         <textarea class="form-control" rows="8" style="font-family:monospace; font-size:0.78rem; width:100%; resize:vertical; background:#0b0f19; color:#a7f3d0;" onchange="onBecRawNoteChange(this.value)">${escapeHtml(skill.note || '')}</textarea>
                         <div style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">
-                            💡 Tip: Perubahan di kanvas command list akan otomatis disinkronkan ke kotak teks notetag ini.
+                            ${pai('circle-info')} Tip: Perubahan di kanvas command list akan otomatis disinkronkan ke kotak teks notetag ini.
                         </div>
                     </div>
                 </details>
@@ -1188,10 +1188,10 @@ function renderBattleEngineVisualizer(skill) {
                 <!-- Modal Header -->
                 <div style="background:linear-gradient(135deg, rgba(30,27,75,0.9) 0%, rgba(15,23,42,0.95) 100%); padding:12px 16px; border-bottom:1px solid #334155; display:flex; justify-content:space-between; align-items:center;">
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <span id="bec_modal_icon" style="font-size:1.2rem;">➕</span>
+                        <span id="bec_modal_icon" style="font-size:1.2rem;">${pai('plus')}</span>
                         <strong id="bec_modal_title" style="color:#fff; font-size:0.9rem;">Tambah Perintah Action Sequence</strong>
                     </div>
-                    <button type="button" onclick="closeBecCommandModal()" style="background:none; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">✖</button>
+                    <button type="button" onclick="closeBecCommandModal()" style="background:none; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">${pai('close')}</button>
                 </div>
 
                 <!-- Modal Body -->
@@ -1202,7 +1202,7 @@ function renderBattleEngineVisualizer(skill) {
                         <label style="font-size:0.75rem; color:#cbd5e1; font-weight:600; display:block; margin-bottom:4px;">Pilih Jenis Perintah Action Sequence:</label>
                         <select id="bec_modal_cmd_type" class="form-control" style="font-size:0.8rem; padding:6px 10px; color:#38bdf8;" onchange="onBecModalCommandTypeChange(this.value)">
                             
-                            <optgroup label="🏃 Pergerakan &amp; Posisi (Movement &amp; Position)">
+                            <optgroup label="Pergerakan &amp; Posisi (Movement &amp; Position)">
                                 <option value="move">Move Battler (user/target ke posisi tertentu)</option>
                                 <option value="jump">Jump Battler (lompat di tempat / ke target)</option>
                                 <option value="face">Face Battler (menghadap target / ke depan)</option>
@@ -1211,7 +1211,7 @@ function renderBattleEngineVisualizer(skill) {
                                 <option value="perform_finish">Perform Finish (pose selesai serangan)</option>
                             </optgroup>
 
-                            <optgroup label="⚔️ Pose &amp; Animasi (Motion &amp; Animations)">
+                            <optgroup label="Pose &amp; Animasi (Motion &amp; Animations)">
                                 <option value="motion">Battler Motion (swing, thrust, chant, skill, damage...)</option>
                                 <option value="action_animation">Action Animation (animasi skill dari database)</option>
                                 <option value="attack_animation">Attack Animation (animasi senjata yang dipakai)</option>
@@ -1219,21 +1219,21 @@ function renderBattleEngineVisualizer(skill) {
                                 <option value="cast_animation">Cast Animation (tampilkan animasi casting)</option>
                             </optgroup>
 
-                            <optgroup label="🚀 Proyektil &amp; Serangan Jarak Jauh (Flying Projectile)">
-                                <option value="projectile_weapon">🚀 Projectile Weapon (Otomatis Panah / Sihir Elemen)</option>
-                                <option value="projectile_animation">✨ Projectile Animation ID (Animasi Visual Meluncur ke Target)</option>
-                                <option value="projectile_icon">🏹 Projectile Icon (Icon Panah / Baut / Pisau Meluncur)</option>
-                                <option value="wait_projectile">⏱️ Wait for Projectile (Tunggu Proyektil Mendarat di Target)</option>
+                            <optgroup label="Proyektil &amp; Serangan Jarak Jauh (Flying Projectile)">
+                                <option value="projectile_weapon">Projectile Weapon (Otomatis Panah / Sihir Elemen)</option>
+                                <option value="projectile_animation">Projectile Animation ID (Animasi Visual Meluncur ke Target)</option>
+                                <option value="projectile_icon">Projectile Icon (Icon Panah / Baut / Pisau Meluncur)</option>
+                                <option value="wait_projectile">Wait for Projectile (Tunggu Proyektil Mendarat di Target)</option>
                             </optgroup>
 
-                            <optgroup label="💥 Serangan, Efek &amp; Damage (Impact &amp; Damage)">
+                            <optgroup label="Serangan, Efek &amp; Damage (Impact &amp; Damage)">
                                 <option value="action_effect">Action Effect (eksekusi damage &amp; popup hit ke target)</option>
                                 <option value="immortal">Immortal Lock (kunci HP agar target tidak mati prematur)</option>
                                 <option value="collapse">Collapse (runtuhkan / matikan target)</option>
                                 <option value="death_break">Death Break (hentikan jurus jika user tewas)</option>
                             </optgroup>
 
-                            <optgroup label="🎥 Kamera &amp; Layar Dinamis (Camera &amp; Zoom)">
+                            <optgroup label="Kamera &amp; Layar Dinamis (Camera &amp; Zoom)">
                                 <option value="camera_focus">Camera Focus (fokus sorot kamera ke user/target)</option>
                                 <option value="zoom">Zoom Screen (perbesar / perkecil skala layar)</option>
                                 <option value="camera_clamp">Camera Clamp (matikan batasan pinggir layar)</option>
@@ -1242,7 +1242,7 @@ function renderBattleEngineVisualizer(skill) {
                                 <option value="reset_zoom">Reset Zoom Saja</option>
                             </optgroup>
 
-                            <optgroup label="⏱️ Waktu &amp; Jeda (Timings &amp; Waits)">
+                            <optgroup label="Waktu &amp; Jeda (Timings &amp; Waits)">
                                 <option value="wait">Wait (tahan / jeda sejumlah frames)</option>
                                 <option value="wait_movement">Wait for Movement (tunggu battler selesai bergerak)</option>
                                 <option value="wait_animation">Wait for Animation (tunggu animasi visual selesai)</option>
@@ -1251,7 +1251,7 @@ function renderBattleEngineVisualizer(skill) {
                                 <option value="wait_zoom">Wait for Zoom (tunggu zoom selesai)</option>
                             </optgroup>
 
-                            <optgroup label="📺 Efek Suasana &amp; Suara (Screen &amp; Audio)">
+                            <optgroup label="Efek Suasana &amp; Suara (Screen &amp; Audio)">
                                 <option value="shake_screen">Shake Screen (guncang layar)</option>
                                 <option value="flash_screen">Flash Screen (kilatan cahaya layar)</option>
                                 <option value="tint_screen">Tint Screen (ubah warna suasana layar)</option>
@@ -1260,7 +1260,7 @@ function renderBattleEngineVisualizer(skill) {
                                 <option value="display_action">Display Action (tampilkan banner nama skill)</option>
                             </optgroup>
 
-                            <optgroup label="🔀 Logika Percabangan (Flow &amp; Branching)">
+                            <optgroup label="Logika Percabangan (Flow &amp; Branching)">
                                 <option value="if_target_dead">IF: target.isDead() (jika target tewas)</option>
                                 <option value="if_user_dead">IF: user.isDead() (jika user tewas)</option>
                                 <option value="if_custom">IF: Kondisi Kustom (ekspresi JS)</option>
@@ -1268,7 +1268,7 @@ function renderBattleEngineVisualizer(skill) {
                                 <option value="end">END (penutup blok IF)</option>
                             </optgroup>
 
-                            <optgroup label="✍️ Perintah Bebas / Custom">
+                            <optgroup label="Perintah Bebas / Custom">
                                 <option value="raw">Raw Command (ketik perintah Yanfly apa saja secara bebas)</option>
                             </optgroup>
 
@@ -1294,7 +1294,7 @@ function renderBattleEngineVisualizer(skill) {
                         Batal
                     </button>
                     <button type="button" class="btn btn-primary btn-sm" onclick="saveBecCommandModal()" style="font-size:0.75rem; padding:5px 16px; font-weight:600; background:#8b5cf6;">
-                        ✔ Simpan Perintah
+                        ${pai('check')} Simpan Perintah
                     </button>
                 </div>
 
@@ -1315,19 +1315,19 @@ function renderBecActionCanvas(cfg) {
     if (cfg.presetTypes && cfg.presetTypes.length > 0) {
         presetButtonsHtml = cfg.presetTypes.map(pt => {
             if (pt === 'cinematic_setup') {
-                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'cinematic_setup')" style="font-size:0.7rem; padding:2px 8px; color:#d8b4fe;" title="Muat Setup Sinematik: 150% Zoom + Auto-Track User">🎬 Preset Slow-Mo Track</button>`;
+                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'cinematic_setup')" style="font-size:0.7rem; padding:2px 8px; color:#d8b4fe;" title="Muat Setup Sinematik: 150% Zoom + Auto-Track User">${pai('video')} Preset Slow-Mo Track</button>`;
             } else if (pt === 'standard_start') {
-                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'standard_start')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Setup Standar: Perform Start">🏃 Preset Default Start</button>`;
+                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'standard_start')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Setup Standar: Perform Start">${pai('speed-fast')} Preset Default Start</button>`;
             } else if (pt === 'cinematic_target') {
-                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'cinematic_target')" style="font-size:0.7rem; padding:2px 8px; color:#fca5a5;" title="Muat Target Sinematik: Slow-Mo Dash (28f), Windup (12f), Cut Enemy (15f), Slow Recoil (20f), Slow Fade Death (50f)">🎬 Preset Slow-Mo Strike</button>`;
+                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'cinematic_target')" style="font-size:0.7rem; padding:2px 8px; color:#fca5a5;" title="Muat Target Sinematik: Slow-Mo Dash (28f), Windup (12f), Cut Enemy (15f), Slow Recoil (20f), Slow Fade Death (50f)">${pai('video')} Preset Slow-Mo Strike</button>`;
             } else if (pt === 'standard_melee') {
-                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'standard_melee')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Melee Standar: Maju 15f, Tebas, Mundur">⚔️ Preset Melee Normal</button>`;
+                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'standard_melee')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Melee Standar: Maju 15f, Tebas, Mundur">${pai('sword')} Preset Melee Normal</button>`;
             } else if (pt === 'ranged_missile') {
-                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'ranged_missile')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Ranged Standar: Diam di tempat, Tembak Peluru">🏹 Preset Ranged</button>`;
+                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'ranged_missile')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Ranged Standar: Diam di tempat, Tembak Peluru">${pai('target')} Preset Ranged</button>`;
             } else if (pt === 'cinematic_finish') {
-                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'cinematic_finish')" style="font-size:0.7rem; padding:2px 8px; color:#a7f3d0;" title="Muat Finish Sinematik: Return (15f) + Smooth Zoom Out (30f)">🎬 Preset Smooth Reset</button>`;
+                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'cinematic_finish')" style="font-size:0.7rem; padding:2px 8px; color:#a7f3d0;" title="Muat Finish Sinematik: Return (15f) + Smooth Zoom Out (30f)">${pai('video')} Preset Smooth Reset</button>`;
             } else if (pt === 'quick_return') {
-                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'quick_return')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Return Standar">↩️ Preset Return Fast</button>`;
+                return `<button type="button" class="btn btn-secondary btn-sm" onclick="applyBecPhasePreset('${cfg.phaseKey}', 'quick_return')" style="font-size:0.7rem; padding:2px 8px;" title="Muat Return Standar">${pai('arrow-left')} Preset Return Fast</button>`;
             }
             return '';
         }).join('');
@@ -1359,7 +1359,7 @@ function renderBecActionCanvas(cfg) {
                         <div style="font-size:0.78rem; color:#64748b; margin-bottom:8px;">(Belum ada perintah aksi pada fase ini)</div>
                         <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
                             <button type="button" class="btn btn-primary btn-sm" onclick="openBecCommandModal('${cfg.phaseKey}')" style="font-size:0.75rem; padding:4px 12px;">
-                                ➕ Tambah Perintah Baru
+                                ${pai('plus')} Tambah Perintah Baru
                             </button>
                             ${presetButtonsHtml}
                         </div>
@@ -1395,9 +1395,9 @@ function renderBecActionCanvas(cfg) {
                                     </div>
                                 </div>
                                 <div style="display:flex; align-items:center; gap:3px; flex-shrink:0;">
-                                    <button type="button" class="btn btn-secondary btn-sm" onclick="openBecCommandModal('${cfg.phaseKey}', ${idx})" title="Edit Perintah" style="padding:2px 7px; font-size:0.7rem; color:#38bdf8;">✏️</button>
-                                    <button type="button" class="btn btn-secondary btn-sm" onclick="duplicateBecCommand('${cfg.phaseKey}', ${idx})" title="Duplikat Perintah" style="padding:2px 6px; font-size:0.7rem;">📋</button>
-                                    <button type="button" class="btn btn-secondary btn-sm" onclick="deleteBecCommand('${cfg.phaseKey}', ${idx})" title="Hapus Perintah" style="padding:2px 6px; font-size:0.7rem; color:#ef4444;">🗑️</button>
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="openBecCommandModal('${cfg.phaseKey}', ${idx})" title="Edit Perintah" style="padding:2px 7px; font-size:0.7rem; color:#38bdf8;">${pai('edit')}</button>
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="duplicateBecCommand('${cfg.phaseKey}', ${idx})" title="Duplikat Perintah" style="padding:2px 6px; font-size:0.7rem;">${pai('copy')}</button>
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="deleteBecCommand('${cfg.phaseKey}', ${idx})" title="Hapus Perintah" style="padding:2px 6px; font-size:0.7rem; color:#ef4444;">${pai('trash')}</button>
                                 </div>
                             </div>
                         `).join('')}
@@ -1406,27 +1406,27 @@ function renderBecActionCanvas(cfg) {
                     <!-- Toolbar Below List -->
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; gap:8px; flex-wrap:wrap;">
                         <button type="button" class="btn btn-primary btn-sm" onclick="openBecCommandModal('${cfg.phaseKey}')" style="font-size:0.75rem; padding:4px 12px; font-weight:600;">
-                            ➕ Tambah Perintah Baru
+                            ${pai('plus')} Tambah Perintah Baru
                         </button>
                         <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                             ${cfg.phaseKey === 'target' ? `
                                 <select class="form-control" style="font-size:0.7rem; padding:2px 6px; width:auto; background:#1e1b4b; border-color:#818cf8; color:#c7d2fe; font-weight:600;" onchange="if(this.value){applyBecWeaponTypePreset(this.value); this.value='';}">
-                                    <option value="">⚔️ Preset Basic Attack Senjata...</option>
-                                    <option value="long_sword">01. 🗡️ Long Sword (Heavy + Knockback)</option>
-                                    <option value="sword">02. ⚔️ Sword (Slashing Dash)</option>
-                                    <option value="gloves">03. 🥊 Gloves (1-2x Multi-Punch)</option>
-                                    <option value="spear">04. 🔱 Spear (Leap Thrust + Knockback)</option>
-                                    <option value="axe">05. 🪓 Axe (Leap Heavy Chop + Knockback)</option>
-                                    <option value="staff">06. 🪄 Staff (Step, Chant &amp; Mana Bolt)</option>
-                                    <option value="rune">07. 🔮 Rune (1-2x Rune Magic Bolts)</option>
-                                    <option value="long_bow">08. 🏹 Long Bow (Draw &amp; Piercing Shot)</option>
-                                    <option value="crossbow">09. 🎯 Crossbow (1-3x Rapid Volley)</option>
-                                    <option value="dagger">10. 🗡️ Dagger (Behind Shadowstep &amp; Dual)</option>
+                                    <option value="">Preset Basic Attack Senjata...</option>
+                                    <option value="long_sword">01. Long Sword (Heavy + Knockback)</option>
+                                    <option value="sword">02. Sword (Slashing Dash)</option>
+                                    <option value="gloves">03. Gloves (1-2x Multi-Punch)</option>
+                                    <option value="spear">04. Spear (Leap Thrust + Knockback)</option>
+                                    <option value="axe">05. Axe (Leap Heavy Chop + Knockback)</option>
+                                    <option value="staff">06. Staff (Step, Chant &amp; Mana Bolt)</option>
+                                    <option value="rune">07. Rune (1-2x Rune Magic Bolts)</option>
+                                    <option value="long_bow">08. Long Bow (Draw &amp; Piercing Shot)</option>
+                                    <option value="crossbow">09. Crossbow (1-3x Rapid Volley)</option>
+                                    <option value="dagger">10. Dagger (Behind Shadowstep &amp; Dual)</option>
                                 </select>
                             ` : ''}
                             ${presetButtonsHtml}
                             <button type="button" class="btn btn-secondary btn-sm" onclick="clearBecPhaseCommands('${cfg.phaseKey}')" style="font-size:0.7rem; padding:3px 8px; color:#f87171; border:1px solid #ef444433;" title="Kosongkan semua baris aksi fase ini">
-                                🧹 Kosongkan Fase
+                                ${pai('trash')} Kosongkan Fase
                             </button>
                         </div>
                     </div>
@@ -1445,11 +1445,11 @@ function renderBecActionCanvas(cfg) {
 
 function getPreSummaryBadges(pre) {
     const list = [];
-    if (pre.instantCast === 'free') list.push('⚡ Instant');
-    else if (pre.instantCast === 'turn') list.push('⚡ Instant(T)');
-    if (pre.ctbSpeed) list.push(`⏱️ CTB ${pre.ctbSpeed}`);
-    if (pre.targetScope) list.push(`🎯 ${pre.targetScope}`);
-    if (pre.castAnim > 0) list.push(`✨ Cast #${pre.castAnim}`);
+    if (pre.instantCast === 'free') list.push(`${pai('zap')} Instant`);
+    else if (pre.instantCast === 'turn') list.push(`${pai('zap')} Instant(T)`);
+    if (pre.ctbSpeed) list.push(`${pai('clock')} CTB ${pre.ctbSpeed}`);
+    if (pre.targetScope) list.push(`${pai('target')} ${pre.targetScope}`);
+    if (pre.castAnim > 0) list.push(`${pai('sparkles')} Cast #${pre.castAnim}`);
     if (list.length === 0) return '<span style="color:#64748b; font-style:italic;">(Standard MV)</span>';
     return list.slice(0, 3).join(', ') + (list.length > 3 ? ` (+${list.length - 3})` : '');
 }
@@ -1498,7 +1498,7 @@ function openBecCommandModal(phaseKey, editIndex) {
     const titleEl = document.getElementById('bec_modal_title');
     const iconEl = document.getElementById('bec_modal_icon');
     if (titleEl) titleEl.innerText = isEdit ? `Edit Perintah Aksi (Baris #${becActiveModal.editIndex + 1})` : `Tambah Perintah Baru ke ${phaseKey.toUpperCase()}`;
-    if (iconEl) iconEl.innerText = isEdit ? '✏️' : '➕';
+    if (iconEl) iconEl.innerHTML = isEdit ? pai('edit') : pai('plus');
 
     const typeSelect = document.getElementById('bec_modal_cmd_type');
     if (typeSelect) typeSelect.value = cmdType;
@@ -1795,7 +1795,7 @@ function renderBecModalParams(cmdType, existingRaw) {
             html = `
                 <div style="background:rgba(56,189,248,0.08); border:1px solid #38bdf833; border-radius:6px; padding:10px; margin-bottom:12px;">
                     <div style="font-size:0.78rem; font-weight:700; color:#38bdf8; display:flex; align-items:center; gap:6px;">
-                        <span>🚀</span> Proyektil Otomatis Senjata (Adaptive Weapon Projectile)
+                        <span>${pai('speed-fast')}</span> Proyektil Otomatis Senjata (Adaptive Weapon Projectile)
                     </div>
                     <div style="font-size:0.68rem; color:#94a3b8; margin-top:2px;">
                         Secara otomatis mendeteksi tipe senjata (Bow = Panah, Crossbow = Baut cepat, Staff/Rune = Peluru Sihir Elemen sesuai atribut elemen senjata).
@@ -2002,7 +2002,7 @@ function renderBecModalParams(cmdType, existingRaw) {
             html = `
                 <div style="background:rgba(56,189,248,0.08); border:1px solid #38bdf833; border-radius:6px; padding:12px;">
                     <div style="font-size:0.82rem; font-weight:700; color:#38bdf8; display:flex; align-items:center; gap:6px; margin-bottom:4px;">
-                        <span>⏱️</span> Wait for Projectile (Sinkronisasi Mendarat)
+                        <span>${pai('clock')}</span> Wait for Projectile (Sinkronisasi Mendarat)
                     </div>
                     <div style="font-size:0.72rem; color:#cbd5e1; line-height:1.4;">
                         Perintah ini menahan eksekusi fase hingga seluruh proyektil atau anak panah yang meluncur di udara tiba di sasaran. Sangat penting diletakkan tepat sebelum perintah <code>action effect: target</code> agar damage dan animasi impact meletus tepat saat proyektil menabrak target!
@@ -2836,7 +2836,7 @@ function applyCinematicSlowMoPreset() {
     skill.note = generateBecSkillNote(skill, state);
     setUnsaved(true);
     renderEditor();
-    showToast(`🎬 Cinematic Slow-Mo Preset diterapkan ke Skill #${skill.id}!`, 'success');
+    showToast(`Cinematic Slow-Mo Preset diterapkan ke Skill #${skill.id}!`, 'success');
 }
 
 // ============================================================================

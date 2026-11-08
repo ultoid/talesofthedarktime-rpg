@@ -103,6 +103,18 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
         }
     };
 
+    NUSV_BattlePreview.ensureWeaponEquipped = function(actor) {
+        if (!actor || (actor.weapons && actor.weapons().length > 0)) return;
+        if (!$dataWeapons) return;
+        for (var wId = 1; wId < $dataWeapons.length; wId++) {
+            var w = $dataWeapons[wId];
+            if (w && w.name && typeof actor.isEquipWtypeOk === 'function' && actor.isEquipWtypeOk(w.wtypeId)) {
+                actor.changeEquip(0, w);
+                break;
+            }
+        }
+    };
+
     NUSV_BattlePreview.setupPreviewBattle = function() {
         // 1. Sync Live Skill from parent window if available
         if (typeof window !== 'undefined' && window.parent && window.parent.BattlePreviewModal) {
@@ -112,16 +124,49 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
             }
         }
 
-        // 2. Configure Party with chosen Actor
-        var actorId = NUSV_BattlePreview.actorId;
-        $gameParty._actors = [actorId];
-        var actor = $gameActors.actor(actorId);
-        if (actor) {
-            actor.recoverAll();
-            actor.gainHp(9999);
-            actor.gainMp(9999);
-            actor.gainTp(100);
-            actor.learnSkill(NUSV_BattlePreview.skillId);
+        // 2. Configure 4-Member Party with chosen Actor as Leader (Slot 0)
+        $gameParty._actors = [];
+        var mainActorId = NUSV_BattlePreview.actorId;
+        var leaderActor = $gameActors.actor(mainActorId);
+        if (leaderActor) {
+            var testBattler = null;
+            if ($dataSystem && $dataSystem.testBattlers) {
+                for (var i = 0; i < $dataSystem.testBattlers.length; i++) {
+                    var tb = $dataSystem.testBattlers[i];
+                    if (tb && tb.actorId === mainActorId) {
+                        testBattler = tb;
+                        break;
+                    }
+                }
+            }
+            var targetLevel = testBattler ? testBattler.level : 50;
+            leaderActor.changeLevel(targetLevel, false);
+            if (testBattler && testBattler.equips && testBattler.equips.length > 0) {
+                leaderActor.initEquips(testBattler.equips);
+            }
+            NUSV_BattlePreview.ensureWeaponEquipped(leaderActor);
+            leaderActor.recoverAll();
+            leaderActor.gainHp(9999);
+            leaderActor.gainMp(9999);
+            leaderActor.gainTp(100);
+            leaderActor.learnSkill(NUSV_BattlePreview.skillId);
+            $gameParty.addActor(mainActorId);
+        }
+
+        // Fill companion slots from test battlers (up to 4 members)
+        if ($dataSystem && $dataSystem.testBattlers) {
+            $dataSystem.testBattlers.forEach(function(tb) {
+                if (tb && tb.actorId > 0 && tb.actorId !== mainActorId && $gameParty.members().length < 4) {
+                    var companion = $gameActors.actor(tb.actorId);
+                    if (companion) {
+                        companion.changeLevel(tb.level || 50, false);
+                        if (tb.equips) companion.initEquips(tb.equips);
+                        NUSV_BattlePreview.ensureWeaponEquipped(companion);
+                        companion.recoverAll();
+                        $gameParty.addActor(tb.actorId);
+                    }
+                }
+            });
         }
 
         // 3. Configure Troop
@@ -134,6 +179,11 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
                 if (enemy) {
                     enemy.recoverAll();
                     enemy.gainHp(999999);
+                    // Reposition for 1080x720 canvas if default RPG Maker MV X coordinate is too close to left
+                    if (enemy._screenX !== undefined && enemy._screenX < 260) {
+                        enemy._screenX = Math.round(enemy._screenX * (1080 / 816));
+                        if (enemy._screenX < 260) enemy._screenX = 260;
+                    }
                 }
             });
         }
@@ -263,12 +313,13 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
         var skill = $dataSkills ? $dataSkills[skillId] : null;
         if (!skill) return;
 
-        // 1. Refuel actor resources
+        // 1. Refuel actor resources & verify weapon
         actor.recoverAll();
         actor.gainHp(9999);
         actor.gainMp(9999);
         actor.gainTp(100);
         actor.learnSkill(skillId);
+        NUSV_BattlePreview.ensureWeaponEquipped(actor);
 
         // 2. Ensure enemy is alive and healthy
         if ($gameTroop && $gameTroop.members) {
@@ -277,6 +328,8 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
                     if (enemy.isDead()) enemy.revive();
                     enemy.recoverAll();
                     enemy.gainHp(999999);
+                    if (typeof enemy.performFinish === 'function') enemy.performFinish();
+                    if (typeof enemy.setActionState === 'function') enemy.setActionState('undecided');
                 }
             });
         }
@@ -290,22 +343,45 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
         }
 
         // 4. Reset battler position and motion
+        if (actor.spriteReturnHome) {
+            try { actor.spriteReturnHome(); } catch(e) {}
+        }
         if (typeof actor.performFinish === 'function') {
             actor.performFinish();
         }
+        if (typeof actor.setActionState === 'function') {
+            actor.setActionState('undecided');
+        }
 
-        // 5. Determine target index based on scope
+        // 5. Clear old action queue
+        BattleManager._actionList = [];
+        BattleManager._targets = [];
+        BattleManager._action = null;
+
+        // 6. Determine target index based on scope
         var targetIndex = 0;
         var isForFriend = [7, 8, 9, 10, 11].indexOf(skill.scope) >= 0;
         if (isForFriend) {
             targetIndex = 0;
         } else {
-            targetIndex = 0;
+            var aliveEnemies = $gameTroop.aliveMembers();
+            if (aliveEnemies.length > 0) {
+                targetIndex = aliveEnemies[0].index();
+            } else {
+                targetIndex = 0;
+            }
         }
 
-        // 6. Force Action
+        // 7. Force Action & Process Immediately (Bypass CTB Wait Phase)
+        actor.clearActions();
         actor.forceAction(skillId, targetIndex);
         BattleManager.forceAction(actor);
+        if (typeof BattleManager.processForcedAction === 'function') {
+            BattleManager.processForcedAction();
+        }
+        if (typeof BattleManager.isTickBased === 'function' && BattleManager.isTickBased()) {
+            BattleManager._phase = 'action';
+        }
 
         // Notify parent modal
         if (typeof window !== 'undefined' && window.parent && window.parent.BattlePreviewModal) {
@@ -353,9 +429,14 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
 
     NUSV_BattlePreview.switchActor = function(newActorId) {
         NUSV_BattlePreview.actorId = parseInt(newActorId, 10) || 1;
-        $gameParty._actors = [NUSV_BattlePreview.actorId];
+        var currentActors = $gameParty._actors.slice();
+        var filtered = currentActors.filter(function(id) { return id !== NUSV_BattlePreview.actorId; });
+        $gameParty._actors = [NUSV_BattlePreview.actorId].concat(filtered);
+
         var actor = $gameParty.leader();
         if (actor) {
+            if (actor.level < 50) actor.changeLevel(50, false);
+            NUSV_BattlePreview.ensureWeaponEquipped(actor);
             actor.recoverAll();
             actor.gainHp(9999);
             actor.gainMp(9999);
@@ -378,6 +459,10 @@ var NUSV_BattlePreview = NUSV_BattlePreview || {};
                 if (enemy) {
                     enemy.recoverAll();
                     enemy.gainHp(999999);
+                    if (enemy._screenX !== undefined && enemy._screenX < 260) {
+                        enemy._screenX = Math.round(enemy._screenX * (1080 / 816));
+                        if (enemy._screenX < 260) enemy._screenX = 260;
+                    }
                 }
             });
             SceneManager.goto(Scene_Battle);

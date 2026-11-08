@@ -99,8 +99,13 @@
             baseMirror = false;
         }
 
-        // Explicit mirror parameter (e.g. Action Sequence "animation X: target, mirror") toggles direction
-        return isExplicit ? !baseMirror : baseMirror;
+        // Tales of The Dark Time Combat Direction Mandate:
+        // - Hero / Actor attacks Enemy -> ALWAYS strike LEFT (mirror = true)
+        // - Enemy attacks Hero / Actor -> ALWAYS strike RIGHT (mirror = false)
+        // - Buffs / heals on self or allies -> ALWAYS unmirrored (mirror = false)
+        // Historical Yanfly action sequences often carry redundant ', mirror' flags;
+        // ignore them so direction remains strictly and deterministically synchronized.
+        return baseMirror;
     }
 
     var _Game_Battler_startAnimation = Game_Battler.prototype.startAnimation;

@@ -33,7 +33,7 @@ function renderSkillStatPreview(container, skill) {
                         ${hitTypes[skill.hitType] || 'Action'}
                     </span>
                     <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" style="padding:4px 10px; font-size:0.72rem; background:linear-gradient(135deg, #ec4899, #8b5cf6); border:none; font-weight:700; display:inline-flex; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(236,72,153,0.35); border-radius:6px;" title="Uji skill ini langsung di battle engine RPG Maker MV asli 100% akurat">
-                        ⚔️ Preview Battle
+                        ${pai('sword')} Preview Battle
                     </button>
                 </div>
             </div>
@@ -57,19 +57,19 @@ function renderSkillStatPreview(container, skill) {
                 <!-- Target Scope & Speed -->
                 <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:10px; font-size:0.78rem; display:flex; flex-direction:column; gap:6px;">
                     <div style="display:flex; justify-content:space-between;">
-                        <span style="color:var(--text-muted);">🎯 Target Scope:</span>
+                        <span style="color:var(--text-muted);">${pai('target')} Target Scope:</span>
                         <strong style="color:#f8fafc;">${scopeNames[skill.scope] || `Scope ${skill.scope}`}</strong>
                     </div>
                     <div style="display:flex; justify-content:space-between;">
-                        <span style="color:var(--text-muted);">⚡ Speed (Priority):</span>
+                        <span style="color:var(--text-muted);">${pai('zap')} Speed (Priority):</span>
                         <strong style="color:#facc15;">${skill.speed > 0 ? `+${skill.speed}` : skill.speed}</strong>
                     </div>
                     <div style="display:flex; justify-content:space-between;">
-                        <span style="color:var(--text-muted);">🎯 Success Rate:</span>
+                        <span style="color:var(--text-muted);">${pai('check')} Success Rate:</span>
                         <strong style="color:#34d399;">${skill.successRate}%</strong>
                     </div>
                     <div style="display:flex; justify-content:space-between;">
-                        <span style="color:var(--text-muted);">🔄 Repeats:</span>
+                        <span style="color:var(--text-muted);">${pai('repeat')} Repeats:</span>
                         <strong style="color:#38bdf8;">${skill.repeats}x</strong>
                     </div>
                 </div>
@@ -77,7 +77,7 @@ function renderSkillStatPreview(container, skill) {
                 <!-- Damage Formula -->
                 ${skill.damage && skill.damage.type > 0 ? `
                     <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; padding:10px;">
-                        <div style="font-size:0.72rem; color:#f87171; font-weight:700; margin-bottom:4px;">💥 Damage Formula</div>
+                        <div style="font-size:0.72rem; color:#f87171; font-weight:700; margin-bottom:4px;">${pai('zap')} Damage Formula</div>
                         <code style="font-size:0.8rem; color:#fca5a5; display:block; word-break:break-all;">
                             ${escapeHtml(skill.damage.formula || '0')}
                         </code>
@@ -146,13 +146,13 @@ function renderSkillEditor(container, skill) {
         <div class="card" style="border:1px solid #8b5cf655; background:linear-gradient(180deg, rgba(30,27,75,0.45) 0%, rgba(15,23,42,0.6) 100%); margin-bottom:16px;">
             <div class="card-header" style="border-bottom:1px solid #8b5cf633; display:flex; justify-content:space-between; align-items:center;">
                 <h2 style="color:#c4b5fd; font-size:1.05rem; display:flex; align-items:center; gap:8px;">
-                    <span>🌟</span> Pembelajaran Jurus &amp; Scroll Pusaka (TM)
+                    <span>${pai('sparkles')}</span> Pembelajaran Jurus &amp; Scroll Pusaka (TM)
                 </h2>
                 <div style="display:flex; align-items:center; gap:8px;">
                     <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" style="padding:4px 12px; font-size:0.75rem; background:linear-gradient(135deg, #ec4899, #8b5cf6); border:none; font-weight:700; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 10px rgba(236,72,153,0.35); border-radius:6px;" title="Buka pratinjau engine battle RPG Maker MV asli 100% akurat">
-                        ⚔️ Pratinjau Battle (100% Real Engine)
+                        ${pai('sword')} Pratinjau Battle (100% Real Engine)
                     </button>
-                    ${isOutOfBattle ? `<span class="badge" style="background:#10b98122; color:#34d399; border:1px solid #10b98155; font-size:0.75rem; font-weight:700; padding:3px 8px;">📖 Grimoire / Luar Battle</span>` : ''}
+                    ${isOutOfBattle ? `<span class="badge" style="background:#10b98122; color:#34d399; border:1px solid #10b98155; font-size:0.75rem; font-weight:700; padding:3px 8px;">${pai('book')} Grimoire / Luar Battle</span>` : ''}
                     <span class="badge" style="background:#8b5cf622; color:#c4b5fd; border:1px solid #8b5cf655; font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:9999px;">
                         ${tierLabels[tier] || 'Tier ' + (tier || 1)}
                     </span>
@@ -169,7 +169,7 @@ function renderSkillEditor(container, skill) {
                     <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:10px;">
                         <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">STATUS SCROLL (TM)</div>
                         <div style="font-size:0.95rem; font-weight:700; color:${isExclusive ? '#f87171' : '#34d399'}; margin-top:3px;">
-                            ${isExclusive ? '★ Eksklusif (Tanpa Scroll)' : (tmItem ? `Item #${tmItem.id} (${escapeHtml(tmItem.name)})` : 'Tersedia via Scroll')}
+                            ${isExclusive ? 'Eksklusif (Tanpa Scroll)' : (tmItem ? `Item #${tmItem.id} (${escapeHtml(tmItem.name)})` : 'Tersedia via Scroll')}
                         </div>
                     </div>
                     <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:10px;">
@@ -182,7 +182,7 @@ function renderSkillEditor(container, skill) {
 
                 <div>
                     <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; margin-bottom:6px;">
-                        ${isExclusive ? '👑 HANYA DIKUASAI OLEH:' : `📜 KELAS YANG BISA MEMPELAJARI DARI SCROLL (${tmClasses.length} KELAS):`}
+                        ${isExclusive ? `${pai('crown')} HANYA DIKUASAI OLEH:` : `${pai('book')} KELAS YANG BISA MEMPELAJARI DARI SCROLL (${tmClasses.length} KELAS):`}
                     </div>
                     <div style="display:flex; flex-wrap:wrap; gap:6px;">
                         ${isExclusive ? `<span class="badge" style="background:#ef444422; color:#f87171; border:1px solid #ef444455; padding:4px 10px; font-weight:600;">Khusus ${escapeHtml(learnClass || 'Master')} (Jurus Pamungkas)</span>` : 
@@ -195,7 +195,7 @@ function renderSkillEditor(container, skill) {
         <!-- IDENTITAS & PENGGUNAAN SKILL -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Pengaturan jurus, mantra sihir, dan formula kalkulasi damage">✨ Skill: #${skill.id} ${escapeHtml(skill.name)}</h2>
+                <h2 title="Pengaturan jurus, mantra sihir, dan formula kalkulasi damage">${pai('sparkles')} Skill: #${skill.id} ${escapeHtml(skill.name)}</h2>
                 <span style="font-size:0.85rem; color:var(--text-muted);">${escapeHtml(stypes[skill.stypeId] || `Tipe ${skill.stypeId}`)}</span>
             </div>
             <div class="card-body">
@@ -245,7 +245,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                                 <label style="margin:0;" title="Animasi visual yang dimainkan pada target saat skill dilancarkan">Skill Animation (VFX)</label>
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimationInEditor(getActiveItem() ? getActiveItem().animationId : 0)" style="padding:2px 8px; font-size:0.72rem; color:#f472b6; font-weight:600;" title="Buka dan modifikasi frame/sel animasi ini di Animation Studio (Tab Animations)">
-                                    🎨 Buka di Animation Studio
+                                    ${pai('video')} Buka di Animation Studio
                                 </button>
                             </div>
                             <select class="form-control" onchange="skill.animationId=parseInt(this.value,10); setUnsaved(true); renderEditor();">
@@ -307,7 +307,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
         <!-- FORMULA KERUSAKAN / PEMULIHAN (DAMAGE FORMULA) -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Pengaturan formula perhitungan kerusakan, elemen serangan, dan variasi">💥 Damage Formula &amp; Elements</h2>
+                <h2 title="Pengaturan formula perhitungan kerusakan, elemen serangan, dan variasi">${pai('zap')} Damage Formula &amp; Elements</h2>
             </div>
             <div class="card-body">
                 <div class="grid-4">
@@ -347,7 +347,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
         <!-- SKILL LEARNING & MODIFIERS -->
         <div class="grid-2">
             <div class="card">
-                <div class="card-header"><h2 title="Syarat yang dibutuhkan untuk mempelajari skill ini">📚 Skill Learning Requirements</h2></div>
+                <div class="card-header"><h2 title="Syarat yang dibutuhkan untuk mempelajari skill ini">${pai('book')} Skill Learning Requirements</h2></div>
                 <div class="card-body">
                     <div class="grid-3">
                         <div class="form-group">
@@ -383,7 +383,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
             </div>
 
             <div class="card">
-                <div class="card-header"><h2 title="Pengaturan batas kerusakan maksimal dan pengabaian pertahanan">💥 Penetration &amp; Damage Cap</h2></div>
+                <div class="card-header"><h2 title="Pengaturan batas kerusakan maksimal dan pengabaian pertahanan">${pai('shield')} Penetration &amp; Damage Cap</h2></div>
                 <div class="card-body">
                     <div class="grid-3">
                         <div class="form-group">
@@ -420,7 +420,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
         <!-- REQUIRED WEAPONS & BATTLE MESSAGES -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Syarat tipe senjata yang harus dipakai dan pesan teks log pertempuran">⚔️ Requirements &amp; Battle Messages</h2>
+                <h2 title="Syarat tipe senjata yang harus dipakai dan pesan teks log pertempuran">${pai('sword')} Requirements &amp; Battle Messages</h2>
             </div>
             <div class="card-body">
                 <div class="grid-2">
@@ -455,7 +455,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
         ${renderEffectsCard(skill)}
 
         <div class="card">
-            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">📝 Raw Notetags (Direct Edit)</h2></div>
+            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">${pai('notes')} Raw Notetags (Direct Edit)</h2></div>
             <div class="card-body">
                 <textarea id="rawNoteTextarea" class="form-control" rows="6" onchange="onRawNoteInput(this.value)">${escapeHtml(skill.note || '')}</textarea>
             </div>

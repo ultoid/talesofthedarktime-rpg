@@ -115,7 +115,7 @@ const AnimEditor = {
             this.updateGridSummaryUI();
             if (typeof renderEditor === 'function') renderEditor();
             if (typeof showToast === 'function') {
-                showToast(`⚡ Auto-Detect: ${a.columns} Kolom × ${a.rows} Baris (${a.cellWidth}×${a.cellHeight} px/sel)!`, 'success');
+                showToast(`Auto-Detect: ${a.columns} Kolom × ${a.rows} Baris (${a.cellWidth}×${a.cellHeight} px/sel)!`, 'success');
             }
         };
 
@@ -603,8 +603,8 @@ AnimEditor.showSkillSelectModal = function(skills) {
     modal.innerHTML = `
         <div class="modal-card" style="width: 520px; max-width: 92vw;">
             <div class="modal-header">
-                <h3>🎮 Pilih Skill untuk Preview Battle Sequence</h3>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="AnimEditor.closeSkillSelectModal()">✕</button>
+                <h3>${pai('gamepad')} Pilih Skill untuk Preview Battle Sequence</h3>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="AnimEditor.closeSkillSelectModal()">${pai('close')}</button>
             </div>
             <div class="modal-body" style="padding: 16px; max-height: 60vh; overflow-y: auto; display: block;">
                 <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
@@ -615,7 +615,7 @@ AnimEditor.showSkillSelectModal = function(skills) {
                         const iconOffset = s.iconIndex ? `-${(s.iconIndex % 16) * 24}px -${Math.floor(s.iconIndex / 16) * 24}px` : '0 0';
                         const iconHtml = s.iconIndex 
                             ? `<span style="display:inline-block; width:24px; height:24px; vertical-align:middle; background:url('img/system/IconSet.png') ${iconOffset} / calc(24px * 16) no-repeat; image-rendering:pixelated;"></span>`
-                            : '✨';
+                            : pai('sparkles');
                         return `
                             <button type="button" class="btn btn-secondary" style="text-align: left; display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(30,41,59,0.7); border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;"
                                     onclick="AnimEditor.openBattlePreview(${s.id})">
@@ -626,7 +626,7 @@ AnimEditor.showSkillSelectModal = function(skills) {
                                         <div style="font-size: 0.75rem; color: var(--text-muted);">${escapeHtml(s.description || '')}</div>
                                     </div>
                                 </div>
-                                <span style="font-size: 0.8rem; color: #38bdf8; font-weight: 600;">Buka ➔</span>
+                                <span style="font-size: 0.8rem; color: #38bdf8; font-weight: 600;">Buka ${pai('arrow-right')}</span>
                             </button>
                         `;
                     }).join('')}
@@ -876,7 +876,7 @@ function renderAnimationEditor(container, anim) {
         <div class="card" style="border:1px solid #f472b655; background:linear-gradient(180deg, rgba(80,7,36,0.35) 0%, rgba(15,23,42,0.6) 100%); margin-bottom:14px;">
             <div class="card-header" style="border-bottom:1px solid #f472b633; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:1.2rem;">💥</span>
+                    <span style="font-size:1.2rem;">${pai('zap')}</span>
                     <div>
                         <h2 style="font-size:1.05rem; color:#fbcfe8; margin:0;">Animation #${anim.id}: ${escapeHtml(anim.name || 'Unnamed')}</h2>
                         <div style="font-size:0.72rem; color:var(--text-muted);">Visual Frame-by-Frame Spritesheet Animation Studio</div>
@@ -884,16 +884,16 @@ function renderAnimationEditor(container, anim) {
                 </div>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                     <button type="button" class="btn btn-sm btn-secondary" onclick="openAnimAutoFillModal()" title="Isi urutan frame otomatis dari potongan spritesheet">
-                        🪄 Auto-Fill Urutan
+                        ${pai('wand')} Auto-Fill Urutan
                     </button>
                     <button type="button" class="btn btn-sm btn-secondary" onclick="openAnimBatchShiftModal()" title="Geser koordinat atau skala seluruh sel di semua frame">
-                        ⚙️ Batch Modifiers
+                        ${pai('sliders')} Batch Modifiers
                     </button>
                     <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.openBattlePreview()" title="Buka sequence skill yang menggunakan animasi ini di Battle Preview">
-                        🎮 Preview di Battle Sequence
+                        ${pai('gamepad')} Preview di Battle Sequence
                     </button>
                     <button type="button" class="btn btn-sm" onclick="saveActiveDataset()" style="font-weight:700; background:linear-gradient(135deg, #ec4899 0%, #db2777 100%); color:#fff; border:1px solid #f472b6; box-shadow:0 0 12px rgba(236,72,153,0.35);" title="Simpan seluruh perubahan animasi langsung ke file database game (Animations.json)">
-                        💾 Simpan ke Project
+                        ${pai('save')} Simpan ke Project
                     </button>
                 </div>
             </div>
@@ -945,17 +945,17 @@ function renderAnimationEditor(container, anim) {
                 <div style="padding:10px 14px; background:rgba(15,23,42,0.6); border:1px solid rgba(56,189,248,0.25); border-radius:6px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
                         <div style="display:flex; align-items:center; gap:8px;">
-                            <span style="font-size:0.78rem; font-weight:700; color:#38bdf8;">📐 Grid Spritesheet &amp; Ukuran Sel (Custom Frame Slice)</span>
+                            <span style="font-size:0.78rem; font-weight:700; color:#38bdf8;">${pai('grid-3x3')} Grid Spritesheet &amp; Ukuran Sel (Custom Frame Slice)</span>
                             <span id="animGridSummaryBadge" style="font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted); padding:2px 6px; background:rgba(255,255,255,0.04); border-radius:3px; border:1px solid var(--border-subtle);">
                                 ${dims.cols} Kolom × ${dims.rows > 0 ? `${dims.rows} Baris` : 'Auto Baris'} (${dims.cellW}×${dims.cellH} px) • Maks: ${dims.maxCells} sel
                             </span>
                         </div>
                         <div style="display:flex; gap:6px; align-items:center;">
                             <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.autoDetectGrid(anim)" style="font-size:0.72rem; padding:3px 8px; color:#38bdf8;" title="Deteksi otomatis pembagian kolom, baris, dan ukuran sel dari resolusi file gambar Graphic 1">
-                                ⚡ Auto-Detect dari Gambar
+                                ${pai('zap')} Auto-Detect dari Gambar
                             </button>
                             <button type="button" class="btn btn-sm btn-secondary" onclick="anim.columns=5; anim.rows=0; anim.cellWidth=192; anim.cellHeight=192; anim.maxCells=100; setUnsaved(true); AnimEditor.updateGridSummaryUI(); renderEditor();" style="font-size:0.72rem; padding:3px 8px;" title="Reset ke standar RPG Maker MV (5 Kolom x 192x192 px)">
-                                🔄 Reset MV Default (192×192)
+                                ${pai('repeat')} Reset MV Default (192×192)
                             </button>
                         </div>
                     </div>
@@ -1012,9 +1012,9 @@ function renderAnimationEditor(container, anim) {
                         <span style="font-size:0.7rem; color:var(--text-muted); white-space:nowrap;">Arah:</span>
                         <select class="form-control" style="width:auto; padding:3px 8px; font-size:0.72rem; height:auto; font-weight:600; background:#0b0e14; color:#38bdf8; border-color:rgba(56,189,248,0.3);" 
                                 onchange="AnimEditor.setCombatDirection(this.value);" title="Arah serangan animasi dalam pertempuran Sideview">
-                            <option value="user_to_enemy" ${AnimEditor.combatDirection === 'user_to_enemy' ? 'selected' : ''}>⚔️ Serang Kiri (Hero ➔ Musuh)</option>
-                            <option value="enemy_to_user" ${AnimEditor.combatDirection === 'enemy_to_user' ? 'selected' : ''}>🛡️ Serang Kanan (Musuh ➔ Hero)</option>
-                            <option value="raw_unmirrored" ${AnimEditor.combatDirection === 'raw_unmirrored' ? 'selected' : ''}>📁 Format Asli Database</option>
+                            <option value="user_to_enemy" ${AnimEditor.combatDirection === 'user_to_enemy' ? 'selected' : ''}>Serang Kiri (Hero ke Musuh)</option>
+                            <option value="enemy_to_user" ${AnimEditor.combatDirection === 'enemy_to_user' ? 'selected' : ''}>Serang Kanan (Musuh ke Hero)</option>
+                            <option value="raw_unmirrored" ${AnimEditor.combatDirection === 'raw_unmirrored' ? 'selected' : ''}>Format Asli Database</option>
                         </select>
                     </div>
 
@@ -1045,19 +1045,19 @@ function renderAnimationEditor(container, anim) {
                     <!-- Group 1: Transport & Frame Pill -->
                     <div style="display:flex; gap:6px; align-items:center;">
                         <button type="button" id="animPlayBtn" class="btn btn-sm btn-primary" onclick="AnimEditor.togglePlay()" style="padding:5px 14px; font-size:0.75rem; font-weight:600; display:flex; align-items:center; gap:4px;">
-                            ${AnimEditor.isPlaying ? '⏸ Pause' : '▶ Play'}
+                            ${AnimEditor.isPlaying ? `${pai('pause')} Pause` : `${pai('play')} Play`}
                         </button>
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.currentFrameIndex=0; AnimEditor.updateTimelineUI(); AnimEditor.render();" style="padding:5px 8px; font-size:0.75rem;" title="Ke Frame 1">⏮</button>
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.stepFrame(-1); AnimEditor.render();" style="padding:5px 8px; font-size:0.75rem;" title="Frame Sebelumnya">◀</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.currentFrameIndex=0; AnimEditor.updateTimelineUI(); AnimEditor.render();" style="padding:5px 8px; font-size:0.75rem;" title="Ke Frame 1">${pai('arrow-bar-left')}</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.stepFrame(-1); AnimEditor.render();" style="padding:5px 8px; font-size:0.75rem;" title="Frame Sebelumnya">${pai('arrow-left')}</button>
                         
                         <!-- Dedicated Non-wrapping Frame Counter Pill -->
                         <div id="animFrameBadge" style="white-space:nowrap; flex-shrink:0; font-family:var(--font-mono); font-weight:700; font-size:0.78rem; padding:4px 12px; background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); border-radius:var(--radius-sm); min-width:96px; text-align:center; user-select:none; letter-spacing:0.3px;">
                             Frame 1 / ${Math.max(1, (anim.frames || []).length)}
                         </div>
 
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.stepFrame(1); AnimEditor.render();" style="padding:5px 8px; font-size:0.75rem;" title="Frame Berikutnya">▶</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.stepFrame(1); AnimEditor.render();" style="padding:5px 8px; font-size:0.75rem;" title="Frame Berikutnya">${pai('arrow-right')}</button>
                         <button type="button" id="animLoopBtn" class="btn btn-sm btn-secondary" onclick="AnimEditor.toggleLoop()" style="padding:5px 9px; font-size:0.75rem;">
-                            ${AnimEditor.isLooping ? '🔄 Loop: ON' : '🔄 Loop: OFF'}
+                            ${AnimEditor.isLooping ? `${pai('repeat')} Loop: ON` : `${pai('repeat')} Loop: OFF`}
                         </button>
                     </div>
 
@@ -1073,23 +1073,23 @@ function renderAnimationEditor(container, anim) {
                             </select>
                         </div>
                         <button type="button" id="animMuteBtn" class="btn btn-sm btn-secondary" onclick="AnimEditor.toggleMute()" style="padding:4px 10px; font-size:0.75rem;">
-                            ${AnimEditor.isMuted ? '🔇 SE Muted' : '🔊 SE Audio'}
+                            ${AnimEditor.isMuted ? `${pai('volume-x')} SE Muted` : `${pai('volume-3')} SE Audio`}
                         </button>
                     </div>
 
                     <!-- Group 3: Frame Management Actions -->
                     <div style="display:flex; gap:6px; align-items:center;">
                         <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.addNewFrame()" style="padding:4px 9px; font-size:0.75rem; color:#34d399;" title="Tambah frame baru di posisi berikutnya">
-                            ➕ Tambah Frame
+                            ${pai('plus')} Tambah Frame
                         </button>
                         <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.cloneCurrentFrame()" style="padding:4px 9px; font-size:0.75rem;" title="Duplikasi seluruh sel di frame aktif ke frame baru">
-                            📋 Clone
+                            ${pai('copy')} Clone
                         </button>
                         <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.deleteCurrentFrame()" style="padding:4px 9px; font-size:0.75rem; color:#f87171;" title="Hapus frame aktif">
-                            🗑️ Hapus
+                            ${pai('trash')} Hapus
                         </button>
                         <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.flipEntireAnimationHorizontal()" style="padding:4px 9px; font-size:0.75rem; color:#facc15;" title="Balikkan orientasi semua frame animasi secara horizontal di database">
-                            ⇄ Balik Horizontal
+                            ${pai('arrows-horizontal')} Balik Horizontal
                         </button>
                     </div>
                 </div>
@@ -1110,12 +1110,12 @@ function renderAnimationEditor(container, anim) {
         <div id="animPatternPickerModal" class="modal-overlay" style="display:none;" onclick="if(event.target === this) closeAnimPatternPicker();">
             <div class="modal-card" style="max-width:920px; width:95vw; max-height:85vh;">
                 <div class="modal-header">
-                    <h3>🖼️ Pilih Potongan Sel dari Spritesheet</h3>
-                    <button type="button" class="btn btn-sm btn-secondary" onclick="closeAnimPatternPicker()">✕ Tutup</button>
+                    <h3>${pai('image')} Pilih Potongan Sel dari Spritesheet</h3>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="closeAnimPatternPicker()">${pai('close')} Tutup</button>
                 </div>
                 <div class="modal-body" style="padding:14px; overflow:auto; max-height:70vh;">
                     <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;">
-                        💡 Klik pada salah satu kotak sel di bawah ini untuk memasukkannya ke sel yang sedang Anda pilih.
+                        ${pai('circle-info')} Klik pada salah satu kotak sel di bawah ini untuk memasukkannya ke sel yang sedang Anda pilih.
                     </div>
                     <div id="animSheetGridContainer" style="display:flex; justify-content:center;">
                         <!-- Dynamically populated sheet canvas -->
@@ -1287,7 +1287,7 @@ AnimEditor.updateCellInspectorUI = function() {
         <div class="card" style="border:1px solid var(--border-color); margin-bottom:14px;">
             <div class="card-header" style="padding:10px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:0.95rem;">🎯</span>
+                    <span style="font-size:0.95rem;">${pai('target')}</span>
                     <div>
                         <strong style="color:#f8fafc; font-size:0.85rem;">Inspektor Layer &amp; Sel (Frame #${this.currentFrameIndex + 1})</strong>
                         <span style="font-size:0.72rem; color:var(--text-muted); margin-left:6px;">${currentFrame.length} Sel Aktif</span>
@@ -1295,13 +1295,13 @@ AnimEditor.updateCellInspectorUI = function() {
                 </div>
                 <div style="display:flex; gap:6px;">
                     <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.addCellToFrame()" style="color:#34d399; font-size:0.75rem; padding:4px 8px;">
-                        ➕ Tambah Sel
+                        ${pai('plus')} Tambah Sel
                     </button>
                     <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.cloneCurrentCell()" style="font-size:0.75rem; padding:4px 8px;">
-                        📋 Clone
+                        ${pai('copy')} Clone
                     </button>
                     <button type="button" class="btn btn-sm btn-secondary" onclick="AnimEditor.deleteCurrentCell()" style="color:#f87171; font-size:0.75rem; padding:4px 8px;">
-                        🗑️ Hapus Sel
+                        ${pai('trash')} Hapus Sel
                     </button>
                 </div>
             </div>
@@ -1337,12 +1337,12 @@ AnimEditor.updateCellInspectorUI = function() {
                                            oninput="AnimEditor.updateCellProp(0, parseInt(this.value,10), true);"
                                            onchange="AnimEditor.updateCellProp(0, parseInt(this.value,10), true);">
                                     <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimPatternPicker()" style="white-space:nowrap; padding:4px 8px; font-size:0.75rem;" title="Buka modal spritesheet untuk memilih potongan sel">
-                                        🖼️ Pilih Visual
+                                        ${pai('image')} Pilih Visual
                                     </button>
                                 </div>
                             </div>
                             <div style="font-size:0.68rem; color:var(--text-muted);">
-                                💡 Kotak sel ${dims.cellW}×${dims.cellH} dihitung dari kiri ke kanan (0 s/d ${dims.maxCells - 1}). Nilai -1 = Kosong.
+                                ${pai('circle-info')} Kotak sel ${dims.cellW}×${dims.cellH} dihitung dari kiri ke kanan (0 s/d ${dims.maxCells - 1}). Nilai -1 = Kosong.
                             </div>
                         </div>
 
@@ -1351,12 +1351,12 @@ AnimEditor.updateCellInspectorUI = function() {
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <strong style="font-size:0.8rem; color:#fbbf24;">2. Posisi (X, Y Offset)</strong>
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="AnimEditor.resetCellPosition();" style="padding:1px 6px; font-size:0.68rem;">
-                                    🎯 Reset (0, 0)
+                                    ${pai('repeat')} Reset (0, 0)
                                 </button>
                             </div>
                             <div class="grid-2">
                                 <div class="form-group" style="margin:0;">
-                                    <label style="font-size:0.72rem;">Posisi X (Horizontal)</label>
+                                     <label style="font-size:0.72rem;">Posisi X (Horizontal)</label>
                                     <input type="number" id="cellPosX" min="-400" max="400" class="form-control" value="${cell[1] || 0}" 
                                            oninput="AnimEditor.updateCellProp(1, parseInt(this.value,10)||0);"
                                            onchange="AnimEditor.updateCellProp(1, parseInt(this.value,10)||0);">
@@ -1369,7 +1369,7 @@ AnimEditor.updateCellInspectorUI = function() {
                                 </div>
                             </div>
                             <div style="font-size:0.68rem; color:var(--text-muted);">
-                                💡 Anda juga bisa langsung mengklik dan menggeser (drag) sel pada layar kanvas di atas!
+                                ${pai('circle-info')} Anda juga bisa langsung mengklik dan menggeser (drag) sel pada layar kanvas di atas!
                             </div>
                         </div>
 
@@ -1443,14 +1443,14 @@ function renderAnimationStatPreview(container, anim) {
         <div class="card" style="margin-bottom:12px; border:1px solid #38bdf855; overflow:hidden;">
             <div class="card-header" style="padding:10px 14px; background:rgba(12,74,110,0.4); display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:1.1rem;">🔊</span>
+                    <span style="font-size:1.1rem;">${pai('volume-3')}</span>
                     <div>
                         <div style="font-size:0.7rem; color:#38bdf8; font-weight:700;">Timings &amp; Audio</div>
                         <h3 style="font-size:0.95rem; margin:0; color:#fff; font-weight:700;">Sound Effect &amp; Flash</h3>
                     </div>
                 </div>
                 <button type="button" class="btn btn-sm btn-primary" onclick="AnimEditor.addTiming()" style="padding:3px 8px; font-size:0.72rem;">
-                    ➕ Tambah
+                    ${pai('plus')} Tambah
                 </button>
             </div>
 
@@ -1464,7 +1464,7 @@ function renderAnimationStatPreview(container, anim) {
                         <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:6px; padding:10px; display:flex; flex-direction:column; gap:8px;">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <strong style="color:#facc15;">Timing #${idx + 1}</strong>
-                                <button type="button" class="btn btn-sm btn-danger" onclick="AnimEditor.deleteTiming(${idx})" title="Hapus timing">✕</button>
+                                <button type="button" class="btn btn-sm btn-danger" onclick="AnimEditor.deleteTiming(${idx})" title="Hapus timing">${pai('close')}</button>
                             </div>
                             <div class="grid-3">
                                 <div class="form-group" style="margin:0;">
@@ -1493,7 +1493,7 @@ function renderAnimationStatPreview(container, anim) {
                                                 return name ? `<option value="${escapeHtml(name)}" ${seName === name ? 'selected' : ''}>${escapeHtml(name)}</option>` : '';
                                             }).join('')}
                                         </select>
-                                        <button type="button" class="btn btn-secondary" onclick="AnimEditor.previewTimingSE(${idx})" title="Putar SE">🔊</button>
+                                        <button type="button" class="btn btn-secondary" onclick="AnimEditor.previewTimingSE(${idx})" title="Putar SE">${pai('volume-3')}</button>
                                     </div>
                                 </div>
                                 <div class="grid-3">
@@ -1541,19 +1541,19 @@ function renderAnimationStatPreview(container, anim) {
             </div>
             <div class="card-body" style="padding:12px; display:flex; flex-direction:column; gap:8px; font-size:0.78rem;">
                 <div style="display:flex; justify-content:space-between;">
-                    <span style="color:var(--text-muted);">🎞️ Total Frames:</span>
+                    <span style="color:var(--text-muted);">${pai('image')} Total Frames:</span>
                     <strong style="color:#38bdf8;">${(anim.frames || []).length} Frames</strong>
                 </div>
                 <div style="display:flex; justify-content:space-between;">
-                    <span style="color:var(--text-muted);">🖼️ Sheet 1:</span>
+                    <span style="color:var(--text-muted);">${pai('images')} Sheet 1:</span>
                     <strong style="color:#facc15;">${anim.animation1Name || '(None)'}</strong>
                 </div>
                 <div style="display:flex; justify-content:space-between;">
-                    <span style="color:var(--text-muted);">📍 Posisi:</span>
+                    <span style="color:var(--text-muted);">${pai('target')} Posisi:</span>
                     <strong style="color:#f8fafc;">${['Top', 'Center', 'Feet', 'Screen'][anim.position] || 'Center'}</strong>
                 </div>
                 <div style="display:flex; justify-content:space-between;">
-                    <span style="color:var(--text-muted);">⚡ Timings:</span>
+                    <span style="color:var(--text-muted);">${pai('zap')} Timings:</span>
                     <strong style="color:#4ade80;">${(anim.timings || []).length} Events</strong>
                 </div>
             </div>
@@ -1571,7 +1571,7 @@ AnimEditor.togglePlay = function() {
         if (!this.frameTimingsProcessed) this.processFrameTimings(this.currentFrameIndex);
     }
     const btn = document.getElementById('animPlayBtn');
-    if (btn) btn.textContent = this.isPlaying ? '⏸ Pause' : '▶ Play';
+    if (btn) btn.innerHTML = this.isPlaying ? `${pai('pause')} Pause` : `${pai('play')} Play`;
 };
 
 AnimEditor.updateTiming = function(index, field, value) {
@@ -1651,13 +1651,13 @@ AnimEditor.previewTimingSE = function(index) {
 AnimEditor.toggleLoop = function() {
     this.isLooping = !this.isLooping;
     const btn = document.getElementById('animLoopBtn');
-    if (btn) btn.textContent = this.isLooping ? '🔄 Loop: ON' : '🔄 Loop: OFF';
+    if (btn) btn.innerHTML = this.isLooping ? `${pai('repeat')} Loop: ON` : `${pai('repeat')} Loop: OFF`;
 };
 
 AnimEditor.toggleMute = function() {
     this.isMuted = !this.isMuted;
     const btn = document.getElementById('animMuteBtn');
-    if (btn) btn.textContent = this.isMuted ? '🔇 SE Muted' : '🔊 SE';
+    if (btn) btn.innerHTML = this.isMuted ? `${pai('volume-x')} SE Muted` : `${pai('volume-3')} SE`;
 };
 
 /**

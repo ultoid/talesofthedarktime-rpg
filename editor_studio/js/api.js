@@ -222,7 +222,7 @@ async function saveActiveDataset() {
     saveBtns.forEach(btn => {
         btn.disabled = true;
         btn.dataset.originalHtml = btn.innerHTML;
-        btn.innerHTML = '⏳ Menyimpan...';
+        btn.innerHTML = `${pai('hourglass')} Menyimpan...`;
     });
 
     let savedFiles = [];

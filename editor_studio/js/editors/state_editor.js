@@ -18,15 +18,15 @@ function renderStateStatPreview(container, state) {
             <div class="card-body" style="padding:12px 14px; display:flex; flex-direction:column; gap:12px;">
                 <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:10px; font-size:0.78rem; display:flex; flex-direction:column; gap:6px;">
                     <div style="display:flex; justify-content:space-between;">
-                        <span style="color:var(--text-muted);">⏱️ Duration:</span>
+                        <span style="color:var(--text-muted);"><i class="pai-clock"></i> Duration:</span>
                         <strong style="color:#f8fafc;">${state.minTurns === state.maxTurns ? `${state.minTurns} Turns` : `${state.minTurns} - ${state.maxTurns} Turns`}</strong>
                     </div>
                     <div style="display:flex; justify-content:space-between;">
-                        <span style="color:var(--text-muted);">💥 Remove by Damage:</span>
+                        <span style="color:var(--text-muted);"><i class="pai-sword"></i> Remove by Damage:</span>
                         <strong style="color:#facc15;">${state.removeByDamage ? `${state.chanceByDamage}%` : 'No'}</strong>
                     </div>
                     <div style="display:flex; justify-content:space-between;">
-                        <span style="color:var(--text-muted);">🚶 Remove by Walking:</span>
+                        <span style="color:var(--text-muted);"><i class="pai-speed-fast"></i> Remove by Walking:</span>
                         <strong style="color:#38bdf8;">${state.removeByWalking ? `${state.stepsToRemove} Steps` : 'No'}</strong>
                     </div>
                 </div>
@@ -80,7 +80,7 @@ function renderStateEditor(container, state) {
         <!-- STATE IDENTITY & RESTRICTIONS -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Pengaturan efek status, buff, debuff, dan durasi">💫 State: #${state.id} ${escapeHtml(state.name)}</h2>
+                <h2 title="Pengaturan efek status, buff, debuff, dan durasi"><i class="pai-diamond-gem"></i> State: #${state.id} ${escapeHtml(state.name)}</h2>
                 <span style="font-size:0.85rem; color:var(--text-muted);">Prioritas: ${state.priority}</span>
             </div>
             <div class="card-body">
@@ -98,9 +98,9 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
                             <div class="form-group">
                                 <label title="Klasifikasi status: Passive, Status Effect, atau Skill Effect">Kategori State (&lt;State Category&gt;)</label>
                                 <select class="form-control" onchange="setTagVal(state, 'State Category', this.value); setTagVal(state, 'NUSV Category', this.value); setUnsaved(true); renderSidebar();">
-                                    <option value="Passive" ${currentCat === 'Passive' ? 'selected' : ''}>🟣 Passive (Kemampuan Pasif / Trait Khusus)</option>
-                                    <option value="Status Effect" ${currentCat === 'Status Effect' ? 'selected' : ''}>🩸 Status Effect (Status Ailment / Kondisi Buruk)</option>
-                                    <option value="Skill Effect" ${currentCat === 'Skill Effect' ? 'selected' : ''}>⚡ Skill Effect (Efek Tempur / Buff &amp; Debuff)</option>
+                                    <option value="Passive" ${currentCat === 'Passive' ? 'selected' : ''}>Passive (Kemampuan Pasif / Trait Khusus)</option>
+                                    <option value="Status Effect" ${currentCat === 'Status Effect' ? 'selected' : ''}>Status Effect (Status Ailment / Kondisi Buruk)</option>
+                                    <option value="Skill Effect" ${currentCat === 'Skill Effect' ? 'selected' : ''}>Skill Effect (Efek Tempur / Buff &amp; Debuff)</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -185,7 +185,7 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
         <!-- MODIFIKASI ATRIBUT NUSVANIR -->
         <div class="card">
             <div class="card-header">
-                <h2>📊 Modifikasi Atribut Stat Nusvanir</h2>
+                <h2><i class="pai-chart-bar-big"></i> Modifikasi Atribut Stat Nusvanir</h2>
                 <span style="font-size:0.8rem; color:var(--text-muted);">&lt;STR: +X / -X&gt; etc. Active while state is afflicted on battler.</span>
             </div>
             <div class="card-body">
@@ -209,7 +209,7 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
 
         <!-- MODIFIKASI TEMPUR EKSTRA -->
         <div class="card">
-            <div class="card-header"><h2>⚔️ Modifikasi Parameter Tempur Ekstra</h2></div>
+            <div class="card-header"><h2><i class="pai-sword"></i> Modifikasi Parameter Tempur Ekstra</h2></div>
             <div class="card-body">
                 <div class="grid-3">
                     <div class="form-group">
@@ -251,7 +251,7 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
         <!-- BATTLE LOG MESSAGES -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Pesan teks yang muncul di log pertempuran saat status aktif atau sembuh">💬 Battle Log Messages</h2>
+                <h2 title="Pesan teks yang muncul di log pertempuran saat status aktif atau sembuh"><i class="pai-message"></i> Battle Log Messages</h2>
             </div>
             <div class="card-body">
                 <div class="grid-2">
@@ -280,7 +280,7 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
         <!-- SIDEVIEW COMBAT VISUALS -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Animasi visual gerak samping (Sideview) saat status ini aktif">🎭 Sideview Visuals &amp; Motion</h2>
+                <h2 title="Animasi visual gerak samping (Sideview) saat status ini aktif"><i class="pai-user"></i> Sideview Visuals &amp; Motion</h2>
             </div>
             <div class="card-body">
                 <div class="grid-2">
@@ -316,7 +316,7 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
         ${renderTraitsCard(state, 'states')}
 
         <div class="card">
-            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">📝 Raw Notetags (Direct Edit)</h2></div>
+            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag"><i class="pai-note"></i> Raw Notetags (Direct Edit)</h2></div>
             <div class="card-body">
                 <textarea id="rawNoteTextarea" class="form-control" rows="6" onchange="onRawNoteInput(this.value)">${escapeHtml(state.note || '')}</textarea>
             </div>

@@ -18,7 +18,7 @@ function ensureNavTabs() {
         const raceBtn = document.createElement('button');
         raceBtn.className = 'tab-btn' + (State.currentTab === 'races' ? ' active' : '');
         raceBtn.setAttribute('onclick', "switchTab('races')");
-        raceBtn.innerHTML = '🧬 Races';
+        raceBtn.innerHTML = '<i class="pai-human"></i> Races';
         if (clsBtn && clsBtn.nextSibling) {
             nav.insertBefore(raceBtn, clsBtn.nextSibling);
         } else {
@@ -38,7 +38,7 @@ function ensureNavTabs() {
         const animBtn = document.createElement('button');
         animBtn.className = 'tab-btn' + (State.currentTab === 'animations' ? ' active' : '');
         animBtn.setAttribute('onclick', "switchTab('animations')");
-        animBtn.innerHTML = '💥 Animations';
+        animBtn.innerHTML = '<i class="pai-sparkle"></i> Animations';
         if (skiBtn && skiBtn.nextSibling) {
             nav.insertBefore(animBtn, skiBtn.nextSibling);
         } else {
@@ -315,13 +315,13 @@ function renderSidebarFilters() {
         filterContainer.style.display = 'flex';
         const f = State.classTierFilter || 'all';
         const tiers = [
-            { id: 'all', name: '🛡️ Semua Tier Kelas (All Tiers)' },
-            { id: '1', name: '🌱 Tier 1 - Base / Novice' },
-            { id: '2', name: '⚔️ Tier 2 - Advanced' },
-            { id: '3', name: '🎖️ Tier 3 - Elite' },
-            { id: '4', name: '👑 Tier 4 - Master' },
-            { id: '5', name: '🌟 Tier 5 - Grandmaster' },
-            { id: '6', name: '🌌 Tier 6 - Pinnacle' }
+            { id: 'all', name: 'Semua Tier Kelas (All Tiers)' },
+            { id: '1', name: 'Tier 1 - Base / Novice' },
+            { id: '2', name: 'Tier 2 - Advanced' },
+            { id: '3', name: 'Tier 3 - Elite' },
+            { id: '4', name: 'Tier 4 - Master' },
+            { id: '5', name: 'Tier 5 - Grandmaster' },
+            { id: '6', name: 'Tier 6 - Pinnacle' }
         ];
         const totalCount = State.classes.filter(c => c).length;
         filterContainer.innerHTML = `
@@ -338,30 +338,13 @@ function renderSidebarFilters() {
         filterContainer.style.display = 'flex';
         const f = State.weaponTypeFilter || 'all';
         const wtypes = (State.system && State.system.weaponTypes) ? State.system.weaponTypes : [];
-        const icons = {
-            'Sword': '⚔️',
-            'Long Sword': '🗡️',
-            'Gloves': '🥊',
-            'Spear': '🔱',
-            'Axe': '🪓',
-            'Staff': '🪄',
-            'Rune': '🔮',
-            'Long Bow': '🏹',
-            'Crossbow': '🎯',
-            'Dagger': '🗡️',
-            'Bow': '🏹',
-            'Mace': '🔨',
-            'Gun': '🔫',
-            'Wand': '🪄'
-        };
         const totalCount = State.weapons.filter(w => w).length;
-        let optionsHtml = `<option value="all" ${f === 'all' ? 'selected' : ''}>⚔️ Semua Tipe Senjata (All Weapons) (${totalCount})</option>`;
+        let optionsHtml = `<option value="all" ${f === 'all' ? 'selected' : ''}>Semua Tipe Senjata (All Weapons) (${totalCount})</option>`;
         for (let i = 1; i < wtypes.length; i++) {
             const wt = wtypes[i];
             if (!wt) continue;
-            const icon = icons[wt] || '⚔️';
             const count = State.weapons.filter(w => w && String(w.wtypeId) === String(i)).length;
-            optionsHtml += `<option value="${i}" ${String(f) === String(i) ? 'selected' : ''}>${icon} ${escapeHtml(wt)} (${count})</option>`;
+            optionsHtml += `<option value="${i}" ${String(f) === String(i) ? 'selected' : ''}>${escapeHtml(wt)} (${count})</option>`;
         }
         filterContainer.innerHTML = `
             <select class="form-control" onchange="setWeaponTypeFilter(this.value)" title="Pilih filter tipe senjata">
@@ -372,13 +355,13 @@ function renderSidebarFilters() {
         filterContainer.style.display = 'flex';
         const f = State.armorSlotFilter || 'all';
         const slots = [
-            { id: 'all', name: '🛡️ Semua Slot Armor (All Slots)' },
-            { id: '2', name: '🛡️ Shields (Tangan Kiri / Slot 2)' },
-            { id: '3', name: '🎩 Helms (Kepala / Slot 3)' },
-            { id: '4', name: '🥋 Body Armor (Badan / Slot 4)' },
-            { id: '5', name: '👢 Boots (Kaki / Slot 5)' },
-            { id: '6', name: '💍 Accessories (Aksesoris / Slot 6)' },
-            { id: '7', name: '🔮 Relics (Pusaka Relik / Slot 7)' }
+            { id: 'all', name: 'Semua Slot Armor (All Slots)' },
+            { id: '2', name: 'Shields (Tangan Kiri / Slot 2)' },
+            { id: '3', name: 'Helms (Kepala / Slot 3)' },
+            { id: '4', name: 'Body Armor (Badan / Slot 4)' },
+            { id: '5', name: 'Boots (Kaki / Slot 5)' },
+            { id: '6', name: 'Accessories (Aksesoris / Slot 6)' },
+            { id: '7', name: 'Relics (Pusaka Relik / Slot 7)' }
         ];
         const totalCount = State.armors.filter(a => a).length;
         filterContainer.innerHTML = `
@@ -419,13 +402,13 @@ function renderSidebarFilters() {
 
         filterContainer.innerHTML = `
             <select class="form-control" onchange="setSkillClassFilter(this.value)" title="Filter skill berdasarkan kategori, tier, atau profesi">
-                <option value="player_skills" ${f === 'player_skills' ? 'selected' : ''}>⚔️ Skill Kelas Pemain (${playerSkillsCount})</option>
-                <option value="weapon_attacks" ${f === 'weapon_attacks' ? 'selected' : ''}>🗡️ Basic Attack 10 Tipe Senjata (${weaponAttacksCount})</option>
-                <option value="tm_available" ${f === 'tm_available' ? 'selected' : ''}>📜 Memiliki Scroll (${tmCount})</option>
-                <option value="exclusive_ult" ${f === 'exclusive_ult' ? 'selected' : ''}>👑 Jurus Pamungkas Eksklusif (${ultCount})</option>
-                <option value="enemy_skills" ${f === 'enemy_skills' ? 'selected' : ''}>👾 Aksi Monster & Musuh (${enemySkillsCount})</option>
-                <option value="grimoire_skills" ${f === 'grimoire_skills' ? 'selected' : ''}>📖 Grimoire Lapangan (${grimoireCount})</option>
-                <option value="all" ${f === 'all' ? 'selected' : ''}>✨ Semua Skill (${totalCount})</option>
+                <option value="player_skills" ${f === 'player_skills' ? 'selected' : ''}>Skill Kelas Pemain (${playerSkillsCount})</option>
+                <option value="weapon_attacks" ${f === 'weapon_attacks' ? 'selected' : ''}>Basic Attack 10 Tipe Senjata (${weaponAttacksCount})</option>
+                <option value="tm_available" ${f === 'tm_available' ? 'selected' : ''}>Memiliki Scroll (${tmCount})</option>
+                <option value="exclusive_ult" ${f === 'exclusive_ult' ? 'selected' : ''}>Jurus Pamungkas Eksklusif (${ultCount})</option>
+                <option value="enemy_skills" ${f === 'enemy_skills' ? 'selected' : ''}>Aksi Monster & Musuh (${enemySkillsCount})</option>
+                <option value="grimoire_skills" ${f === 'grimoire_skills' ? 'selected' : ''}>Grimoire Lapangan (${grimoireCount})</option>
+                <option value="all" ${f === 'all' ? 'selected' : ''}>Semua Skill (${totalCount})</option>
                 <optgroup label="--- Filter Berdasarkan Tier ---">
                     <option value="tier_1" ${f === 'tier_1' ? 'selected' : ''}>Tier 1 - Novice</option>
                     <option value="tier_2" ${f === 'tier_2' ? 'selected' : ''}>Tier 2 - Basic</option>
@@ -446,12 +429,12 @@ function renderSidebarFilters() {
         filterContainer.style.display = 'flex';
         const f = State.itemCategoryFilter || 'all';
         const categories = [
-            { id: 'all', name: '🧪 Semua Kategori Item (All Categories)' },
-            { id: 'Consumable', name: '🧪 Consumable (Konsumsi / Obat)' },
-            { id: 'Material', name: '🪵 Material (Bahan Baku Monster / Alam)' },
-            { id: 'Forge', name: '⚒️ Forge (Bahan Tempa / Logam / Kristal)' },
-            { id: 'Valuable', name: '💎 Valuable (Barang Berharga / Harta)' },
-            { id: 'Key Item', name: '🗝️ Key Item (Barang Kunci / Quest)' }
+            { id: 'all', name: 'Semua Kategori Item (All Categories)' },
+            { id: 'Consumable', name: 'Consumable (Konsumsi / Obat)' },
+            { id: 'Material', name: 'Material (Bahan Baku Monster / Alam)' },
+            { id: 'Forge', name: 'Forge (Bahan Tempa / Logam / Kristal)' },
+            { id: 'Valuable', name: 'Valuable (Barang Berharga / Harta)' },
+            { id: 'Key Item', name: 'Key Item (Barang Kunci / Quest)' }
         ];
         const totalCount = State.items.filter(i => i).length;
         filterContainer.innerHTML = `
@@ -468,10 +451,10 @@ function renderSidebarFilters() {
         filterContainer.style.display = 'flex';
         const f = State.stateCategoryFilter || 'all';
         const categories = [
-            { id: 'all', name: '💫 Semua Kategori State (All States)' },
-            { id: 'Passive', name: '🟣 Passive (Pasif / Trait Khusus)' },
-            { id: 'Status Effect', name: '🩸 Status Effect (Status Ailment / Buruk)' },
-            { id: 'Skill Effect', name: '⚡ Skill Effect (Efek Tempur / Buff & Debuff)' }
+            { id: 'all', name: 'Semua Kategori State (All States)' },
+            { id: 'Passive', name: 'Passive (Pasif / Trait Khusus)' },
+            { id: 'Status Effect', name: 'Status Effect (Status Ailment / Buruk)' },
+            { id: 'Skill Effect', name: 'Skill Effect (Efek Tempur / Buff & Debuff)' }
         ];
         const totalCount = State.states.filter(s => s).length;
         filterContainer.innerHTML = `
@@ -488,11 +471,11 @@ function renderSidebarFilters() {
         filterContainer.style.display = 'flex';
         const f = State.raceGroupFilter || 'all';
         const groups = [
-            { id: 'all', name: '🧬 Semua Golongan Ras' },
-            { id: 'Suku Bumi', name: '🌍 Suku Bumi (Daratan Utama)' },
-            { id: 'Wuru Loka', name: '🐾 Wuru Loka (Makhluk Eksotis/Liar)' },
-            { id: 'Arkahyan', name: '✨ Arkahyan (Surgawi/Cahaya)' },
-            { id: 'Drahkthar', name: '🌑 Drahkthar (Entitas Gelap/Iblis)' }
+            { id: 'all', name: 'Semua Golongan Ras' },
+            { id: 'Suku Bumi', name: 'Suku Bumi (Daratan Utama)' },
+            { id: 'Wuru Loka', name: 'Wuru Loka (Makhluk Eksotis/Liar)' },
+            { id: 'Arkahyan', name: 'Arkahyan (Surgawi/Cahaya)' },
+            { id: 'Drahkthar', name: 'Drahkthar (Entitas Gelap/Iblis)' }
         ];
         const totalCount = (State.races || []).filter(r => r).length;
         filterContainer.innerHTML = `
@@ -571,7 +554,7 @@ function renderSidebar() {
             const ab = getTagVal(item.note, 'Class Ability', '');
             mainBadge = `<span class="list-badge">T${t}</span>`;
             if (ab) {
-                subBadges.push(`<span class="list-badge" style="color:#fbbf24; border-color:rgba(245,158,11,0.3); font-size:0.65rem;" title="Class Ability: ${escapeHtml(ab)}">✨ ${escapeHtml(ab)}</span>`);
+                subBadges.push(`<span class="list-badge" style="color:#fbbf24; border-color:rgba(245,158,11,0.3); font-size:0.65rem;" title="Class Ability: ${escapeHtml(ab)}"><i class="pai-sparkles"></i> ${escapeHtml(ab)}</span>`);
             }
         } else if (State.currentTab === 'weapons') {
             const wtypes = (State.system && State.system.weaponTypes) ? State.system.weaponTypes : [];
@@ -591,7 +574,7 @@ function renderSidebar() {
                 const wtNames = ['', 'Long Sword', 'Sword', 'Gloves', 'Spear', 'Axe', 'Staff', 'Rune', 'Long Bow', 'Crossbow', 'Dagger'];
                 const wt = wtNames[item.id - 430] || 'Senjata';
                 mainBadge = `<span class="list-badge" style="color:#38bdf8; border-color:rgba(56,189,248,0.4); font-weight:700;">${escapeHtml(wt)}</span>`;
-                subBadges.push(`<span class="list-badge" style="color:#c084fc; border-color:rgba(192,132,252,0.3);">⚔️ Preset Senjata</span>`);
+                subBadges.push(`<span class="list-badge" style="color:#c084fc; border-color:rgba(192,132,252,0.3);"><i class="pai-sword"></i> Preset Senjata</span>`);
             } else {
                 if (tier > 0) {
                     mainBadge = `<span class="list-badge" style="color:#f59e0b; border-color:rgba(245,158,11,0.3); font-weight:700;">T${tier}</span>`;
@@ -601,7 +584,7 @@ function renderSidebar() {
                     subBadges.push(`<span class="list-badge" style="color:#a78bfa; border-color:rgba(167,139,250,0.3);">${escapeHtml(clsName)}</span>`);
                 }
                 if (isExclusive) {
-                    subBadges.push(`<span class="list-badge" style="color:#ef4444; border-color:rgba(239,68,68,0.3); font-weight:700;">★ Ult</span>`);
+                    subBadges.push(`<span class="list-badge" style="color:#ef4444; border-color:rgba(239,68,68,0.3); font-weight:700;"><i class="pai-crown"></i> Ult</span>`);
                 } else if (tmClasses.length > 0) {
                     subBadges.push(`<span class="list-badge" style="color:#10b981; border-color:rgba(16,185,129,0.3);" title="Kompatibel TM: ${escapeHtml(tmClasses.join(', '))}">+${tmClasses.length} TM</span>`);
                 }
@@ -714,7 +697,7 @@ function toggleStatSidebar() {
 
     if (btn) {
         btn.classList.toggle('active', !isCollapsed);
-        btn.innerHTML = isCollapsed ? '📊 Tampilkan Stats' : '📊 Sembunyikan Stats';
+        btn.innerHTML = isCollapsed ? '<i class="pai-chart-bar-big"></i> Tampilkan Stats' : '<i class="pai-chart-bar-big"></i> Sembunyikan Stats';
     }
 }
 
@@ -727,7 +710,7 @@ function initStatSidebarState() {
             if (sb) sb.classList.add('collapsed');
             if (btn) {
                 btn.classList.remove('active');
-                btn.innerHTML = '📊 Tampilkan Stats';
+                btn.innerHTML = '<i class="pai-chart-bar-big"></i> Tampilkan Stats';
             }
         }
     } catch (_) {}
@@ -770,19 +753,19 @@ function renderEditor() {
 
     switch (State.currentTab) {
         case 'actors': 
-            if (statTitle) statTitle.innerHTML = '📊 Hasil Stat Akhir &amp; Build';
+            if (statTitle) statTitle.innerHTML = '<i class="pai-chart-bar-big"></i> Hasil Stat Akhir &amp; Build';
             if (statSub) statSub.innerText = 'Dual-Level Simulation';
             renderActorEditor(container, item); 
             if (previewContainer) renderActorStatPreview(previewContainer, item);
             break;
         case 'classes': 
-            if (statTitle) statTitle.innerHTML = '📈 Class Stat Scaling (IV)';
+            if (statTitle) statTitle.innerHTML = '<i class="pai-chart-line"></i> Class Stat Scaling (IV)';
             if (statSub) statSub.innerText = 'Job Level Simulation';
             renderClassEditor(container, item); 
             if (previewContainer) renderClassStatPreview(previewContainer, item);
             break;
         case 'races': 
-            if (statTitle) statTitle.innerHTML = '🧬 Nature Stat Modifier';
+            if (statTitle) statTitle.innerHTML = '<i class="pai-human"></i> Nature Stat Modifier';
             if (statSub) statSub.innerText = 'Racial Attributes & Nature Matrix';
             if (typeof renderRaceEditor === 'function') {
                 renderRaceEditor(container, item); 
@@ -801,43 +784,43 @@ function renderEditor() {
             }
             break;
         case 'weapons': 
-            if (statTitle) statTitle.innerHTML = '⚔️ Weapon Stat Inspector';
+            if (statTitle) statTitle.innerHTML = '<i class="pai-sword"></i> Weapon Stat Inspector';
             if (statSub) statSub.innerText = 'Equipment Power & Attributes';
             renderWeaponEditor(container, item); 
             if (previewContainer) renderEquipmentStatPreview(previewContainer, item, 'weapon');
             break;
         case 'armors': 
-            if (statTitle) statTitle.innerHTML = '🛡️ Armor Stat Inspector';
+            if (statTitle) statTitle.innerHTML = '<i class="pai-shield"></i> Armor Stat Inspector';
             if (statSub) statSub.innerText = 'Defense & Stat Modifiers';
             renderArmorEditor(container, item); 
             if (previewContainer) renderEquipmentStatPreview(previewContainer, item, 'armor');
             break;
         case 'skills': 
-            if (statTitle) statTitle.innerHTML = '⚔️ Live Battle & Skill Inspector';
+            if (statTitle) statTitle.innerHTML = '<i class="pai-zap"></i> Live Battle &amp; Skill Inspector';
             if (statSub) statSub.innerText = 'Sideview Combat Simulation';
             renderSkillEditor(container, item); 
             if (previewContainer) renderSkillStatPreview(previewContainer, item);
             break;
         case 'items': 
-            if (statTitle) statTitle.innerHTML = '🧪 Item Inspector';
+            if (statTitle) statTitle.innerHTML = '<i class="pai-potion"></i> Item Inspector';
             if (statSub) statSub.innerText = 'Effect & Value Preview';
             renderItemEditor(container, item); 
             if (previewContainer) renderItemStatPreview(previewContainer, item);
             break;
         case 'enemies': 
-            if (statTitle) statTitle.innerHTML = '👾 Enemy Combat Stats';
+            if (statTitle) statTitle.innerHTML = '<i class="pai-skull"></i> Enemy Combat Stats';
             if (statSub) statSub.innerText = 'Combat Balance & Drops';
             renderEnemyEditor(container, item); 
             if (previewContainer) renderEnemyStatPreview(previewContainer, item);
             break;
         case 'states': 
-            if (statTitle) statTitle.innerHTML = '✨ State / Status Effect';
+            if (statTitle) statTitle.innerHTML = '<i class="pai-diamond-gem"></i> State / Status Effect';
             if (statSub) statSub.innerText = 'Buff / Debuff / Passive';
             renderStateEditor(container, item); 
             if (previewContainer) renderStateStatPreview(previewContainer, item);
             break;
         case 'animations': 
-            if (statTitle) statTitle.innerHTML = '💥 Animation Inspector &amp; Timings';
+            if (statTitle) statTitle.innerHTML = '<i class="pai-sparkle"></i> Animation Inspector &amp; Timings';
             if (statSub) statSub.innerText = 'SE Audio, Flashes & Cells';
             if (typeof renderAnimationEditor === 'function') {
                 renderAnimationEditor(container, item);
@@ -914,7 +897,7 @@ function cloneSelectedEntry() {
 
 let _pendingConfirmCallback = null;
 
-function showConfirmDialog({ title = '⚠️ Konfirmasi Tindakan', message = 'Apakah Anda yakin?', confirmText = 'Lanjutkan', confirmClass = 'btn-danger', onConfirm }) {
+function showConfirmDialog({ title = '<i class="pai-warning-diamond"></i> Konfirmasi Tindakan', message = 'Apakah Anda yakin?', confirmText = 'Lanjutkan', confirmClass = 'btn-danger', onConfirm }) {
     const modal = document.getElementById('confirmModal');
     if (!modal) {
         if (confirm(message)) {
@@ -925,7 +908,7 @@ function showConfirmDialog({ title = '⚠️ Konfirmasi Tindakan', message = 'Ap
     const titleEl = document.getElementById('confirmModalTitle');
     const msgEl = document.getElementById('confirmModalMessage');
     const okBtn = document.getElementById('confirmModalOkBtn');
-    if (titleEl) titleEl.innerText = title;
+    if (titleEl) titleEl.innerHTML = title;
     if (msgEl) msgEl.innerHTML = typeof escapeHtml === 'function' ? escapeHtml(message).replace(/\n/g, '<br>') : message.replace(/\n/g, '<br>');
     if (okBtn) {
         okBtn.className = `btn ${confirmClass}`;
@@ -962,7 +945,7 @@ function deleteSelectedEntry() {
     }
 
     showConfirmDialog({
-        title: '🗑️ Hapus Entri Database',
+        title: '<i class="pai-trash"></i> Hapus Entri Database',
         message: `Hapus entri #${curr.id} (${curr.name || 'Tanpa Nama'})?\n\nJika entri ini berada di akhir daftar, kapasitas data akan dikurangi. Jika di tengah, data akan direset kosong.`,
         confirmText: 'Ya, Hapus Entri',
         confirmClass: 'btn-danger',

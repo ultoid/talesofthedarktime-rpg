@@ -18,15 +18,15 @@ function renderItemStatPreview(container, item) {
             <div class="card-body" style="padding:12px 14px; display:flex; flex-direction:column; gap:12px;">
                 <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:8px; padding:10px; font-size:0.78rem; display:flex; flex-direction:column; gap:6px;">
                     <div style="display:flex; justify-content:space-between;">
-                        <span style="color:var(--text-muted);">💰 Price:</span>
+                        <span style="color:var(--text-muted);">${pai('coins')} Price:</span>
                         <strong style="color:#facc15;">${(item.price || 0).toLocaleString()} Gold</strong>
                     </div>
                     <div style="display:flex; justify-content:space-between;">
-                        <span style="color:var(--text-muted);">🎯 Occasion:</span>
+                        <span style="color:var(--text-muted);">${pai('clock')} Occasion:</span>
                         <strong style="color:#f8fafc;">${['Always', 'Battle Only', 'Menu Only', 'Never'][item.occasion] || 'Always'}</strong>
                     </div>
                     <div style="display:flex; justify-content:space-between;">
-                        <span style="color:var(--text-muted);">🔄 Repeats:</span>
+                        <span style="color:var(--text-muted);">${pai('repeat')} Repeats:</span>
                         <strong style="color:#38bdf8;">${item.repeats}x</strong>
                     </div>
                 </div>
@@ -73,10 +73,10 @@ function renderItemEditor(container, item) {
         <!-- IDENTITAS & PROPERTI ITEM -->
         <div class="card">
             <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-                <h2 title="Pengaturan barang konsumsi, permata soket, dan item kunci">🧪 Item: #${item.id} ${escapeHtml(item.name)}</h2>
+                <h2 title="Pengaturan barang konsumsi, permata soket, dan item kunci">${pai('potion')} Item: #${item.id} ${escapeHtml(item.name)}</h2>
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span class="list-badge" style="color:#fbbf24; border-color:rgba(251,191,36,0.3); font-size:0.8rem; padding:3px 8px;">${escapeHtml(menuCat)}</span>
-                    <span class="list-badge" style="color:${getRarityColor(rarity)}; border-color:${getRarityColor(rarity)}55; font-size:0.8rem; padding:3px 8px; font-weight:700;">★ ${escapeHtml(rarity)}</span>
+                    <span class="list-badge" style="color:${getRarityColor(rarity)}; border-color:${getRarityColor(rarity)}55; font-size:0.8rem; padding:3px 8px; font-weight:700;">${escapeHtml(rarity)}</span>
                     <span style="font-size:0.85rem; color:var(--text-muted);">${item.consumable ? 'Consumable' : 'Reusable'} • Harga: ${item.price} G</span>
                 </div>
             </div>
@@ -146,11 +146,11 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
                             <div class="form-group">
                                 <label title="Pilih kategori menu untuk sistem inventori dan tas item">Kategori Menu (&lt;Menu Category&gt;)</label>
                                 <select class="form-control" onchange="setTagVal(item, 'Menu Category', this.value); setTagVal(item, 'NUSV Category', this.value); setTagVal(item, 'Category', this.value); setUnsaved(true); renderSidebar();">
-                                    <option value="Consumable" ${menuCat === 'Consumable' ? 'selected' : ''}>🧪 Consumable (Obat / Makanan / Potion)</option>
-                                    <option value="Material" ${menuCat === 'Material' ? 'selected' : ''}>🪵 Material (Bahan Alam / Monster)</option>
-                                    <option value="Forge" ${menuCat === 'Forge' ? 'selected' : ''}>⚒️ Forge (Bahan Tempa / Logam / Kristal)</option>
-                                    <option value="Valuable" ${menuCat === 'Valuable' ? 'selected' : ''}>💎 Valuable (Barang Berharga / Harta / Jual)</option>
-                                    <option value="Key Item" ${menuCat === 'Key Item' ? 'selected' : ''}>🗝️ Key Item (Barang Penting / Quest)</option>
+                                    <option value="Consumable" ${menuCat === 'Consumable' ? 'selected' : ''}>Consumable (Obat / Makanan / Potion)</option>
+                                    <option value="Material" ${menuCat === 'Material' ? 'selected' : ''}>Material (Bahan Alam / Monster)</option>
+                                    <option value="Forge" ${menuCat === 'Forge' ? 'selected' : ''}>Forge (Bahan Tempa / Logam / Kristal)</option>
+                                    <option value="Valuable" ${menuCat === 'Valuable' ? 'selected' : ''}>Valuable (Barang Berharga / Harta / Jual)</option>
+                                    <option value="Key Item" ${menuCat === 'Key Item' ? 'selected' : ''}>Key Item (Barang Penting / Quest)</option>
                                     ${!['Consumable', 'Material', 'Forge', 'Valuable', 'Key Item'].includes(menuCat) && menuCat ? `<option value="${escapeHtml(menuCat)}" selected>${escapeHtml(menuCat)} (Custom)</option>` : ''}
                                 </select>
                             </div>
@@ -178,7 +178,7 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
         <!-- PERMATA SOKET & SINTESIS -->
         <div class="grid-2">
             <div class="card">
-                <div class="card-header"><h2 title="Pengaturan properti batu permata untuk soket perlengkapan">💎 Gem Socket Configuration</h2></div>
+                <div class="card-header"><h2 title="Pengaturan properti batu permata untuk soket perlengkapan">${pai('diamond-gem')} Gem Socket Configuration</h2></div>
                 <div class="card-body">
                     <div class="grid-2">
                         <label class="checkbox-label">
@@ -193,27 +193,27 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
                     </div>
                     <div class="stat-grid-6" style="margin-top:10px;">
                         <div class="stat-card-input">
-                            <label style="color:#fb923c;">⚔️ ATK</label>
+                            <label style="color:#fb923c;">${pai('sword')} ATK</label>
                             <input type="text" class="form-control" placeholder="+5" value="${sockAtk}" onchange="setTagVal(item, 'Socket ATK', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #34d399;">
-                            <label style="color:#34d399;">🛡️ DEF</label>
+                            <label style="color:#34d399;">${pai('shield')} DEF</label>
                             <input type="text" class="form-control" placeholder="+5" value="${sockDef}" onchange="setTagVal(item, 'Socket DEF', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #a78bfa;">
-                            <label style="color:#a78bfa;">🔮 MAT</label>
+                            <label style="color:#a78bfa;">${pai('wand')} MAT</label>
                             <input type="text" class="form-control" placeholder="+5" value="${sockMat}" onchange="setTagVal(item, 'Socket MAT', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #38bdf8;">
-                            <label style="color:#38bdf8;">🔰 MDF</label>
+                            <label style="color:#38bdf8;">${pai('shield')} MDF</label>
                             <input type="text" class="form-control" placeholder="+5" value="${sockMdf}" onchange="setTagVal(item, 'Socket MDF', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #f87171;">
-                            <label style="color:#f87171;">❤️ HP</label>
+                            <label style="color:#f87171;">${pai('heart')} HP</label>
                             <input type="text" class="form-control" placeholder="+50" value="${sockMhp}" onchange="setTagVal(item, 'Socket MHP', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #60a5fa;">
-                            <label style="color:#60a5fa;">💧 MP</label>
+                            <label style="color:#60a5fa;">${pai('drop')} MP</label>
                             <input type="text" class="form-control" placeholder="+20" value="${sockMmp}" onchange="setTagVal(item, 'Socket MMP', this.value);">
                         </div>
                     </div>
@@ -221,7 +221,7 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
             </div>
 
             <div class="card">
-                <div class="card-header"><h2>🔨 Sintesis / Crafting (NUSV_ItemSynthesis)</h2></div>
+                <div class="card-header"><h2>${pai('tools')} Sintesis / Crafting (NUSV_ItemSynthesis)</h2></div>
                 <div class="card-body">
                     <div class="form-group">
                         <label>Kategori Resep (&lt;Synthesis Category: ...&gt;)</label>
@@ -240,7 +240,7 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
         <!-- INVOCATION & DAMAGE FORMULA -->
         <div class="card">
             <div class="card-header">
-                <h2 title="Pengaturan peluncuran, akurasi, dan animasi penggunaan barang">🎯 Invocation &amp; Execution</h2>
+                <h2 title="Pengaturan peluncuran, akurasi, dan animasi penggunaan barang">${pai('target')} Invocation &amp; Execution</h2>
             </div>
             <div class="card-body">
                 <div class="grid-3">
@@ -283,7 +283,7 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
 
         <div class="card">
             <div class="card-header">
-                <h2 title="Pengaturan efek damage jika item menghasilkan luka atau pemulihan">💥 Damage Formula &amp; Elements</h2>
+                <h2 title="Pengaturan efek damage jika item menghasilkan luka atau pemulihan">${pai('zap')} Damage Formula &amp; Elements</h2>
             </div>
             <div class="card-body">
                 <div class="grid-4">
@@ -323,7 +323,7 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
         ${renderEffectsCard(item)}
 
         <div class="card">
-            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">📝 Raw Notetags (Direct Edit)</h2></div>
+            <div class="card-header"><h2 title="Editor teks langsung untuk seluruh notetag">${pai('notes')} Raw Notetags (Direct Edit)</h2></div>
             <div class="card-body">
                 <textarea id="rawNoteTextarea" class="form-control" rows="6" onchange="onRawNoteInput(this.value)">${escapeHtml(item.note || '')}</textarea>
             </div>
