@@ -110,7 +110,8 @@ def setup_atlas():
     export_script = os.path.join(PROJECT_DIR, "tools", "export_pixel_art.py")
     if os.path.exists(export_script):
         print("Exporting unique curated 16x16 & 32x32 icons...")
-        subprocess.run([sys.executable, "tools/export_pixel_art.py"], check=True, cwd=PROJECT_DIR)
+        subprocess.run([sys.executable, "tools/export_pixel_art.py", "--scale", "2", "--out-dir", os.path.join(ATLAS_DIR, "unique_icons_32x32")], check=True, cwd=PROJECT_DIR)
+        subprocess.run([sys.executable, "tools/export_pixel_art.py", "--scale", "1", "--out-dir", os.path.join(ATLAS_DIR, "unique_icons_16x16")], check=True, cwd=PROJECT_DIR)
 
     # 4. Rebuild IconSet.png
     iconset_script = os.path.join(PROJECT_DIR, "tools", "build_nusv_iconset.py")

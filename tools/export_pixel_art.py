@@ -74,6 +74,7 @@ def export_unique_icons(tokens, palette, objects, captions, out_dir: str, scale:
 
     t0 = time.time()
     count = 0
+    meta_items = []
     for obj_name, idx in seen.items():
         safe_name = sanitize_filename(obj_name)
         filename = f"{safe_name}.png"
@@ -86,9 +87,15 @@ def export_unique_icons(tokens, palette, objects, captions, out_dir: str, scale:
 
         img = get_sprite_image(tokens, palette, idx, scale=scale)
         img.save(filepath)
+        meta_items.append({"name": obj_name, "file": filename, "index": idx})
         count += 1
         if count % 1000 == 0 or count == total:
             print(f"Saved {count:,} / {total:,} ({count/total*100:.1f}%)")
+
+    meta_path = os.path.join(os.path.dirname(out_dir.rstrip("/\\")), "unique_icons_meta.json")
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump(meta_items, f, ensure_ascii=False, indent=2)
+    print(f"Saved metadata catalog to: {meta_path}")
 
     elapsed = time.time() - t0
     print(f"Successfully exported {count:,} unique icons in {elapsed:.1f}s ({count/elapsed:.1f} img/s)!")
