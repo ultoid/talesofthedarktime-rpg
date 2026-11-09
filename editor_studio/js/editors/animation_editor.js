@@ -614,7 +614,7 @@ AnimEditor.showSkillSelectModal = function(skills) {
                     ${skills.map(s => {
                         const iconOffset = s.iconIndex ? `-${(s.iconIndex % 16) * 24}px -${Math.floor(s.iconIndex / 16) * 24}px` : '0 0';
                         const iconHtml = s.iconIndex 
-                            ? `<span style="display:inline-block; width:24px; height:24px; vertical-align:middle; background:url('img/system/IconSet.png') ${iconOffset} / calc(24px * 16) no-repeat; image-rendering:pixelated;"></span>`
+                            ? `<span style="display:inline-block; width:24px; height:24px; vertical-align:middle; background:url('img/system/IconSet.png?v=784') ${iconOffset} / calc(24px * 16) no-repeat; image-rendering:pixelated;"></span>`
                             : pai('sparkles');
                         return `
                             <button type="button" class="btn btn-secondary" style="text-align: left; display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(30,41,59,0.7); border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer;"

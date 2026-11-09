@@ -12,6 +12,10 @@ __pycache__/
 # Temporary & Extracted Directories
 talesofthedarktime-rpg/
 .gemini/
+scratch/
+pixel_art_atlas/
+tools/*.txt
+img/system/*backup*
 *.bak
 *.backup*.json
 *.backup*.js

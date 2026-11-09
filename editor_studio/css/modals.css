@@ -173,7 +173,7 @@
 }
 
 .icon-preview-sheet {
-    background-image: url('../../img/system/IconSet.png');
+    background-image: url('../../img/system/IconSet.png?v=784');
     background-repeat: no-repeat;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;

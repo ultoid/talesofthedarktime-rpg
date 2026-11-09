@@ -1,10 +1,32 @@
 /**
  * NUSV Database Studio - Modal Controller: modals/icon_picker.js
- * Visual 32x32 Icon Picker for RPG Maker MV IconSet.png
+ * Visual 32x32 Icon Picker for RPG Maker MV IconSet.png (Supports up to 1,392 icons)
  */
 
 let currentIconPickerCallback = null;
 let currentIconPickerSelectedIdx = 0;
+let iconPickerMappingData = null;
+
+/**
+ * Lazy load IconSet mapping metadata.
+ */
+async function getIconPickerMapping() {
+    if (iconPickerMappingData) return iconPickerMappingData;
+    try {
+        const resp = await fetch('img/system/IconSet_mapping.json?v=784');
+        if (resp.ok) {
+            const list = await resp.json();
+            iconPickerMappingData = {};
+            list.forEach(item => {
+                iconPickerMappingData[item.index] = item;
+            });
+            return iconPickerMappingData;
+        }
+    } catch (e) {
+        // Fallback silently
+    }
+    return null;
+}
 
 /**
  * Render visual icon picker form field with preview box, index input, and IconSet button.
@@ -34,7 +56,7 @@ function renderIconPickerField(label, iconIndex, onPickExpr, titleText = "Pilih 
 /**
  * Open the visual icon picker modal. Supports both (callback) and (initialIdx, callback).
  */
-function openIconPickerModal(initialValOrCallback, maybeCallback) {
+async function openIconPickerModal(initialValOrCallback, maybeCallback) {
     let callback = null;
     let initialIdx = 0;
 
@@ -59,6 +81,9 @@ function openIconPickerModal(initialValOrCallback, maybeCallback) {
     // Update modal header selection preview
     updateIconPickerSelectionPreview(initialIdx);
 
+    // Ensure mapping is loaded
+    await getIconPickerMapping();
+
     // Populate and highlight icons in grid
     renderIconPickerGrid(initialIdx);
 
@@ -80,7 +105,10 @@ function closeIconPickerModal() {
 function updateIconPickerSelectionPreview(idx) {
     const sheet = document.getElementById('iconPickerPreviewSheet');
     const label = document.getElementById('iconPickerSelectedId');
-    if (label) label.textContent = `#${idx}`;
+    const mapping = iconPickerMappingData ? iconPickerMappingData[idx] : null;
+    const nameSuffix = mapping && mapping.name && idx >= 320 ? ` (${mapping.name})` : '';
+
+    if (label) label.textContent = `#${idx}${nameSuffix}`;
     if (sheet) {
         const col = idx % 16;
         const row = Math.floor(idx / 16);
@@ -121,7 +149,7 @@ function confirmIconSelection() {
 }
 
 /**
- * Filter icons in the grid by numerical ID.
+ * Filter icons in the grid by numerical ID or text name.
  */
 function filterIconGrid(query) {
     const container = document.getElementById('iconGridContainer') || document.getElementById('iconPickerGrid');
@@ -131,24 +159,29 @@ function filterIconGrid(query) {
 
     btns.forEach(btn => {
         const id = btn.dataset.iconId || '';
+        const name = (btn.dataset.iconName || '').toLowerCase();
+        const cat = (btn.dataset.iconCat || '').toLowerCase();
+
         if (!q) {
             btn.style.display = 'inline-flex';
         } else {
-            const matches = id.includes(q) || `#${id}`.includes(q);
+            const matches = id === q || `#${id}`.includes(q) || id.includes(q) || name.includes(q) || cat.includes(q);
             btn.style.display = matches ? 'inline-flex' : 'none';
         }
     });
 }
 
 /**
- * Render all 320 tiles from IconSet.png in the modal grid.
+ * Render all 1,392 tiles from IconSet.png in the modal grid.
  */
 function renderIconPickerGrid(initialSelectedIdx = 0) {
     const grid = document.getElementById('iconGridContainer') || document.getElementById('iconPickerGrid');
     if (!grid) return;
 
-    // If grid already rendered, just update selected class and scroll into view
-    if (grid.children.length >= 320) {
+    const totalIcons = 784;
+
+    // If grid already rendered with all 1,392 icons, just update selection
+    if (grid.children.length >= totalIcons) {
         const btns = grid.querySelectorAll('.icon-tile-btn');
         let selectedEl = null;
         btns.forEach(btn => {
@@ -167,7 +200,6 @@ function renderIconPickerGrid(initialSelectedIdx = 0) {
     }
 
     grid.innerHTML = '';
-    const totalIcons = 320;
     let selectedEl = null;
 
     for (let i = 0; i < totalIcons; i++) {
@@ -176,18 +208,25 @@ function renderIconPickerGrid(initialSelectedIdx = 0) {
         const bgX = -col * 32;
         const bgY = -row * 32;
 
+        const mapping = iconPickerMappingData ? iconPickerMappingData[i] : null;
+        const iconName = mapping ? mapping.name : (i === 0 ? "Empty" : `Icon #${i}`);
+        const iconCat = mapping ? mapping.category : "Original Game Icons";
+
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = `icon-tile-btn ${i === initialSelectedIdx ? 'selected' : ''}`;
         btn.dataset.iconId = String(i);
-        btn.title = `Icon #${i} (Klik untuk pilih, klik 2x untuk terapkan)`;
+        btn.dataset.iconName = iconName;
+        btn.dataset.iconCat = iconCat;
+        btn.title = `#${i}: ${iconName} [${iconCat}] (Klik untuk pilih, klik 2x terapkan)`;
 
         btn.onmouseover = () => {
             const previewSheet = document.getElementById('iconPickerPreviewSheet');
             const previewId = document.getElementById('iconPickerSelectedId');
             if (previewSheet && previewId) {
                 previewSheet.style.backgroundPosition = `${bgX}px ${bgY}px`;
-                previewId.textContent = `#${i}`;
+                const labelText = i >= 320 && mapping && mapping.name ? `#${i} - ${mapping.name}` : `#${i}`;
+                previewId.textContent = labelText;
             }
         };
 
