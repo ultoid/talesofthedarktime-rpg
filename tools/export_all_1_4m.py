@@ -45,12 +45,12 @@ def tokens_to_png_bytes(tokens_row, palette):
     idat_chunk = struct.pack('>I', len(idat_data)) + b'IDAT' + idat_data + struct.pack('>I', idat_crc)
     return PNG_SIG + IHDR_CHUNK + idat_chunk + IEND_CHUNK
 
-def export_all(mode="categorized", out_dir=None, max_workers=8):
+def export_all(mode="categorized", out_dir=None, max_workers=12):
     tokens_path = os.path.join(DATA_DIR, "tokens.npy")
     palette_path = os.path.join(DATA_DIR, "palette.npy")
     objects_path = os.path.join(DATA_DIR, "objects.json")
 
-    print("Loading data arrays...")
+    print("Loading data arrays...", flush=True)
     tokens = np.load(tokens_path, mmap_mode="r")
     palette = np.load(palette_path)
     with open(objects_path, "r", encoding="utf-8") as f:
@@ -61,41 +61,42 @@ def export_all(mode="categorized", out_dir=None, max_workers=8):
     if mode == "flat":
         target_dir = out_dir or os.path.join(DATA_DIR, "all_icons_1.4m_flat")
         os.makedirs(target_dir, exist_ok=True)
-        print(f"Exporting ALL {total:,} icons into single flat folder: {target_dir}")
-        print("Note: Windows Explorer may take time to open folders with >1M files.")
+        print(f"Exporting ALL {total:,} icons into single flat folder: {target_dir}", flush=True)
+        print("Note: Windows Explorer may take time to open folders with >1M files.", flush=True)
 
         t0 = time.time()
         chunk_size = 10000
-        for start_idx in range(0, total, chunk_size):
-            end_idx = min(start_idx + chunk_size, total)
-            chunk_tokens = tokens[start_idx:end_idx]
-            chunk_objs = objects[start_idx:end_idx]
 
-            def save_item(offset):
-                idx = start_idx + offset
-                png_bytes = tokens_to_png_bytes(chunk_tokens[offset], palette)
-                safe_name = sanitize_name(chunk_objs[offset])
-                fname = f"{idx:07d}_{safe_name}.png"
-                with open(os.path.join(target_dir, fname), "wb") as f:
-                    f.write(png_bytes)
+        def save_flat_item(item):
+            tok, idx, name = item
+            png_bytes = tokens_to_png_bytes(tok, palette)
+            fname = f"{idx:07d}_{name}.png"
+            with open(os.path.join(target_dir, fname), "wb") as f:
+                f.write(png_bytes)
 
-            with ThreadPoolExecutor(max_workers=max_workers) as ex:
-                list(ex.map(save_item, range(end_idx - start_idx)))
+        with ThreadPoolExecutor(max_workers=max_workers) as ex:
+            for start_idx in range(0, total, chunk_size):
+                end_idx = min(start_idx + chunk_size, total)
+                chunk_items = [
+                    (tokens[i], i, sanitize_name(objects[i]))
+                    for i in range(start_idx, end_idx)
+                ]
+                list(ex.map(save_flat_item, chunk_items))
 
-            elapsed = time.time() - t0
-            done = end_idx
-            speed = done / elapsed if elapsed > 0 else 0
-            eta_min = (total - done) / speed / 60 if speed > 0 else 0
-            print(f"[{done:,}/{total:,}] ({done/total*100:.1f}%) - {speed:.0f} img/s - ETA: {eta_min:.1f} min")
+                elapsed = time.time() - t0
+                done = end_idx
+                speed = done / elapsed if elapsed > 0 else 0
+                eta_min = (total - done) / speed / 60 if speed > 0 else 0
+                print(f"[{done:,}/{total:,}] ({done/total*100:.1f}%) - {speed:.0f} img/s - ETA: {eta_min:.1f} min", flush=True)
 
     elif mode == "categorized":
         target_dir = out_dir or os.path.join(DATA_DIR, "all_icons_by_category")
         os.makedirs(target_dir, exist_ok=True)
-        print(f"Exporting ALL {total:,} icons organized into category subfolders: {target_dir}")
+        print(f"Exporting ALL {total:,} icons organized into category subfolders: {target_dir}", flush=True)
 
         # Pre-create category directories
         unique_cats = set(objects)
-        print(f"Creating {len(unique_cats):,} category directories...")
+        print(f"Creating {len(unique_cats):,} category directories...", flush=True)
         cat_dirs = {}
         for cat in unique_cats:
             safe_c = sanitize_name(cat)
@@ -103,7 +104,7 @@ def export_all(mode="categorized", out_dir=None, max_workers=8):
             os.makedirs(p, exist_ok=True)
             cat_dirs[cat] = p
 
-        print("Pre-computing filepaths...")
+        print("Pre-computing filepaths...", flush=True)
         counts = {}
         target_filepaths = []
         for obj in objects:
@@ -111,30 +112,32 @@ def export_all(mode="categorized", out_dir=None, max_workers=8):
             counts[obj] = c
             target_filepaths.append(os.path.join(cat_dirs[obj], f"{c:04d}.png"))
 
-        print(f"Starting multithreaded export ({max_workers} workers)...")
+        print(f"Starting multithreaded export ({max_workers} workers)...", flush=True)
         t0 = time.time()
         chunk_size = 10000
-        for start_idx in range(0, total, chunk_size):
-            end_idx = min(start_idx + chunk_size, total)
-            chunk_tokens = tokens[start_idx:end_idx]
-            chunk_paths = target_filepaths[start_idx:end_idx]
 
-            def save_cat_item(offset):
-                png_bytes = tokens_to_png_bytes(chunk_tokens[offset], palette)
-                with open(chunk_paths[offset], "wb") as f:
-                    f.write(png_bytes)
+        def save_cat_item(item):
+            tok, path = item
+            png_bytes = tokens_to_png_bytes(tok, palette)
+            with open(path, "wb") as f:
+                f.write(png_bytes)
 
-            with ThreadPoolExecutor(max_workers=max_workers) as ex:
-                list(ex.map(save_cat_item, range(end_idx - start_idx)))
+        with ThreadPoolExecutor(max_workers=max_workers) as ex:
+            for start_idx in range(0, total, chunk_size):
+                end_idx = min(start_idx + chunk_size, total)
+                chunk_tokens = tokens[start_idx:end_idx]
+                chunk_paths = target_filepaths[start_idx:end_idx]
+                items = zip(chunk_tokens, chunk_paths)
+                list(ex.map(save_cat_item, items))
 
-            elapsed = time.time() - t0
-            done = end_idx
-            speed = done / elapsed if elapsed > 0 else 0
-            eta_min = (total - done) / speed / 60 if speed > 0 else 0
-            print(f"[{done:,}/{total:,}] ({done/total*100:.1f}%) - {speed:.0f} img/s - ETA: {eta_min:.1f} min")
+                elapsed = time.time() - t0
+                done = end_idx
+                speed = done / elapsed if elapsed > 0 else 0
+                eta_min = (total - done) / speed / 60 if speed > 0 else 0
+                print(f"[{done:,}/{total:,}] ({done/total*100:.1f}%) - {speed:.0f} img/s - ETA: {eta_min:.1f} min", flush=True)
 
-    print(f"\nAll {total:,} sprites exported successfully in {(time.time() - t0)/60:.2f} minutes!")
-    print(f"Output directory: {target_dir}")
+    print(f"\nAll {total:,} sprites exported successfully in {(time.time() - t0)/60:.2f} minutes!", flush=True)
+    print(f"Output directory: {target_dir}", flush=True)
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "categorized"
