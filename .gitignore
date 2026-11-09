@@ -13,10 +13,19 @@ __pycache__/
 talesofthedarktime-rpg/
 .gemini/
 scratch/
+
+# Large External Datasets & Generated Assets (Restorable via `python tools/fetch_external_assets.py`)
+# 1. Pixel Art Atlas (~1.5GB binary dataset containing 1,409,404 sprites from Hugging Face: Angais/pixel-art-atlas-1.4m)
 pixel_art_atlas/
 database/pixel_art_atlas/
+
+# 2. VFX Spritesheets & Animations (~5GB generated asset directory created by `node tools/generate_all_vfx_assets.mjs`)
 database/vfx assets/
+
+# 3. PixelFX Source Repository (Cloned from https://github.com/patch-gg/pixelfx.git for VFX generation)
 temp_pixelfx/
+
+# Logs, Editor Dumps & Backups
 tools/*.txt
 img/system/*backup*
 *.bak

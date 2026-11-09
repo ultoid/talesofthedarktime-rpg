@@ -107,6 +107,27 @@ python3 tools/test_browser_parity.py
 
 ---
 
+## 📦 Mengunduh & Memulihkan Aset Eksternal (External Assets Setup)
+
+Beberapa dataset aset berukuran sangat besar (~6.5 GB) sengaja di-ignore dari repository Git demi menjaga kecepatan clone dan batas kuota GitHub:
+1. **Pixel Art Atlas (1.4M Sprites, ~1.5 GB)**: Dataset biner Hugging Face (`Angais/pixel-art-atlas-1.4m`) yang digunakan untuk kurasi ribuan icon pixel art.
+2. **VFX Spritesheets & Animations (~5 GB)**: Ribuan frame animasi partikel beresolusi tinggi yang di-generate dari repositori PixelFX (`https://github.com/patch-gg/pixelfx.git`).
+
+### Cara Otomatis di PC Baru (One-Command):
+Jalankan script pemulih otomatis yang telah disediakan:
+```bash
+python tools/fetch_external_assets.py --all
+```
+*Atau opsi per kategori:*
+* `python tools/fetch_external_assets.py --vfx` : Setup repositori PixelFX dan render ulang seluruh berkas animasi VFX.
+* `python tools/fetch_external_assets.py --atlas`: Unduh dataset Pixel Art Atlas 1.4M dan susun ulang `img/system/IconSet.png`.
+
+### 🤖 Command / Prompt untuk AI di PC Baru:
+Jika kamu membuka proyek ini dengan Coding AI (Antigravity, Claude Code, Cursor, dll.) di komputer baru, kamu cukup menyalin instruksi ini:
+> *"Tolong pulihkan semua aset eksternal proyek dengan menjalankan `python tools/fetch_external_assets.py --all`, pastikan semua folder aset dan IconSet terpasang, lalu verifikasi integritas dengan `python tools/verify_database_integrity.py`."*
+
+---
+
 ## 📁 Struktur Direktori Proyek
 
 ```text
@@ -125,6 +146,7 @@ python3 tools/test_browser_parity.py
 │   └── rpg_*.js             # MV engine core files
 ├── tests/                   # Unit test engine untuk rule equip, stat system, dan stamina
 ├── tools/                   # Suite perkakas Python aktif (server, bundler, verifikasi)
+│   ├── fetch_external_assets.py # Downloader & restorer aset eksternal (Atlas & VFX)
 │   ├── launch_studio.py     # Desktop window launcher
 │   ├── nusv_editor_server.py# Backend REST API database server
 │   ├── bundle_editor.py     # Bundler modul editor_studio
