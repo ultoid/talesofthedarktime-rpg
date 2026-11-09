@@ -19,7 +19,7 @@ if PROJECT_DIR not in sys.path:
 from tools.curate_iconset import get_master_curated_blocks
 ICONSET_PATH = os.path.join(PROJECT_DIR, "img", "system", "IconSet.png")
 BACKUP_PATH = os.path.join(PROJECT_DIR, "img", "system", "IconSet_backup_original.png")
-DATA_DIR = os.path.join(PROJECT_DIR, "pixel_art_atlas")
+DATA_DIR = os.path.join(PROJECT_DIR, "database", "pixel_art_atlas") if os.path.exists(os.path.join(PROJECT_DIR, "database", "pixel_art_atlas")) else os.path.join(PROJECT_DIR, "pixel_art_atlas")
 ICONS_32_DIR = os.path.join(DATA_DIR, "unique_icons_32x32")
 META_PATH = os.path.join(DATA_DIR, "unique_icons_meta.json")
 

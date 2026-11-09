@@ -16,7 +16,7 @@ from PIL import Image
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
-DEFAULT_DATA_DIR = os.path.join(PROJECT_DIR, "pixel_art_atlas")
+DEFAULT_DATA_DIR = os.path.join(PROJECT_DIR, "database", "pixel_art_atlas") if os.path.exists(os.path.join(PROJECT_DIR, "database", "pixel_art_atlas")) else os.path.join(PROJECT_DIR, "pixel_art_atlas")
 
 INVALID_CHARS_RE = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
 

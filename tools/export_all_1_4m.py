@@ -16,7 +16,7 @@ import numpy as np
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
-DATA_DIR = os.path.join(PROJECT_DIR, "pixel_art_atlas")
+DATA_DIR = os.path.join(PROJECT_DIR, "database", "pixel_art_atlas") if os.path.exists(os.path.join(PROJECT_DIR, "database", "pixel_art_atlas")) else os.path.join(PROJECT_DIR, "pixel_art_atlas")
 
 # Pre-compute static PNG chunks for 16x16 RGBA
 ihdr_data = struct.pack('>IIBBBBB', 16, 16, 8, 6, 0, 0, 0)

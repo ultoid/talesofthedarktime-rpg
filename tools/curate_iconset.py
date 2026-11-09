@@ -8,7 +8,7 @@ Every single icon is verified to exist in the catalog and be 100% semantically a
 import os
 import json
 
-META_PATH = "pixel_art_atlas/unique_icons_meta.json"
+META_PATH = "database/pixel_art_atlas/unique_icons_meta.json" if os.path.exists("database/pixel_art_atlas/unique_icons_meta.json") else "pixel_art_atlas/unique_icons_meta.json"
 
 def get_master_curated_blocks():
     # 1. Swords & Greatswords (32 icons - 2 rows: Row 20 & 21)
