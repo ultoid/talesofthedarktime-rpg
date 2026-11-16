@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = join(__dirname, "..");
 const PIXELFX_DIR = join(ROOT, "temp_pixelfx");
-const OUT_DIR = join(ROOT, "database", "vfx assets");
+const OUT_DIR = join(ROOT, "database", "pixelfx");
 
 const CRC = new Int32Array(256);
 for (let n = 0; n < 256; n++) {
@@ -280,9 +280,9 @@ Koleksi lengkap seluruh animasi efek pixel art dari [pixelfx](https://patch-gg.g
 
 ## Struktur Folder
 
-Folder disimpan di \`database/vfx assets/\`:
+Folder disimpan di \`database/pixelfx/\`:
 \`\`\`
-database/vfx assets/
+database/pixelfx/
 ├── <category>/
 │   └── <effect_name>/
 │       ├── <effect_name>_default.png    (Original palette)

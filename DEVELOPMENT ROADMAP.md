@@ -72,25 +72,88 @@ flowchart TD
 ---
 
 ### 🖥️ Fase 2: Menu UI, HUD & Kustomisasi Tampilan Interface
-*Fokus: Memastikan pemain mendapatkan informasi status karakter dengan nyaman dan jelas.*
+*Fokus: Memastikan pemain mendapatkan informasi status karakter dengan nyaman, taktis, dan terstandarisasi melalui arsitektur visual IconSet yang terintegrasi.*
 
-- [ ] **2.1 Tata Letak Menu Utama (Main Menu Layout)**
-  - [ ] Kustomisasi susunan opsi menu: `[Barang] [Keahlian] [Perlengkapan] [Status] [Formasi] [Pengaturan] [Simpan]`.
-  - [ ] Pastikan tampilan koin mata uang menampilkan **Koin Saka** (bukan sekadar simbol Gold standar).
-  - [ ] Tampilkan bar status mini di jendela menu: Wajah Karakter, HP, MP, dan Stamina.
-- [ ] **2.2 Layar Status Karakter (Status Window Overhaul)**
-  - [ ] Tampilkan parameter lengkap Nusvanir:
-    - Parameter Utama: *Max HP, Max MP, Stamina, ATK (Serangan Fisik), DEF (Pertahanan Fisik), MAT (Kekuatan Sihir), MDF (Pertahanan Sihir), AGI (Kecepatan), LUK (Keberuntungan/Kritikal)*.
-    - Ketahanan Elemen (*Element Resistances*): Api, Air, Angin, Tanah, Cahaya, Kegelapan, Void.
-  - [ ] Integrasi profil singkat karakter (biografi, asal ras Avesari/Nelayan).
-- [ ] **2.3 Layar Perlengkapan & Inventori (Equip & Item Menu)**
-  - [ ] Pastikan 5 slot perlengkapan Nusvanir aktif: Senjata, Perisai, Pelindung Kepala, Zirah Tubuh, Aksesoris.
-  - [ ] Aktifkan plugin `auto-text-wrap` agar deskripsi lore senjata/item panjang tidak terpotong tepi layar.
-  - [ ] Pastikan perbandingan perubahan stat saat berganti senjata (*stat preview*) terlihat jelas (angka hijau = naik, merah = turun).
+- [ ] **2.1 Tata Letak Menu Utama & Ikon Perintah (Main Menu & Command Icons)**
+  - [ ] Kustomisasi susunan opsi menu: `[Barang] [Keahlian] [Perlengkapan] [Status] [Formasi] [Pengaturan] [Simpan] [Keluar]` (`YEP_MainMenuManager`).
+  - [ ] Integrasi Ikon Perintah Menu Navigasi (`\I[x]`):
+    - **Item / Inventaris:** Tas ransel petualang (*backpack*) atau kantong perbekalan.
+    - **Skill / Keahlian:** Buku mantra terbuka (*grimoire*) atau kilatan aura energi.
+    - **Equip / Perlengkapan:** Zirah dada bersilang dengan pedang.
+    - **Status:** Kartu profil / siluet kepala karakter.
+    - **Class / Pohon Profesi:** Lencana lambang kelas (*crest*) atau cabang keahlian.
+    - **Formation / Party (Pilihan Aset Atlas `database/pixel_art_atlas/unique_icons_32x32/`):**
+      - *Opsi Roster Karakter (Teks 'Party'):* `person.png` (siluet petualang klasik) atau `knight helmet.png` (ksatria bertaring).
+      - *Opsi Mekanikal Barisan (Teks 'Formation'):* `circular arrows icon.png` (dua panah rotasi swap giliran) atau `chess pawn.png` (bidak catur taktis).
+      - *Opsi Pasukan Gilda:* `war banner.png` / `heraldic banner.png` (panji perang militer).
+    - **Quest Journal:** Buku catatan jurnal misi bertinta bulu ayam.
+    - **Options:** Roda gigi mekanikal (*gear/cogwheel*).
+    - **Save / Simpan:** Buku catatan bersinar rune (`Saved Icon: 231`) vs buku kosong (`Empty Icon: 230`).
+    - **Game End:** Pintu gerbang keluar benteng.
+  - [ ] Standardisasi mata uang resmi: **Koin Saka** (`Gold Icon: 313`) menggantikan simbol Gold standar.
+  - [ ] Tampilkan bar status mini di jendela menu: Wajah Karakter (*Enhanced Face Crop 82%*), bar HP, MP, dan SP (Stamina Points dinamis).
+
+- [ ] **2.2 Layar Status Karakter (Status Window Overhaul — `NUSV_StatusScreen.js`)**
+  - [ ] Tata letak modern 3 kolom Genshin-style dengan visualisasi parameter lengkap Nusvanir:
+    - **Resource Pools:** Max HP (Hati merah), Max MP (Kristal biru), Max SP Dinamis (Petir hijau/oranye pengganti TP).
+    - **6 Base Stats Inti:**
+      - *STR (Strength):* Otot bisep bersinar / kapak merah pemukul.
+      - *INT (Intelligence):* Buku sihir terbuka / mata arcane biru.
+      - *DEX (Dexterity):* Tangan membidik / busur bersilang presisi.
+      - *AGI (Agility):* Sayap melayang / sepatu lari angin.
+      - *VIT (Vitality):* Perisai perunggu / jantung berbaju zirah pelindung.
+      - *LUK (Luck):* Daun semanggi / koin takdir keberuntungan.
+    - **Stat Tempur Turunan & Formula:** ATK, DEF, MAT, MDF, HIT, EVA, CRI (Crit Rate), CDM (Crit Damage), Armor Penetration, Magic Penetration, dan CTB Action Speed.
+    - **11 Elemen Afinitas Nusvanir:** Neutral, Fire, Water, Earth, Air, Electric, Ice, Steel, Sound, Holy, Dark.
+  - [ ] Tampilan 109 Status Efek (States):
+    - *Status Ailments (CC & DoT):* Death, Defend, Poison, Burn, Bleed, Paralyze, Sleep, Confuse, Curse, Stun, Slow, Freeze, Blind, Fear, Silence, Root, Vulnerable, Haste, Taunt.
+    - *Penanda Taktikal Elemen:* Soaked, Shock, Petrify, Float, Marked.
+    - *Universal Stat Stages:* ATK Up/Down, DEF Up/Down, MAT Up/Down, MDF Up/Down, Speed Up, Critical Focus, Evasion Up, Magic Barrier.
+    - *Stance Tempur:* Berserk Mode, Dragon Stance, Shadow Mode, Avatar of Guardian, State of Nirvana, Chi Hyper-Burst, Ancestral Protection.
+    - *12 Lambang Ras Nusvanir:* Pribumi, Wahanarsa, Asrivana, Avesari, Butoraksa, Garuda, Hanorok, Nagarasven, Rakshorien, Troliogoro, Dewantara, Bhuta.
+  - [ ] Integrasi profil singkat karakter (biografi, ras asal, dan pasif alami).
+
+- [ ] **2.3 Layar Perlengkapan & Inventori (`NUSV_InventoryUI.js` & `NUSV_ItemMenuCategories.js`)**
+  - [ ] **7 Slot Perlengkapan Nusvanir & Placeholder Ikon:**
+    - Slot 1: Primary Weapon (Pedang / Busur / Tongkat — *placeholder icon 96*)
+    - Slot 2: Secondary Weapon / Offhand (Perisai / Belati Offhand / Rune Kiri — *placeholder icon 128*)
+    - Slot 3: Helm (Pelindung kepala — *placeholder icon 130*)
+    - Slot 4: Armor (Zirah dada — *placeholder icon 135*)
+    - Slot 5: Boots (Sepatu tempur — *placeholder icon 139*)
+    - Slot 6: Accessory 1 & Accessory 2 (Cincin / Amulet — *placeholder icon 144*)
+    - Slot 7: Relic Universal (Artefak naga / pusaka kuno — *placeholder icon 160*)
+    - Slot Lepas / Kosong: Lingkaran garis putus-putus (`Empty / Remove Icon: 16`).
+  - [ ] Penegakan aturan slot: Senjata 2-Handed otomatis menyegel Slot 2 dan melepas offhand ke tas (`NUSV_EquipRules.js`).
+  - [ ] **Kategori Tab Inventaris Terstruktur (`NUSV_ItemMenuCategories.js`):**
+    - `Consumables:` Potion (HP), Ether (MP), Stamina Drop (SP), Elixir, Phoenix Feather, 10 Obat Penawar Status, 5 Tonik Stat Buff, Smoke Bomb.
+    - `Materials:` 33 Material Crafting Tier 1–5 (Logam/Bijih, Kayu, Kulit/Sisik, Kain/Serat, Herbal/Bunga, Inti Elemental).
+    - `Forge & Socket:` Kristal Soket Stat T1–T3 (STR, INT, DEX, AGI, VIT, LUK), Life/Mana/Stamina Crystals, Enhance Stones (Upgrade +1 s/d +15), Socket Chisel.
+    - `Valuables:` Komoditas jual Saka (Tembaga, Perak, Emas Batangan, Permata Mentah, Relik Naga Kuno).
+    - `Key Items:` 8 Dokumen Perjanjian Iblis (*Covenant*), Lencana Gilda, Kunci Reruntuhan, Peta Dunia, Memory Shard, dan 4 Grimoire Eksplorasi Map (*Lumos, Garuda's Wings, Trailblaze, Water Strider*).
+  - [ ] Visualisasi Soket & Tingkat Upgrade:
+    - Slot Soket Kosong `[○]` vs Terisi Permata `[●]` (`NUSV_SocketCore.js`).
+    - Tingkat Penempaan Senjata (+1 s/d +15) dengan indikator visual tingkat kelangkaan (*Common, Uncommon, Rare, Epic, Legendary*).
+  - [ ] Aktifkan `NUSV_AutoTextWrap.js` agar lore item panjang terbungkus rapi tanpa terpotong tepi layar.
+  - [ ] Indikator komparasi stat equipment (*stat preview*: hijau naik, merah turun).
+
 - [ ] **2.4 Menu Opsi & Pengaturan Game (`NUSV_OptionsCore`)**
-  - [ ] Pengaturan volume terpisah: BGM, BGS, ME, dan SE.
-  - [ ] Pengaturan kecepatan animasi tempur (*Battle Speed*).
-  - [ ] Slider tingkat kesulitan (*Difficulty Slider*: Normal / Menantang / Ekstrem).
+  - [ ] Pengaturan volume audio independen: BGM, BGS, ME, dan SE.
+  - [ ] Pengaturan kecepatan animasi tempur & battle log (Kecepatan 1–5).
+  - [ ] Pilihan Slider Tingkat Kesulitan (*Difficulty Slider*: Easy, Normal, Hard, Nightmare dengan ikon daun, pedang, tengkorak perak, dan tengkorak api).
+  - [ ] Fitur Auto-Dash & Koreksi Baseline Vertikal Font GameFont (`NUSV_GameFontBaseline.js`).
+
+- [ ] **2.5 Arsitektur Master IconSet Nusvanir (Pixel Atlas Grid 16 Kolom × 32×32 px)**
+  - [ ] Standardisasi kanvas Master `IconSet.png` (512×1568 px / 784 slot ikon terstruktur, dipandu oleh `NUSV_ICONSET_GUIDE.md` & `tools/curate_iconset.py`):
+    - **Baris 0 – 3 (ID 0 – 63):** UI Sistem, Menu Navigasi, Command Tempur (Attack, Guard, Magic, Summon, Ultimate), Pools (HP/MP/SP), 6 Base Stats, Saka (313), Save/Load (231/230), Formasi (`person.png` / `circular arrows icon.png`).
+    - **Baris 4 – 7 (ID 64 – 127):** 11 Afinitas Elemen, Proyektil Sihir, dan 10 Tipe Senjata Dasar T1–T5 (Long Sword, Sword, Gloves, Spear, Axe, Staff, Rune, Long Bow, Crossbow, Dagger).
+    - **Baris 8 – 11 (ID 128 – 191):** Zirah (Clothes, Robe, Light, Heavy), Perisai (Light/Heavy), Pelindung Kepala, Sepatu Bot, Aksesori, Relik & Placeholder Slot Kosong.
+    - **Baris 12 – 16 (ID 192 – 271):** Consumables (Pemulih, 10 Penawar Ailment, 5 Tonik Stat), 4 Grimoire Eksplorasi, dan Quest Journal Icons.
+    - **Baris 17 – 22 (ID 272 – 367):** 33 Material Crafting Resep (Logam, Kayu, Kulit, Kain, Herbal, Inti Elemen) & Valuables (Koin/Permata Saka).
+    - **Baris 23 – 27 (ID 368 – 447):** Forge & Socket (Kristal Permata T1–T3, Batu Upgrade +1–+15, Socket Chisel).
+    - **Baris 28 – 34 (ID 448 – 559):** 109 States Kanonikal (Status Ailments CC/DoT, +/- Stat Stages, Stances, Lambang 12 Ras Nusvanir).
+    - **Baris 35 – 45 (ID 560 – 735):** Skill Tempur Kelas (Serangan Fisik, Mantra Elemental, Penyembuhan, Pasif Kelas, dan Finisher).
+    - **Baris 46+ (ID 736 – 783):** Emblem 50 Kelas Profesi (Tier 1 s/d Tier 5) & Key Items Khusus (8 Perjanjian Iblis, Kunci Ruin).
+  - [ ] Pemanfaatan katalog sumber daya lokal 6.194 ikon di `database/pixel_art_atlas/unique_icons_32x32/` dan kurasi visual interaktif melalui `tools/nusv_iconset_picker.html`.
 
 ---
 

@@ -25,7 +25,7 @@ import shutil
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 PIXELFX_DIR = os.path.join(PROJECT_DIR, "temp_pixelfx")
-VFX_OUT_DIR = os.path.join(PROJECT_DIR, "database", "vfx assets")
+VFX_OUT_DIR = os.path.join(PROJECT_DIR, "database", "pixelfx")
 ATLAS_DIR = os.path.join(PROJECT_DIR, "database", "pixel_art_atlas")
 
 def download_with_progress(url, dest_path):

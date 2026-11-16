@@ -21,6 +21,7 @@ database/pixel_art_atlas/
 
 # 2. VFX Spritesheets & Animations (~5GB generated asset directory created by `node tools/generate_all_vfx_assets.mjs`)
 database/vfx assets/
+database/pixelfx/
 
 # 3. PixelFX Source Repository (Cloned from https://github.com/patch-gg/pixelfx.git for VFX generation)
 temp_pixelfx/
