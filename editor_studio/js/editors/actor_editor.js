@@ -982,9 +982,12 @@ function renderActorStatPreview(container, actor) {
                 <!-- 6 Core Attributes (2 columns: Physical & Special) -->
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
                     ${CORE_ATTRIBUTES.map(a => `
-                        <div class="stat-card-input" id="sim-core-${a.code}-card" style="border-left: 3px solid ${a.color}; padding:6px 8px; cursor:help;" data-hover-name="${a.icon} ${a.name} (${a.code})" title="${a.desc || ''}&#10;Rumus: ${a.formula || ''}">
+                        <div class="stat-card-input" id="sim-core-${a.code}-card" style="border-left: 3px solid ${a.color}; padding:6px 8px; cursor:help;" data-hover-name="${escapeHtml(a.name)} (${a.code})" title="${escapeHtml(a.desc || '')}&#10;Rumus: ${escapeHtml(a.formula || '')}">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="color:${a.color}; font-weight:700; font-size:0.78rem;">${a.icon} ${a.code}</span>
+                                <div>
+                                    <div style="color:${a.color}; font-weight:700; font-size:0.78rem; line-height:1.2;">${a.icon} ${a.code}</div>
+                                    <div style="font-size:0.62rem; color:var(--text-muted); line-height:1.1;">${escapeHtml(a.name)}</div>
+                                </div>
                                 <span style="font-size:1.15rem; font-weight:700; color:${a.color}; line-height:1.1;" id="sim-core-${a.code}">0</span>
                             </div>
                         </div>
