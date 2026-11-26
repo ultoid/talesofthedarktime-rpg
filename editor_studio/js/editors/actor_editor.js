@@ -653,7 +653,7 @@ function renderActorEditor(container, actor) {
                     <div>
                         <label style="font-size:0.76rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;" title="Pratinjau gambar potret besar karakter (<Portrait: ...>) untuk menu status Nusvanir">Portrait Preview</label>
                         <div class="portrait-preview-box">
-                            ${portrait ? `<img src="img/pictures/${escapeHtml(portrait)}.png" class="portrait-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;portrait-empty&quot;><i class=&quot;pai-warning-diamond&quot;></i> File tidak ditemukan: img/pictures/${escapeHtml(portrait)}.png</div>';">` : `<div class="portrait-empty">No portrait selected.<br>Choose from the list below.</div>`}
+                            ${portrait ? `<img src="img/pictures/${escapeHtml(portrait)}.png" class="portrait-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;portrait-empty&quot;><i class=&quot;pai-warning-diamond&quot;></i> File tidak ditemukan: '+this.getAttribute('src')+'</div>';">` : `<div class="portrait-empty">No portrait selected.<br>Choose from the list below.</div>`}
                         </div>
                         <div class="form-group" style="margin-top:10px;">
                             <label title="Pilih file ilustrasi potret karakter dari folder img/pictures/">Select Portrait Image</label>

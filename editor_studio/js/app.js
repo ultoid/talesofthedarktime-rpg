@@ -101,14 +101,8 @@ function isAnyModalOpen() {
 }
 
 // Global Keyboard Navigation & Shortcuts
+// NOTE: Ctrl+S is already bound in api.js (saveActiveDataset).
 window.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
-        e.preventDefault();
-        if (typeof saveActiveDataset === 'function') {
-            saveActiveDataset();
-        }
-        return;
-    }
     if (e.key === 'Escape') {
         if (closeActiveModals()) {
             e.preventDefault();

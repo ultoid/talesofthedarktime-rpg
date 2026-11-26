@@ -366,7 +366,7 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
 
                 <!-- 3. OPSIONAL / LANJUTAN: OVERRIDE KOREOGRAFI KHUSUS SENJATA -->
                 <details ${hasCustomSeq ? 'open' : ''} style="background:#0f1218; border:1px solid ${hasCustomSeq ? 'rgba(168,85,247,0.4)' : 'var(--border-color)'}; border-radius:var(--radius-sm); padding:10px 12px;">
-                    <summary style="cursor:pointer; font-size:0.78rem; font-weight:600; color:${hasCustomSeq ? '#c084fc' : 'var(--text-muted)'}; user-select:none; display:flex; align-items:center; justify-content:space-between;">
+                    <summary style="cursor:pointer; font-size:0.78rem; font-weight:600; color:${hasCustomSeq ? '#c084fc' : 'var(--text-muted)'}; user-select:none;">
                         <span>${pai('sliders')} Pengaturan Lanjutan: Timpa Koreografi Khusus Senjata Ini ${hasCustomSeq ? '(Aktif)' : '(Opsional)'}</span>
                     </summary>
                     <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
