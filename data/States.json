@@ -1,112 +1,3596 @@
 [
-null,
-{"id":1,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":1,"maxTurns":1,"message1":" telah tewas!","message2":"","message3":"","message4":"","messageType":1,"minTurns":1,"motion":0,"name":"Death","note":"State #1 will be automatically added when HP reaches 0.","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":4,"stepsToRemove":100,"traits":[{"code":23,"dataId":9,"value":0}]},
-{"id":2,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":480,"maxTurns":1,"message1":" mengambil posisi bertahan!","message2":"","message3":"","message4":"","messageType":1,"minTurns":1,"motion":0,"name":"Defend","note":"Aksi bertahan (Guard). Mengurangi damage yang diterima.","overlay":0,"priority":0,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":62,"dataId":1,"value":0}]},
-{"id":3,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":0,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","messageType":1,"minTurns":1,"motion":0,"name":"[Reserved]","note":"Slot cadangan sistem.","overlay":0,"priority":50,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":4,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":757,"maxTurns":3,"message1":" terkena racun mematikan!","message2":" menderita racun!","message3":"","message4":" sembuh dari racun!","messageType":1,"minTurns":3,"motion":0,"name":"Poison","note":"<HRG Plus: -5%>\nRacun murni: Mengurangi 5% Max HP setiap turn selama 3 turn.","overlay":1,"priority":60,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":22,"dataId":7,"value":-0.05}]},
-{"id":5,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":720,"maxTurns":3,"message1":" terbakar kobaran api!","message2":" menderita luka bakar!","message3":"","message4":" api telah padam!","messageType":1,"minTurns":3,"motion":0,"name":"Burn","note":"<HRG Plus: -4%>\nLuka bakar api: Mengurangi 4% Max HP setiap turn dan ATK fisik -20% selama 3 turn.","overlay":0,"priority":60,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":22,"dataId":7,"value":-0.04},{"code":21,"dataId":2,"value":0.8}]},
-{"id":6,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":758,"maxTurns":3,"message1":" mengalami pendarahan hebat!","message2":" darah terus mengucur!","message3":"","message4":" pendarahan berhenti!","messageType":1,"minTurns":3,"motion":0,"name":"Bleed","note":"<HRG Plus: -4%>\nPendarahan akibat luka sabetan: Mengurangi 4% Max HP setiap turn selama 3 turn.","overlay":0,"priority":60,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":22,"dataId":7,"value":-0.04}]},
-{"id":7,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":732,"maxTurns":3,"message1":" tubuhnya lumpuh tersengat!","message2":" tersengat kelumpuhan!","message3":"","message4":" pulih dari kelumpuhan!","messageType":1,"minTurns":3,"motion":0,"name":"Paralyze","note":"<Custom Action Start Effect>\nif (Math.random() < 0.25) {\n  user.clearActions();\n  var msg = user.name() + ' lumpuh dan tidak dapat bergerak!';\n  $gameMessage.add(msg);\n}\n</Custom Action Start Effect>\nKelumpuhan otot & saraf: Kecepatan (AGI) -50%, Evasion -20%, dan chance 25% gagal bertindak per aksi.","overlay":0,"priority":80,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":6,"value":0.5},{"code":22,"dataId":1,"value":-0.2}]},
-{"id":8,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":760,"maxTurns":3,"message1":" tertidur lelap!","message2":" masih tertidur nyenyak...","message3":"","message4":" terbangun dari tidur!","messageType":1,"minTurns":2,"motion":0,"name":"Sleep","note":"Tertidur pulas: Tidak dapat bertindak dan Evasion 0. Bangun seketika saat menerima kerusakan.","overlay":0,"priority":90,"removeAtBattleEnd":true,"removeByDamage":true,"removeByRestriction":false,"removeByWalking":false,"restriction":4,"stepsToRemove":100,"traits":[{"code":22,"dataId":1,"value":-1}]},
-{"id":9,"autoRemovalTiming":2,"chanceByDamage":50,"iconIndex":762,"maxTurns":3,"message1":" menjadi bingung dan hilang kendali!","message2":"","message3":"","message4":" kembali sadar!","messageType":1,"minTurns":2,"motion":0,"name":"Confuse","note":"Kebingungan pikiran: Menyerang kawan atau lawan secara acak selama 2-3 turn. Chance 50% pulih saat kena pukul.","overlay":0,"priority":75,"removeAtBattleEnd":true,"removeByDamage":true,"removeByRestriction":false,"removeByWalking":false,"restriction":1,"stepsToRemove":100,"traits":[]},
-{"id":10,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":747,"maxTurns":3,"message1":" terkutuk oleh aura kegelapan!","message2":"","message3":"","message4":" kutukan terangkat!","messageType":1,"minTurns":3,"motion":0,"name":"Curse","note":"Kutukan jurang: Menyegel regenerasi MP & SP dan meningkatkan kerusakan yang diterima sebesar 20% selama 3 turn.","overlay":0,"priority":55,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":22,"dataId":8,"value":-1},{"code":22,"dataId":9,"value":-1},{"code":23,"dataId":6,"value":1.2},{"code":23,"dataId":7,"value":1.2}]},
-{"id":11,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":759,"maxTurns":1,"message1":" pingsan tersentak pusing!","message2":"","message3":"","message4":" sadar kembali!","messageType":1,"minTurns":1,"motion":0,"name":"Stun","note":"Tersentak / Pusing (Stun): Kehilangan giliran bertindak selama tepat 1 turn.","overlay":0,"priority":90,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":4,"stepsToRemove":100,"traits":[{"code":22,"dataId":1,"value":-0.5}]},
-{"id":12,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":765,"maxTurns":3,"message1":" gerakannya melambat!","message2":"","message3":"","message4":" kecepatannya kembali normal!","messageType":1,"minTurns":3,"motion":0,"name":"Slow","note":"Perlambatan gerak (Slow): Kecepatan (AGI) -35% dan Evasion -15% selama 3 turn.","overlay":0,"priority":55,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":6,"value":0.65},{"code":22,"dataId":1,"value":-0.15}]},
-{"id":13,"autoRemovalTiming":2,"chanceByDamage":50,"iconIndex":726,"maxTurns":2,"message1":" membeku menjadi kristal es!","message2":"","message3":"","message4":" kristal es mencair!","messageType":1,"minTurns":2,"motion":0,"name":"Freeze","note":"Membeku es (Freeze): Lumpuh total tidak dapat bertindak, rentan terhadap serangan Api (+50% Fire Damage). Cair saat kena pukul 50%.","overlay":0,"priority":85,"removeAtBattleEnd":true,"removeByDamage":true,"removeByRestriction":false,"removeByWalking":false,"restriction":4,"stepsToRemove":100,"traits":[{"code":11,"dataId":2,"value":1.5}]},
-{"id":14,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":763,"maxTurns":3,"message1":" pandangannya dibutakan!","message2":"","message3":"","message4":" penglihatannya kembali jernih!","messageType":1,"minTurns":3,"motion":0,"name":"Blind","note":"<HIT Plus: -50%>\nKebutaan mata (Blind): Mengurangi Akurasi Serangan (HIT) sebesar 50% selama 3 turn.","overlay":0,"priority":60,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":22,"dataId":0,"value":-0.5}]},
-{"id":15,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":764,"maxTurns":2,"message1":" gemetar dicekam ketakutan!","message2":"","message3":"","message4":" keberaniannya bangkit kembali!","messageType":1,"minTurns":2,"motion":0,"name":"Fear","note":"Ketakutan mental (Fear): Mengurangi DEF -20% dan AGI -20% selama 2 turn.","overlay":0,"priority":60,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":3,"value":0.8},{"code":21,"dataId":6,"value":0.8}]},
-{"id":16,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":761,"maxTurns":3,"message1":" suaranya dibungkam sunyi!","message2":"","message3":"","message4":" suaranya terdengar kembali!","messageType":1,"minTurns":3,"motion":0,"name":"Silence","note":"Pembungkaman mantra (Silence): Menyegel pelafalan sihir (Magic Skills) selama 3 turn.","overlay":0,"priority":70,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":42,"dataId":1,"value":0},{"code":42,"dataId":2,"value":0}]},
-{"id":17,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":766,"maxTurns":2,"message1":" kakinya terikat ke tanah!","message2":"","message3":"","message4":" ikatannya terlepas!","messageType":1,"minTurns":2,"motion":0,"name":"Root","note":"Jeratan akar/tanah (Root): Tidak dapat menghindar (EVA 0%) dan Kecepatan (AGI) -50% selama 2 turn.","overlay":0,"priority":55,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":22,"dataId":1,"value":-1},{"code":21,"dataId":6,"value":0.5}]},
-{"id":18,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":709,"maxTurns":2,"message1":" titik lemahnya terbongkar rentan!","message2":"","message3":"","message4":" pertahanannya pulih!","messageType":1,"minTurns":2,"motion":0,"name":"Vulnerable","note":"Kerentanan zirah (Vulnerable): Menerima bonus kerusakan fisik dan sihir +25% selama 2 turn.","overlay":0,"priority":50,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":23,"dataId":6,"value":1.25},{"code":23,"dataId":7,"value":1.25}]},
-{"id":19,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":773,"maxTurns":3,"message1":" diselimuti percepatan waktu Haste!","message2":"","message3":"","message4":" efek Haste berakhir!","messageType":1,"minTurns":3,"motion":0,"name":"Haste","note":"Percepatan waktu (Haste): Meningkatkan Kecepatan Aksi (AGI) sebesar +40% selama 3 turn.","overlay":0,"priority":50,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":6,"value":1.4}]},
-{"id":20,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":706,"maxTurns":2,"message1":" memprovokasi musuh untuk menyerangnya!","message2":"","message3":"","message4":" provokasi reda!","messageType":1,"minTurns":2,"motion":0,"name":"Taunt","note":"Provokasi tempur (Taunt): Memusatkan serangan seluruh musuh kepada pengguna (TGR 1000%) selama 2 turn.","overlay":0,"priority":70,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":23,"dataId":0,"value":10}]},
-{"id":21,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":749,"maxTurns":3,"message1":" basah kuyup tersiram air!","message2":"","message3":"","message4":" tubuhnya kembali kering!","messageType":1,"minTurns":3,"motion":0,"name":"Soaked","note":"Kondisi basah kuyup: Damage Api -50%, namun menerima +50% Damage Petir selama 3 turn.","overlay":0,"priority":50,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":11,"dataId":2,"value":0.5},{"code":11,"dataId":6,"value":1.5}]},
-{"id":22,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":732,"maxTurns":2,"message1":" tersetrum listrik statis!","message2":"","message3":"","message4":" muatan listrik statis lenyap!","messageType":1,"minTurns":2,"motion":0,"name":"Shock","note":"Kondisi tersetrum: Kecepatan -20% dan menerima kerusakan fisik +20% selama 2 turn.","overlay":0,"priority":55,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":6,"value":0.8},{"code":23,"dataId":6,"value":1.2}]},
-{"id":23,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":767,"maxTurns":2,"message1":" membatu menjadi patung granit!","message2":"","message3":"","message4":" kutukan batu hancur!","messageType":1,"minTurns":2,"motion":0,"name":"Petrify","note":"Membatu total (Petrify): Lumpuh total tidak dapat beraksi, namun DEF & MDF berlipat 200% selama 2 turn.","overlay":0,"priority":95,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":4,"stepsToRemove":100,"traits":[{"code":21,"dataId":3,"value":2},{"code":21,"dataId":5,"value":2}]},
-{"id":24,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":734,"maxTurns":3,"message1":" melayang di udara!","message2":"","message3":"","message4":" mendarat kembali ke tanah!","messageType":1,"minTurns":3,"motion":0,"name":"Float","note":"Melayang (Float): Kebal terhadap seluruh serangan berelemen Tanah (Earth / Quake) selama 3 turn.","overlay":0,"priority":50,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":11,"dataId":4,"value":0}]},
-{"id":25,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":692,"maxTurns":3,"message1":" ditandai sebagai target buruan!","message2":"","message3":"","message4":" tanda buruan memudar!","messageType":1,"minTurns":3,"motion":0,"name":"Marked","note":"Ditandai (Marked): Evasion -20% dan peluang terkena serangan Critical musuh meningkat +20% selama 3 turn.","overlay":0,"priority":50,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":22,"dataId":1,"value":-0.2},{"code":22,"dataId":3,"value":-0.2}]},
-{"id":26,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":769,"maxTurns":3,"message1":" merasakan lonjakan kekuatan fisik!","message2":"","message3":"","message4":" dorongan kekuatan fisik mereda!","messageType":1,"minTurns":3,"motion":0,"name":"ATK Up","note":"Tahap Serangan Naik (+1): Meningkatkan Serangan Fisik (ATK) +25% selama 3 turn.","overlay":0,"priority":45,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":2,"value":1.25}]},
-{"id":27,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":770,"maxTurns":3,"message1":" daya serang fisiknya melemah tertekan!","message2":"","message3":"","message4":" daya serang fisiknya pulih!","messageType":1,"minTurns":3,"motion":0,"name":"ATK Down","note":"Tahap Serangan Turun (-1): Mengurangi Serangan Fisik (ATK) -25% selama 3 turn.","overlay":0,"priority":45,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":2,"value":0.75}]},
-{"id":28,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":771,"maxTurns":3,"message1":" mengeraskan pertahanan fisiknya!","message2":"","message3":"","message4":" zirah pertahanan fisiknya mereda!","messageType":1,"minTurns":3,"motion":0,"name":"DEF Up","note":"Tahap Pertahanan Naik (+1): Meningkatkan Pertahanan Fisik (DEF) +30% selama 3 turn.","overlay":0,"priority":45,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":3,"value":1.3}]},
-{"id":29,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":772,"maxTurns":3,"message1":" pertahanan fisiknya rapuh terkikis!","message2":"","message3":"","message4":" pertahanan fisiknya kembali normal!","messageType":1,"minTurns":3,"motion":0,"name":"DEF Down","note":"Tahap Pertahanan Turun (-1): Mengurangi Pertahanan Fisik (DEF) -30% selama 3 turn.","overlay":0,"priority":45,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":3,"value":0.7}]},
-{"id":30,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":778,"maxTurns":3,"message1":" energi daya sihirnya melonjak!","message2":"","message3":"","message4":" lonjakan energi sihir mereda!","messageType":1,"minTurns":3,"motion":0,"name":"MAT Up","note":"Tahap Sihir Naik (+1): Meningkatkan Serangan Sihir (MAT) +25% selama 3 turn.","overlay":0,"priority":45,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":4,"value":1.25}]},
-{"id":31,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":747,"maxTurns":3,"message1":" pancaran sihirnya terhambat!","message2":"","message3":"","message4":" pancaran sihirnya kembali normal!","messageType":1,"minTurns":3,"motion":0,"name":"MAT Down","note":"Tahap Sihir Turun (-1): Mengurangi Serangan Sihir (MAT) -25% selama 3 turn.","overlay":0,"priority":45,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":4,"value":0.75}]},
-{"id":32,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":779,"maxTurns":3,"message1":" memperkuat perisai sihirnya!","message2":"","message3":"","message4":" perisai sihirnya mereda!","messageType":1,"minTurns":3,"motion":0,"name":"MDF Up","note":"Tahap Pertahanan Sihir Naik (+1): Meningkatkan Pertahanan Sihir (MDF) +30% selama 3 turn.","overlay":0,"priority":45,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":5,"value":1.3}]},
-{"id":33,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":761,"maxTurns":3,"message1":" benteng sihirnya terkikis rapuh!","message2":"","message3":"","message4":" benteng sihirnya pulih!","messageType":1,"minTurns":3,"motion":0,"name":"MDF Down","note":"Tahap Pertahanan Sihir Turun (-1): Mengurangi Pertahanan Sihir (MDF) -30% selama 3 turn.","overlay":0,"priority":45,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":5,"value":0.7}]},
-{"id":34,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":773,"maxTurns":3,"message1":" bergerak lebih gesit dan berkecepatan tinggi!","message2":"","message3":"","message4":" kecepatannya kembali normal!","messageType":1,"minTurns":3,"motion":0,"name":"Speed Up","note":"Tahap Kecepatan Naik (+1): Meningkatkan Kecepatan Aksi (AGI) +35% selama 3 turn.","overlay":0,"priority":45,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":6,"value":1.35}]},
-{"id":35,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":692,"maxTurns":3,"message1":" memusatkan konsentrasi mengincar titik vital!","message2":"","message3":"","message4":" fokus serangannya mereda!","messageType":1,"minTurns":3,"motion":0,"name":"Critical Focus","note":"Fokus Kritikal: Meningkatkan Peluang Serangan Kritikal (CRI) +30% selama 3 turn.","overlay":0,"priority":45,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":22,"dataId":2,"value":0.3}]},
-{"id":36,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":777,"maxTurns":3,"message1":" bergerak lincah bersiap mengelak!","message2":"","message3":"","message4":" refleks elakannya kembali biasa!","messageType":1,"minTurns":3,"motion":0,"name":"Evasion Up","note":"Refleks Elakan: Meningkatkan Peluang Menghindar (EVA) +25% selama 3 turn.","overlay":0,"priority":45,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":22,"dataId":1,"value":0.25}]},
-{"id":37,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":487,"maxTurns":3,"message1":" diselimuti oleh barier pelindung!","message2":"","message3":"","message4":" barier pelindung pecah memudar!","messageType":1,"minTurns":3,"motion":0,"name":"Barrier","note":"Barier Pelindung: Mengurangi seluruh kerusakan fisik dan sihir yang diterima sebesar 30% selama 3 turn.","overlay":0,"priority":50,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":23,"dataId":6,"value":0.7},{"code":23,"dataId":7,"value":0.7}]},
-{"id":38,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":707,"maxTurns":3,"message1":" memasuki amarah buas membakar darah!","message2":"","message3":"","message4":" amarah membara reda!","messageType":1,"minTurns":3,"motion":0,"name":"Berserk Mode","note":"Mode Amarah Membara (Berserker Frenzy): Serangan Fisik ATK +50%, Pertahanan DEF -25%, menguras 5% HP per turn.","overlay":0,"priority":65,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":2,"value":1.5},{"code":21,"dataId":3,"value":0.75},{"code":22,"dataId":7,"value":-0.05}]},
-{"id":39,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":715,"maxTurns":3,"message1":" memasang kuda-kuda naga langit!","message2":"","message3":"","message4":" kuda-kuda naga dilepas!","messageType":1,"minTurns":3,"motion":0,"name":"Dragon Stance","note":"Kuda-kuda Naga (Dragoon Stance): ATK +25%, AGI +20%, dan Peluang Serangan Balik (Counter) +30%.","overlay":0,"priority":65,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":2,"value":1.25},{"code":21,"dataId":6,"value":1.2},{"code":22,"dataId":6,"value":0.3}]},
-{"id":40,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":700,"maxTurns":2,"message1":" membaur ke dalam bayangan sunyi!","message2":"","message3":"","message4":" muncul kembali dari bayangan!","messageType":1,"minTurns":2,"motion":0,"name":"Shadow Mode","note":"Mode Sembunyi Bayangan (Stealth): Tidak dapat ditarget langsung oleh musuh (TGR 5%), Evasion +60%, dan serangan berikutnya garansi Critical (+50% CRI).","overlay":0,"priority":65,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":23,"dataId":0,"value":0.05},{"code":22,"dataId":1,"value":0.6},{"code":22,"dataId":2,"value":0.5}]},
-{"id":41,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":483,"maxTurns":3,"message1":" bermanifestasi menjadi Penjaga Suci Tak Tergoyahkan!","message2":"","message3":"","message4":" wujud Penjaga Suci mereda!","messageType":1,"minTurns":3,"motion":0,"name":"Avatar of Guardian","note":"Manifestasi Benteng Suci (Avatar of Guardian): Mengunci seluruh target musuh (Taunt), Pertahanan DEF +50%, Pertahanan Sihir MDF +50%, Efisiensi Bertahan +50%.","overlay":0,"priority":70,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":3,"value":1.5},{"code":21,"dataId":5,"value":1.5},{"code":23,"dataId":0,"value":10},{"code":23,"dataId":1,"value":1.5}]},
-{"id":42,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":742,"maxTurns":3,"message1":" mencapai pencerahan Kondisi Nirwana!","message2":"","message3":"","message4":" kesadaran nirwana kembali normal!","messageType":1,"minTurns":3,"motion":0,"name":"State of Nirvana","note":"Pencerahan Batin (State of Nirvana): Kebal total 100% terhadap seluruh status abnormal & debuff, memulihkan 10% SP tiap turn, MDF +30%.","overlay":0,"priority":70,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":32,"dataId":4,"value":0},{"code":32,"dataId":5,"value":0},{"code":32,"dataId":6,"value":0},{"code":32,"dataId":7,"value":0},{"code":32,"dataId":8,"value":0},{"code":32,"dataId":9,"value":0},{"code":32,"dataId":10,"value":0},{"code":32,"dataId":11,"value":0},{"code":32,"dataId":12,"value":0},{"code":32,"dataId":13,"value":0},{"code":32,"dataId":14,"value":0},{"code":32,"dataId":15,"value":0},{"code":32,"dataId":16,"value":0},{"code":32,"dataId":17,"value":0},{"code":32,"dataId":18,"value":0},{"code":22,"dataId":9,"value":0.1},{"code":21,"dataId":5,"value":1.3}]},
-{"id":43,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":702,"maxTurns":2,"message1":" meledakkan lonjakan energi Chi batin!","message2":"","message3":"","message4":" lonjakan energi Chi reda!","messageType":1,"minTurns":2,"motion":0,"name":"Chi Hyper-Burst","note":"Lonjakan Chi Batin (Chi Hyper-Burst): Imun terhadap penurunan stat debuff, ATK & MAT +25%, memulihkan 8% SP tiap turn.","overlay":0,"priority":65,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":32,"dataId":27,"value":0},{"code":32,"dataId":29,"value":0},{"code":32,"dataId":31,"value":0},{"code":32,"dataId":33,"value":0},{"code":21,"dataId":2,"value":1.25},{"code":21,"dataId":4,"value":1.25},{"code":22,"dataId":9,"value":0.08}]},
-{"id":44,"autoRemovalTiming":2,"chanceByDamage":100,"iconIndex":781,"maxTurns":3,"message1":" dinaungi perlindungan arwah leluhur!","message2":"","message3":"","message4":" naungan leluhur memudar!","messageType":1,"minTurns":3,"motion":0,"name":"Ancestral Protection","note":"Perlindungan Arwah Leluhur: Mengurangi kerusakan yang diterima sebesar 20% dan bertahan dari 1 serangan mematikan.","overlay":0,"priority":65,"removeAtBattleEnd":true,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":23,"dataId":6,"value":0.8},{"code":23,"dataId":7,"value":0.8}]},
-{"id":45,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":528,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","messageType":1,"minTurns":1,"motion":0,"name":"Pasif: Iron Skin","note":"<Passive State>\nPasif zirah besi: Meningkatkan Pertahanan Fisik (DEF) sebesar 10% permanen.","overlay":0,"priority":10,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":3,"value":1.1}]},
-{"id":46,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":778,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","messageType":1,"minTurns":1,"motion":0,"name":"Pasif: Mind Focus","note":"<Passive State>\nPasif ketajaman pikiran: Meningkatkan Serangan Sihir (MAT) +10% dan Max MP +10% permanen.","overlay":0,"priority":10,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":4,"value":1.1},{"code":21,"dataId":1,"value":1.1}]},
-{"id":47,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":773,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","messageType":1,"minTurns":1,"motion":0,"name":"Pasif: Fleet Footed","note":"<Passive State>\nPasif langkah gesit: Meningkatkan Kecepatan (AGI) +15% dan Peluang Menghindar (EVA) +5% permanen.","overlay":0,"priority":10,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[{"code":21,"dataId":6,"value":1.15},{"code":22,"dataId":1,"value":0.05}]},
-{"id":48,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":325,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Pribumi","note":"<Race: Pribumi>\n<Race Key: pribumi>\n<Race Group: Suku Bumi>\n<Race Ability Desc: Mendapatkan bonus +1 Poin Stat Bebas setiap naik 2 Base Level dan bonus 10% perolehan EXP.>\n<STR Rate: 1.00>\n<INT Rate: 1.00>\n<DEX Rate: 1.00>\n<LUK Rate: 1.00>\n<AGI Rate: 1.00>\n<VIT Rate: 1.00>\n<Description>\nRas manusia fana yang membentuk tulang punggung peradaban daratan utama. Sangat adaptif dan fleksibel dalam penentuan takdir.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":49,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":716,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Wahanarsa","note":"<Race: Wahanarsa>\n<Race Key: wahanarsa>\n<Race Group: Suku Bumi>\n<Race Ability Desc: Efisiensi konsumsi Mana berkurang 10% dan akurasi Hit Rate meningkat +5%.>\n<STR Rate: 0.90>\n<INT Rate: 1.10>\n<DEX Rate: 1.10>\n<LUK Rate: 1.00>\n<AGI Rate: 1.00>\n<VIT Rate: 0.90>\n<Description>\nBangsawan terdidik Mandala, penguasa birokrasi dan akademi Loka Cakra. Menguasai teori sihir dan taktik, namun fisik dimanjakan kemewahan.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":50,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":453,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Asrivana","note":"<Race: Asrivana>\n<Race Key: asrivana>\n<Race Group: Suku Bumi>\n<Race Ability Desc: Daya pemulihan sihir alam +20% dan regenerasi MP otomatis 3% per giliran.>\n<STR Rate: 0.90>\n<INT Rate: 1.10>\n<DEX Rate: 1.00>\n<LUK Rate: 1.00>\n<AGI Rate: 1.10>\n<VIT Rate: 0.90>\n<Description>\nRas Elf pelindung Hutan Suci Astradipa. Memiliki afinitas luar biasa terhadap sihir alam dan kelincahan akrobatik di dahan pohon raksasa.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":51,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":552,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Avesari","note":"<Race: Avesari>\n<Race Key: avesari>\n<Race Group: Suku Bumi>\n<Race Ability Desc: Mengurangi kerusakan elemen Gelap sebesar 30% dan kebal terhadap status Curse.>\n<STR Rate: 1.00>\n<INT Rate: 1.10>\n<DEX Rate: 1.00>\n<LUK Rate: 0.90>\n<AGI Rate: 0.90>\n<VIT Rate: 1.10>\n<Description>\nKeturunan cahaya suci Sang Hyang di Avalerion. Membawa pendaran energi suci dan ketahanan spiritual tinggi dengan gaya tempur kokoh ortodoks.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":52,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":389,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Butoraksa","note":"<Race: Butoraksa>\n<Race Key: butoraksa>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Saat HP di bawah 40%, Physical Attack meningkat tajam sebesar +25%.>\n<STR Rate: 1.10>\n<INT Rate: 0.90>\n<DEX Rate: 0.90>\n<LUK Rate: 1.00>\n<AGI Rate: 1.00>\n<VIT Rate: 1.10>\n<Description>\nRaksasa berkulit hijau/merah dari Gua Garbhagiri. Tenaga otot luar biasa dan haus kehormatan perang, namun menolak ilmu akademis rumit.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":53,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":591,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Garuda","note":"<Race: Garuda>\n<Race Key: garuda>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Evasion Rate terhadap serangan melee darat +15% dan Action Speed giliran +20%.>\n<STR Rate: 0.90>\n<INT Rate: 1.00>\n<DEX Rate: 1.10>\n<LUK Rate: 1.00>\n<AGI Rate: 1.10>\n<VIT Rate: 0.90>\n<Description>\nManusia burung bersayap emas dari Nusa Sayendra. Penguasa langit dengan inisiatif kecepatan dan akurasi tukikan mematikan.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":54,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":507,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Hanorok","note":"<Race: Hanorok>\n<Race Key: hanorok>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Meningkatkan Critical Rate +10% dan memiliki peluang 5% memicu serangan ekstra tanpa giliran.>\n<STR Rate: 0.90>\n<INT Rate: 1.00>\n<DEX Rate: 1.10>\n<LUK Rate: 1.00>\n<AGI Rate: 1.10>\n<VIT Rate: 0.90>\n<Description>\nKaum Beastmen kera berakal budi tinggi dari Astradipa. Diberkati kelicikan Monkey King, master penyergapan, taktik perangkap, dan kombo kilat.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":55,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":580,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Nagarasven","note":"<Race: Nagarasven>\n<Race Key: nagarasven>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Mengurangi kerusakan elemen Api sebesar 50% dan serangan fisik berpeluang membakar (Burn) musuh.>\n<STR Rate: 1.10>\n<INT Rate: 1.10>\n<DEX Rate: 1.00>\n<LUK Rate: 0.90>\n<AGI Rate: 0.90>\n<VIT Rate: 1.00>\n<Description>\nReptil purba raksasa berakal budi tinggi dari lereng vulkanik Agnitra. Bersisik karang keras dengan nafas api destruktif penjaga pusaka kuno.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":56,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":707,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Rakshorien","note":"<Race: Rakshorien>\n<Race Key: rakshorien>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Kebal mutlak terhadap racun (Poison) dan serangan fisik berpeluang 25% menularkan racun mematikan.>\n<STR Rate: 0.90>\n<INT Rate: 1.10>\n<DEX Rate: 1.00>\n<LUK Rate: 1.10>\n<AGI Rate: 1.00>\n<VIT Rate: 0.90>\n<Description>\nElf buangan di bawah tanah Gua Wisamaya. Menguasai sihir bayangan, cakar beracun, dan kutukan berdarah dengan mata merah menyala.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":57,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":781,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Troliogoro","note":"<Race: Troliogoro>\n<Race Key: troliogoro>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Pertahanan fisik DEF +15% dan kebal terhadap status Stun atau Bleed.>\n<STR Rate: 1.00>\n<INT Rate: 1.00>\n<DEX Rate: 1.10>\n<LUK Rate: 0.90>\n<AGI Rate: 0.90>\n<VIT Rate: 1.10>\n<Description>\nPandai besi raksasa dari dataran tinggi Agnigarba. Kulitnya menyatu dengan logam cair sekeras baja dengan keahlian tempa dewa, namun serakah emas.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":58,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":742,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Dewantara","note":"<Race: Dewantara>\n<Race Key: dewantara>\n<Race Group: Arkahyan>\n<Race Ability Desc: Memberikan aura komando surgawi (+10% ATK dan MAT untuk seluruh barisan kawan saat pertempuran).>\n<STR Rate: 1.10>\n<INT Rate: 1.10>\n<DEX Rate: 0.90>\n<LUK Rate: 0.90>\n<AGI Rate: 1.00>\n<VIT Rate: 1.00>\n<Description>\nKsatria suci surgawi penunggang Griffin di Avalerion. Pengawal hukum dunia dengan kedisiplinan militer dan pendaran cahaya suci.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":59,"autoRemovalTiming":0,"chanceByDamage":100,"iconIndex":747,"maxTurns":1,"message1":"","message2":"","message3":"","message4":"","minTurns":1,"motion":0,"name":"Ras: Bhuta","note":"<Race: Bhuta>\n<Race Key: bhuta>\n<Race Group: Drahkthar>\n<Race Ability Desc: Serangan mengabaikan 15% DEF musuh dan kebal terhadap status Fear atau Silence.>\n<STR Rate: 1.10>\n<INT Rate: 1.00>\n<DEX Rate: 0.90>\n<LUK Rate: 1.10>\n<AGI Rate: 1.00>\n<VIT Rate: 0.90>\n<Description>\nIblis elit komandan perang di Raksamala. Antitesis Avesari dengan kekuatan teror brutal dan manipulasi energi kegelapan pekat Sangrahal.\n</Description>","overlay":0,"priority":100,"removeAtBattleEnd":false,"removeByDamage":false,"removeByRestriction":false,"removeByWalking":false,"restriction":0,"stepsToRemove":100,"traits":[]},
-{"id":60,"name":"Pasif: Battle Spirit","iconIndex":706,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":2,"value":1.08}],"note":"<ATK Rate: 108%>\n<STR Rate: 1.05>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Fighter: Meningkatkan P.ATK sebesar +8%. Saat HP berada di bawah 50%, memulihkan +2 SP ekstra pada setiap awal giliran.","message1":"","message2":"","message3":"","message4":""},
-{"id":61,"name":"Pasif: Heavy Impact","iconIndex":704,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":2,"value":1.12}],"note":"<ATK Rate: 112%>\n<STR Rate: 1.08>\n<Armor Penetration: 10%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Warrior: Meningkatkan P.ATK sebesar +12% dan mengabaikan 10% DEF target. Serangan fisik memiliki 5% peluang menyebabkan Stun.","message1":"","message2":"","message3":"","message4":""},
-{"id":62,"name":"Pasif: Vanguard Aegis","iconIndex":483,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":3,"value":1.15},{"code":23,"dataId":1,"value":1.2}],"note":"<DEF Rate: 115%>\n<VIT Rate: 1.10>\n<Guard Efficiency: +20%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Squire: Meningkatkan P.DEF sebesar +15% dan efisiensi Guard (GRD +20%). Saat berada di Baris Depan, mengurangi kerusakan fisik kawan baris belakang sebesar 5%.","message1":"","message2":"","message3":"","message4":""},
-{"id":63,"name":"Pasif: Rhythm Striker","iconIndex":690,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":6,"value":1.15}],"note":"<AGI Rate: 115%>\n<Max SP: +15>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Brawler: Meningkatkan Action Speed sebesar +15%. Setiap kali melancarkan skill fisik, memulihkan +5 SP secara instan.","message1":"","message2":"","message3":"","message4":""},
-{"id":64,"name":"Pasif: Veteran Resolve","iconIndex":771,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":2,"value":1.15}],"note":"<ATK Rate: 115%>\n<Armor Penetration: 15%>\n<STR Rate: 1.10>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Mercenary: Meningkatkan P.ATK +15% dan menembus 15% DEF musuh. Setiap kali menumbangkan musuh, memulihkan 15% Max HP dan mendapat buff ATK +10% selama 2 giliran.","message1":"","message2":"","message3":"","message4":""},
-{"id":65,"name":"Pasif: Fortress Bastion","iconIndex":492,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":3,"value":1.2},{"code":21,"dataId":5,"value":1.2},{"code":23,"dataId":1,"value":1.25}],"note":"<DEF Rate: 120%>\n<MDF Rate: 120%>\n<Guard Efficiency: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Knight: Meningkatkan P.DEF & M.MDF +20%, serta efisiensi Guard (GRD +25%). Otomatis menahan 30% kerusakan yang mengarah ke kawan dengan sisa HP terendah.","message1":"","message2":"","message3":"","message4":""},
-{"id":66,"name":"Pasif: Flowing Stance","iconIndex":697,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":6,"value":1.2}],"note":"<AGI Rate: 120%>\n<Max SP: +20>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Martial Artist: Action Speed +20% dan memulihkan +8 SP tiap serangan fisik. Jika menyerang 2 giliran berturut-turut, serangan berikutnya dipastikan 100% Critical Hit.","message1":"","message2":"","message3":"","message4":""},
-{"id":67,"name":"Pasif: Unyielding Dominance","iconIndex":769,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":2,"value":1.2},{"code":14,"dataId":11,"value":1}],"note":"<ATK Rate: 120%>\n<STR Rate: 1.15>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Champion: P.ATK +20% dan kebal terhadap efek Stun & Knockdown. Kerusakan fisik meningkat hingga +30% seiring berkurangnya sisa target musuh di arena.","message1":"","message2":"","message3":"","message4":""},
-{"id":68,"name":"Pasif: Dragonfang Skystrike","iconIndex":715,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":2,"value":1.2}],"note":"<ATK Rate: 120%>\n<Armor Penetration: 20%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Dragoon: Kerusakan jurus lompat dan tombak +25% serta mengabaikan 20% DEF. Serangan dari udara menghasilkan gelombang kejut berdaya rusak area (AoE).","message1":"","message2":"","message3":"","message4":""},
-{"id":69,"name":"Pasif: Aegis of Sanctuary","iconIndex":742,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":3,"value":1.25},{"code":21,"dataId":5,"value":1.25},{"code":14,"dataId":14,"value":1},{"code":14,"dataId":15,"value":1}],"note":"<DEF Rate: 125%>\n<MDF Rate: 125%>\n<PDR Rate: 85%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Paladin: P.DEF & M.MDF +25%. Seluruh sekutu di baris yang sama menerima pengurangan kerusakan 15% dan kebal terhadap status Fear & Blind.","message1":"","message2":"","message3":"","message4":""},
-{"id":70,"name":"Pasif: Asura Meridian","iconIndex":710,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":2,"value":1.25},{"code":22,"dataId":2,"value":0.15}],"note":"<ATK Rate: 125%>\n<CRI Plus: +15%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Monk: Serangan fisik tanpa senjata mendapatkan bonus P.ATK +25% dan CRI +15%. Serangan kritis memiliki 20% peluang menyegel skill lawan (Silence) selama 1 turn.","message1":"","message2":"","message3":"","message4":""},
-{"id":71,"name":"Pasif: Bloodrage Immortality","iconIndex":707,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":2,"value":1.25}],"note":"<ATK Rate: 125%>\n<Critical Damage: +40%>\n<STR Rate: 1.15>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Berserker: Saat HP di bawah 30%, P.ATK +50% dan CDMG +40%. Karakter tidak dapat gugur (kebal kematian mutlak) selama 1 giliran saat HP menyentuh angka 1.","message1":"","message2":"","message3":"","message4":""},
-{"id":72,"name":"Pasif: Abyssal Despair","iconIndex":745,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":3,"value":1.3},{"code":21,"dataId":5,"value":1.3}],"note":"<DEF Rate: 130%>\n<MDF Rate: 130%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Death Knight: P.DEF & M.MDF +30%. Aura kegelapan mengurangi ATK & MAT seluruh lawan sebesar 15%; menyerap 20% dari seluruh kerusakan yang dihasilkan sebagai HP.","message1":"","message2":"","message3":"","message4":""},
-{"id":73,"name":"Pasif: Aegis of Radiance","iconIndex":741,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":3,"value":1.25},{"code":21,"dataId":5,"value":1.25},{"code":23,"dataId":6,"value":0.85}],"note":"<DEF Rate: 125%>\n<MDF Rate: 125%>\n<PDR Rate: 85%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Holy Knight: Menahan 50% kerusakan yang mengarah ke seluruh anggota party. Serangan suci memulihkan HP party sebesar 20% dari total kerusakan yang ditimpakan.","message1":"","message2":"","message3":"","message4":""},
-{"id":74,"name":"Pasif: Meridian Annihilation","iconIndex":714,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":6,"value":1.35}],"note":"<AGI Rate: 135%>\n<Armor Penetration: 40%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Brahma: Action Speed +35% dan seluruh serangan fisik menembus 40% DEF lawan. Setiap serangan beruntun meningkatkan output kerusakan sebesar +15% tanpa batas.","message1":"","message2":"","message3":"","message4":""},
-{"id":75,"name":"Pasif: Celestial Skystrike","iconIndex":742,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":2,"value":1.3}],"note":"<ATK Rate: 130%>\n<STR Rate: 1.20>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Sky Sovereign: Kerusakan jurus udara +50%. Menghujamkan badai langit ke seluruh arena pada giliran pertama, menyebabkan Stun dan menurunkan DEF musuh sebesar 25%.","message1":"","message2":"","message3":"","message4":""},
-{"id":76,"name":"Pasif: Mana Attunement","iconIndex":755,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.08},{"code":23,"dataId":3,"value":0.9}],"note":"<MAT Rate: 108%>\n<INT Rate: 1.05>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Apprentice: Meningkatkan M.ATK sebesar +8% dan mengurangi konsumsi MP seluruh mantra sihir sebesar 10%.","message1":"","message2":"","message3":"","message4":""},
-{"id":77,"name":"Pasif: Elemental Overload","iconIndex":666,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.15}],"note":"<MAT Rate: 115%>\n<INT Rate: 1.10>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Magician: Meningkatkan M.ATK sebesar +15%. Serangan yang mengenai kelemahan elemen musuh menghasilkan tambahan kerusakan sebesar +25%.","message1":"","message2":"","message3":"","message4":""},
-{"id":78,"name":"Pasif: Divine Grace","iconIndex":752,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":23,"dataId":2,"value":1.2},{"code":22,"dataId":8,"value":0.02}],"note":"<REC Rate: 120%>\n<MRG Plus: +2%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Acolyte: Meningkatkan efektivitas skill penyembuhan sebesar +20% (Recovery Effect), serta memulihkan 2% Max MP otomatis setiap akhir giliran.","message1":"","message2":"","message3":"","message4":""},
-{"id":79,"name":"Pasif: Nether Siphon","iconIndex":701,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.15}],"note":"<MAT Rate: 115%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Occultist: Kerusakan sihir berelemen Dark meningkat +15%. Menyerap 5% Max HP musuh setiap kali berhasil menimpakan status buruk (Debuff / Poison / Curse).","message1":"","message2":"","message3":"","message4":""},
-{"id":80,"name":"Pasif: Arcane Amplification","iconIndex":751,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.2}],"note":"<MAT Rate: 120%>\n<INT Rate: 1.15>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Mage: Meningkatkan M.ATK +20%. Setiap kali melancarkan mantra sihir, meningkatkan kerusakan sihir elemen berikutnya sebesar +10% (dapat ditumpuk hingga 3 lapis / +30%).","message1":"","message2":"","message3":"","message4":""},
-{"id":81,"name":"Pasif: Sanctified Aura","iconIndex":742,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":23,"dataId":2,"value":1.25},{"code":22,"dataId":7,"value":0.03},{"code":14,"dataId":10,"value":1}],"note":"<REC Rate: 125%>\n<HRG Plus: +3%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Cleric: Efektivitas pemulihan (Recovery Effect) +25%. Seluruh anggota party menerima regenerasi HP otomatis sebesar 3% Max HP tiap giliran dan kebal efek Curse.","message1":"","message2":"","message3":"","message4":""},
-{"id":82,"name":"Pasif: Soul Harvester","iconIndex":748,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.2}],"note":"<MAT Rate: 120%>\n<INT Rate: 1.10>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Cultist: Kerusakan sihir Dark +20%. Setiap kali ada unit yang tumbang di medan tempur (kawan maupun lawan), menyerap 10% MP & SP mereka untuk memperkuat mantra berikutnya.","message1":"","message2":"","message3":"","message4":""},
-{"id":83,"name":"Pasif: Blazing Conflagration","iconIndex":721,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.2}],"note":"<MAT Rate: 120%>\n<Fire Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Pyromancer: Kerusakan sihir Api +25%. Musuh yang terkena Burn menerima kerusakan bertingkat dan menyebarkan kobaran api ke musuh di sekitarnya saat terkena hit.","message1":"","message2":"","message3":"","message4":""},
-{"id":84,"name":"Pasif: Tidal Resonance","iconIndex":749,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.15},{"code":21,"dataId":5,"value":1.15}],"note":"<MAT Rate: 115%>\n<MDF Rate: 115%>\n<Water Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Hydromancer: Kerusakan sihir Air +25%. Setiap kali mantra mengenai target basah (Soaked), memulihkan 5% Max MP dan meningkatkan pertahanan MDF +20% selama 2 turn.","message1":"","message2":"","message3":"","message4":""},
-{"id":85,"name":"Pasif: Tectonic Bulwark","iconIndex":740,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":3,"value":1.2},{"code":21,"dataId":4,"value":1.15}],"note":"<DEF Rate: 120%>\n<MAT Rate: 115%>\n<Earth Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Geomancer: Kerusakan sihir Tanah +25%. Menghasilkan perisai batu (Shield) sebesar 15% Max HP setiap kali melancarkan skill berelemen Earth.","message1":"","message2":"","message3":"","message4":""},
-{"id":86,"name":"Pasif: Tempest Grace","iconIndex":735,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":6,"value":1.25},{"code":22,"dataId":1,"value":0.15}],"note":"<AGI Rate: 125%>\n<EVA Plus: +15%>\n<Wind Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Aeromancer: Kerusakan sihir Angin +25% dan EVA +15%. Kecepatan gerak bertindak meningkat drastis; memiliki 20% peluang bertindak dua kali dalam satu giliran.","message1":"","message2":"","message3":"","message4":""},
-{"id":87,"name":"Pasif: High-Voltage Surge","iconIndex":730,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.2},{"code":21,"dataId":6,"value":1.15}],"note":"<MAT Rate: 120%>\n<AGI Rate: 115%>\n<Lightning Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Electromancer: Kerusakan sihir Petir +25%. Serangan petir memiliki 25% peluang memicu loncatan listrik (Chain Lightning) ke 2 target musuh lain di sekitarnya.","message1":"","message2":"","message3":"","message4":""},
-{"id":88,"name":"Pasif: Glacial Subzero","iconIndex":725,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.2}],"note":"<MAT Rate: 120%>\n<Ice Damage: +25%>\n<Armor Penetration: 25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Cryomancer: Kerusakan sihir Es +25%. Serangan sihir es menembus 25% MDF dan memperlambat AGI musuh sebesar 20%; musuh beku (Freeze) menerima +35% shatter damage.","message1":"","message2":"","message3":"","message4":""},
-{"id":89,"name":"Pasif: Magnetic Polarization","iconIndex":733,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":3,"value":1.2},{"code":21,"dataId":4,"value":1.2}],"note":"<DEF Rate: 120%>\n<MAT Rate: 120%>\n<Metal Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Ferromancer: Kerusakan sihir Logam +25% dan P.DEF +20%. Mengalihkan proyektil fisik musuh dan mengubah 10% damage yang diterima menjadi amunisi pecahan besi pembalas.","message1":"","message2":"","message3":"","message4":""},
-{"id":90,"name":"Pasif: Resonance Fracture","iconIndex":704,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.2},{"code":22,"dataId":0,"value":0.15}],"note":"<MAT Rate: 120%>\n<HIT Plus: +15%>\n<Sonic Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Echomancer: Kerusakan sihir Suara +25%. Mengabaikan seluruh DEF & MDF musuh bertipe armor berat/batu; getaran suara memiliki peluang 25% membatalkan charge skill musuh.","message1":"","message2":"","message3":"","message4":""},
-{"id":91,"name":"Pasif: Grace of Rebirth","iconIndex":754,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":23,"dataId":2,"value":1.3},{"code":22,"dataId":7,"value":0.03}],"note":"<REC Rate: 130%>\n<HRG Plus: +3%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Priest: Efektivitas pemulihan +30%. Anggota party yang gugur dapat dibangkitkan otomatis 1x per battle dengan 30% Max HP tanpa menghabiskan item.","message1":"","message2":"","message3":"","message4":""},
-{"id":92,"name":"Pasif: Grave Mastery","iconIndex":745,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":1,"value":1.15},{"code":21,"dataId":4,"value":1.2}],"note":"<Max MP: +15%>\n<MAT Rate: 120%>\n<Dark Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Necromancer: Kerusakan kutukan & racun +25%. Setiap kali musuh gugur, otomatis membangkitkan satu minion mayat hidup untuk menyerang dan menyerap damage party.","message1":"","message2":"","message3":"","message4":""},
-{"id":93,"name":"Pasif: Archon Dual-Cast","iconIndex":751,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.35}],"note":"<MAT Rate: 135%>\n<INT Rate: 1.25>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Archmage: M.ATK +35%. Setiap melancarkan sihir offensive, memiliki 30% peluang untuk melancarkan mantra sihir tersebut sekali lagi secara instan tanpa konsumsi MP tambahan.","message1":"","message2":"","message3":"","message4":""},
-{"id":94,"name":"Pasif: Supreme Miracle","iconIndex":742,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":23,"dataId":2,"value":1.5}],"note":"<REC Rate: 150%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan High Priest: Seluruh mantra pemulihan menyembuhkan 50% lebih besar dan memberi perisai suci sebesar 20% Max HP; memberikan kekebalan total terhadap seluruh status debuff.","message1":"","message2":"","message3":"","message4":""},
-{"id":95,"name":"Pasif: Calamity Singularity","iconIndex":746,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":4,"value":1.3}],"note":"<MAT Rate: 130%>\n<INT Rate: 1.20>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Warlock: Setiap efek status buruk (Debuff / Poison / Burn / Curse) pada lawan melipatgandakan seluruh damage sihir Warlock sebesar +10% per status (maksimal +50%).","message1":"","message2":"","message3":"","message4":""},
-{"id":96,"name":"Pasif: Ancestral Dominion","iconIndex":781,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":22,"dataId":7,"value":0.05},{"code":22,"dataId":8,"value":0.05},{"code":22,"dataId":9,"value":0.05}],"note":"<HRG Plus: +5%>\n<MRG Plus: +5%>\n<TRG Plus: +5%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Shaman: Memanggil roh leluhur primal yang memberikan regenerasi HP, MP, dan SP sebesar 5% setiap giliran kepada seluruh anggota tim dan kebal terhadap elemen api dan petir.","message1":"","message2":"","message3":"","message4":""},
-{"id":97,"name":"Pasif: Primordial Dragon Awakening","iconIndex":715,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":2,"value":1.25},{"code":21,"dataId":4,"value":1.35}],"note":"<MAT Rate: 135%>\n<ATK Rate: 125%>\n<Armor Penetration: 30%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Dragon Aspect: M.ATK +35% dan P.ATK +25%. Mengubah seluruh serangan menjadi berelemen Dragon Flame yang menembus 30% MDF dan mengabaikan resistensi elemen musuh.","message1":"","message2":"","message3":"","message4":""},
-{"id":98,"name":"Pasif: Swift Ambush","iconIndex":773,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":22,"dataId":0,"value":0.05},{"code":22,"dataId":1,"value":0.05}],"note":"<EVA Plus: +5%>\n<HIT Plus: +5%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Scout: Meningkatkan EVA +5% dan HIT +5%. Karakter selalu mendapatkan prioritas giliran bertindak paling awal pada giliran pertama pertempuran.","message1":"","message2":"","message3":"","message4":""},
-{"id":99,"name":"Pasif: Eagle Eye","iconIndex":446,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":22,"dataId":0,"value":0.1}],"note":"<HIT Plus: +10%>\n<Critical Damage: +15%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Archer: Meningkatkan HIT +10% (serangan fisik tidak dapat meleset pada musuh terbang). Serangan dari Baris Belakang mendapatkan bonus +15% Critical Damage (CDMG).","message1":"","message2":"","message3":"","message4":""},
-{"id":100,"name":"Pasif: Shadow Celerity","iconIndex":700,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":22,"dataId":2,"value":0.08},{"code":21,"dataId":6,"value":1.1}],"note":"<CRI Plus: +8%>\n<AGI Rate: 110%>\n<Max SP: +10>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Thief: Meningkatkan peluang serangan kritis (CRI +8%). Serangan kritikal memiliki 15% peluang mencuri item atau uang otomatis dan menambah +10 SP.","message1":"","message2":"","message3":"","message4":""},
-{"id":101,"name":"Pasif: Predator Instinct","iconIndex":695,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":22,"dataId":0,"value":0.15}],"note":"<HIT Plus: +15%>\n<Critical Damage: +20%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Ranger: Akurasi HIT +15% dan CDMG +20%. Memberikan bonus +25% damage terhadap musuh bertipe Beast/Monster atau musuh yang terkena status Slow/Bleed.","message1":"","message2":"","message3":"","message4":""},
-{"id":102,"name":"Pasif: Lethal Ambush","iconIndex":773,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":22,"dataId":1,"value":0.1},{"code":22,"dataId":2,"value":0.12}],"note":"<CRI Plus: +12%>\n<EVA Plus: +10%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Rogue: Peluang Kritis (CRI +12%) dan Evasion (EVA +10%). Serangan terhadap musuh yang belum sempat bertindak di ronde tersebut menghasilkan 100% Kritis Mutlak.","message1":"","message2":"","message3":"","message4":""},
-{"id":103,"name":"Pasif: Deadly Piercing","iconIndex":446,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":22,"dataId":0,"value":0.25}],"note":"<HIT Plus: +25%>\n<Armor Penetration: 30%>\n<Critical Damage: +40%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Sniper: Jarak serang tak terbatas, HIT +25%, dan mengabaikan 30% DEF. Serangan dari Baris Belakang pada target ber-HP di atas 80% menghasilkan bonus +40% CDMG.","message1":"","message2":"","message3":"","message4":""},
-{"id":104,"name":"Pasif: Viper Assassination","iconIndex":352,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":22,"dataId":2,"value":0.2}],"note":"<CRI Plus: +20%>\n<Critical Damage: +30%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Assassin: CRI +20% dan CDMG +30%. Serangan dari bayangan memiliki peluang 10% mengeksekusi musuh non-boss secara instan jika HP mereka di bawah 30%.","message1":"","message2":"","message3":"","message4":""},
-{"id":105,"name":"Pasif: Behemoth Packbond","iconIndex":696,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":2,"value":1.2},{"code":21,"dataId":3,"value":1.2},{"code":21,"dataId":6,"value":1.2}],"note":"<ATK Rate: 120%>\n<DEF Rate: 120%>\n<AGI Rate: 120%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Beastmaster: Meningkatkan seluruh parameter sekutu dan hewan panggilan sebesar +25%. Setiap serangan kawan memicu serangan susulan instan dari Beastmaster.","message1":"","message2":"","message3":"","message4":""},
-{"id":106,"name":"Pasif: Eclipse Phantom","iconIndex":700,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":22,"dataId":1,"value":0.25},{"code":22,"dataId":2,"value":0.25}],"note":"<EVA Plus: +25%>\n<CRI Plus: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Shadow Walker: EVA +25% dan CRI +25%. Karakter selalu bergerak dalam mode bayangan; serangan tidak dapat ditangkis atau dihindari oleh musuh (100% Unavoidable).","message1":"","message2":"","message3":"","message4":""},
-{"id":107,"name":"Pasif: Sonic Tempest","iconIndex":735,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":6,"value":1.5}],"note":"<AGI Rate: 150%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Windrunner: Action Speed +50% dan selalu bertindak pertama di tiap giliran. Setiap langkah gerakan meningkatkan akurasi dan menambah serangan ganda pada target musuh.","message1":"","message2":"","message3":"","message4":""},
-{"id":108,"name":"Pasif: Temporal Overwrite","iconIndex":675,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":6,"value":1.3}],"note":"<AGI Rate: 130%>\n<INT Rate: 1.20>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Chronomancer: Memiliki 15% peluang membatalkan giliran musuh secara instan. Saat menerima serangan mematikan, waktu berputar balik: HP dan MP kembali ke giliran sebelumnya (1x per battle).","message1":"","message2":"","message3":"","message4":""},
-{"id":109,"name":"Pasif: Entropy Collapse","iconIndex":746,"restriction":0,"priority":50,"motion":0,"overlay":0,"autoRemovalTiming":0,"minTurns":1,"maxTurns":1,"removeAtBattleEnd":false,"removeByRestriction":false,"removeByDamage":false,"removeByWalking":false,"chanceByDamage":100,"traits":[{"code":21,"dataId":2,"value":1.35},{"code":21,"dataId":4,"value":1.35}],"note":"<ATK Rate: 135%>\n<MAT Rate: 135%>\n<Armor Penetration: 100%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Void Incarnate: Seluruh serangan mengabaikan 100% DEF & MDF lawan secara mutlak. Serangan menghanguskan 5% Max MP & SP musuh secara permanen pada setiap giliran pertempuran.","message1":"","message2":"","message3":"","message4":""}
+  null,
+  {
+    "id": 1,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 1,
+    "maxTurns": 1,
+    "message1": " telah tewas!",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "messageType": 1,
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Death",
+    "note": "State #1 will be automatically added when HP reaches 0.",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 4,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 23,
+        "dataId": 9,
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 480,
+    "maxTurns": 1,
+    "message1": " mengambil posisi bertahan!",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "messageType": 1,
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Defend",
+    "note": "Aksi bertahan (Guard). Mengurangi damage yang diterima.",
+    "overlay": 0,
+    "priority": 0,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 62,
+        "dataId": 1,
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 0,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "messageType": 1,
+    "minTurns": 1,
+    "motion": 0,
+    "name": "[Reserved]",
+    "note": "Slot cadangan sistem.",
+    "overlay": 0,
+    "priority": 50,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 4,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 757,
+    "maxTurns": 3,
+    "message1": " terkena racun mematikan!",
+    "message2": " menderita racun!",
+    "message3": "",
+    "message4": " sembuh dari racun!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Poison",
+    "note": "<HRG Plus: -5%>\nRacun murni: Mengurangi 5% Max HP setiap turn selama 3 turn.",
+    "overlay": 1,
+    "priority": 60,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 7,
+        "value": -0.05
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 720,
+    "maxTurns": 3,
+    "message1": " terbakar kobaran api!",
+    "message2": " menderita luka bakar!",
+    "message3": "",
+    "message4": " api telah padam!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Burn",
+    "note": "<HRG Plus: -4%>\nLuka bakar api: Mengurangi 4% Max HP setiap turn dan ATK fisik -20% selama 3 turn.",
+    "overlay": 0,
+    "priority": 60,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 7,
+        "value": -0.04
+      },
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 0.8
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 758,
+    "maxTurns": 3,
+    "message1": " mengalami pendarahan hebat!",
+    "message2": " darah terus mengucur!",
+    "message3": "",
+    "message4": " pendarahan berhenti!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Bleed",
+    "note": "<HRG Plus: -4%>\nPendarahan akibat luka sabetan: Mengurangi 4% Max HP setiap turn selama 3 turn.",
+    "overlay": 0,
+    "priority": 60,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 7,
+        "value": -0.04
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 732,
+    "maxTurns": 3,
+    "message1": " tubuhnya lumpuh tersengat!",
+    "message2": " tersengat kelumpuhan!",
+    "message3": "",
+    "message4": " pulih dari kelumpuhan!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Paralyze",
+    "note": "<Custom Action Start Effect>\nif (Math.random() < 0.25) {\n  user.clearActions();\n  var msg = user.name() + ' lumpuh dan tidak dapat bergerak!';\n  $gameMessage.add(msg);\n}\n</Custom Action Start Effect>\nKelumpuhan otot & saraf: Kecepatan (AGI) -50%, Evasion -20%, dan chance 25% gagal bertindak per aksi.",
+    "overlay": 0,
+    "priority": 80,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 0.5
+      },
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": -0.2
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 760,
+    "maxTurns": 3,
+    "message1": " tertidur lelap!",
+    "message2": " masih tertidur nyenyak...",
+    "message3": "",
+    "message4": " terbangun dari tidur!",
+    "messageType": 1,
+    "minTurns": 2,
+    "motion": 0,
+    "name": "Sleep",
+    "note": "Tertidur pulas: Tidak dapat bertindak dan Evasion 0. Bangun seketika saat menerima kerusakan.",
+    "overlay": 0,
+    "priority": 90,
+    "removeAtBattleEnd": true,
+    "removeByDamage": true,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 4,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": -1
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 50,
+    "iconIndex": 762,
+    "maxTurns": 3,
+    "message1": " menjadi bingung dan hilang kendali!",
+    "message2": "",
+    "message3": "",
+    "message4": " kembali sadar!",
+    "messageType": 1,
+    "minTurns": 2,
+    "motion": 0,
+    "name": "Confuse",
+    "note": "Kebingungan pikiran: Menyerang kawan atau lawan secara acak selama 2-3 turn. Chance 50% pulih saat kena pukul.",
+    "overlay": 0,
+    "priority": 75,
+    "removeAtBattleEnd": true,
+    "removeByDamage": true,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 1,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 10,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 747,
+    "maxTurns": 3,
+    "message1": " terkutuk oleh aura kegelapan!",
+    "message2": "",
+    "message3": "",
+    "message4": " kutukan terangkat!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Curse",
+    "note": "Kutukan jurang: Menyegel regenerasi MP & SP dan meningkatkan kerusakan yang diterima sebesar 20% selama 3 turn.",
+    "overlay": 0,
+    "priority": 55,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 8,
+        "value": -1
+      },
+      {
+        "code": 22,
+        "dataId": 9,
+        "value": -1
+      },
+      {
+        "code": 23,
+        "dataId": 6,
+        "value": 1.2
+      },
+      {
+        "code": 23,
+        "dataId": 7,
+        "value": 1.2
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 759,
+    "maxTurns": 1,
+    "message1": " pingsan tersentak pusing!",
+    "message2": "",
+    "message3": "",
+    "message4": " sadar kembali!",
+    "messageType": 1,
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Stun",
+    "note": "Tersentak / Pusing (Stun): Kehilangan giliran bertindak selama tepat 1 turn.",
+    "overlay": 0,
+    "priority": 90,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 4,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": -0.5
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 765,
+    "maxTurns": 3,
+    "message1": " gerakannya melambat!",
+    "message2": "",
+    "message3": "",
+    "message4": " kecepatannya kembali normal!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Slow",
+    "note": "Perlambatan gerak (Slow): Kecepatan (AGI) -35% dan Evasion -15% selama 3 turn.",
+    "overlay": 0,
+    "priority": 55,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 0.65
+      },
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": -0.15
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 50,
+    "iconIndex": 726,
+    "maxTurns": 2,
+    "message1": " membeku menjadi kristal es!",
+    "message2": "",
+    "message3": "",
+    "message4": " kristal es mencair!",
+    "messageType": 1,
+    "minTurns": 2,
+    "motion": 0,
+    "name": "Freeze",
+    "note": "Membeku es (Freeze): Lumpuh total tidak dapat bertindak, rentan terhadap serangan Api (+50% Fire Damage). Cair saat kena pukul 50%.",
+    "overlay": 0,
+    "priority": 85,
+    "removeAtBattleEnd": true,
+    "removeByDamage": true,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 4,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 11,
+        "dataId": 2,
+        "value": 1.5
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 763,
+    "maxTurns": 3,
+    "message1": " pandangannya dibutakan!",
+    "message2": "",
+    "message3": "",
+    "message4": " penglihatannya kembali jernih!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Blind",
+    "note": "<HIT Plus: -50%>\nKebutaan mata (Blind): Mengurangi Akurasi Serangan (HIT) sebesar 50% selama 3 turn.",
+    "overlay": 0,
+    "priority": 60,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 0,
+        "value": -0.5
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 764,
+    "maxTurns": 2,
+    "message1": " gemetar dicekam ketakutan!",
+    "message2": "",
+    "message3": "",
+    "message4": " keberaniannya bangkit kembali!",
+    "messageType": 1,
+    "minTurns": 2,
+    "motion": 0,
+    "name": "Fear",
+    "note": "Ketakutan mental (Fear): Mengurangi DEF -20% dan AGI -20% selama 2 turn.",
+    "overlay": 0,
+    "priority": 60,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 0.8
+      },
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 0.8
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 761,
+    "maxTurns": 3,
+    "message1": " suaranya dibungkam sunyi!",
+    "message2": "",
+    "message3": "",
+    "message4": " suaranya terdengar kembali!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Silence",
+    "note": "Pembungkaman mantra (Silence): Menyegel pelafalan sihir (Magic Skills) selama 3 turn.",
+    "overlay": 0,
+    "priority": 70,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 42,
+        "dataId": 1,
+        "value": 0
+      },
+      {
+        "code": 42,
+        "dataId": 2,
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 766,
+    "maxTurns": 2,
+    "message1": " kakinya terikat ke tanah!",
+    "message2": "",
+    "message3": "",
+    "message4": " ikatannya terlepas!",
+    "messageType": 1,
+    "minTurns": 2,
+    "motion": 0,
+    "name": "Root",
+    "note": "Jeratan akar/tanah (Root): Tidak dapat menghindar (EVA 0%) dan Kecepatan (AGI) -50% selama 2 turn.",
+    "overlay": 0,
+    "priority": 55,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": -1
+      },
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 0.5
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 709,
+    "maxTurns": 2,
+    "message1": " titik lemahnya terbongkar rentan!",
+    "message2": "",
+    "message3": "",
+    "message4": " pertahanannya pulih!",
+    "messageType": 1,
+    "minTurns": 2,
+    "motion": 0,
+    "name": "Vulnerable",
+    "note": "Kerentanan zirah (Vulnerable): Menerima bonus kerusakan fisik dan sihir +25% selama 2 turn.",
+    "overlay": 0,
+    "priority": 50,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 23,
+        "dataId": 6,
+        "value": 1.25
+      },
+      {
+        "code": 23,
+        "dataId": 7,
+        "value": 1.25
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 773,
+    "maxTurns": 3,
+    "message1": " diselimuti percepatan waktu Haste!",
+    "message2": "",
+    "message3": "",
+    "message4": " efek Haste berakhir!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Haste",
+    "note": "Percepatan waktu (Haste): Meningkatkan Kecepatan Aksi (AGI) sebesar +40% selama 3 turn.",
+    "overlay": 0,
+    "priority": 50,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.4
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 706,
+    "maxTurns": 2,
+    "message1": " memprovokasi musuh untuk menyerangnya!",
+    "message2": "",
+    "message3": "",
+    "message4": " provokasi reda!",
+    "messageType": 1,
+    "minTurns": 2,
+    "motion": 0,
+    "name": "Taunt",
+    "note": "Provokasi tempur (Taunt): Memusatkan serangan seluruh musuh kepada pengguna (TGR 1000%) selama 2 turn.",
+    "overlay": 0,
+    "priority": 70,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 23,
+        "dataId": 0,
+        "value": 10
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 749,
+    "maxTurns": 3,
+    "message1": " basah kuyup tersiram air!",
+    "message2": "",
+    "message3": "",
+    "message4": " tubuhnya kembali kering!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Soaked",
+    "note": "Kondisi basah kuyup: Damage Api -50%, namun menerima +50% Damage Petir selama 3 turn.",
+    "overlay": 0,
+    "priority": 50,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 11,
+        "dataId": 2,
+        "value": 0.5
+      },
+      {
+        "code": 11,
+        "dataId": 6,
+        "value": 1.5
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 732,
+    "maxTurns": 2,
+    "message1": " tersetrum listrik statis!",
+    "message2": "",
+    "message3": "",
+    "message4": " muatan listrik statis lenyap!",
+    "messageType": 1,
+    "minTurns": 2,
+    "motion": 0,
+    "name": "Shock",
+    "note": "Kondisi tersetrum: Kecepatan -20% dan menerima kerusakan fisik +20% selama 2 turn.",
+    "overlay": 0,
+    "priority": 55,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 0.8
+      },
+      {
+        "code": 23,
+        "dataId": 6,
+        "value": 1.2
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 767,
+    "maxTurns": 2,
+    "message1": " membatu menjadi patung granit!",
+    "message2": "",
+    "message3": "",
+    "message4": " kutukan batu hancur!",
+    "messageType": 1,
+    "minTurns": 2,
+    "motion": 0,
+    "name": "Petrify",
+    "note": "Membatu total (Petrify): Lumpuh total tidak dapat beraksi, namun DEF & MDF berlipat 200% selama 2 turn.",
+    "overlay": 0,
+    "priority": 95,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 4,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 2
+      },
+      {
+        "code": 21,
+        "dataId": 5,
+        "value": 2
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 734,
+    "maxTurns": 3,
+    "message1": " melayang di udara!",
+    "message2": "",
+    "message3": "",
+    "message4": " mendarat kembali ke tanah!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Float",
+    "note": "Melayang (Float): Kebal terhadap seluruh serangan berelemen Tanah (Earth / Quake) selama 3 turn.",
+    "overlay": 0,
+    "priority": 50,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 11,
+        "dataId": 4,
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 692,
+    "maxTurns": 3,
+    "message1": " ditandai sebagai target buruan!",
+    "message2": "",
+    "message3": "",
+    "message4": " tanda buruan memudar!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Marked",
+    "note": "Ditandai (Marked): Evasion -20% dan peluang terkena serangan Critical musuh meningkat +20% selama 3 turn.",
+    "overlay": 0,
+    "priority": 50,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": -0.2
+      },
+      {
+        "code": 22,
+        "dataId": 3,
+        "value": -0.2
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 769,
+    "maxTurns": 3,
+    "message1": " merasakan lonjakan kekuatan fisik!",
+    "message2": "",
+    "message3": "",
+    "message4": " dorongan kekuatan fisik mereda!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "ATK Up",
+    "note": "Tahap Serangan Naik (+1): Meningkatkan Serangan Fisik (ATK) +25% selama 3 turn.",
+    "overlay": 0,
+    "priority": 45,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.25
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 770,
+    "maxTurns": 3,
+    "message1": " daya serang fisiknya melemah tertekan!",
+    "message2": "",
+    "message3": "",
+    "message4": " daya serang fisiknya pulih!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "ATK Down",
+    "note": "Tahap Serangan Turun (-1): Mengurangi Serangan Fisik (ATK) -25% selama 3 turn.",
+    "overlay": 0,
+    "priority": 45,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 0.75
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 771,
+    "maxTurns": 3,
+    "message1": " mengeraskan pertahanan fisiknya!",
+    "message2": "",
+    "message3": "",
+    "message4": " zirah pertahanan fisiknya mereda!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "DEF Up",
+    "note": "Tahap Pertahanan Naik (+1): Meningkatkan Pertahanan Fisik (DEF) +30% selama 3 turn.",
+    "overlay": 0,
+    "priority": 45,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 1.3
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 772,
+    "maxTurns": 3,
+    "message1": " pertahanan fisiknya rapuh terkikis!",
+    "message2": "",
+    "message3": "",
+    "message4": " pertahanan fisiknya kembali normal!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "DEF Down",
+    "note": "Tahap Pertahanan Turun (-1): Mengurangi Pertahanan Fisik (DEF) -30% selama 3 turn.",
+    "overlay": 0,
+    "priority": 45,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 0.7
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 778,
+    "maxTurns": 3,
+    "message1": " energi daya sihirnya melonjak!",
+    "message2": "",
+    "message3": "",
+    "message4": " lonjakan energi sihir mereda!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "MAT Up",
+    "note": "Tahap Sihir Naik (+1): Meningkatkan Serangan Sihir (MAT) +25% selama 3 turn.",
+    "overlay": 0,
+    "priority": 45,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.25
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 747,
+    "maxTurns": 3,
+    "message1": " pancaran sihirnya terhambat!",
+    "message2": "",
+    "message3": "",
+    "message4": " pancaran sihirnya kembali normal!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "MAT Down",
+    "note": "Tahap Sihir Turun (-1): Mengurangi Serangan Sihir (MAT) -25% selama 3 turn.",
+    "overlay": 0,
+    "priority": 45,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 0.75
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 779,
+    "maxTurns": 3,
+    "message1": " memperkuat perisai sihirnya!",
+    "message2": "",
+    "message3": "",
+    "message4": " perisai sihirnya mereda!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "MDF Up",
+    "note": "Tahap Pertahanan Sihir Naik (+1): Meningkatkan Pertahanan Sihir (MDF) +30% selama 3 turn.",
+    "overlay": 0,
+    "priority": 45,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 5,
+        "value": 1.3
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 761,
+    "maxTurns": 3,
+    "message1": " benteng sihirnya terkikis rapuh!",
+    "message2": "",
+    "message3": "",
+    "message4": " benteng sihirnya pulih!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "MDF Down",
+    "note": "Tahap Pertahanan Sihir Turun (-1): Mengurangi Pertahanan Sihir (MDF) -30% selama 3 turn.",
+    "overlay": 0,
+    "priority": 45,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 5,
+        "value": 0.7
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 773,
+    "maxTurns": 3,
+    "message1": " bergerak lebih gesit dan berkecepatan tinggi!",
+    "message2": "",
+    "message3": "",
+    "message4": " kecepatannya kembali normal!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Speed Up",
+    "note": "Tahap Kecepatan Naik (+1): Meningkatkan Kecepatan Aksi (AGI) +35% selama 3 turn.",
+    "overlay": 0,
+    "priority": 45,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.35
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 692,
+    "maxTurns": 3,
+    "message1": " memusatkan konsentrasi mengincar titik vital!",
+    "message2": "",
+    "message3": "",
+    "message4": " fokus serangannya mereda!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Critical Focus",
+    "note": "Fokus Kritikal: Meningkatkan Peluang Serangan Kritikal (CRI) +30% selama 3 turn.",
+    "overlay": 0,
+    "priority": 45,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 2,
+        "value": 0.3
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 777,
+    "maxTurns": 3,
+    "message1": " bergerak lincah bersiap mengelak!",
+    "message2": "",
+    "message3": "",
+    "message4": " refleks elakannya kembali biasa!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Evasion Up",
+    "note": "Refleks Elakan: Meningkatkan Peluang Menghindar (EVA) +25% selama 3 turn.",
+    "overlay": 0,
+    "priority": 45,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": 0.25
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 487,
+    "maxTurns": 3,
+    "message1": " diselimuti oleh barier pelindung!",
+    "message2": "",
+    "message3": "",
+    "message4": " barier pelindung pecah memudar!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Barrier",
+    "note": "Barier Pelindung: Mengurangi seluruh kerusakan fisik dan sihir yang diterima sebesar 30% selama 3 turn.",
+    "overlay": 0,
+    "priority": 50,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 23,
+        "dataId": 6,
+        "value": 0.7
+      },
+      {
+        "code": 23,
+        "dataId": 7,
+        "value": 0.7
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 707,
+    "maxTurns": 3,
+    "message1": " memasuki amarah buas membakar darah!",
+    "message2": "",
+    "message3": "",
+    "message4": " amarah membara reda!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Berserk Mode",
+    "note": "Mode Amarah Membara (Berserker Frenzy): Serangan Fisik ATK +50%, Pertahanan DEF -25%, menguras 5% HP per turn.",
+    "overlay": 0,
+    "priority": 65,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.5
+      },
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 0.75
+      },
+      {
+        "code": 22,
+        "dataId": 7,
+        "value": -0.05
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 715,
+    "maxTurns": 3,
+    "message1": " memasang kuda-kuda naga langit!",
+    "message2": "",
+    "message3": "",
+    "message4": " kuda-kuda naga dilepas!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Dragon Stance",
+    "note": "Kuda-kuda Naga (Dragoon Stance): ATK +25%, AGI +20%, dan Peluang Serangan Balik (Counter) +30%.",
+    "overlay": 0,
+    "priority": 65,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.25
+      },
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.2
+      },
+      {
+        "code": 22,
+        "dataId": 6,
+        "value": 0.3
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 700,
+    "maxTurns": 2,
+    "message1": " membaur ke dalam bayangan sunyi!",
+    "message2": "",
+    "message3": "",
+    "message4": " muncul kembali dari bayangan!",
+    "messageType": 1,
+    "minTurns": 2,
+    "motion": 0,
+    "name": "Shadow Mode",
+    "note": "Mode Sembunyi Bayangan (Stealth): Tidak dapat ditarget langsung oleh musuh (TGR 5%), Evasion +60%, dan serangan berikutnya garansi Critical (+50% CRI).",
+    "overlay": 0,
+    "priority": 65,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 23,
+        "dataId": 0,
+        "value": 0.05
+      },
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": 0.6
+      },
+      {
+        "code": 22,
+        "dataId": 2,
+        "value": 0.5
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 483,
+    "maxTurns": 3,
+    "message1": " bermanifestasi menjadi Penjaga Suci Tak Tergoyahkan!",
+    "message2": "",
+    "message3": "",
+    "message4": " wujud Penjaga Suci mereda!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Avatar of Guardian",
+    "note": "Manifestasi Benteng Suci (Avatar of Guardian): Mengunci seluruh target musuh (Taunt), Pertahanan DEF +50%, Pertahanan Sihir MDF +50%, Efisiensi Bertahan +50%.",
+    "overlay": 0,
+    "priority": 70,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 1.5
+      },
+      {
+        "code": 21,
+        "dataId": 5,
+        "value": 1.5
+      },
+      {
+        "code": 23,
+        "dataId": 0,
+        "value": 10
+      },
+      {
+        "code": 23,
+        "dataId": 1,
+        "value": 1.5
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 742,
+    "maxTurns": 3,
+    "message1": " mencapai pencerahan Kondisi Nirwana!",
+    "message2": "",
+    "message3": "",
+    "message4": " kesadaran nirwana kembali normal!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "State of Nirvana",
+    "note": "Pencerahan Batin (State of Nirvana): Kebal total 100% terhadap seluruh status abnormal & debuff, memulihkan 10% SP tiap turn, MDF +30%.",
+    "overlay": 0,
+    "priority": 70,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 32,
+        "dataId": 4,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 5,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 6,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 7,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 8,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 9,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 10,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 11,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 12,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 13,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 14,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 15,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 16,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 17,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 18,
+        "value": 0
+      },
+      {
+        "code": 22,
+        "dataId": 9,
+        "value": 0.1
+      },
+      {
+        "code": 21,
+        "dataId": 5,
+        "value": 1.3
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 702,
+    "maxTurns": 2,
+    "message1": " meledakkan lonjakan energi Chi batin!",
+    "message2": "",
+    "message3": "",
+    "message4": " lonjakan energi Chi reda!",
+    "messageType": 1,
+    "minTurns": 2,
+    "motion": 0,
+    "name": "Chi Hyper-Burst",
+    "note": "Lonjakan Chi Batin (Chi Hyper-Burst): Imun terhadap penurunan stat debuff, ATK & MAT +25%, memulihkan 8% SP tiap turn.",
+    "overlay": 0,
+    "priority": 65,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 32,
+        "dataId": 27,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 29,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 31,
+        "value": 0
+      },
+      {
+        "code": 32,
+        "dataId": 33,
+        "value": 0
+      },
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.25
+      },
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.25
+      },
+      {
+        "code": 22,
+        "dataId": 9,
+        "value": 0.08
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "autoRemovalTiming": 2,
+    "chanceByDamage": 100,
+    "iconIndex": 781,
+    "maxTurns": 3,
+    "message1": " dinaungi perlindungan arwah leluhur!",
+    "message2": "",
+    "message3": "",
+    "message4": " naungan leluhur memudar!",
+    "messageType": 1,
+    "minTurns": 3,
+    "motion": 0,
+    "name": "Ancestral Protection",
+    "note": "Perlindungan Arwah Leluhur: Mengurangi kerusakan yang diterima sebesar 20% dan bertahan dari 1 serangan mematikan.",
+    "overlay": 0,
+    "priority": 65,
+    "removeAtBattleEnd": true,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 23,
+        "dataId": 6,
+        "value": 0.8
+      },
+      {
+        "code": 23,
+        "dataId": 7,
+        "value": 0.8
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 528,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "messageType": 1,
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Pasif: Iron Skin",
+    "note": "<Passive State>\nPasif zirah besi: Meningkatkan Pertahanan Fisik (DEF) sebesar 10% permanen.",
+    "overlay": 0,
+    "priority": 10,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 1.1
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 778,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "messageType": 1,
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Pasif: Mind Focus",
+    "note": "<Passive State>\nPasif ketajaman pikiran: Meningkatkan Serangan Sihir (MAT) +10% dan Max MP +10% permanen.",
+    "overlay": 0,
+    "priority": 10,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.1
+      },
+      {
+        "code": 21,
+        "dataId": 1,
+        "value": 1.1
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 773,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "messageType": 1,
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Pasif: Fleet Footed",
+    "note": "<Passive State>\nPasif langkah gesit: Meningkatkan Kecepatan (AGI) +15% dan Peluang Menghindar (EVA) +5% permanen.",
+    "overlay": 0,
+    "priority": 10,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.15
+      },
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": 0.05
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 86,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Pribumi",
+    "note": "<Race: Pribumi>\n<Race Key: pribumi>\n<Race Group: Suku Bumi>\n<STR Rate: 1.00>\n<INT Rate: 1.00>\n<DEX Rate: 1.00>\n<LUK Rate: 1.00>\n<AGI Rate: 1.00>\n<VIT Rate: 1.00>\n<Description>\nRas manusia fana yang membentuk tulang punggung peradaban daratan utama. Sangat adaptif dan fleksibel dalam penentuan takdir.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 49,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 716,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Wahanarsa",
+    "note": "<Race: Wahanarsa>\n<Race Key: wahanarsa>\n<Race Group: Suku Bumi>\n<Race Ability Desc: Efisiensi konsumsi Mana berkurang 10% dan akurasi Hit Rate meningkat +5%.>\n<STR Rate: 0.90>\n<INT Rate: 1.10>\n<DEX Rate: 1.10>\n<LUK Rate: 1.00>\n<AGI Rate: 1.00>\n<VIT Rate: 0.90>\n<Description>\nBangsawan terdidik Mandala, penguasa birokrasi dan akademi Loka Cakra. Menguasai teori sihir dan taktik, namun fisik dimanjakan kemewahan.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 50,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 453,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Asrivana",
+    "note": "<Race: Asrivana>\n<Race Key: asrivana>\n<Race Group: Suku Bumi>\n<Race Ability Desc: Daya pemulihan sihir alam +20% dan regenerasi MP otomatis 3% per giliran.>\n<STR Rate: 0.90>\n<INT Rate: 1.10>\n<DEX Rate: 1.00>\n<LUK Rate: 1.00>\n<AGI Rate: 1.10>\n<VIT Rate: 0.90>\n<Description>\nRas Elf pelindung Hutan Suci Astradipa. Memiliki afinitas luar biasa terhadap sihir alam dan kelincahan akrobatik di dahan pohon raksasa.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 51,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 552,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Avesari",
+    "note": "<Race: Avesari>\n<Race Key: avesari>\n<Race Group: Suku Bumi>\n<Race Ability Desc: Mengurangi kerusakan elemen Gelap sebesar 30% dan kebal terhadap status Curse.>\n<STR Rate: 1.00>\n<INT Rate: 1.10>\n<DEX Rate: 1.00>\n<LUK Rate: 0.90>\n<AGI Rate: 0.90>\n<VIT Rate: 1.10>\n<Description>\nKeturunan cahaya suci Sang Hyang di Avalerion. Membawa pendaran energi suci dan ketahanan spiritual tinggi dengan gaya tempur kokoh ortodoks.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 52,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 389,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Butoraksa",
+    "note": "<Race: Butoraksa>\n<Race Key: butoraksa>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Saat HP di bawah 40%, Physical Attack meningkat tajam sebesar +25%.>\n<STR Rate: 1.10>\n<INT Rate: 0.90>\n<DEX Rate: 0.90>\n<LUK Rate: 1.00>\n<AGI Rate: 1.00>\n<VIT Rate: 1.10>\n<Description>\nRaksasa berkulit hijau/merah dari Gua Garbhagiri. Tenaga otot luar biasa dan haus kehormatan perang, namun menolak ilmu akademis rumit.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 53,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 591,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Garuda",
+    "note": "<Race: Garuda>\n<Race Key: garuda>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Evasion Rate terhadap serangan melee darat +15% dan Action Speed giliran +20%.>\n<STR Rate: 0.90>\n<INT Rate: 1.00>\n<DEX Rate: 1.10>\n<LUK Rate: 1.00>\n<AGI Rate: 1.10>\n<VIT Rate: 0.90>\n<Description>\nManusia burung bersayap emas dari Nusa Sayendra. Penguasa langit dengan inisiatif kecepatan dan akurasi tukikan mematikan.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 54,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 507,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Hanorok",
+    "note": "<Race: Hanorok>\n<Race Key: hanorok>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Meningkatkan Critical Rate +10% dan memiliki peluang 5% memicu serangan ekstra tanpa giliran.>\n<STR Rate: 0.90>\n<INT Rate: 1.00>\n<DEX Rate: 1.10>\n<LUK Rate: 1.00>\n<AGI Rate: 1.10>\n<VIT Rate: 0.90>\n<Description>\nKaum Beastmen kera berakal budi tinggi dari Astradipa. Diberkati kelicikan Monkey King, master penyergapan, taktik perangkap, dan kombo kilat.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 55,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 580,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Nagarasven",
+    "note": "<Race: Nagarasven>\n<Race Key: nagarasven>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Mengurangi kerusakan elemen Api sebesar 50% dan serangan fisik berpeluang membakar (Burn) musuh.>\n<STR Rate: 1.10>\n<INT Rate: 1.10>\n<DEX Rate: 1.00>\n<LUK Rate: 0.90>\n<AGI Rate: 0.90>\n<VIT Rate: 1.00>\n<Description>\nReptil purba raksasa berakal budi tinggi dari lereng vulkanik Agnitra. Bersisik karang keras dengan nafas api destruktif penjaga pusaka kuno.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 56,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 707,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Rakshorien",
+    "note": "<Race: Rakshorien>\n<Race Key: rakshorien>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Kebal mutlak terhadap racun (Poison) dan serangan fisik berpeluang 25% menularkan racun mematikan.>\n<STR Rate: 0.90>\n<INT Rate: 1.10>\n<DEX Rate: 1.00>\n<LUK Rate: 1.10>\n<AGI Rate: 1.00>\n<VIT Rate: 0.90>\n<Description>\nElf buangan di bawah tanah Gua Wisamaya. Menguasai sihir bayangan, cakar beracun, dan kutukan berdarah dengan mata merah menyala.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 57,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 781,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Troliogoro",
+    "note": "<Race: Troliogoro>\n<Race Key: troliogoro>\n<Race Group: Wuru Loka>\n<Race Ability Desc: Pertahanan fisik DEF +15% dan kebal terhadap status Stun atau Bleed.>\n<STR Rate: 1.00>\n<INT Rate: 1.00>\n<DEX Rate: 1.10>\n<LUK Rate: 0.90>\n<AGI Rate: 0.90>\n<VIT Rate: 1.10>\n<Description>\nPandai besi raksasa dari dataran tinggi Agnigarba. Kulitnya menyatu dengan logam cair sekeras baja dengan keahlian tempa dewa, namun serakah emas.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 58,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 742,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Dewantara",
+    "note": "<Race: Dewantara>\n<Race Key: dewantara>\n<Race Group: Arkahyan>\n<Race Ability Desc: Memberikan aura komando surgawi (+10% ATK dan MAT untuk seluruh barisan kawan saat pertempuran).>\n<STR Rate: 1.10>\n<INT Rate: 1.10>\n<DEX Rate: 0.90>\n<LUK Rate: 0.90>\n<AGI Rate: 1.00>\n<VIT Rate: 1.00>\n<Description>\nKsatria suci surgawi penunggang Griffin di Avalerion. Pengawal hukum dunia dengan kedisiplinan militer dan pendaran cahaya suci.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 59,
+    "autoRemovalTiming": 0,
+    "chanceByDamage": 100,
+    "iconIndex": 747,
+    "maxTurns": 1,
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": "",
+    "minTurns": 1,
+    "motion": 0,
+    "name": "Ras: Bhuta",
+    "note": "<Race: Bhuta>\n<Race Key: bhuta>\n<Race Group: Drahkthar>\n<Race Ability Desc: Serangan mengabaikan 15% DEF musuh dan kebal terhadap status Fear atau Silence.>\n<STR Rate: 1.10>\n<INT Rate: 1.00>\n<DEX Rate: 0.90>\n<LUK Rate: 1.10>\n<AGI Rate: 1.00>\n<VIT Rate: 0.90>\n<Description>\nIblis elit komandan perang di Raksamala. Antitesis Avesari dengan kekuatan teror brutal dan manipulasi energi kegelapan pekat Sangrahal.\n</Description>",
+    "overlay": 0,
+    "priority": 100,
+    "removeAtBattleEnd": false,
+    "removeByDamage": false,
+    "removeByRestriction": false,
+    "removeByWalking": false,
+    "restriction": 0,
+    "stepsToRemove": 100,
+    "traits": []
+  },
+  {
+    "id": 60,
+    "name": "Pasif: Battle Spirit",
+    "iconIndex": 706,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.08
+      }
+    ],
+    "note": "<ATK Rate: 108%>\n<STR Rate: 1.05>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Fighter: Meningkatkan P.ATK sebesar +8%. Saat HP berada di bawah 50%, memulihkan +2 SP ekstra pada setiap awal giliran.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 61,
+    "name": "Pasif: Heavy Impact",
+    "iconIndex": 704,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.12
+      }
+    ],
+    "note": "<ATK Rate: 112%>\n<STR Rate: 1.08>\n<Armor Penetration: 10%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Warrior: Meningkatkan P.ATK sebesar +12% dan mengabaikan 10% DEF target. Serangan fisik memiliki 5% peluang menyebabkan Stun.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 62,
+    "name": "Pasif: Vanguard Aegis",
+    "iconIndex": 483,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 1.15
+      },
+      {
+        "code": 23,
+        "dataId": 1,
+        "value": 1.2
+      }
+    ],
+    "note": "<DEF Rate: 115%>\n<VIT Rate: 1.10>\n<Guard Efficiency: +20%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Squire: Meningkatkan P.DEF sebesar +15% dan efisiensi Guard (GRD +20%). Saat berada di Baris Depan, mengurangi kerusakan fisik kawan baris belakang sebesar 5%.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 63,
+    "name": "Pasif: Rhythm Striker",
+    "iconIndex": 690,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.15
+      }
+    ],
+    "note": "<AGI Rate: 115%>\n<Max SP: +15>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Brawler: Meningkatkan Action Speed sebesar +15%. Setiap kali melancarkan skill fisik, memulihkan +5 SP secara instan.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 64,
+    "name": "Pasif: Veteran Resolve",
+    "iconIndex": 771,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.15
+      }
+    ],
+    "note": "<ATK Rate: 115%>\n<Armor Penetration: 15%>\n<STR Rate: 1.10>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Mercenary: Meningkatkan P.ATK +15% dan menembus 15% DEF musuh. Setiap kali menumbangkan musuh, memulihkan 15% Max HP dan mendapat buff ATK +10% selama 2 giliran.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 65,
+    "name": "Pasif: Fortress Bastion",
+    "iconIndex": 492,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 1.2
+      },
+      {
+        "code": 21,
+        "dataId": 5,
+        "value": 1.2
+      },
+      {
+        "code": 23,
+        "dataId": 1,
+        "value": 1.25
+      }
+    ],
+    "note": "<DEF Rate: 120%>\n<MDF Rate: 120%>\n<Guard Efficiency: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Knight: Meningkatkan P.DEF & M.MDF +20%, serta efisiensi Guard (GRD +25%). Otomatis menahan 30% kerusakan yang mengarah ke kawan dengan sisa HP terendah.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 66,
+    "name": "Pasif: Flowing Stance",
+    "iconIndex": 697,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.2
+      }
+    ],
+    "note": "<AGI Rate: 120%>\n<Max SP: +20>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Martial Artist: Action Speed +20% dan memulihkan +8 SP tiap serangan fisik. Jika menyerang 2 giliran berturut-turut, serangan berikutnya dipastikan 100% Critical Hit.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 67,
+    "name": "Pasif: Unyielding Dominance",
+    "iconIndex": 769,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.2
+      },
+      {
+        "code": 14,
+        "dataId": 11,
+        "value": 1
+      }
+    ],
+    "note": "<ATK Rate: 120%>\n<STR Rate: 1.15>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Champion: P.ATK +20% dan kebal terhadap efek Stun & Knockdown. Kerusakan fisik meningkat hingga +30% seiring berkurangnya sisa target musuh di arena.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 68,
+    "name": "Pasif: Dragonfang Skystrike",
+    "iconIndex": 715,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.2
+      }
+    ],
+    "note": "<ATK Rate: 120%>\n<Armor Penetration: 20%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Dragoon: Kerusakan jurus lompat dan tombak +25% serta mengabaikan 20% DEF. Serangan dari udara menghasilkan gelombang kejut berdaya rusak area (AoE).",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 69,
+    "name": "Pasif: Aegis of Sanctuary",
+    "iconIndex": 742,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 1.25
+      },
+      {
+        "code": 21,
+        "dataId": 5,
+        "value": 1.25
+      },
+      {
+        "code": 14,
+        "dataId": 14,
+        "value": 1
+      },
+      {
+        "code": 14,
+        "dataId": 15,
+        "value": 1
+      }
+    ],
+    "note": "<DEF Rate: 125%>\n<MDF Rate: 125%>\n<PDR Rate: 85%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Paladin: P.DEF & M.MDF +25%. Seluruh sekutu di baris yang sama menerima pengurangan kerusakan 15% dan kebal terhadap status Fear & Blind.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 70,
+    "name": "Pasif: Asura Meridian",
+    "iconIndex": 710,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.25
+      },
+      {
+        "code": 22,
+        "dataId": 2,
+        "value": 0.15
+      }
+    ],
+    "note": "<ATK Rate: 125%>\n<CRI Plus: +15%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Monk: Serangan fisik tanpa senjata mendapatkan bonus P.ATK +25% dan CRI +15%. Serangan kritis memiliki 20% peluang menyegel skill lawan (Silence) selama 1 turn.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 71,
+    "name": "Pasif: Bloodrage Immortality",
+    "iconIndex": 707,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.25
+      }
+    ],
+    "note": "<ATK Rate: 125%>\n<Critical Damage: +40%>\n<STR Rate: 1.15>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Berserker: Saat HP di bawah 30%, P.ATK +50% dan CDMG +40%. Karakter tidak dapat gugur (kebal kematian mutlak) selama 1 giliran saat HP menyentuh angka 1.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 72,
+    "name": "Pasif: Abyssal Despair",
+    "iconIndex": 745,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 1.3
+      },
+      {
+        "code": 21,
+        "dataId": 5,
+        "value": 1.3
+      }
+    ],
+    "note": "<DEF Rate: 130%>\n<MDF Rate: 130%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Death Knight: P.DEF & M.MDF +30%. Aura kegelapan mengurangi ATK & MAT seluruh lawan sebesar 15%; menyerap 20% dari seluruh kerusakan yang dihasilkan sebagai HP.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 73,
+    "name": "Pasif: Aegis of Radiance",
+    "iconIndex": 741,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 1.25
+      },
+      {
+        "code": 21,
+        "dataId": 5,
+        "value": 1.25
+      },
+      {
+        "code": 23,
+        "dataId": 6,
+        "value": 0.85
+      }
+    ],
+    "note": "<DEF Rate: 125%>\n<MDF Rate: 125%>\n<PDR Rate: 85%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Holy Knight: Menahan 50% kerusakan yang mengarah ke seluruh anggota party. Serangan suci memulihkan HP party sebesar 20% dari total kerusakan yang ditimpakan.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 74,
+    "name": "Pasif: Meridian Annihilation",
+    "iconIndex": 714,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.35
+      }
+    ],
+    "note": "<AGI Rate: 135%>\n<Armor Penetration: 40%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Brahma: Action Speed +35% dan seluruh serangan fisik menembus 40% DEF lawan. Setiap serangan beruntun meningkatkan output kerusakan sebesar +15% tanpa batas.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 75,
+    "name": "Pasif: Celestial Skystrike",
+    "iconIndex": 742,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.3
+      }
+    ],
+    "note": "<ATK Rate: 130%>\n<STR Rate: 1.20>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Sky Sovereign: Kerusakan jurus udara +50%. Menghujamkan badai langit ke seluruh arena pada giliran pertama, menyebabkan Stun dan menurunkan DEF musuh sebesar 25%.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 76,
+    "name": "Pasif: Mana Attunement",
+    "iconIndex": 755,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.08
+      },
+      {
+        "code": 23,
+        "dataId": 3,
+        "value": 0.9
+      }
+    ],
+    "note": "<MAT Rate: 108%>\n<INT Rate: 1.05>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Apprentice: Meningkatkan M.ATK sebesar +8% dan mengurangi konsumsi MP seluruh mantra sihir sebesar 10%.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 77,
+    "name": "Pasif: Elemental Overload",
+    "iconIndex": 666,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.15
+      }
+    ],
+    "note": "<MAT Rate: 115%>\n<INT Rate: 1.10>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Magician: Meningkatkan M.ATK sebesar +15%. Serangan yang mengenai kelemahan elemen musuh menghasilkan tambahan kerusakan sebesar +25%.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 78,
+    "name": "Pasif: Divine Grace",
+    "iconIndex": 752,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 23,
+        "dataId": 2,
+        "value": 1.2
+      },
+      {
+        "code": 22,
+        "dataId": 8,
+        "value": 0.02
+      }
+    ],
+    "note": "<REC Rate: 120%>\n<MRG Plus: +2%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Acolyte: Meningkatkan efektivitas skill penyembuhan sebesar +20% (Recovery Effect), serta memulihkan 2% Max MP otomatis setiap akhir giliran.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 79,
+    "name": "Pasif: Nether Siphon",
+    "iconIndex": 701,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.15
+      }
+    ],
+    "note": "<MAT Rate: 115%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Occultist: Kerusakan sihir berelemen Dark meningkat +15%. Menyerap 5% Max HP musuh setiap kali berhasil menimpakan status buruk (Debuff / Poison / Curse).",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 80,
+    "name": "Pasif: Arcane Amplification",
+    "iconIndex": 751,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.2
+      }
+    ],
+    "note": "<MAT Rate: 120%>\n<INT Rate: 1.15>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Mage: Meningkatkan M.ATK +20%. Setiap kali melancarkan mantra sihir, meningkatkan kerusakan sihir elemen berikutnya sebesar +10% (dapat ditumpuk hingga 3 lapis / +30%).",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 81,
+    "name": "Pasif: Sanctified Aura",
+    "iconIndex": 742,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 23,
+        "dataId": 2,
+        "value": 1.25
+      },
+      {
+        "code": 22,
+        "dataId": 7,
+        "value": 0.03
+      },
+      {
+        "code": 14,
+        "dataId": 10,
+        "value": 1
+      }
+    ],
+    "note": "<REC Rate: 125%>\n<HRG Plus: +3%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Cleric: Efektivitas pemulihan (Recovery Effect) +25%. Seluruh anggota party menerima regenerasi HP otomatis sebesar 3% Max HP tiap giliran dan kebal efek Curse.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 82,
+    "name": "Pasif: Soul Harvester",
+    "iconIndex": 748,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.2
+      }
+    ],
+    "note": "<MAT Rate: 120%>\n<INT Rate: 1.10>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Cultist: Kerusakan sihir Dark +20%. Setiap kali ada unit yang tumbang di medan tempur (kawan maupun lawan), menyerap 10% MP & SP mereka untuk memperkuat mantra berikutnya.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 83,
+    "name": "Pasif: Blazing Conflagration",
+    "iconIndex": 721,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.2
+      }
+    ],
+    "note": "<MAT Rate: 120%>\n<Fire Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Pyromancer: Kerusakan sihir Api +25%. Musuh yang terkena Burn menerima kerusakan bertingkat dan menyebarkan kobaran api ke musuh di sekitarnya saat terkena hit.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 84,
+    "name": "Pasif: Tidal Resonance",
+    "iconIndex": 749,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.15
+      },
+      {
+        "code": 21,
+        "dataId": 5,
+        "value": 1.15
+      }
+    ],
+    "note": "<MAT Rate: 115%>\n<MDF Rate: 115%>\n<Water Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Hydromancer: Kerusakan sihir Air +25%. Setiap kali mantra mengenai target basah (Soaked), memulihkan 5% Max MP dan meningkatkan pertahanan MDF +20% selama 2 turn.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 85,
+    "name": "Pasif: Tectonic Bulwark",
+    "iconIndex": 740,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 1.2
+      },
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.15
+      }
+    ],
+    "note": "<DEF Rate: 120%>\n<MAT Rate: 115%>\n<Earth Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Geomancer: Kerusakan sihir Tanah +25%. Menghasilkan perisai batu (Shield) sebesar 15% Max HP setiap kali melancarkan skill berelemen Earth.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 86,
+    "name": "Pasif: Tempest Grace",
+    "iconIndex": 735,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.25
+      },
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": 0.15
+      }
+    ],
+    "note": "<AGI Rate: 125%>\n<EVA Plus: +15%>\n<Wind Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Aeromancer: Kerusakan sihir Angin +25% dan EVA +15%. Kecepatan gerak bertindak meningkat drastis; memiliki 20% peluang bertindak dua kali dalam satu giliran.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 87,
+    "name": "Pasif: High-Voltage Surge",
+    "iconIndex": 730,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.2
+      },
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.15
+      }
+    ],
+    "note": "<MAT Rate: 120%>\n<AGI Rate: 115%>\n<Lightning Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Electromancer: Kerusakan sihir Petir +25%. Serangan petir memiliki 25% peluang memicu loncatan listrik (Chain Lightning) ke 2 target musuh lain di sekitarnya.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 88,
+    "name": "Pasif: Glacial Subzero",
+    "iconIndex": 725,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.2
+      }
+    ],
+    "note": "<MAT Rate: 120%>\n<Ice Damage: +25%>\n<Armor Penetration: 25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Cryomancer: Kerusakan sihir Es +25%. Serangan sihir es menembus 25% MDF dan memperlambat AGI musuh sebesar 20%; musuh beku (Freeze) menerima +35% shatter damage.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 89,
+    "name": "Pasif: Magnetic Polarization",
+    "iconIndex": 733,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 1.2
+      },
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.2
+      }
+    ],
+    "note": "<DEF Rate: 120%>\n<MAT Rate: 120%>\n<Metal Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Ferromancer: Kerusakan sihir Logam +25% dan P.DEF +20%. Mengalihkan proyektil fisik musuh dan mengubah 10% damage yang diterima menjadi amunisi pecahan besi pembalas.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 90,
+    "name": "Pasif: Resonance Fracture",
+    "iconIndex": 704,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.2
+      },
+      {
+        "code": 22,
+        "dataId": 0,
+        "value": 0.15
+      }
+    ],
+    "note": "<MAT Rate: 120%>\n<HIT Plus: +15%>\n<Sonic Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Echomancer: Kerusakan sihir Suara +25%. Mengabaikan seluruh DEF & MDF musuh bertipe armor berat/batu; getaran suara memiliki peluang 25% membatalkan charge skill musuh.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 91,
+    "name": "Pasif: Grace of Rebirth",
+    "iconIndex": 754,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 23,
+        "dataId": 2,
+        "value": 1.3
+      },
+      {
+        "code": 22,
+        "dataId": 7,
+        "value": 0.03
+      }
+    ],
+    "note": "<REC Rate: 130%>\n<HRG Plus: +3%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Priest: Efektivitas pemulihan +30%. Anggota party yang gugur dapat dibangkitkan otomatis 1x per battle dengan 30% Max HP tanpa menghabiskan item.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 92,
+    "name": "Pasif: Grave Mastery",
+    "iconIndex": 745,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 1,
+        "value": 1.15
+      },
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.2
+      }
+    ],
+    "note": "<Max MP: +15%>\n<MAT Rate: 120%>\n<Dark Damage: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Necromancer: Kerusakan kutukan & racun +25%. Setiap kali musuh gugur, otomatis membangkitkan satu minion mayat hidup untuk menyerang dan menyerap damage party.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 93,
+    "name": "Pasif: Archon Dual-Cast",
+    "iconIndex": 751,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.35
+      }
+    ],
+    "note": "<MAT Rate: 135%>\n<INT Rate: 1.25>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Archmage: M.ATK +35%. Setiap melancarkan sihir offensive, memiliki 30% peluang untuk melancarkan mantra sihir tersebut sekali lagi secara instan tanpa konsumsi MP tambahan.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 94,
+    "name": "Pasif: Supreme Miracle",
+    "iconIndex": 742,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 23,
+        "dataId": 2,
+        "value": 1.5
+      }
+    ],
+    "note": "<REC Rate: 150%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan High Priest: Seluruh mantra pemulihan menyembuhkan 50% lebih besar dan memberi perisai suci sebesar 20% Max HP; memberikan kekebalan total terhadap seluruh status debuff.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 95,
+    "name": "Pasif: Calamity Singularity",
+    "iconIndex": 746,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.3
+      }
+    ],
+    "note": "<MAT Rate: 130%>\n<INT Rate: 1.20>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Warlock: Setiap efek status buruk (Debuff / Poison / Burn / Curse) pada lawan melipatgandakan seluruh damage sihir Warlock sebesar +10% per status (maksimal +50%).",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 96,
+    "name": "Pasif: Ancestral Dominion",
+    "iconIndex": 781,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 7,
+        "value": 0.05
+      },
+      {
+        "code": 22,
+        "dataId": 8,
+        "value": 0.05
+      },
+      {
+        "code": 22,
+        "dataId": 9,
+        "value": 0.05
+      }
+    ],
+    "note": "<HRG Plus: +5%>\n<MRG Plus: +5%>\n<TRG Plus: +5%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Shaman: Memanggil roh leluhur primal yang memberikan regenerasi HP, MP, dan SP sebesar 5% setiap giliran kepada seluruh anggota tim dan kebal terhadap elemen api dan petir.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 97,
+    "name": "Pasif: Primordial Dragon Awakening",
+    "iconIndex": 715,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.25
+      },
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.35
+      }
+    ],
+    "note": "<MAT Rate: 135%>\n<ATK Rate: 125%>\n<Armor Penetration: 30%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Dragon Aspect: M.ATK +35% dan P.ATK +25%. Mengubah seluruh serangan menjadi berelemen Dragon Flame yang menembus 30% MDF dan mengabaikan resistensi elemen musuh.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 98,
+    "name": "Pasif: Swift Ambush",
+    "iconIndex": 773,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 0,
+        "value": 0.05
+      },
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": 0.05
+      }
+    ],
+    "note": "<EVA Plus: +5%>\n<HIT Plus: +5%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Scout: Meningkatkan EVA +5% dan HIT +5%. Karakter selalu mendapatkan prioritas giliran bertindak paling awal pada giliran pertama pertempuran.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 99,
+    "name": "Pasif: Eagle Eye",
+    "iconIndex": 446,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 0,
+        "value": 0.1
+      }
+    ],
+    "note": "<HIT Plus: +10%>\n<Critical Damage: +15%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Archer: Meningkatkan HIT +10% (serangan fisik tidak dapat meleset pada musuh terbang). Serangan dari Baris Belakang mendapatkan bonus +15% Critical Damage (CDMG).",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 100,
+    "name": "Pasif: Shadow Celerity",
+    "iconIndex": 700,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 2,
+        "value": 0.08
+      },
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.1
+      }
+    ],
+    "note": "<CRI Plus: +8%>\n<AGI Rate: 110%>\n<Max SP: +10>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Thief: Meningkatkan peluang serangan kritis (CRI +8%). Serangan kritikal memiliki 15% peluang mencuri item atau uang otomatis dan menambah +10 SP.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 101,
+    "name": "Pasif: Predator Instinct",
+    "iconIndex": 695,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 0,
+        "value": 0.15
+      }
+    ],
+    "note": "<HIT Plus: +15%>\n<Critical Damage: +20%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Ranger: Akurasi HIT +15% dan CDMG +20%. Memberikan bonus +25% damage terhadap musuh bertipe Beast/Monster atau musuh yang terkena status Slow/Bleed.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 102,
+    "name": "Pasif: Lethal Ambush",
+    "iconIndex": 773,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": 0.1
+      },
+      {
+        "code": 22,
+        "dataId": 2,
+        "value": 0.12
+      }
+    ],
+    "note": "<CRI Plus: +12%>\n<EVA Plus: +10%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Rogue: Peluang Kritis (CRI +12%) dan Evasion (EVA +10%). Serangan terhadap musuh yang belum sempat bertindak di ronde tersebut menghasilkan 100% Kritis Mutlak.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 103,
+    "name": "Pasif: Deadly Piercing",
+    "iconIndex": 446,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 0,
+        "value": 0.25
+      }
+    ],
+    "note": "<HIT Plus: +25%>\n<Armor Penetration: 30%>\n<Critical Damage: +40%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Sniper: Jarak serang tak terbatas, HIT +25%, dan mengabaikan 30% DEF. Serangan dari Baris Belakang pada target ber-HP di atas 80% menghasilkan bonus +40% CDMG.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 104,
+    "name": "Pasif: Viper Assassination",
+    "iconIndex": 352,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 2,
+        "value": 0.2
+      }
+    ],
+    "note": "<CRI Plus: +20%>\n<Critical Damage: +30%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Assassin: CRI +20% dan CDMG +30%. Serangan dari bayangan memiliki peluang 10% mengeksekusi musuh non-boss secara instan jika HP mereka di bawah 30%.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 105,
+    "name": "Pasif: Behemoth Packbond",
+    "iconIndex": 696,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.2
+      },
+      {
+        "code": 21,
+        "dataId": 3,
+        "value": 1.2
+      },
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.2
+      }
+    ],
+    "note": "<ATK Rate: 120%>\n<DEF Rate: 120%>\n<AGI Rate: 120%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Beastmaster: Meningkatkan seluruh parameter sekutu dan hewan panggilan sebesar +25%. Setiap serangan kawan memicu serangan susulan instan dari Beastmaster.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 106,
+    "name": "Pasif: Eclipse Phantom",
+    "iconIndex": 700,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 22,
+        "dataId": 1,
+        "value": 0.25
+      },
+      {
+        "code": 22,
+        "dataId": 2,
+        "value": 0.25
+      }
+    ],
+    "note": "<EVA Plus: +25%>\n<CRI Plus: +25%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Shadow Walker: EVA +25% dan CRI +25%. Karakter selalu bergerak dalam mode bayangan; serangan tidak dapat ditangkis atau dihindari oleh musuh (100% Unavoidable).",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 107,
+    "name": "Pasif: Sonic Tempest",
+    "iconIndex": 735,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.5
+      }
+    ],
+    "note": "<AGI Rate: 150%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Windrunner: Action Speed +50% dan selalu bertindak pertama di tiap giliran. Setiap langkah gerakan meningkatkan akurasi dan menambah serangan ganda pada target musuh.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 108,
+    "name": "Pasif: Temporal Overwrite",
+    "iconIndex": 675,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 6,
+        "value": 1.3
+      }
+    ],
+    "note": "<AGI Rate: 130%>\n<INT Rate: 1.20>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Chronomancer: Memiliki 15% peluang membatalkan giliran musuh secara instan. Saat menerima serangan mematikan, waktu berputar balik: HP dan MP kembali ke giliran sebelumnya (1x per battle).",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  },
+  {
+    "id": 109,
+    "name": "Pasif: Entropy Collapse",
+    "iconIndex": 746,
+    "restriction": 0,
+    "priority": 50,
+    "motion": 0,
+    "overlay": 0,
+    "autoRemovalTiming": 0,
+    "minTurns": 1,
+    "maxTurns": 1,
+    "removeAtBattleEnd": false,
+    "removeByRestriction": false,
+    "removeByDamage": false,
+    "removeByWalking": false,
+    "chanceByDamage": 100,
+    "traits": [
+      {
+        "code": 21,
+        "dataId": 2,
+        "value": 1.35
+      },
+      {
+        "code": 21,
+        "dataId": 4,
+        "value": 1.35
+      }
+    ],
+    "note": "<ATK Rate: 135%>\n<MAT Rate: 135%>\n<Armor Penetration: 100%>\n<Passive>\n[IMPLEMENTATION] Plugin\n[PLUGIN] YEP_AutoPassiveStates\nKeahlian pasif bawaan Void Incarnate: Seluruh serangan mengabaikan 100% DEF & MDF lawan secara mutlak. Serangan menghanguskan 5% Max MP & SP musuh secara permanen pada setiap giliran pertempuran.",
+    "message1": "",
+    "message2": "",
+    "message3": "",
+    "message4": ""
+  }
 ]

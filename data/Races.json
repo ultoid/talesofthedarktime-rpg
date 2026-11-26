@@ -9,12 +9,12 @@
     "stateId": 48,
     "description": "Ras manusia fana yang membentuk tulang punggung peradaban daratan utama. Sangat adaptif dan fleksibel dalam penentuan takdir.",
     "modifiers": {
-      "str": 1.0,
-      "int": 1.0,
-      "dex": 1.0,
-      "luk": 1.0,
-      "agi": 1.0,
-      "vit": 1.0
+      "str": 1,
+      "int": 1,
+      "dex": 1,
+      "luk": 1,
+      "agi": 1,
+      "vit": 1
     },
     "natureTags": {
       "str": "=",
@@ -37,8 +37,8 @@
       "str": 0.9,
       "int": 1.1,
       "dex": 1.1,
-      "luk": 1.0,
-      "agi": 1.0,
+      "luk": 1,
+      "agi": 1,
       "vit": 0.9
     },
     "natureTags": {
@@ -61,8 +61,8 @@
     "modifiers": {
       "str": 0.9,
       "int": 1.1,
-      "dex": 1.0,
-      "luk": 1.0,
+      "dex": 1,
+      "luk": 1,
       "agi": 1.1,
       "vit": 0.9
     },
@@ -84,9 +84,9 @@
     "stateId": 51,
     "description": "Keturunan cahaya suci Sang Hyang di Avalerion. Membawa pendaran energi suci dan ketahanan spiritual tinggi dengan gaya tempur kokoh ortodoks.",
     "modifiers": {
-      "str": 1.0,
+      "str": 1,
       "int": 1.1,
-      "dex": 1.0,
+      "dex": 1,
       "luk": 0.9,
       "agi": 0.9,
       "vit": 1.1
@@ -112,8 +112,8 @@
       "str": 1.1,
       "int": 0.9,
       "dex": 0.9,
-      "luk": 1.0,
-      "agi": 1.0,
+      "luk": 1,
+      "agi": 1,
       "vit": 1.1
     },
     "natureTags": {
@@ -135,9 +135,9 @@
     "description": "Manusia burung bersayap emas dari Nusa Sayendra. Penguasa langit dengan inisiatif kecepatan dan akurasi tukikan mematikan.",
     "modifiers": {
       "str": 0.9,
-      "int": 1.0,
+      "int": 1,
       "dex": 1.1,
-      "luk": 1.0,
+      "luk": 1,
       "agi": 1.1,
       "vit": 0.9
     },
@@ -160,9 +160,9 @@
     "description": "Kaum Beastmen kera berakal budi tinggi dari Astradipa. Diberkati kelicikan Monkey King, master penyergapan, taktik perangkap, dan kombo kilat.",
     "modifiers": {
       "str": 0.9,
-      "int": 1.0,
+      "int": 1,
       "dex": 1.1,
-      "luk": 1.0,
+      "luk": 1,
       "agi": 1.1,
       "vit": 0.9
     },
@@ -186,10 +186,10 @@
     "modifiers": {
       "str": 1.1,
       "int": 1.1,
-      "dex": 1.0,
+      "dex": 1,
       "luk": 0.9,
       "agi": 0.9,
-      "vit": 1.0
+      "vit": 1
     },
     "natureTags": {
       "str": "+",
@@ -211,9 +211,9 @@
     "modifiers": {
       "str": 0.9,
       "int": 1.1,
-      "dex": 1.0,
+      "dex": 1,
       "luk": 1.1,
-      "agi": 1.0,
+      "agi": 1,
       "vit": 0.9
     },
     "natureTags": {
@@ -234,8 +234,8 @@
     "stateId": 57,
     "description": "Pandai besi raksasa dari dataran tinggi Agnigarba. Kulitnya menyatu dengan logam cair sekeras baja dengan keahlian tempa dewa, namun serakah emas.",
     "modifiers": {
-      "str": 1.0,
-      "int": 1.0,
+      "str": 1,
+      "int": 1,
       "dex": 1.1,
       "luk": 0.9,
       "agi": 0.9,
@@ -263,8 +263,8 @@
       "int": 1.1,
       "dex": 0.9,
       "luk": 0.9,
-      "agi": 1.0,
-      "vit": 1.0
+      "agi": 1,
+      "vit": 1
     },
     "natureTags": {
       "str": "+",
@@ -285,10 +285,10 @@
     "description": "Iblis elit komandan perang di Raksamala. Antitesis Avesari dengan kekuatan teror brutal dan manipulasi energi kegelapan pekat Sangrahal.",
     "modifiers": {
       "str": 1.1,
-      "int": 1.0,
+      "int": 1,
       "dex": 0.9,
       "luk": 1.1,
-      "agi": 1.0,
+      "agi": 1,
       "vit": 0.9
     },
     "natureTags": {

@@ -194,27 +194,27 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
                     <div class="stat-grid-6" style="margin-top:10px;">
                         <div class="stat-card-input">
                             <label style="color:#fb923c;">${pai('sword')} ATK</label>
-                            <input type="text" class="form-control" placeholder="+5" value="${sockAtk}" onchange="setTagVal(item, 'Socket ATK', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockAtk}" onchange="setTagVal(item, 'Socket ATK', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #34d399;">
                             <label style="color:#34d399;">${pai('shield')} DEF</label>
-                            <input type="text" class="form-control" placeholder="+5" value="${sockDef}" onchange="setTagVal(item, 'Socket DEF', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockDef}" onchange="setTagVal(item, 'Socket DEF', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #a78bfa;">
                             <label style="color:#a78bfa;">${pai('wand')} MAT</label>
-                            <input type="text" class="form-control" placeholder="+5" value="${sockMat}" onchange="setTagVal(item, 'Socket MAT', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockMat}" onchange="setTagVal(item, 'Socket MAT', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #38bdf8;">
                             <label style="color:#38bdf8;">${pai('shield')} MDF</label>
-                            <input type="text" class="form-control" placeholder="+5" value="${sockMdf}" onchange="setTagVal(item, 'Socket MDF', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockMdf}" onchange="setTagVal(item, 'Socket MDF', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #f87171;">
                             <label style="color:#f87171;">${pai('heart')} HP</label>
-                            <input type="text" class="form-control" placeholder="+50" value="${sockMhp}" onchange="setTagVal(item, 'Socket MHP', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockMhp}" onchange="setTagVal(item, 'Socket MHP', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #60a5fa;">
                             <label style="color:#60a5fa;">${pai('drop')} MP</label>
-                            <input type="text" class="form-control" placeholder="+20" value="${sockMmp}" onchange="setTagVal(item, 'Socket MMP', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockMmp}" onchange="setTagVal(item, 'Socket MMP', this.value);">
                         </div>
                     </div>
                 </div>
@@ -229,7 +229,7 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
                     </div>
                     <div class="form-group">
                         <label>Jumlah Hasil Buatan (&lt;Synthesis Amount: X&gt;)</label>
-                        <input type="number" min="1" class="form-control" placeholder="1" value="${synAmt}" onchange="setTagVal(item, 'Synthesis Amount', this.value);">
+                        <input type="number" min="1" class="form-control" placeholder="" value="${synAmt}" onchange="setTagVal(item, 'Synthesis Amount', this.value);">
                     </div>
                 </div>
             </div>

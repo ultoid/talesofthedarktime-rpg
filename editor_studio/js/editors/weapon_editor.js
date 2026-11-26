@@ -225,7 +225,7 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label title="Harga beli di toko (harga jual default bernilai 50% dari harga beli)">Price (Gold)</label>
+                                <label title="Harga beli di toko (harga jual default bernilai 50% dari harga beli) (Gold)">Price</label>
                                 <input type="number" min="0" class="form-control" value="${weapon.price || 0}" onchange="weapon.price=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                             <div class="form-group">
@@ -266,11 +266,11 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                             <textarea class="form-control" rows="3" onchange="weapon.description=this.value; setTagVal(weapon, 'NUSV Desc', this.value);">${escapeHtml(weapon.description || desc)}</textarea>
                         </div>
                         <div class="form-group">
-                            <label title="Wilayah atau kerajaan tempat senjata ini dibuat">Origin Region (&lt;NUSV Region&gt;)</label>
+                            <label title="Wilayah atau kerajaan tempat senjata ini dibuat (&lt;NUSV Region&gt;)">Origin Region</label>
                             <input type="text" class="form-control" placeholder="Contoh: Nusvanir, Mandala..." value="${escapeHtml(region)}" onchange="setTagVal(weapon, 'NUSV Region', this.value);">
                         </div>
                         <div class="form-group">
-                            <label title="Jurus yang berpeluang keluar secara otomatis saat melakukan serangan biasa">Weapon Skill Unleash (&lt;Unleash Skill&gt;)</label>
+                            <label title="Jurus yang berpeluang keluar secara otomatis saat melakukan serangan biasa (&lt;Unleash Skill&gt;)">Weapon Skill Unleash</label>
                             <input type="text" class="form-control" placeholder="Contoh: 15, 25%, 10" value="${escapeHtml(unleash)}" onchange="setTagVal(weapon, 'Unleash Skill', this.value);">
                             <div class="helper-text" title="Peluang jurus ini aktif saat karakter melancarkan serangan biasa">Triggered automatically during normal basic attacks.</div>
                         </div>
@@ -279,164 +279,131 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
             </div>
         </div>
 
-        <!-- PENGATURAN SERANGAN BIASA SENJATA (NORMAL ATTACK CUSTOMIZATION) -->
-        <div class="card" style="border: 1px solid rgba(56, 189, 248, 0.4); background: #070e1b; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
-            <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(56,189,248,0.2); padding-bottom:8px;">
+        <!-- PENGATURAN SERANGAN BIASA & ANIMASI SENJATA -->
+        <div class="card">
+            <div class="card-header">
                 <div>
-                    <h2 style="color:#38bdf8; font-size:0.95rem; display:flex; align-items:center; gap:8px; margin:0;">
-                        <span>${pai('sword')}</span> Kustomisasi Serangan Biasa Senjata (Normal Attack)
-                    </h2>
-                    <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">
-                        Tentukan skill pengganti, animasi visual, motion, dan koreografi khusus saat memilih perintah "Attack" memakai senjata ini.
+                    <h2 title="Atur skill, efek visual (VFX), dan gerakan karakter saat menyerang dengan senjata ini">${pai('sword')} Serangan Biasa &amp; Animasi Senjata</h2>
+                    <div class="helper-text" style="margin-top:2px;">
+                        Pilih skill dasar, efek pukulan (VFX), dan gaya ayunan saat karakter memilih <strong>Attack</strong>.
                     </div>
                 </div>
                 <div style="display:flex; align-items:center; gap:6px;">
-                    ${customAttackSkillId > 0 ? `
-                        <span class="list-badge" style="background:#0284c722; color:#38bdf8; border-color:#38bdf8; font-size:0.72rem; padding:2px 8px; font-weight:700;">
+                    ${hasCustomSeq ? `
+                        <span class="badge-sub" style="color:#c084fc; background:var(--purple-dim); border-color:rgba(168,85,247,0.35);">
+                            ${pai('video')} Override Khusus Aktif
+                        </span>
+                    ` : (customAttackSkillId > 0 ? `
+                        <span class="badge-sub">
                             ${pai('target')} Skill #${customAttackSkillId}: ${escapeHtml((State.skills[customAttackSkillId] || {}).name || '')}
                         </span>
-                    ` : (hasCustomSeq ? `
-                        <span class="list-badge" style="background:#c084fc22; color:#c084fc; border-color:#c084fc; font-size:0.72rem; padding:2px 8px; font-weight:700;">
-                            ${pai('video')} Custom Action Sequence
-                        </span>
                     ` : `
-                        <span class="list-badge" style="color:var(--text-muted); border-color:#334155; font-size:0.72rem; padding:2px 8px;">
+                        <span class="list-badge">
                             Standar (Skill #1 Attack)
                         </span>
                     `)}
                 </div>
             </div>
-            <div class="card-body" style="display:flex; flex-direction:column; gap:12px;">
-                <!-- KONTROL SKILL PENGGANTI & SHORTCUT BUAT/EDIT -->
-                <div style="background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.2); border-radius:8px; padding:10px 12px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
-                        <label style="font-size:0.78rem; font-weight:700; color:#38bdf8; margin:0;">
-                            ${pai('target')} Skill Serangan Biasa Senjata (&lt;skill_id: ID&gt;)
-                        </label>
-                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                            <button type="button" class="btn btn-sm btn-primary" onclick="openSkillInAnimator(${customAttackSkillId || 1})" style="padding:3px 10px; font-size:0.72rem; font-weight:700;">
-                                ${pai('zap')} Buka di Skills Editor
-                            </button>
-                            ${!customAttackSkillId ? `
-                                <button type="button" class="btn btn-sm" onclick="createNewSkillForWeapon()" style="background:#10b98122; border:1px solid #10b981; color:#6ee7b7; padding:3px 10px; font-size:0.72rem; font-weight:700;" title="Otomatis duplikasi & buat skill baru khusus untuk senjata ini dan buka di Skill Animator">
-                                    + Buat Skill Khusus Senjata Ini
-                                </button>
-                            ` : ''}
-                            <button type="button" class="btn btn-sm" onclick="linkDefaultWeaponAttackSkill()" style="background:#3b82f622; border:1px solid #3b82f6; color:#93c5fd; padding:3px 10px; font-size:0.72rem; font-weight:700;" title="Otomatis hubungkan senjata ini ke Skill Attack spesifik sesuai Weapon Type (Skill #${430 + Math.min(10, Math.max(1, weapon.wtypeId || 1))})">
-                                ${pai('target')} Pasang Basic Attack Sesuai Tipe (${escapeHtml(wtName || 'Senjata')})
-                            </button>
-                            <button type="button" class="btn btn-sm" onclick="openVisualEditorForWeaponAttack()" style="background:#8b5cf622; border:1px solid #8b5cf6; color:#c084fc; padding:3px 10px; font-size:0.72rem; font-weight:700;" title="Buka skill senjata ini di Visual Action Sequence Editor untuk edit koreografi secara visual">
-                                ${pai('video')} Edit Visual di Action Sequence Editor
-                            </button>
-                        </div>
-                    </div>
-                    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; align-items:flex-end;">
-                        <div>
-                            <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:2px;">Skill yang Dipakai Saat Perintah Attack</label>
-                            <select class="form-control" style="font-size:0.8rem; padding:4px 8px; color:#38bdf8; font-weight:600;" onchange="onWeaponAttackSkillChange(this.value)">
-                                <option value="0" ${!customAttackSkillId ? 'selected' : ''}>(Default: Skill #1 - Attack standar)</option>
-                                <optgroup label="10 Preset Basic Attack Senjata (#431 - #440)">
-                                    ${[1,2,3,4,5,6,7,8,9,10].map(tid => {
-                                        const sid = 430 + tid;
-                                        const s = State.skills[sid];
-                                        if (!s) return '';
-                                        return `<option value="${sid}" ${customAttackSkillId === sid ? 'selected' : ''}>#${sid} ${escapeHtml(s.name)}</option>`;
-                                    }).join('')}
-                                </optgroup>
-                                <optgroup label="Skill Lainnya">
-                                    ${State.skills.filter(s => s && s.id !== 1 && (s.id < 431 || s.id > 440)).map(s => `
-                                        <option value="${s.id}" ${customAttackSkillId === s.id ? 'selected' : ''}>#${s.id} ${escapeHtml(s.name)}</option>
-                                    `).join('')}
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:2px;">Animasi Visual Serangan (VFX)</label>
-                            <div style="display:flex; gap:4px;">
-                                <select class="form-control" style="font-size:0.8rem; padding:4px 6px;" onchange="weapon.animationId=parseInt(this.value,10); setUnsaved(true); renderEditor();">
-                                    <option value="0">(Default / Sesuai Skill)</option>
-                                    ${State.animations.filter(a => a).map(a => `<option value="${a.id}" ${weapon.animationId === a.id ? 'selected' : ''}>#${a.id} ${escapeHtml(a.name)}</option>`).join('')}
-                                </select>
-                                ${weapon.animationId > 0 ? `
-                                    <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimationInEditor(${weapon.animationId})" style="padding:2px 6px; font-size:0.7rem; color:#38bdf8;" title="Edit animasi ini di Animation Studio">${pai('video')}</button>
-                                ` : ''}
-                            </div>
-                        </div>
-                        <div>
-                            <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:2px;">Motion Aktor (&lt;Weapon Motion&gt;)</label>
-                            <select class="form-control" style="font-size:0.8rem; padding:4px 6px;" onchange="onWeaponMotionChange(this.value)">
-                                <option value="auto" ${weaponMotion === 'auto' ? 'selected' : ''}>Otomatis (Tipe Senjata)</option>
-                                <option value="swing" ${weaponMotion === 'swing' ? 'selected' : ''}>swing (Tebasan)</option>
-                                <option value="thrust" ${weaponMotion === 'thrust' ? 'selected' : ''}>thrust (Tusukan)</option>
-                                <option value="missile" ${weaponMotion === 'missile' ? 'selected' : ''}>missile (Tembakan/Jarak Jauh)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="font-size:0.68rem; color:var(--text-muted); margin-top:6px;">
-                        <span style="color:#94a3b8;">Saat bertarung, karakter yang memilih <strong>Attack</strong> dengan senjata ini akan langsung menjalankan skill yang dipilih di atas (didukung plugin <code>WeaponSkill.js</code> &amp; <code>NUSV_WeaponUnleash.js</code>).</span>
-                    </div>
-                </div>
-
-                <!-- KOREOGRAFI ACTION SEQUENCE LANGSUNG DI SENJATA -->
-                <div style="background:rgba(192,132,252,0.05); border:1px solid rgba(192,132,252,0.2); border-radius:8px; padding:10px 12px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
-                        <div>
-                            <strong style="color:#c084fc; font-size:0.78rem;">${pai('zap')} Koreografi Action Sequence Khusus pada Senjata (Yanfly Override)</strong>
-                            <div style="font-size:0.68rem; color:var(--text-muted);">Jika disetel, sequence ini langsung menimpa gaya serang Skill #1 saat senjata ini dipakai.</div>
-                        </div>
-                        <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('melee_dash')" style="background:#0284c733; border:1px solid #38bdf8; color:#e0f2fe; padding:2px 7px; font-size:0.68rem;">Melee Dash</button>
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('thrust_pierce')" style="background:#05966933; border:1px solid #10b981; color:#d1fae5; padding:2px 7px; font-size:0.68rem;">Thrust / Pierce</button>
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('ranged_bow')" style="background:#ea580c33; border:1px solid #fb923c; color:#ffedd5; padding:2px 7px; font-size:0.68rem;">Ranged / Bow</button>
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('multi_strike')" style="background:#d9770633; border:1px solid #f59e0b; color:#fef3c7; padding:2px 7px; font-size:0.68rem;">2x Multi-Strike</button>
-                            ${hasCustomSeq ? `
-                                <button type="button" class="btn btn-xs btn-danger" onclick="clearWeaponActionSequence()" style="padding:2px 7px; font-size:0.68rem;">
-                                    ${pai('trash')} Hapus Sequence
-                                </button>
-                            ` : ''}
-                        </div>
-                    </div>
-                    
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; background:rgba(0,0,0,0.25); padding:6px 10px; border-radius:6px; border:1px dashed rgba(192,132,252,0.25);">
-                        <span style="font-size:0.72rem; color:#c084fc; font-weight:700;">Preset 10 Tipe Senjata:</span>
-                        <select id="wepPresetSelect" class="form-control" style="width:auto; font-size:0.72rem; padding:2px 8px; height:26px; color:#f1f5f9; background:#0f172a; border-color:#8b5cf6;" onchange="if(this.value) applyWeaponActionSequencePreset(this.value)">
-                            <option value="">-- Pilih Koreografi 10 Senjata --</option>
-                            <option value="long_sword">01. Long Sword (Maju Mantap, Tebas Berat & Knockback)</option>
-                            <option value="sword">02. Sword (Maju Lincah & Sabetan Cepat)</option>
-                            <option value="gloves">03. Gloves (Maju Cepat, Tinjuan 1-2x Dual Wield)</option>
-                            <option value="spear">04. Spear (Melompat & Tusukan Tombak)</option>
-                            <option value="axe">05. Axe (Melompat Tinggi & Hantaman Kapak)</option>
-                            <option value="staff">06. Staff (Maju Selangkah & Proyektil Mana)</option>
-                            <option value="rune">07. Rune (Angkat Tangan & Proyektil Mana 1-2x)</option>
-                            <option value="long_bow">08. Long Bow (Tarik Panah Jarak Jauh)</option>
-                            <option value="crossbow">09. Crossbow (Tembakan Beruntun 1-3x)</option>
-                            <option value="dagger">10. Dagger (Teleport Belakang & Sabetan Cepat)</option>
+            <div class="card-body" style="display:flex; flex-direction:column; gap:14px;">
+                <!-- 1. SKILL DASAR SAAT ATTACK -->
+                <div class="form-group" style="margin-bottom:0;">
+                    <label title="Skill yang otomatis dijalankan saat karakter memilih perintah Attack memakai senjata ini">1. Skill Dasar Saat Memilih &ldquo;Attack&rdquo;</label>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                        <select class="form-control" style="flex:1; min-width:220px;" onchange="onWeaponAttackSkillChange(this.value)">
+                            <option value="0" ${!customAttackSkillId ? 'selected' : ''}>(Default: Skill #1 - Attack standar)</option>
+                            <optgroup label="Preset Basic Attack per Tipe Senjata (#431 - #440)">
+                                ${[1,2,3,4,5,6,7,8,9,10].map(tid => {
+                                    const sid = 430 + tid;
+                                    const s = State.skills[sid];
+                                    if (!s) return '';
+                                    return `<option value="${sid}" ${customAttackSkillId === sid ? 'selected' : ''}>#${sid} ${escapeHtml(s.name)}</option>`;
+                                }).join('')}
+                            </optgroup>
+                            <optgroup label="Skill Lainnya">
+                                ${State.skills.filter(s => s && s.id !== 1 && (s.id < 431 || s.id > 440)).map(s => `
+                                    <option value="${s.id}" ${customAttackSkillId === s.id ? 'selected' : ''}>#${s.id} ${escapeHtml(s.name)}</option>
+                                `).join('')}
+                            </optgroup>
                         </select>
-                        <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset(document.getElementById('wepPresetSelect').value || 'sword')" style="background:#8b5cf633; border:1px solid #8b5cf6; color:#e0e7ff; padding:2px 10px; font-size:0.7rem; font-weight:600;">
-                            ${pai('check')} Terapkan
+                        ${customAttackSkillId !== (430 + Math.min(10, Math.max(1, weapon.wtypeId || 1))) ? `
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="linkDefaultWeaponAttackSkill()" title="Hubungkan otomatis ke skill bawaan tipe ${escapeHtml(wtName || 'Senjata')}">
+                                ${pai('target')} Ikut Tipe (${escapeHtml(wtName || 'Senjata')})
+                            </button>
+                        ` : ''}
+                        <button type="button" class="btn btn-primary btn-sm" onclick="openVisualEditorForWeaponAttack()" title="Buka dan atur animasi gerakan skill ini secara visual di Action Sequence Editor">
+                            ${pai('video')} Edit Animasi Visual
                         </button>
                     </div>
-
-                    ${hasCustomSeq ? `
-                        <div style="font-size:0.72rem; color:#c084fc; font-weight:700; margin-bottom:4px;">
-                            ${pai('video')} Action Sequence Khusus Aktif pada Senjata Ini (Override):
-                        </div>
-                        <textarea class="form-control" rows="5" style="font-family:monospace; font-size:0.75rem; color:#f8fafc; background:#04060c; line-height:1.4;" onchange="onWeaponSeqChange(this.value)">${escapeHtml(rawSeqText)}</textarea>
-                    ` : `
-                        <div style="background:rgba(0,0,0,0.3); border:1px dashed rgba(192,132,252,0.3); border-radius:6px; padding:8px 12px; font-size:0.75rem; color:#cbd5e1; margin-bottom:8px;">
-                            <div style="color:#38bdf8; font-weight:700; margin-bottom:2px; display:flex; justify-content:space-between; align-items:center;">
-                                <span>${pai('zap')} Koreografi Tempur Aktif:</span>
-                                <span class="list-badge" style="background:#0284c722; color:#38bdf8; border-color:#38bdf8; font-size:0.68rem; padding:1px 6px;">
-                                    ${customAttackSkillId > 0 ? `Skill #${customAttackSkillId} [${(State.skills[customAttackSkillId]||{}).name||''}]` : (weapon.wtypeId > 0 && weapon.wtypeId <= 10 ? `Otomatis Tipe Senjata (Skill #${430 + weapon.wtypeId}: ${wtName})` : 'Skill #1 (Attack Standar)')}
-                                </span>
-                            </div>
-                            <div style="font-size:0.7rem; color:var(--text-muted); line-height:1.4;">
-                                Senjata ini secara otomatis menggunakan aksi sequence dari skill di atas saat memilih perintah <strong>Attack</strong>. Klik <strong>"Edit Visual di Action Sequence Editor"</strong> untuk menyusun command-nya, atau gunakan tombol preset di atas / ketik di bawah untuk menimpa (override) koreografi khusus hanya untuk senjata ini.
-                            </div>
-                        </div>
-                        <textarea class="form-control" rows="3" style="font-family:monospace; font-size:0.75rem; color:#f8fafc; background:#04060c; line-height:1.4;" onchange="onWeaponSeqChange(this.value)" placeholder="Tempelkan atau ketik action sequence Yanfly (<target action>...) di sini jika ingin override khusus..."></textarea>
-                    `}
+                    <div class="helper-text">
+                        Animasi gerak &amp; kamera otomatis mengikuti skill di atas. Klik <strong>Edit Animasi Visual</strong> jika ingin mengubah gerakannya tanpa menulis kode.
+                    </div>
                 </div>
+
+                <!-- 2. EFEK VISUAL (VFX) & GERAKAN KARAKTER -->
+                <div class="grid-2">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label title="Efek visual percikan/tebasan (Animation) yang muncul di tubuh musuh saat serangan mengenai target (VFX)">2. Efek Pukulan</label>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <select class="form-control" onchange="weapon.animationId=parseInt(this.value,10); setUnsaved(true); renderEditor();">
+                                <option value="0">(Ikut Pengaturan Skill)</option>
+                                ${State.animations.filter(a => a).map(a => `<option value="${a.id}" ${weapon.animationId === a.id ? 'selected' : ''}>#${a.id} ${escapeHtml(a.name)}</option>`).join('')}
+                            </select>
+                            ${weapon.animationId > 0 ? `
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimationInEditor(${weapon.animationId})" title="Buka efek animasi ini di Animation Studio">${pai('video')}</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label title="Pose gerakan tangan karakter saat mengayunkan senjata di layar battle (Motion)">3. Gaya Ayunan Karakter</label>
+                        <select class="form-control" onchange="onWeaponMotionChange(this.value)">
+                            <option value="auto" ${weaponMotion === 'auto' ? 'selected' : ''}>Otomatis (Sesuai Tipe Senjata)</option>
+                            <option value="swing" ${weaponMotion === 'swing' ? 'selected' : ''}>Tebasan (Swing)</option>
+                            <option value="thrust" ${weaponMotion === 'thrust' ? 'selected' : ''}>Tusukan (Thrust)</option>
+                            <option value="missile" ${weaponMotion === 'missile' ? 'selected' : ''}>Tembakan / Jarak Jauh (Missile)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 3. OPSIONAL / LANJUTAN: OVERRIDE KOREOGRAFI KHUSUS SENJATA -->
+                <details ${hasCustomSeq ? 'open' : ''} style="background:#0f1218; border:1px solid ${hasCustomSeq ? 'rgba(168,85,247,0.4)' : 'var(--border-color)'}; border-radius:var(--radius-sm); padding:10px 12px;">
+                    <summary style="cursor:pointer; font-size:0.78rem; font-weight:600; color:${hasCustomSeq ? '#c084fc' : 'var(--text-muted)'}; user-select:none; display:flex; align-items:center; justify-content:space-between;">
+                        <span>${pai('sliders')} Pengaturan Lanjutan: Timpa Koreografi Khusus Senjata Ini ${hasCustomSeq ? '(Aktif)' : '(Opsional)'}</span>
+                    </summary>
+                    <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+                        <div class="helper-text" style="margin-top:0;">
+                            Isi bagian ini <strong>hanya jika</strong> senjata ini butuh gerakan/kamera berbeda dari skill dasarnya. Jika dikosongkan, senjata otomatis memakai animasi skill di atas.
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                            <select id="wepPresetSelect" class="form-control" style="flex:1; min-width:200px;" onchange="if(this.value) applyWeaponActionSequencePreset(this.value)">
+                                <option value="">-- Terapkan Preset Gerakan Cepat --</option>
+                                <optgroup label="Preset Umum">
+                                    <option value="melee_dash">Melee Dash (Maju &amp; Tebas)</option>
+                                    <option value="thrust_pierce">Thrust / Pierce (Maju &amp; Tusuk)</option>
+                                    <option value="ranged_bow">Ranged / Bow (Tembak Jarak Jauh)</option>
+                                    <option value="multi_strike">2x Multi-Strike (Tebas 2x)</option>
+                                </optgroup>
+                                <optgroup label="Preset 10 Tipe Senjata">
+                                    <option value="long_sword">01. Long Sword (Tebas Berat &amp; Knockback)</option>
+                                    <option value="sword">02. Sword (Maju Lincah &amp; Sabetan Cepat)</option>
+                                    <option value="gloves">03. Gloves (Tinjuan 1-2x Dual Wield)</option>
+                                    <option value="spear">04. Spear (Melompat &amp; Tusukan Tombak)</option>
+                                    <option value="axe">05. Axe (Melompat Tinggi &amp; Hantaman Kapak)</option>
+                                    <option value="staff">06. Staff (Maju Selangkah &amp; Proyektil Mana)</option>
+                                    <option value="rune">07. Rune (Proyektil Mana 1-2x)</option>
+                                    <option value="long_bow">08. Long Bow (Tarik Panah Jarak Jauh)</option>
+                                    <option value="crossbow">09. Crossbow (Tembakan Beruntun 1-3x)</option>
+                                    <option value="dagger">10. Dagger (Teleport Belakang &amp; Sabetan)</option>
+                                </optgroup>
+                            </select>
+                            ${hasCustomSeq ? `
+                                <button type="button" class="btn btn-danger btn-sm" onclick="clearWeaponActionSequence()" title="Hapus kode override dan kembali ikuti skill dasar">
+                                    ${pai('trash')} Hapus Override
+                                </button>
+                            ` : ''}
+                        </div>
+                        <textarea class="form-control" rows="4" style="font-size:0.75rem;" onchange="onWeaponSeqChange(this.value)" placeholder="Kosongkan agar mengikuti skill dasar. Jika ingin override manual, tempelkan kode Action Sequence (<target action>...) di sini.">${escapeHtml(rawSeqText)}</textarea>
+                    </div>
+                </details>
             </div>
         </div>
 
@@ -451,24 +418,15 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                 <div style="font-size:0.82rem; font-weight:700; color:#fb923c; margin-bottom:8px;" title="Daya serang fisik dan sihir murni dari senjata">${pai('sword')} Weapon Direct Power:</div>
                 <div class="grid-3" style="margin-bottom:16px;">
                     <div class="stat-card-input" style="border-left: 3px solid #fb923c;">
-                        <label style="color:#fb923c;">
-                            <span>${pai('sword')} Weapon ATK</span>
-                            <span style="font-size:0.75rem; color:var(--text-muted);" title="Daya serang fisik murni dari senjata (params[2])">Weapon Physical ATK</span>
-                        </label>
+                        <label style="color:#fb923c;" title="Daya serang fisik murni dari senjata (params[2])"><span>${pai('sword')} Weapon ATK</span> <span style="font-size:0.75rem; color:var(--text-muted);">Weapon Physical ATK</span></label>
                         <input type="number" class="form-control" value="${weapon.params[2] || 0}" onchange="weapon.params[2]=parseInt(this.value,10)||0; setUnsaved(true);">
                     </div>
                     <div class="stat-card-input" style="border-left: 3px solid #a78bfa;">
-                        <label style="color:#a78bfa;">
-                            <span>${pai('wand')} Weapon MAT</span>
-                            <span style="font-size:0.75rem; color:var(--text-muted);" title="Daya serang magis murni dari senjata (params[4])">Weapon Magical ATK</span>
-                        </label>
+                        <label style="color:#a78bfa;" title="Daya serang magis murni dari senjata (params[4])"><span>${pai('wand')} Weapon MAT</span> <span style="font-size:0.75rem; color:var(--text-muted);">Weapon Magical ATK</span></label>
                         <input type="number" class="form-control" value="${weapon.params[4] || 0}" onchange="weapon.params[4]=parseInt(this.value,10)||0; setUnsaved(true);">
                     </div>
                     <div class="stat-card-input" style="border-left: 3px solid #facc15;">
-                        <label style="color:#facc15;">
-                            <span>${pai('speed-fast')} Action Speed (AGI)</span>
-                            <span style="font-size:0.75rem; color:var(--text-muted);" title="Bonus kecepatan inisiatif giliran saat mengayunkan senjata ini (params[6])">Attack Speed / Delay</span>
-                        </label>
+                        <label style="color:#facc15;" title="Bonus kecepatan inisiatif giliran saat mengayunkan senjata ini (AGI, params[6])"><span>${pai('speed-fast')} Action Speed</span> <span style="font-size:0.75rem; color:var(--text-muted);">Attack Speed / Delay</span></label>
                         <input type="number" class="form-control" value="${weapon.params[6] || 0}" onchange="weapon.params[6]=parseInt(this.value,10)||0; setUnsaved(true);">
                     </div>
                 </div>
@@ -478,11 +436,8 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                 <div class="stat-grid-6" style="margin-bottom:16px;">
                     ${CORE_ATTRIBUTES.map(attr => `
                         <div class="stat-card-input">
-                            <label style="color:${attr.color};">
-                                <span>${attr.icon} ${attr.code}</span>
-                                <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span>
-                            </label>
-                            <input type="text" class="form-control" placeholder="+0" value="${coreBonuses[attr.code]}" onchange="setTagVal(weapon, '${attr.code}', this.value);">
+                            <label style="color:${attr.color};"><span>${attr.icon} ${attr.code}</span> <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span></label>
+                            <input type="text" class="form-control" placeholder="" value="${coreBonuses[attr.code]}" onchange="setTagVal(weapon, '${attr.code}', this.value);">
                         </div>
                     `).join('')}
                 </div>
@@ -535,12 +490,10 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                         </div>
                     `).join('')}
                     <div class="stat-card-input">
-                        <label style="color:#f59e0b;">
-                            <span>${pai('fire')} Amplifikasi Elemen</span>
-                        </label>
+                        <label style="color:#f59e0b;"><span>${pai('fire')} Amplifikasi Elemen</span></label>
                         <div style="display:flex; gap:6px;">
                             <input type="text" class="form-control" placeholder="Elemen (Fire/Holy...)" value="${escapeHtml(eleName)}" id="wepEleName" onchange="onWeaponElementAmplifyChange()">
-                            <input type="text" class="form-control" placeholder="+15%" value="${escapeHtml(eleVal)}" id="wepEleVal" style="width:90px;" onchange="onWeaponElementAmplifyChange()">
+                            <input type="text" class="form-control" placeholder="" value="${escapeHtml(eleVal)}" id="wepEleVal" style="width:90px;" onchange="onWeaponElementAmplifyChange()">
                         </div>
                     </div>
                 </div>
@@ -553,18 +506,18 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
             <div class="card-body">
                 <div class="grid-2">
                     <div class="form-group">
-                        <label>Jumlah Soket Permata (&lt;Sockets: X&gt;)</label>
-                        <input type="number" min="0" max="8" class="form-control" placeholder="0" value="${sockets}" onchange="setTagVal(weapon, 'Sockets', this.value);">
+                        <label title="&lt;Sockets: X&gt;">Jumlah Soket Permata</label>
+                        <input type="number" min="0" max="8" class="form-control" placeholder="" value="${sockets}" onchange="setTagVal(weapon, 'Sockets', this.value);">
                     </div>
                     <div class="form-group">
-                        <label>Maksimal Tempa (+X)</label>
-                        <input type="number" min="0" max="20" class="form-control" placeholder="10" value="${upMax}" onchange="setTagVal(weapon, 'Upgrade Max', this.value);">
+                        <label title="+X">Maksimal Tempa</label>
+                        <input type="number" min="0" max="20" class="form-control" placeholder="" value="${upMax}" onchange="setTagVal(weapon, 'Upgrade Max', this.value);">
                     </div>
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
                         <label>% Sukses Tempa</label>
-                        <input type="text" class="form-control" placeholder="90%" value="${upRate}" onchange="setTagVal(weapon, 'Upgrade Success', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${upRate}" onchange="setTagVal(weapon, 'Upgrade Success', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Biaya emas yang dibutuhkan">Gold Cost</label>
@@ -572,7 +525,7 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                     </div>
                     <div class="form-group">
                         <label>Bonus ATK/Tempa</label>
-                        <input type="text" class="form-control" placeholder="+3" value="${upAtk}" onchange="setTagVal(weapon, 'Upgrade ATK', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${upAtk}" onchange="setTagVal(weapon, 'Upgrade ATK', this.value);">
                     </div>
                 </div>
             </div>

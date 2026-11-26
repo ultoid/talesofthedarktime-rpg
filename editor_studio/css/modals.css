@@ -152,8 +152,8 @@
 
 /* Visual Icon Picker Modal */
 .icon-preview-box {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-sm);
     background-color: #090b0e;

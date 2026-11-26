@@ -113,6 +113,8 @@ function switchTab(tabKey) {
         }
     });
     document.getElementById('searchInput').value = '';
+    const clearBtn = document.getElementById('searchClearBtn');
+    if (clearBtn) clearBtn.style.display = 'none';
     renderSidebar();
     renderEditor();
 
@@ -671,10 +673,26 @@ function selectAdjacentSidebarItem(delta) {
 
 let _searchDebounceTimer = null;
 function filterItems() {
+    const input = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('searchClearBtn');
+    if (clearBtn && input) {
+        clearBtn.style.display = input.value.length > 0 ? 'flex' : 'none';
+    }
     if (_searchDebounceTimer) clearTimeout(_searchDebounceTimer);
     _searchDebounceTimer = setTimeout(() => {
         renderSidebar();
-    }, 200);
+    }, 180);
+}
+
+function clearSidebarSearch() {
+    const input = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('searchClearBtn');
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+    if (clearBtn) clearBtn.style.display = 'none';
+    renderSidebar();
 }
 
 function toggleStatSidebar() {
@@ -697,21 +715,19 @@ function toggleStatSidebar() {
 
     if (btn) {
         btn.classList.toggle('active', !isCollapsed);
-        btn.innerHTML = isCollapsed ? '<i class="pai-chart-bar-big"></i> Tampilkan Stats' : '<i class="pai-chart-bar-big"></i> Sembunyikan Stats';
     }
 }
 
 function initStatSidebarState() {
     try {
         const isCollapsed = localStorage.getItem('nusv_stat_sidebar_collapsed') === '1';
+        const sb = document.getElementById('statSidebar');
+        const btn = document.getElementById('toggleStatSidebarBtn');
         if (isCollapsed) {
-            const sb = document.getElementById('statSidebar');
-            const btn = document.getElementById('toggleStatSidebarBtn');
             if (sb) sb.classList.add('collapsed');
-            if (btn) {
-                btn.classList.remove('active');
-                btn.innerHTML = '<i class="pai-chart-bar-big"></i> Tampilkan Stats';
-            }
+            if (btn) btn.classList.remove('active');
+        } else if (btn) {
+            btn.classList.add('active');
         }
     } catch (_) {}
 }

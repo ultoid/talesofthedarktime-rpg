@@ -43,9 +43,9 @@
         </div>
 
         <div class="header-actions">
-            <button id="toggleStatSidebarBtn" class="btn btn-secondary" onclick="toggleStatSidebar()" title="Sembunyikan atau tampilkan panel pratinjau kalkulasi stat"><i class="pai-chart-bar-big"></i> Panel Stat</button>
+            <button id="toggleStatSidebarBtn" class="btn btn-secondary active" onclick="toggleStatSidebar()" title="Sembunyikan atau tampilkan panel pratinjau kalkulasi stat"><i class="pai-chart-bar-big"></i> Panel Stat</button>
             <button class="btn btn-secondary" onclick="reloadAllData()" title="Muat ulang seluruh data database dari file project"><i class="pai-reload"></i> Muat Ulang</button>
-            <button class="btn btn-primary" onclick="saveActiveDataset()" title="Simpan seluruh perubahan di tab aktif langsung ke file database project"><i class="pai-save"></i> Simpan Database</button>
+            <button class="btn btn-primary" onclick="saveActiveDataset()" title="Simpan seluruh perubahan di tab aktif langsung ke file database project (Ctrl+S)"><i class="pai-save"></i> Simpan</button>
         </div>
     </header>
 
@@ -53,7 +53,11 @@
     <main>
         <aside class="sidebar">
             <div class="search-box">
-                <input type="text" id="searchInput" class="search-input" placeholder="Cari ID atau nama entri..." title="Ketik ID atau nama untuk memfilter daftar di sidebar" oninput="filterItems()">
+                <div class="search-input-wrap">
+                    <span class="search-input-icon"><i class="pai-search"></i></span>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Cari ID atau nama entri..." title="Ketik ID atau nama untuk memfilter daftar di sidebar" oninput="filterItems()">
+                    <button type="button" id="searchClearBtn" class="search-clear-btn" onclick="clearSidebarSearch()" title="Bersihkan pencarian"><i class="pai-close"></i></button>
+                </div>
             </div>
             <div id="sidebarFilters" class="sidebar-filter-box" style="display:none;"></div>
             <div class="item-list" id="sidebarList">
@@ -61,10 +65,10 @@
             </div>
             <div class="sidebar-footer">
                 <div class="sidebar-action-grid">
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem;" onclick="addNewEntry()" title="Tambah entri baru di bagian bawah"><i class="pai-plus"></i> Tambah</button>
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem;" onclick="cloneSelectedEntry()" title="Duplikasi entri yang sedang dipilih"><i class="pai-copy"></i> Salin</button>
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem; color:var(--red);" onclick="deleteSelectedEntry()" title="Hapus entri yang sedang dipilih"><i class="pai-trash"></i> Hapus</button>
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem;" onclick="openResizeModal()" title="Ubah batas kapasitas jumlah entri"><i class="pai-list-box"></i> Kapasitas</button>
+                    <button class="btn btn-secondary btn-sm" onclick="addNewEntry()" title="Tambah entri baru di bagian bawah"><i class="pai-plus"></i> Tambah</button>
+                    <button class="btn btn-secondary btn-sm" onclick="cloneSelectedEntry()" title="Duplikasi entri yang sedang dipilih"><i class="pai-copy"></i> Salin</button>
+                    <button class="btn btn-secondary btn-sm" style="color:var(--red);" onclick="deleteSelectedEntry()" title="Hapus entri yang sedang dipilih"><i class="pai-trash"></i> Hapus</button>
+                    <button class="btn btn-secondary btn-sm" onclick="openResizeModal()" title="Ubah batas kapasitas jumlah entri"><i class="pai-list-box"></i> Kapasitas</button>
                 </div>
             </div>
         </aside>

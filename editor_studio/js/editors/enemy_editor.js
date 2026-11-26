@@ -441,11 +441,11 @@ function renderEnemyEditor(container, enemy) {
                     <div class="grid-2">
                         <div class="form-group">
                             <label title="EXP kelas khusus yang diberikan musuh ini">Class EXP Reward</label>
-                            <input type="number" class="form-control" placeholder="25" value="${classExp}" onchange="setTagVal(enemy, 'Class EXP', this.value);">
+                            <input type="number" class="form-control" placeholder="" value="${classExp}" onchange="setTagVal(enemy, 'Class EXP', this.value);">
                         </div>
                         <div class="form-group">
                             <label title="Poin keahlian (JP) yang didapatkan party">Job Points (JP) Reward</label>
-                            <input type="number" class="form-control" placeholder="20" value="${jp}" onchange="setTagVal(enemy, 'JP', this.value);">
+                            <input type="number" class="form-control" placeholder="" value="${jp}" onchange="setTagVal(enemy, 'JP', this.value);">
                         </div>
                     </div>
                 </div>

@@ -196,13 +196,13 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
                                 <span>${attr.icon} ${attr.code}</span>
                                 <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="+0" value="${coreBonuses[attr.code]}" onchange="setTagVal(state, '${attr.code}', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${coreBonuses[attr.code]}" onchange="setTagVal(state, '${attr.code}', this.value);">
                         </div>
                     `).join('')}
                 </div>
                 <div class="form-group" style="margin-top:12px; max-width:240px;">
                     <label title="Modifikasi nilai kapasitas stamina maksimal (<Max SP: +X>)">Max SP Modifier (&lt;Max SP&gt;)</label>
-                    <input type="text" class="form-control" placeholder="+0" value="${maxSpBonus}" onchange="setTagVal(state, 'Max SP', this.value);">
+                    <input type="text" class="form-control" placeholder="" value="${maxSpBonus}" onchange="setTagVal(state, 'Max SP', this.value);">
                 </div>
             </div>
         </div>
@@ -214,34 +214,34 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
                 <div class="grid-3">
                     <div class="form-group">
                         <label title="Modifikasi pengali kerusakan saat menghasilkan kritikal (<Critical Damage: +X%>)">Critical Damage Modifier</label>
-                        <input type="text" class="form-control" placeholder="+25%" value="${critDmg}" onchange="setTagVal(state, 'Critical Damage', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${critDmg}" onchange="setTagVal(state, 'Critical Damage', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi pengabaian persen pertahanan fisik target (<Armor Penetration: +X%>)">Armor Penetration Modifier</label>
-                        <input type="text" class="form-control" placeholder="15%" value="${armPen}" onchange="setTagVal(state, 'Armor Penetration', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${armPen}" onchange="setTagVal(state, 'Armor Penetration', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi pengabaian persen pertahanan sihir target (<Magic Penetration: +X%>)">Magic Penetration Modifier</label>
-                        <input type="text" class="form-control" placeholder="15%" value="${magPen}" onchange="setTagVal(state, 'Magic Penetration', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${magPen}" onchange="setTagVal(state, 'Magic Penetration', this.value);">
                     </div>
                 </div>
 
                 <div class="grid-4" style="margin-top:10px;">
                     <div class="form-group">
                         <label title="Modifikasi pengurangan persen kerusakan fisik yang diterima (<PDR Plus: +X%>)">Physical Damage Reduction Modifier</label>
-                        <input type="text" class="form-control" placeholder="-15%" value="${pdr}" onchange="setTagVal(state, 'PDR Plus', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${pdr}" onchange="setTagVal(state, 'PDR Plus', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi pengurangan persen kerusakan sihir yang diterima (<MDR Plus: +X%>)">Magical Damage Reduction Modifier</label>
-                        <input type="text" class="form-control" placeholder="-15%" value="${mdr}" onchange="setTagVal(state, 'MDR Plus', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${mdr}" onchange="setTagVal(state, 'MDR Plus', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi akurasi serangan fisik (<HIT Plus: +X%>)">Hit Rate Modifier</label>
-                        <input type="text" class="form-control" placeholder="+10%" value="${hit}" onchange="setTagVal(state, 'HIT Plus', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${hit}" onchange="setTagVal(state, 'HIT Plus', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi peluang menghindari serangan fisik (<EVA Plus: +X%>)">Evasion Rate Modifier</label>
-                        <input type="text" class="form-control" placeholder="+10%" value="${eva}" onchange="setTagVal(state, 'EVA Plus', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${eva}" onchange="setTagVal(state, 'EVA Plus', this.value);">
                     </div>
                 </div>
             </div>

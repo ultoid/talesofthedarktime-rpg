@@ -32,7 +32,7 @@ function renderSkillStatPreview(container, skill) {
                     <span class="badge" style="background:#a78bfa22; color:#a78bfa; border:1px solid #a78bfa55; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:9999px;">
                         ${hitTypes[skill.hitType] || 'Action'}
                     </span>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" style="padding:4px 10px; font-size:0.72rem; background:linear-gradient(135deg, #ec4899, #8b5cf6); border:none; font-weight:700; display:inline-flex; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(236,72,153,0.35); border-radius:6px;" title="Uji skill ini langsung di battle engine RPG Maker MV asli 100% akurat">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" title="Uji skill ini langsung di battle engine RPG Maker MV asli 100% akurat">
                         ${pai('sword')} Preview Battle
                     </button>
                 </div>
@@ -143,14 +143,14 @@ function renderSkillEditor(container, skill) {
 
     container.innerHTML = `
         <!-- NUSVANIR SKILL MASTERY & SCROLL SYSTEM CARD -->
-        <div class="card" style="border:1px solid #8b5cf655; background:linear-gradient(180deg, rgba(30,27,75,0.45) 0%, rgba(15,23,42,0.6) 100%); margin-bottom:16px;">
-            <div class="card-header" style="border-bottom:1px solid #8b5cf633; display:flex; justify-content:space-between; align-items:center;">
-                <h2 style="color:#c4b5fd; font-size:1.05rem; display:flex; align-items:center; gap:8px;">
+        <div class="card" style="border-color: rgba(168, 85, 247, 0.35);">
+            <div class="card-header" style="border-bottom-color: rgba(168, 85, 247, 0.2);">
+                <h2 style="color:#c4b5fd;">
                     <span>${pai('sparkles')}</span> Pembelajaran Jurus &amp; Scroll Pusaka (TM)
                 </h2>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" style="padding:4px 12px; font-size:0.75rem; background:linear-gradient(135deg, #ec4899, #8b5cf6); border:none; font-weight:700; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 10px rgba(236,72,153,0.35); border-radius:6px;" title="Buka pratinjau engine battle RPG Maker MV asli 100% akurat">
-                        ${pai('sword')} Pratinjau Battle (100% Real Engine)
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" title="Buka pratinjau engine battle RPG Maker MV asli 100% akurat">
+                        ${pai('sword')} Pratinjau Battle
                     </button>
                     ${isOutOfBattle ? `<span class="badge" style="background:#10b98122; color:#34d399; border:1px solid #10b98155; font-size:0.75rem; font-weight:700; padding:3px 8px;">${pai('book')} Grimoire / Luar Battle</span>` : ''}
                     <span class="badge" style="background:#8b5cf622; color:#c4b5fd; border:1px solid #8b5cf655; font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:9999px;">
@@ -211,7 +211,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
 
                         <div class="grid-3">
                             <div class="form-group">
-                                <label title="Kategori tipe skill (misal Magic, Special, Martial Arts)">Skill Type (stypeId)</label>
+                                <label title="Kategori tipe skill (misal Magic, Special, Martial Arts) (stypeId)">Skill Type</label>
                                 <select class="form-control" onchange="skill.stypeId=parseInt(this.value,10); setUnsaved(true);">
                                     ${stypes.map((st, idx) => idx === 0 ? '' : `<option value="${idx}" ${skill.stypeId === idx ? 'selected' : ''}>${escapeHtml(st || `Tipe ${idx}`)}</option>`).join('')}
                                 </select>
@@ -221,7 +221,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                                 <input type="number" min="0" class="form-control" value="${skill.mpCost || 0}" onchange="skill.mpCost=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                             <div class="form-group">
-                                <label title="Jumlah Stamina Points (SP) yang dibutuhkan untuk menggunakan skill">SP Cost (Stamina)</label>
+                                <label title="Jumlah Stamina Points (SP) yang dibutuhkan untuk menggunakan skill">SP Cost</label>
                                 <input type="number" min="0" class="form-control" value="${skill.tpCost || 0}" onchange="skill.tpCost=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                         </div>
@@ -243,7 +243,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
 
                         <div class="form-group">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                <label style="margin:0;" title="Animasi visual yang dimainkan pada target saat skill dilancarkan">Skill Animation (VFX)</label>
+                                <label style="margin:0;" title="Animasi visual yang dimainkan pada target saat skill dilancarkan (VFX)">Skill Animation</label>
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimationInEditor(getActiveItem() ? getActiveItem().animationId : 0)" style="padding:2px 8px; font-size:0.72rem; color:#f472b6; font-weight:600;" title="Buka dan modifikasi frame/sel animasi ini di Animation Studio (Tab Animations)">
                                     ${pai('video')} Buka di Animation Studio
                                 </button>
@@ -263,7 +263,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
 
                         <div class="grid-2">
                             <div class="form-group">
-                                <label title="Skill langsung dieksekusi seketika tanpa menghabiskan giliran tempur">Instant Cast (&lt;Instant Cast&gt;)</label>
+                                <label title="Skill langsung dieksekusi seketika tanpa menghabiskan giliran tempur (&lt;Instant Cast&gt;)">Instant Cast</label>
                                 <select class="form-control" onchange="onSkillInstantChange(this.value)">
                                     <option value="None" ${(!isInstant && instantVal === 'None') ? 'selected' : ''} title="Mengkonsumsi giliran normal seperti biasa">Normal (Consumes Turn)</option>
                                     <option value="Free" ${(isInstant && (instantVal === 'Free' || instantVal === '')) ? 'selected' : ''}>Free Action (Tanpa Turn)</option>
@@ -271,7 +271,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label title="Pembatasan target berdasarkan baris formasi (Baris Depan, Baris Belakang)">Target Row Formation (&lt;Target&gt;)</label>
+                                <label title="Pembatasan target berdasarkan baris formasi (Baris Depan, Baris Belakang) (&lt;Target&gt;)">Target Row Formation</label>
                                 <select class="form-control" onchange="setTagVal(skill, 'Target', this.value !== 'Default' ? this.value : '');">
                                     <option value="Default" ${targetTag === '' ? 'selected' : ''}>Default Scope</option>
                                     <option value="Ally Row" ${targetTag === 'Ally Row' ? 'selected' : ''}>Baris Teman</option>
@@ -289,7 +289,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                                 <input type="number" class="form-control" value="${skill.speed || 0}" onchange="skill.speed=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                             <div class="form-group">
-                                <label title="Persentase peluang keberhasilan aktivasi skill (default 100%)">Success Rate (%)</label>
+                                <label title="Persentase peluang keberhasilan aktivasi skill (default 100%)">Success Rate</label>
                                 <input type="number" min="0" max="100" class="form-control" value="${skill.successRate !== undefined ? skill.successRate : 100}" onchange="skill.successRate=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                             <div class="form-group">
@@ -326,7 +326,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                         </select>
                     </div>
                     <div class="form-group">
-                        <label title="Persentase fluktuasi acak hasil akhir damage (misal 20% berarti damage +/- 20%)">Damage Variance (%)</label>
+                        <label title="Persentase fluktuasi acak hasil akhir damage (misal 20% berarti damage +/- 20%)">Damage Variance</label>
                         <input type="number" min="0" max="100" class="form-control" value="${skill.damage.variance || 20}" onchange="skill.damage.variance=parseInt(this.value,10); setUnsaved(true);">
                     </div>
                     <div class="form-group" style="display:flex; align-items:center;">
@@ -338,7 +338,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                 </div>
 
                 <div class="form-group" style="margin-top:10px;">
-                    <label title="Rumus formula perhitungan damage (a = penyerang, b = target, misal: a.atk * 4 - b.def * 2)">Damage Formula (e.g. <code>a.atk * 4 - b.def * 2</code>)</label>
+                    <label title="Rumus formula perhitungan damage (a = penyerang, b = target, misal: a.atk * 4 - b.def * 2) (e.g. a.atk * 4 - b.def * 2)">Damage Formula</label>
                     <input type="text" class="form-control" style="font-family:monospace; font-size:0.9rem; color:#60a5fa;" value="${escapeHtml(skill.damage.formula || '0')}" onchange="skill.damage.formula=this.value; setUnsaved(true);">
                 </div>
             </div>
@@ -375,8 +375,8 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                             </select>
                         </div>
                         <div class="form-group">
-                            <label title="Jumlah JP yang didapatkan saat skill ini digunakan dalam pertempuran">JP Gain on Use (&lt;JP Gain&gt;)</label>
-                            <input type="text" class="form-control" placeholder="+10" value="${jpGain}" onchange="setTagVal(skill, 'JP Gain', this.value);">
+                            <label title="Jumlah JP yang didapatkan saat skill ini digunakan dalam pertempuran (&lt;JP Gain&gt;)">JP Gain on Use</label>
+                            <input type="text" class="form-control" placeholder="" value="${jpGain}" onchange="setTagVal(skill, 'JP Gain', this.value);">
                         </div>
                     </div>
                 </div>
@@ -388,21 +388,21 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                     <div class="grid-3">
                         <div class="form-group">
                             <label>Bonus Crit Dmg</label>
-                            <input type="text" class="form-control" placeholder="+25%" value="${critDmg}" onchange="setTagVal(skill, 'Critical Damage', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${critDmg}" onchange="setTagVal(skill, 'Critical Damage', this.value);">
                         </div>
                         <div class="form-group">
                             <label title="Modifikasi pengabaian persen pertahanan fisik target (<Armor Penetration: +X%>)">Armor Penetration Modifier</label>
-                            <input type="text" class="form-control" placeholder="20%" value="${armPen}" onchange="setTagVal(skill, 'Armor Penetration', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${armPen}" onchange="setTagVal(skill, 'Armor Penetration', this.value);">
                         </div>
                         <div class="form-group">
                             <label title="Modifikasi pengabaian persen pertahanan sihir target (<Magic Penetration: +X%>)">Magic Penetration Modifier</label>
-                            <input type="text" class="form-control" placeholder="20%" value="${magPen}" onchange="setTagVal(skill, 'Magic Penetration', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${magPen}" onchange="setTagVal(skill, 'Magic Penetration', this.value);">
                         </div>
                     </div>
                     <div class="grid-2">
                         <div class="form-group">
                             <label>Batas Cap Damage</label>
-                            <input type="number" class="form-control" placeholder="99999" value="${dmgCap}" onchange="setTagVal(skill, 'Damage Cap', this.value);">
+                            <input type="number" class="form-control" placeholder="" value="${dmgCap}" onchange="setTagVal(skill, 'Damage Cap', this.value);">
                         </div>
                         <div class="form-group" style="display:flex; align-items:center;">
                             <label class="checkbox-label" style="margin-top:16px;">

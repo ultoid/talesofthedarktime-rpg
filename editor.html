@@ -1148,17 +1148,17 @@
 
 :root {
     /* --- Base Palette: Forged Obsidian & Iron Canvas --- */
-    --bg-canvas: #090b0e;
-    --bg-color: #090b0e;
-    --sidebar-bg: #101319;
-    --card-bg: #141821;
-    --card-header: #10131b;
-    --input-bg: #0b0e14;
+    --bg-canvas: #080a0d;
+    --bg-color: #080a0d;
+    --sidebar-bg: #10141c;
+    --card-bg: #151a24;
+    --card-header: #10141d;
+    --input-bg: #0b0f17;
     
     /* --- Technical Boundaries & Hairlines --- */
-    --border-color: #222938;
-    --border-subtle: #181d28;
-    --border-strong: #2f384c;
+    --border-color: #263044;
+    --border-subtle: #1b2231;
+    --border-strong: #3a4866;
     --border-focus: #e59b2c;
     
     /* --- Brand & Mechanical Accent Hierarchy --- */
@@ -1177,9 +1177,9 @@
     --red: #f43f5e;                  /* Crimson Threat (HP Damage, Fatal Hazards, Destructive CTA) */
     
     /* --- Contrast & Typography --- */
-    --text-main: #f1f5f9;            /* Primary Data & Titles (High Contrast) */
-    --text-muted: #828fa3;           /* Secondary Labels & Metadata */
-    --text-dim: #505c70;             /* IDs, Unfocused Meta, Hints */
+    --text-main: #f8fafc;            /* Primary Data & Titles (High Contrast) */
+    --text-muted: #94a3b8;           /* Secondary Labels & Metadata */
+    --text-dim: #64748b;             /* IDs, Unfocused Meta, Hints */
     
     /* --- Typography Stacks --- */
     --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, "Helvetica Neue", sans-serif;
@@ -1243,11 +1243,12 @@ header {
     background: #0d1016;
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5), var(--surface-depth);
-    padding: 0 16px;
-    height: 52px;
+    padding: 0 14px;
+    height: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
     z-index: 20;
     flex-shrink: 0;
 }
@@ -1255,7 +1256,8 @@ header {
 .brand {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .brand-emblem {
@@ -1345,8 +1347,10 @@ header {
 .nav-tabs-wrapper {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 4px;
-    max-width: 62%;
+    flex: 1;
+    min-width: 0;
     overflow: hidden;
     position: relative;
     padding: 2px 0;
@@ -1357,7 +1361,7 @@ header {
     border: 1px solid var(--border-color);
     color: var(--text-muted);
     width: 22px;
-    height: 30px;
+    height: 28px;
     border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
@@ -1367,20 +1371,25 @@ header {
     transition: all 0.15s ease;
     flex-shrink: 0;
     user-select: none;
+    opacity: 0.75;
 }
 
 .tab-scroll-btn:hover {
     color: var(--text-main);
     background: #1a202c;
     border-color: var(--border-strong);
+    opacity: 1;
 }
 
 .nav-tabs {
     display: flex;
-    gap: 3px;
+    gap: 2px;
     overflow-x: auto;
     scrollbar-width: none;
-    padding: 2px 0;
+    padding: 2px 4px;
+    background: #0a0d12;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
     scroll-behavior: smooth;
 }
 
@@ -1392,10 +1401,10 @@ header {
     background: transparent;
     border: 1px solid transparent;
     color: var(--text-muted);
-    padding: 5px 11px;
+    padding: 5px 9px;
     border-radius: var(--radius-sm);
     cursor: pointer;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     font-weight: 600;
     white-space: nowrap;
     transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1471,6 +1480,12 @@ header {
     color: #ffffff;
 }
 
+.btn-secondary.active {
+    background: #18202c;
+    border-color: rgba(56, 189, 248, 0.45);
+    color: var(--cyan);
+}
+
 .btn-danger {
     background: rgba(244, 63, 94, 0.12);
     color: #fda4af;
@@ -1503,7 +1518,7 @@ main {
 
 /* Left Sidebar (Item List & Entity Index) */
 .sidebar {
-    width: 320px;
+    width: 272px;
     background: var(--sidebar-bg);
     border-right: 1px solid var(--border-color);
     display: flex;
@@ -1514,9 +1529,24 @@ main {
 }
 
 .search-box {
-    padding: 10px 12px;
+    padding: 10px 10px 8px 10px;
     border-bottom: 1px solid var(--border-color);
     background: #0d1016;
+}
+
+.search-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input-icon {
+    position: absolute;
+    left: 9px;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    pointer-events: none;
+    display: inline-flex;
 }
 
 .search-input {
@@ -1524,12 +1554,34 @@ main {
     background: var(--input-bg);
     border: 1px solid var(--border-color);
     color: var(--text-main);
-    padding: 6px 10px;
+    padding: 6px 28px 6px 28px;
     border-radius: var(--radius-sm);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     outline: none;
     transition: all 0.15s ease;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.search-clear-btn {
+    position: absolute;
+    right: 6px;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    border-radius: var(--radius-sm);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.search-clear-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .search-input:focus {
@@ -1570,14 +1622,14 @@ main {
 }
 
 .list-item {
-    padding: 6px 10px;
+    padding: 7px 10px;
     border-radius: var(--radius-sm);
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
     transition: background 0.12s ease, border-color 0.12s ease;
-    font-size: 0.82rem;
+    font-size: 0.81rem;
     margin-bottom: 2px;
     border: 1px solid transparent;
 }
@@ -1650,8 +1702,15 @@ main {
 }
 
 .sidebar-action-grid {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 5px;
+}
+
+.sidebar-action-grid .btn {
+    padding: 6px 4px;
+    font-size: 0.72rem;
+    white-space: nowrap;
 }
 
 /* ==========================================================================
@@ -1660,17 +1719,17 @@ main {
 .workspace {
     flex: 1;
     overflow-y: auto;
-    padding: 20px 28px;
+    padding: 20px 26px;
     background: radial-gradient(circle at 80% 5%, rgba(22, 28, 38, 0.4), transparent 60%), var(--bg-canvas);
     min-width: 0;
 }
 
 .panel-container {
-    max-width: 900px;
+    max-width: 980px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
     padding-bottom: 64px;
 }
 
@@ -1678,7 +1737,7 @@ main {
    Right Column: Live Simulation Deck & Stat Sidebar
    ========================================================================== */
 .stat-sidebar {
-    width: 430px;
+    width: 368px;
     background: var(--sidebar-bg);
     border-left: 1px solid var(--border-color);
     display: flex;
@@ -1748,6 +1807,8 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .card-header h2 {
@@ -1768,20 +1829,39 @@ main {
 /* Responsive Form Grids */
 .grid-2 {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 14px;
+    align-items: start;
+    margin-bottom: 12px;
 }
 
 .grid-3 {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
     gap: 12px;
+    align-items: start;
+    margin-bottom: 12px;
 }
 
 .grid-4 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 10px;
+    align-items: start;
+    margin-bottom: 12px;
+}
+
+.grid-2:last-child,
+.grid-3:last-child,
+.grid-4:last-child {
+    margin-bottom: 0;
+}
+
+.grid-2 > .form-group,
+.grid-3 > .form-group,
+.grid-4 > .form-group {
+    margin-bottom: 0;
+    min-width: 0;
 }
 
 .stat-grid-6 {
@@ -1799,7 +1879,7 @@ main {
 }
 
 .stat-card-input {
-    background: #0f1218;
+    background: #10141d;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     padding: 9px 10px;
@@ -1824,6 +1904,7 @@ main {
 
 .form-group {
     margin-bottom: 12px;
+    min-width: 0;
 }
 
 .form-group:last-child {
@@ -1832,28 +1913,134 @@ main {
 
 .form-group label {
     display: block;
-    font-size: 0.76rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    margin-bottom: 4px;
+    line-height: 1.35;
+    margin-bottom: 5px;
     color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .form-control {
     width: 100%;
+    min-width: 0;
     background: var(--input-bg);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-    padding: 7px 10px;
+    border: 1px solid #2f3b54;
+    color: #ffffff;
+    font-weight: 500;
+    padding: 6px 10px;
     border-radius: var(--radius-sm);
     font-size: 0.82rem;
+    line-height: 1.35;
     outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.form-control:not(textarea):not([type="range"]) {
+    height: 34px;
+}
+
+select.form-control {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.form-control::placeholder,
+.search-input::placeholder {
+    color: #4b5870;
+    opacity: 1;
+    font-style: italic;
+    font-weight: 400;
+}
+
+.form-control:placeholder-shown {
+    background: #080b10;
+    border-color: #1e2636;
+}
+
+.form-control:not(:placeholder-shown) {
+    background: #0d121c;
+    border-color: #3a4966;
+    color: #ffffff;
+}
+
+.stat-card-input .form-control:not(:placeholder-shown) {
+    font-weight: 700;
+    border-color: #475a7d;
 }
 
 .form-control:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent-glow), inset 0 1px 2px rgba(0, 0, 0, 0.4);
+    background: #0f1522;
+    box-shadow: 0 0 0 1px var(--accent-glow), inset 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.btn:focus-visible,
+.tab-btn:focus-visible,
+.tab-scroll-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+input[type="range"].form-control {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 6px 0;
+    height: auto;
+}
+
+input[type="range"].form-control:focus {
+    box-shadow: none;
+}
+
+input[type="range"].form-control::-webkit-slider-runnable-track {
+    height: 6px;
+    background: #1a2130;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+}
+
+input[type="range"].form-control::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #0d1016;
+    box-shadow: 0 0 8px var(--accent-glow);
+    margin-top: -5px;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+}
+
+input[type="range"].form-control::-webkit-slider-thumb:hover {
+    transform: scale(1.12);
+    background: var(--accent-hover);
+}
+
+input[type="range"].form-control::-moz-range-track {
+    height: 6px;
+    background: #1a2130;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+}
+
+input[type="range"].form-control::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #0d1016;
+    cursor: pointer;
 }
 
 select.form-control option,
@@ -2066,8 +2253,15 @@ label[title] {
     border-bottom: 1px dotted rgba(130, 143, 163, 0.45);
     padding-bottom: 1px;
     display: inline-block;
+    max-width: 100%;
     transition: color 0.15s, border-color 0.15s;
     cursor: help;
+}
+
+.form-group label[title] {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
 }
 
 label[title]:hover {
@@ -2087,22 +2281,22 @@ label[title]:hover {
 /* Floating Bottom Hover Info Bar */
 .hover-info-bar {
     position: fixed;
-    bottom: 14px;
+    bottom: 10px;
     left: 50%;
-    transform: translateX(-50%) translateY(50px);
-    background: rgba(13, 16, 22, 0.97);
+    transform: translateX(-50%) translateY(40px);
+    background: rgba(13, 16, 22, 0.96);
     border: 1px solid var(--border-strong);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(8px);
-    padding: 7px 20px;
+    padding: 6px 16px;
     border-radius: 9999px;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: #e2e8f0;
     pointer-events: none;
     opacity: 0;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 9999;
-    max-width: 80%;
+    max-width: 78%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2372,22 +2566,22 @@ label[title]:hover {
    ========================================================================== */
 @media (max-width: 1400px) {
     .stat-sidebar {
-        width: 380px;
+        width: 340px;
     }
     .sidebar {
-        width: 280px;
+        width: 256px;
     }
 }
 
 @media (max-width: 1200px) {
     .stat-sidebar {
-        width: 340px;
+        width: 310px;
     }
     .sidebar {
-        width: 250px;
+        width: 236px;
     }
     .workspace {
-        padding: 16px;
+        padding: 16px 18px;
     }
 }
 
@@ -2588,8 +2782,8 @@ label[title]:hover {
 
 /* Visual Icon Picker Modal */
 .icon-preview-box {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-sm);
     background-color: #090b0e;
@@ -2717,9 +2911,9 @@ label[title]:hover {
         </div>
 
         <div class="header-actions">
-            <button id="toggleStatSidebarBtn" class="btn btn-secondary" onclick="toggleStatSidebar()" title="Sembunyikan atau tampilkan panel pratinjau kalkulasi stat"><i class="pai-chart-bar-big"></i> Panel Stat</button>
+            <button id="toggleStatSidebarBtn" class="btn btn-secondary active" onclick="toggleStatSidebar()" title="Sembunyikan atau tampilkan panel pratinjau kalkulasi stat"><i class="pai-chart-bar-big"></i> Panel Stat</button>
             <button class="btn btn-secondary" onclick="reloadAllData()" title="Muat ulang seluruh data database dari file project"><i class="pai-reload"></i> Muat Ulang</button>
-            <button class="btn btn-primary" onclick="saveActiveDataset()" title="Simpan seluruh perubahan di tab aktif langsung ke file database project"><i class="pai-save"></i> Simpan Database</button>
+            <button class="btn btn-primary" onclick="saveActiveDataset()" title="Simpan seluruh perubahan di tab aktif langsung ke file database project (Ctrl+S)"><i class="pai-save"></i> Simpan</button>
         </div>
     </header>
 
@@ -2727,7 +2921,11 @@ label[title]:hover {
     <main>
         <aside class="sidebar">
             <div class="search-box">
-                <input type="text" id="searchInput" class="search-input" placeholder="Cari ID atau nama entri..." title="Ketik ID atau nama untuk memfilter daftar di sidebar" oninput="filterItems()">
+                <div class="search-input-wrap">
+                    <span class="search-input-icon"><i class="pai-search"></i></span>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Cari ID atau nama entri..." title="Ketik ID atau nama untuk memfilter daftar di sidebar" oninput="filterItems()">
+                    <button type="button" id="searchClearBtn" class="search-clear-btn" onclick="clearSidebarSearch()" title="Bersihkan pencarian"><i class="pai-close"></i></button>
+                </div>
             </div>
             <div id="sidebarFilters" class="sidebar-filter-box" style="display:none;"></div>
             <div class="item-list" id="sidebarList">
@@ -2735,10 +2933,10 @@ label[title]:hover {
             </div>
             <div class="sidebar-footer">
                 <div class="sidebar-action-grid">
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem;" onclick="addNewEntry()" title="Tambah entri baru di bagian bawah"><i class="pai-plus"></i> Tambah</button>
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem;" onclick="cloneSelectedEntry()" title="Duplikasi entri yang sedang dipilih"><i class="pai-copy"></i> Salin</button>
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem; color:var(--red);" onclick="deleteSelectedEntry()" title="Hapus entri yang sedang dipilih"><i class="pai-trash"></i> Hapus</button>
-                    <button class="btn btn-secondary btn-sm" style="flex:1; padding:6px 2px; font-size:0.74rem;" onclick="openResizeModal()" title="Ubah batas kapasitas jumlah entri"><i class="pai-list-box"></i> Kapasitas</button>
+                    <button class="btn btn-secondary btn-sm" onclick="addNewEntry()" title="Tambah entri baru di bagian bawah"><i class="pai-plus"></i> Tambah</button>
+                    <button class="btn btn-secondary btn-sm" onclick="cloneSelectedEntry()" title="Duplikasi entri yang sedang dipilih"><i class="pai-copy"></i> Salin</button>
+                    <button class="btn btn-secondary btn-sm" style="color:var(--red);" onclick="deleteSelectedEntry()" title="Hapus entri yang sedang dipilih"><i class="pai-trash"></i> Hapus</button>
+                    <button class="btn btn-secondary btn-sm" onclick="openResizeModal()" title="Ubah batas kapasitas jumlah entri"><i class="pai-list-box"></i> Kapasitas</button>
                 </div>
             </div>
         </aside>
@@ -3233,31 +3431,31 @@ const CORE_ATTRIBUTES = [
 
 const DERIVED_STAT_DEFS = [
     // Vitalitas & Regen
-    { key: 'Max SP', name: 'Max SP (Stamina)', icon: '<i class="pai-zap"></i>', color: '#38bdf8', group: 'vital', placeholder: '+20' },
-    { key: 'HRG Plus', name: 'HP Regen / Turn', icon: '<i class="pai-heart"></i>', color: '#f87171', group: 'vital', placeholder: '+3%' },
-    { key: 'MRG Plus', name: 'MP Regen / Turn', icon: '<i class="pai-sparkles"></i>', color: '#60a5fa', group: 'vital', placeholder: '+2%' },
-    { key: 'TRG Plus', name: 'SP Regen / Turn', icon: '<i class="pai-battery-full"></i>', color: '#34d399', group: 'vital', placeholder: '+3%' },
+    { key: 'Max SP', name: 'Max SP (Stamina)', icon: '<i class="pai-zap"></i>', color: '#38bdf8', group: 'vital', placeholder: '' },
+    { key: 'HRG Plus', name: 'HP Regen / Turn', icon: '<i class="pai-heart"></i>', color: '#f87171', group: 'vital', placeholder: '' },
+    { key: 'MRG Plus', name: 'MP Regen / Turn', icon: '<i class="pai-sparkles"></i>', color: '#60a5fa', group: 'vital', placeholder: '' },
+    { key: 'TRG Plus', name: 'SP Regen / Turn', icon: '<i class="pai-battery-full"></i>', color: '#34d399', group: 'vital', placeholder: '' },
 
     // Presisi & Kritis
-    { key: 'HIT Plus', name: 'Hit Rate', desc: 'Bonus akurasi serangan fisik (<HIT Plus: +X%>)', icon: '<i class="pai-target"></i>', color: '#facc15', group: 'offensive', placeholder: '+5%' },
-    { key: 'CRI Plus', name: 'Critical Rate', icon: '<i class="pai-sparkle"></i>', color: '#fb923c', group: 'offensive', placeholder: '+5%' },
-    { key: 'Critical Damage', name: 'Critical Damage', icon: '<i class="pai-sword"></i>', color: '#ef4444', group: 'offensive', placeholder: '+25%' },
-    { key: 'Armor Penetration', name: 'Armor Penetration', desc: 'Mengabaikan persentase pertahanan fisik target (<Armor Penetration: +X%>)', icon: '<i class="pai-arrow-right"></i>', color: '#f59e0b', group: 'offensive', placeholder: '15%' },
-    { key: 'Magic Penetration', name: 'Magic Penetration', desc: 'Mengabaikan persentase pertahanan sihir target (<Magic Penetration: +X%>)', icon: '<i class="pai-wand"></i>', color: '#a78bfa', group: 'offensive', placeholder: '15%' },
+    { key: 'HIT Plus', name: 'Hit Rate', desc: 'Bonus akurasi serangan fisik (<HIT Plus: +X%>)', icon: '<i class="pai-target"></i>', color: '#facc15', group: 'offensive', placeholder: '' },
+    { key: 'CRI Plus', name: 'Critical Rate', icon: '<i class="pai-sparkle"></i>', color: '#fb923c', group: 'offensive', placeholder: '' },
+    { key: 'Critical Damage', name: 'Critical Damage', icon: '<i class="pai-sword"></i>', color: '#ef4444', group: 'offensive', placeholder: '' },
+    { key: 'Armor Penetration', name: 'Armor Penetration', desc: 'Mengabaikan persentase pertahanan fisik target (<Armor Penetration: +X%>)', icon: '<i class="pai-arrow-right"></i>', color: '#f59e0b', group: 'offensive', placeholder: '' },
+    { key: 'Magic Penetration', name: 'Magic Penetration', desc: 'Mengabaikan persentase pertahanan sihir target (<Magic Penetration: +X%>)', icon: '<i class="pai-wand"></i>', color: '#a78bfa', group: 'offensive', placeholder: '' },
 
     // Pertahanan & Mitigasi
-    { key: 'PDR Plus', name: 'Physical Damage Reduction', desc: 'Pengurangan damage fisik yang diterima (<PDR Plus: +X%>)', icon: '<i class="pai-shield"></i>', color: '#34d399', group: 'defensive', placeholder: '-10%' },
-    { key: 'MDR Plus', name: 'Magical Damage Reduction', desc: 'Pengurangan damage sihir yang diterima (<MDR Plus: +X%>)', icon: '<i class="pai-shield-sharp"></i>', color: '#38bdf8', group: 'defensive', placeholder: '-10%' },
-    { key: 'GRD Plus', name: 'Guard Mitigation', desc: 'Efisiensi pengurangan damage saat mode bertahan (<GRD Plus: +X%>)', icon: '<i class="pai-shield"></i>', color: '#60a5fa', group: 'defensive', placeholder: '+20%' },
-    { key: 'EVA Plus', name: 'Evasion Rate', desc: 'Peluang menghindari serangan fisik musuh (<EVA Plus: +X%>)', icon: '<i class="pai-wind"></i>', color: '#10b981', group: 'defensive', placeholder: '+5%' },
-    { key: 'CEV Plus', name: 'Critical Evasion', desc: 'Resistensi terhadap serangan kritikal musuh (<CEV Plus: +X%>)', icon: '<i class="pai-shield-sharp"></i>', color: '#4ade80', group: 'defensive', placeholder: '+5%' },
-    { key: 'MEV Plus', name: 'Magic Evasion', desc: 'Peluang menghindari serangan sihir musuh (<MEV Plus: +X%>)', icon: '<i class="pai-leaf"></i>', color: '#a3e635', group: 'defensive', placeholder: '+5%' },
-    { key: 'MRF Plus', name: 'Magic Reflection', desc: 'Peluang memantulkan serangan sihir (<MRF Plus: +X%>)', icon: '<i class="pai-undo"></i>', color: '#2dd4bf', group: 'defensive', placeholder: '+5%' },
-    { key: 'CNT Plus', name: 'Counter Attack Rate', desc: 'Peluang membalas serangan fisik langsung (<CNT Plus: +X%>)', icon: '<i class="pai-sword"></i>', color: '#f43f5e', group: 'defensive', placeholder: '+10%' },
+    { key: 'PDR Plus', name: 'Physical Damage Reduction', desc: 'Pengurangan damage fisik yang diterima (<PDR Plus: +X%>)', icon: '<i class="pai-shield"></i>', color: '#34d399', group: 'defensive', placeholder: '' },
+    { key: 'MDR Plus', name: 'Magical Damage Reduction', desc: 'Pengurangan damage sihir yang diterima (<MDR Plus: +X%>)', icon: '<i class="pai-shield-sharp"></i>', color: '#38bdf8', group: 'defensive', placeholder: '' },
+    { key: 'GRD Plus', name: 'Guard Mitigation', desc: 'Efisiensi pengurangan damage saat mode bertahan (<GRD Plus: +X%>)', icon: '<i class="pai-shield"></i>', color: '#60a5fa', group: 'defensive', placeholder: '' },
+    { key: 'EVA Plus', name: 'Evasion Rate', desc: 'Peluang menghindari serangan fisik musuh (<EVA Plus: +X%>)', icon: '<i class="pai-wind"></i>', color: '#10b981', group: 'defensive', placeholder: '' },
+    { key: 'CEV Plus', name: 'Critical Evasion', desc: 'Resistensi terhadap serangan kritikal musuh (<CEV Plus: +X%>)', icon: '<i class="pai-shield-sharp"></i>', color: '#4ade80', group: 'defensive', placeholder: '' },
+    { key: 'MEV Plus', name: 'Magic Evasion', desc: 'Peluang menghindari serangan sihir musuh (<MEV Plus: +X%>)', icon: '<i class="pai-leaf"></i>', color: '#a3e635', group: 'defensive', placeholder: '' },
+    { key: 'MRF Plus', name: 'Magic Reflection', desc: 'Peluang memantulkan serangan sihir (<MRF Plus: +X%>)', icon: '<i class="pai-undo"></i>', color: '#2dd4bf', group: 'defensive', placeholder: '' },
+    { key: 'CNT Plus', name: 'Counter Attack Rate', desc: 'Peluang membalas serangan fisik langsung (<CNT Plus: +X%>)', icon: '<i class="pai-sword"></i>', color: '#f43f5e', group: 'defensive', placeholder: '' },
 
     // Utilitas & Aggro
-    { key: 'MCR Plus', name: 'MP Cost Rate', desc: 'Tingkat efisiensi konsumsi MP (minus = hemat) (<MCR Plus: -X%>)', icon: '<i class="pai-potion"></i>', color: '#818cf8', group: 'utility', placeholder: '-10%' },
-    { key: 'TGR Plus', name: 'Target Rate / Aggro', desc: 'Tingkat kecenderungan musuh menarget karakter ini (<TGR Plus: +X%>)', icon: '<i class="pai-eye"></i>', color: '#c084fc', group: 'utility', placeholder: '+20%' }
+    { key: 'MCR Plus', name: 'MP Cost Rate', desc: 'Tingkat efisiensi konsumsi MP (minus = hemat) (<MCR Plus: -X%>)', icon: '<i class="pai-potion"></i>', color: '#818cf8', group: 'utility', placeholder: '' },
+    { key: 'TGR Plus', name: 'Target Rate / Aggro', desc: 'Tingkat kecenderungan musuh menarget karakter ini (<TGR Plus: +X%>)', icon: '<i class="pai-eye"></i>', color: '#c084fc', group: 'utility', placeholder: '' }
 ];
 
 
@@ -4594,6 +4792,8 @@ function switchTab(tabKey) {
         }
     });
     document.getElementById('searchInput').value = '';
+    const clearBtn = document.getElementById('searchClearBtn');
+    if (clearBtn) clearBtn.style.display = 'none';
     renderSidebar();
     renderEditor();
 
@@ -5152,10 +5352,26 @@ function selectAdjacentSidebarItem(delta) {
 
 let _searchDebounceTimer = null;
 function filterItems() {
+    const input = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('searchClearBtn');
+    if (clearBtn && input) {
+        clearBtn.style.display = input.value.length > 0 ? 'flex' : 'none';
+    }
     if (_searchDebounceTimer) clearTimeout(_searchDebounceTimer);
     _searchDebounceTimer = setTimeout(() => {
         renderSidebar();
-    }, 200);
+    }, 180);
+}
+
+function clearSidebarSearch() {
+    const input = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('searchClearBtn');
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+    if (clearBtn) clearBtn.style.display = 'none';
+    renderSidebar();
 }
 
 function toggleStatSidebar() {
@@ -5178,21 +5394,19 @@ function toggleStatSidebar() {
 
     if (btn) {
         btn.classList.toggle('active', !isCollapsed);
-        btn.innerHTML = isCollapsed ? '<i class="pai-chart-bar-big"></i> Tampilkan Stats' : '<i class="pai-chart-bar-big"></i> Sembunyikan Stats';
     }
 }
 
 function initStatSidebarState() {
     try {
         const isCollapsed = localStorage.getItem('nusv_stat_sidebar_collapsed') === '1';
+        const sb = document.getElementById('statSidebar');
+        const btn = document.getElementById('toggleStatSidebarBtn');
         if (isCollapsed) {
-            const sb = document.getElementById('statSidebar');
-            const btn = document.getElementById('toggleStatSidebarBtn');
             if (sb) sb.classList.add('collapsed');
-            if (btn) {
-                btn.classList.remove('active');
-                btn.innerHTML = '<i class="pai-chart-bar-big"></i> Tampilkan Stats';
-            }
+            if (btn) btn.classList.remove('active');
+        } else if (btn) {
+            btn.classList.add('active');
         }
     } catch (_) {}
 }
@@ -7578,7 +7792,7 @@ function renderActorEditor(container, actor) {
 
                         <div class="grid-2">
                             <div class="form-group">
-                                <label title="Ras atau spesies karakter untuk interaksi afinitas cerita, pengali Nature stat (▲ +10%, ▼ -10%), dan Racial Ability bawaan">Ras Karakter (&lt;Race: ...&gt;)</label>
+                                <label title="Ras atau spesies karakter (&lt;Race: ...&gt;) untuk interaksi afinitas cerita, pengali Nature stat (▲ +10%, ▼ -10%), dan Racial Ability bawaan">Ras Karakter</label>
                                 <select class="form-control" onchange="setTagVal(actor, 'Race', this.value); updateActorSimulationLive();">
                                     <option value="Pribumi" ${race.toLowerCase() === 'pribumi' || !race ? 'selected' : ''}>Pribumi (True Neutral / All =)</option>
                                     ${(State.races || []).map(r => {
@@ -7597,7 +7811,7 @@ function renderActorEditor(container, actor) {
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label title="Posisi baris tempur awal: 1 (Baris Depan / Melee), 2 (Tengah), 3 (Belakang / Support)">Default Row (&lt;Default Row: 1-3&gt;)</label>
+                                <label title="Posisi baris tempur awal (&lt;Default Row: 1-3&gt;): 1 (Baris Depan / Melee), 2 (Tengah), 3 (Belakang / Support)">Default Row</label>
                                 <select class="form-control" onchange="setTagVal(actor, 'Default Row', this.value);">
                                     <option value="1" ${defaultRow === '1' ? 'selected' : ''}>Baris Depan (Front Row)</option>
                                     <option value="2" ${defaultRow === '2' ? 'selected' : ''}>Baris Tengah (Middle Row)</option>
@@ -7614,22 +7828,22 @@ function renderActorEditor(container, actor) {
                                     ${State.states.filter(s => s).map(s => `<option value="${s.id}" ${passiveState === String(s.id) ? 'selected' : ''}>#${s.id} ${escapeHtml(s.name)}</option>`).join('')}
                                 </select>
                             </div>
-                            <div class="form-group" style="display:flex; align-items:center;">
-                                <label class="checkbox-label" style="margin-top:16px;">
+                            <div class="form-group" style="display:flex; align-items:center; align-self:end; height:34px;">
+                                <label class="checkbox-label" style="margin:0;">
                                     <input type="checkbox" ${isLocked ? 'checked' : ''} onchange="setBoolTag(actor, 'LockActor', this.checked);">
-                                    <span title="Mencegah karakter ini dikeluarkan atau ditukar dari susunan party aktif">${pai('lock')} Lock in Party (&lt;LockActor&gt;)</span>
+                                    <span title="Mencegah karakter ini dikeluarkan atau ditukar dari susunan party aktif (<LockActor>)">${pai('lock')} Lock in Party</span>
                                 </label>
                             </div>
                         </div>
                     </div>
 
                     <div>
-                        <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:6px;" title="Pratinjau gambar potret besar karakter untuk menu status Nusvanir">Portrait Preview (&lt;Portrait: ...&gt;)</label>
+                        <label style="font-size:0.76rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;" title="Pratinjau gambar potret besar karakter (<Portrait: ...>) untuk menu status Nusvanir">Portrait Preview</label>
                         <div class="portrait-preview-box">
-                            ${portrait ? `<img src="img/pictures/${portrait}.png" class="portrait-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'portrait-empty\\'>${pai('warning-diamond')} File tidak ditemukan: img/pictures/${portrait}.png</div>';">` : `<div class="portrait-empty">No portrait selected.<br>Choose from the list below.</div>`}
+                            ${portrait ? `<img src="img/pictures/${escapeHtml(portrait)}.png" class="portrait-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;portrait-empty&quot;><i class=&quot;pai-warning-diamond&quot;></i> File tidak ditemukan: img/pictures/${escapeHtml(portrait)}.png</div>';">` : `<div class="portrait-empty">No portrait selected.<br>Choose from the list below.</div>`}
                         </div>
                         <div class="form-group" style="margin-top:10px;">
-                            <label title="Pilih file ilustrasi potret karakter dari folder img/pictures/">Select Portrait Image (img/pictures/)</label>
+                            <label title="Pilih file ilustrasi potret karakter dari folder img/pictures/">Select Portrait Image</label>
                             <select class="form-control" onchange="setTagVal(actor, 'Portrait', this.value); renderEditor();">
                                 <option value="">(Gunakan Face Graphic Standar)</option>
                                 ${State.pictures.map(p => {
@@ -7740,7 +7954,7 @@ function renderActorEditor(container, actor) {
                 </div>
 
                 <div class="form-group" style="margin-top:16px;">
-                    <label title="Latar belakang kisah dan catatan narasi karakter yang tampil di menu profil">Character Lore &amp; Profile (&lt;Profile&gt;)</label>
+                    <label title="Latar belakang kisah dan catatan narasi karakter yang tampil di menu profil (&lt;Profile&gt;)">Character Lore &amp; Profile</label>
                     <textarea class="form-control" rows="3" onchange="actor.profile=this.value; setBlockTag(actor, 'Profile', this.value);">${escapeHtml(profile)}</textarea>
                 </div>
             </div>
@@ -7754,9 +7968,7 @@ function renderActorEditor(container, actor) {
             </div>
             <div class="card-body">
                 <div class="form-group" style="margin-bottom:14px;">
-                    <label title="Pertumbuhan stat alami karakter setiap kali Base Level naik (+Stat per Base Level)">
-                        ${pai('chart-line')} Innate Actor Growth per Base Level (&lt;Actor Stat Growth: +X STR, +Y INT, ...&gt;)
-                    </label>
+                    <label title="Pertumbuhan stat alami karakter setiap kali Base Level naik (+Stat per Base Level) (&lt;Actor Stat Growth: +X STR, +Y INT, ...&gt;)">${pai('chart-line')} Innate Actor Growth per Base Level</label>
                     <input type="text" class="form-control" placeholder="Contoh: +1 STR, +1 VIT, +0.5 AGI" 
                            value="${escapeHtml(getTagVal(note, 'Actor Stat Growth', ''))}" 
                            oninput="setTagVal(actor, 'Actor Stat Growth', this.value); updateActorSimulationLive();"
@@ -7768,14 +7980,11 @@ function renderActorEditor(container, actor) {
                         const ivInfo = getIVGradeInfo(rawClsIV);
                         return `
                             <div class="stat-card-input">
-                                <label style="color:${attr.color};">
-                                    <span>${attr.icon} ${attr.code}</span>
-                                    <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span>
-                                </label>
+                                <label style="color:${attr.color};"><span>${attr.icon} ${attr.code}</span> <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span></label>
                                 <input type="number" min="0" max="999" class="form-control" 
                                        id="actor-base-input-${attr.code}"
                                        value="${actorCoreStats[attr.code]}" 
-                                       placeholder="10"
+                                       placeholder=""
                                        oninput="onActorBaseStatInput('${attr.code}', this.value)"
                                        onchange="onActorBaseStatInput('${attr.code}', this.value)">
                                 <div style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;" title="Scaling bakat dari profesi ${escapeHtml(actorClass.name)} (IV Rating: ${rawClsIV}/10)">
@@ -7844,8 +8053,8 @@ function renderActorEditor(container, actor) {
                         </select>
                     </div>
 
-                    <div class="equip-slot-item" style="border-color:var(--accent); background:rgba(59,130,246,0.1);">
-                        <div class="slot-title" style="color:#60a5fa;">${pai('diamond-gem')} 6. Accessory 2 (&lt;Second Accessory&gt;)</div>
+                    <div class="equip-slot-item">
+                        <div class="slot-title" title="Slot aksesoris kedua (<Second Accessory>)">${pai('diamond-gem')} 6. Accessory 2</div>
                         <select class="form-control" onchange="setTagVal(actor, 'Second Accessory', this.value); updateActorSimulationLive();">
                             <option value="">(Kosong)</option>
                             ${accessories.map(a => {
@@ -7903,7 +8112,7 @@ function renderActorStatPreview(container, actor) {
                 <!-- Base Level Slider -->
                 <div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;">${pai('user')} Base Level (1 - 99):</label>
+                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;" title="Base Level (1 - 99)">${pai('user')} Base Level:</label>
                     </div>
                     <div style="display:flex; gap:8px; align-items:center;">
                         <input type="range" min="1" max="99" value="${simBaseLevel}" class="form-control" style="flex:1; cursor:pointer;" 
@@ -7916,7 +8125,7 @@ function renderActorStatPreview(container, actor) {
                 <!-- Class Level Slider -->
                 <div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;">${pai('shield')} Class Level (1 - ${classMaxLvl}):</label>
+                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;" title="Class Level (1 - ${classMaxLvl})">${pai('shield')} Class Level:</label>
                         <span class="badge-sub" style="font-size:0.72rem; color:#a78bfa; padding:1px 6px;">${escapeHtml(actorClass.name)}</span>
                     </div>
                     <div style="display:flex; gap:8px; align-items:center;">
@@ -8589,7 +8798,7 @@ function renderClassEditor(container, cls) {
                         </div>
 
                         <div class="form-group">
-                            <label title="ID kelas prasyarat yang harus dikuasai sebelum dapat berganti ke kelas ini">Prerequisite Class (&lt;Class Change From: ID&gt;)</label>
+                            <label title="ID kelas prasyarat yang harus dikuasai sebelum dapat berganti ke kelas ini (&lt;Class Change From: ID&gt;)">Prerequisite Class</label>
                             <select class="form-control" onchange="setTagVal(cls, 'Class Change From', this.value !== '0' ? this.value : '');">
                                 ${classFromOptions.join('')}
                             </select>
@@ -8597,35 +8806,35 @@ function renderClassEditor(container, cls) {
 
                         <div class="grid-3">
                             <div class="form-group">
-                                <label title="Level minimal yang harus dicapai pada kelas sebelumnya sebelum promosi">Required Level for Promotion</label>
+                                <label title="Level minimal yang harus dicapai pada kelas sebelumnya sebelum promosi">Required Level</label>
                                 <input type="number" class="form-control" placeholder="Lv" value="${currentChangeLvl}" onchange="setTagVal(cls, 'Class Change Level', this.value);">
                             </div>
                             <div class="form-group">
-                                <label title="Nama atau ID item promosi khusus yang dibutuhkan untuk membuka kelas ini">Required Promotion Item</label>
+                                <label title="Nama atau ID item promosi khusus yang dibutuhkan untuk membuka kelas ini">Promotion Item ID</label>
                                 <input type="number" class="form-control" placeholder="Item ID" value="${currentChangeItem}" onchange="setTagVal(cls, 'Class Change Item', this.value);">
                             </div>
                             <div class="form-group">
-                                <label title="ID sakelar cerita yang harus aktif agar kelas ini terbuka">Required Story Switch ID</label>
+                                <label title="ID sakelar cerita yang harus aktif agar kelas ini terbuka">Story Switch ID</label>
                                 <input type="number" class="form-control" placeholder="Switch" value="${currentChangeSwitch}" onchange="setTagVal(cls, 'Class Change Switch', this.value);">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label title="Batas maksimal level khusus untuk kelas ini jika berbeda dari normal">Custom Max Level (&lt;Class Max Level: X&gt;)</label>
+                            <label title="Batas maksimal level khusus untuk kelas ini jika berbeda dari normal (&lt;Class Max Level: X&gt;)">Custom Max Level</label>
                             <input type="number" class="form-control" placeholder="Default sesuai Tier" value="${currentMaxLvl}" onchange="setTagVal(cls, 'Class Max Level', this.value);">
                         </div>
                     </div>
 
                     <div>
                         <div class="form-group">
-                            <label title="Indeks ikon visual kelas untuk menu tampilan antarmuka">Class Icon Index (&lt;Class Icon: ID&gt;)</label>
+                            <label title="Indeks ikon visual kelas untuk menu tampilan antarmuka (&lt;Class Icon: ID&gt;)">Class Icon Index</label>
                             <input type="number" class="form-control" value="${currentIcon}" onchange="setTagVal(cls, 'Class Icon', this.value);">
                         </div>
 
                         
 
                         <div class="form-group">
-                            <label title="Deskripsi kisah latar belakang dan gaya bertarung kelas ini">Class Lore &amp; Description (&lt;Class Description&gt;)</label>
+                            <label title="Deskripsi kisah latar belakang dan gaya bertarung kelas ini (&lt;Class Description&gt;)">Class Lore &amp; Description</label>
                             <textarea class="form-control" rows="4" onchange="setBlockTag(cls, 'Class Description', this.value);">${escapeHtml(currentDesc)}</textarea>
                         </div>
                     </div>
@@ -8647,18 +8856,14 @@ function renderClassEditor(container, cls) {
                     Kemampuan pasif bertarung bawaan profesi. Saat karakter promosi ke Tier berikutnya, pasif kelas sebelumnya akan berevolusi menjadi pasif kelas baru yang lebih kuat.
                 </p>
                 <div class="form-group" style="margin-bottom:12px;">
-                    <label title="Nama kemampuan pasif kelas dalam bahasa Inggris (contoh: Battle Spirit, Heavy Impact, Elemental Overload)">
-                        Passive Ability Name (&lt;Class Ability: Name&gt;)
-                    </label>
+                    <label title="Nama kemampuan pasif kelas dalam bahasa Inggris (contoh: Battle Spirit, Heavy Impact, Elemental Overload) (&lt;Class Ability: Name&gt;)">Passive Ability Name</label>
                     <input type="text" class="form-control" style="font-weight:700; color:#fbbf24;" placeholder="Contoh: Battle Spirit" 
                            value="${escapeHtml(currentAbility)}" 
                            oninput="setTagVal(cls, 'Class Ability', this.value); renderSidebar(); updateClassSimulationLive();" 
                            onchange="setTagVal(cls, 'Class Ability', this.value); renderSidebar(); updateClassSimulationLive();">
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
-                    <label title="Deskripsi mekanik efek tempur pasif dalam bahasa Indonesia">
-                        Passive Ability Description (&lt;Class Ability Description&gt;)
-                    </label>
+                    <label title="Deskripsi mekanik efek tempur pasif dalam bahasa Indonesia (&lt;Class Ability Description&gt;)">Passive Ability Description</label>
                     <textarea class="form-control" rows="3" placeholder="Contoh: Meningkatkan P.ATK sebesar +8%. Saat HP di bawah 50%, memulihkan +2 SP ekstra setiap giliran." 
                               oninput="setTagVal(cls, 'Class Ability Desc', ''); setBlockTag(cls, 'Class Ability Description', this.value); updateClassSimulationLive();" 
                               onchange="setTagVal(cls, 'Class Ability Desc', ''); setBlockTag(cls, 'Class Ability Description', this.value); updateClassSimulationLive();">${escapeHtml(currentAbilityDesc)}</textarea>
@@ -8714,9 +8919,7 @@ function renderClassEditor(container, cls) {
 
                 <div class="form-group" style="margin-top:16px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <label title="Override manual jika ingin pertumbuhan stat berbeda dari formula IV bawaan">
-                            ${pai('sliders')} Override Manual Stat Growth per Level (&lt;Class Stat Growth&gt;)
-                        </label>
+                        <label title="Override manual jika ingin pertumbuhan stat berbeda dari formula IV bawaan (&lt;Class Stat Growth&gt;)">${pai('sliders')} Override Manual Stat Growth per Level</label>
                         <span style="font-size:0.75rem; color:var(--text-muted);">(Opsional)</span>
                     </div>
                     <input type="text" class="form-control" placeholder="Biarkan kosong untuk auto-calculate dari IV (+IV/5 per level), atau isi misal: STR +1.5, VIT +1.0" 
@@ -9976,7 +10179,7 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label title="Harga beli di toko (harga jual default bernilai 50% dari harga beli)">Price (Gold)</label>
+                                <label title="Harga beli di toko (harga jual default bernilai 50% dari harga beli) (Gold)">Price</label>
                                 <input type="number" min="0" class="form-control" value="${weapon.price || 0}" onchange="weapon.price=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                             <div class="form-group">
@@ -10017,11 +10220,11 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                             <textarea class="form-control" rows="3" onchange="weapon.description=this.value; setTagVal(weapon, 'NUSV Desc', this.value);">${escapeHtml(weapon.description || desc)}</textarea>
                         </div>
                         <div class="form-group">
-                            <label title="Wilayah atau kerajaan tempat senjata ini dibuat">Origin Region (&lt;NUSV Region&gt;)</label>
+                            <label title="Wilayah atau kerajaan tempat senjata ini dibuat (&lt;NUSV Region&gt;)">Origin Region</label>
                             <input type="text" class="form-control" placeholder="Contoh: Nusvanir, Mandala..." value="${escapeHtml(region)}" onchange="setTagVal(weapon, 'NUSV Region', this.value);">
                         </div>
                         <div class="form-group">
-                            <label title="Jurus yang berpeluang keluar secara otomatis saat melakukan serangan biasa">Weapon Skill Unleash (&lt;Unleash Skill&gt;)</label>
+                            <label title="Jurus yang berpeluang keluar secara otomatis saat melakukan serangan biasa (&lt;Unleash Skill&gt;)">Weapon Skill Unleash</label>
                             <input type="text" class="form-control" placeholder="Contoh: 15, 25%, 10" value="${escapeHtml(unleash)}" onchange="setTagVal(weapon, 'Unleash Skill', this.value);">
                             <div class="helper-text" title="Peluang jurus ini aktif saat karakter melancarkan serangan biasa">Triggered automatically during normal basic attacks.</div>
                         </div>
@@ -10030,164 +10233,131 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
             </div>
         </div>
 
-        <!-- PENGATURAN SERANGAN BIASA SENJATA (NORMAL ATTACK CUSTOMIZATION) -->
-        <div class="card" style="border: 1px solid rgba(56, 189, 248, 0.4); background: #070e1b; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
-            <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(56,189,248,0.2); padding-bottom:8px;">
+        <!-- PENGATURAN SERANGAN BIASA & ANIMASI SENJATA -->
+        <div class="card">
+            <div class="card-header">
                 <div>
-                    <h2 style="color:#38bdf8; font-size:0.95rem; display:flex; align-items:center; gap:8px; margin:0;">
-                        <span>${pai('sword')}</span> Kustomisasi Serangan Biasa Senjata (Normal Attack)
-                    </h2>
-                    <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">
-                        Tentukan skill pengganti, animasi visual, motion, dan koreografi khusus saat memilih perintah "Attack" memakai senjata ini.
+                    <h2 title="Atur skill, efek visual (VFX), dan gerakan karakter saat menyerang dengan senjata ini">${pai('sword')} Serangan Biasa &amp; Animasi Senjata</h2>
+                    <div class="helper-text" style="margin-top:2px;">
+                        Pilih skill dasar, efek pukulan (VFX), dan gaya ayunan saat karakter memilih <strong>Attack</strong>.
                     </div>
                 </div>
                 <div style="display:flex; align-items:center; gap:6px;">
-                    ${customAttackSkillId > 0 ? `
-                        <span class="list-badge" style="background:#0284c722; color:#38bdf8; border-color:#38bdf8; font-size:0.72rem; padding:2px 8px; font-weight:700;">
+                    ${hasCustomSeq ? `
+                        <span class="badge-sub" style="color:#c084fc; background:var(--purple-dim); border-color:rgba(168,85,247,0.35);">
+                            ${pai('video')} Override Khusus Aktif
+                        </span>
+                    ` : (customAttackSkillId > 0 ? `
+                        <span class="badge-sub">
                             ${pai('target')} Skill #${customAttackSkillId}: ${escapeHtml((State.skills[customAttackSkillId] || {}).name || '')}
                         </span>
-                    ` : (hasCustomSeq ? `
-                        <span class="list-badge" style="background:#c084fc22; color:#c084fc; border-color:#c084fc; font-size:0.72rem; padding:2px 8px; font-weight:700;">
-                            ${pai('video')} Custom Action Sequence
-                        </span>
                     ` : `
-                        <span class="list-badge" style="color:var(--text-muted); border-color:#334155; font-size:0.72rem; padding:2px 8px;">
+                        <span class="list-badge">
                             Standar (Skill #1 Attack)
                         </span>
                     `)}
                 </div>
             </div>
-            <div class="card-body" style="display:flex; flex-direction:column; gap:12px;">
-                <!-- KONTROL SKILL PENGGANTI & SHORTCUT BUAT/EDIT -->
-                <div style="background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.2); border-radius:8px; padding:10px 12px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
-                        <label style="font-size:0.78rem; font-weight:700; color:#38bdf8; margin:0;">
-                            ${pai('target')} Skill Serangan Biasa Senjata (&lt;skill_id: ID&gt;)
-                        </label>
-                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                            <button type="button" class="btn btn-sm btn-primary" onclick="openSkillInAnimator(${customAttackSkillId || 1})" style="padding:3px 10px; font-size:0.72rem; font-weight:700;">
-                                ${pai('zap')} Buka di Skills Editor
-                            </button>
-                            ${!customAttackSkillId ? `
-                                <button type="button" class="btn btn-sm" onclick="createNewSkillForWeapon()" style="background:#10b98122; border:1px solid #10b981; color:#6ee7b7; padding:3px 10px; font-size:0.72rem; font-weight:700;" title="Otomatis duplikasi & buat skill baru khusus untuk senjata ini dan buka di Skill Animator">
-                                    + Buat Skill Khusus Senjata Ini
-                                </button>
-                            ` : ''}
-                            <button type="button" class="btn btn-sm" onclick="linkDefaultWeaponAttackSkill()" style="background:#3b82f622; border:1px solid #3b82f6; color:#93c5fd; padding:3px 10px; font-size:0.72rem; font-weight:700;" title="Otomatis hubungkan senjata ini ke Skill Attack spesifik sesuai Weapon Type (Skill #${430 + Math.min(10, Math.max(1, weapon.wtypeId || 1))})">
-                                ${pai('target')} Pasang Basic Attack Sesuai Tipe (${escapeHtml(wtName || 'Senjata')})
-                            </button>
-                            <button type="button" class="btn btn-sm" onclick="openVisualEditorForWeaponAttack()" style="background:#8b5cf622; border:1px solid #8b5cf6; color:#c084fc; padding:3px 10px; font-size:0.72rem; font-weight:700;" title="Buka skill senjata ini di Visual Action Sequence Editor untuk edit koreografi secara visual">
-                                ${pai('video')} Edit Visual di Action Sequence Editor
-                            </button>
-                        </div>
-                    </div>
-                    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; align-items:flex-end;">
-                        <div>
-                            <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:2px;">Skill yang Dipakai Saat Perintah Attack</label>
-                            <select class="form-control" style="font-size:0.8rem; padding:4px 8px; color:#38bdf8; font-weight:600;" onchange="onWeaponAttackSkillChange(this.value)">
-                                <option value="0" ${!customAttackSkillId ? 'selected' : ''}>(Default: Skill #1 - Attack standar)</option>
-                                <optgroup label="10 Preset Basic Attack Senjata (#431 - #440)">
-                                    ${[1,2,3,4,5,6,7,8,9,10].map(tid => {
-                                        const sid = 430 + tid;
-                                        const s = State.skills[sid];
-                                        if (!s) return '';
-                                        return `<option value="${sid}" ${customAttackSkillId === sid ? 'selected' : ''}>#${sid} ${escapeHtml(s.name)}</option>`;
-                                    }).join('')}
-                                </optgroup>
-                                <optgroup label="Skill Lainnya">
-                                    ${State.skills.filter(s => s && s.id !== 1 && (s.id < 431 || s.id > 440)).map(s => `
-                                        <option value="${s.id}" ${customAttackSkillId === s.id ? 'selected' : ''}>#${s.id} ${escapeHtml(s.name)}</option>
-                                    `).join('')}
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:2px;">Animasi Visual Serangan (VFX)</label>
-                            <div style="display:flex; gap:4px;">
-                                <select class="form-control" style="font-size:0.8rem; padding:4px 6px;" onchange="weapon.animationId=parseInt(this.value,10); setUnsaved(true); renderEditor();">
-                                    <option value="0">(Default / Sesuai Skill)</option>
-                                    ${State.animations.filter(a => a).map(a => `<option value="${a.id}" ${weapon.animationId === a.id ? 'selected' : ''}>#${a.id} ${escapeHtml(a.name)}</option>`).join('')}
-                                </select>
-                                ${weapon.animationId > 0 ? `
-                                    <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimationInEditor(${weapon.animationId})" style="padding:2px 6px; font-size:0.7rem; color:#38bdf8;" title="Edit animasi ini di Animation Studio">${pai('video')}</button>
-                                ` : ''}
-                            </div>
-                        </div>
-                        <div>
-                            <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:2px;">Motion Aktor (&lt;Weapon Motion&gt;)</label>
-                            <select class="form-control" style="font-size:0.8rem; padding:4px 6px;" onchange="onWeaponMotionChange(this.value)">
-                                <option value="auto" ${weaponMotion === 'auto' ? 'selected' : ''}>Otomatis (Tipe Senjata)</option>
-                                <option value="swing" ${weaponMotion === 'swing' ? 'selected' : ''}>swing (Tebasan)</option>
-                                <option value="thrust" ${weaponMotion === 'thrust' ? 'selected' : ''}>thrust (Tusukan)</option>
-                                <option value="missile" ${weaponMotion === 'missile' ? 'selected' : ''}>missile (Tembakan/Jarak Jauh)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="font-size:0.68rem; color:var(--text-muted); margin-top:6px;">
-                        <span style="color:#94a3b8;">Saat bertarung, karakter yang memilih <strong>Attack</strong> dengan senjata ini akan langsung menjalankan skill yang dipilih di atas (didukung plugin <code>WeaponSkill.js</code> &amp; <code>NUSV_WeaponUnleash.js</code>).</span>
-                    </div>
-                </div>
-
-                <!-- KOREOGRAFI ACTION SEQUENCE LANGSUNG DI SENJATA -->
-                <div style="background:rgba(192,132,252,0.05); border:1px solid rgba(192,132,252,0.2); border-radius:8px; padding:10px 12px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
-                        <div>
-                            <strong style="color:#c084fc; font-size:0.78rem;">${pai('zap')} Koreografi Action Sequence Khusus pada Senjata (Yanfly Override)</strong>
-                            <div style="font-size:0.68rem; color:var(--text-muted);">Jika disetel, sequence ini langsung menimpa gaya serang Skill #1 saat senjata ini dipakai.</div>
-                        </div>
-                        <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('melee_dash')" style="background:#0284c733; border:1px solid #38bdf8; color:#e0f2fe; padding:2px 7px; font-size:0.68rem;">Melee Dash</button>
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('thrust_pierce')" style="background:#05966933; border:1px solid #10b981; color:#d1fae5; padding:2px 7px; font-size:0.68rem;">Thrust / Pierce</button>
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('ranged_bow')" style="background:#ea580c33; border:1px solid #fb923c; color:#ffedd5; padding:2px 7px; font-size:0.68rem;">Ranged / Bow</button>
-                            <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset('multi_strike')" style="background:#d9770633; border:1px solid #f59e0b; color:#fef3c7; padding:2px 7px; font-size:0.68rem;">2x Multi-Strike</button>
-                            ${hasCustomSeq ? `
-                                <button type="button" class="btn btn-xs btn-danger" onclick="clearWeaponActionSequence()" style="padding:2px 7px; font-size:0.68rem;">
-                                    ${pai('trash')} Hapus Sequence
-                                </button>
-                            ` : ''}
-                        </div>
-                    </div>
-                    
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; background:rgba(0,0,0,0.25); padding:6px 10px; border-radius:6px; border:1px dashed rgba(192,132,252,0.25);">
-                        <span style="font-size:0.72rem; color:#c084fc; font-weight:700;">Preset 10 Tipe Senjata:</span>
-                        <select id="wepPresetSelect" class="form-control" style="width:auto; font-size:0.72rem; padding:2px 8px; height:26px; color:#f1f5f9; background:#0f172a; border-color:#8b5cf6;" onchange="if(this.value) applyWeaponActionSequencePreset(this.value)">
-                            <option value="">-- Pilih Koreografi 10 Senjata --</option>
-                            <option value="long_sword">01. Long Sword (Maju Mantap, Tebas Berat & Knockback)</option>
-                            <option value="sword">02. Sword (Maju Lincah & Sabetan Cepat)</option>
-                            <option value="gloves">03. Gloves (Maju Cepat, Tinjuan 1-2x Dual Wield)</option>
-                            <option value="spear">04. Spear (Melompat & Tusukan Tombak)</option>
-                            <option value="axe">05. Axe (Melompat Tinggi & Hantaman Kapak)</option>
-                            <option value="staff">06. Staff (Maju Selangkah & Proyektil Mana)</option>
-                            <option value="rune">07. Rune (Angkat Tangan & Proyektil Mana 1-2x)</option>
-                            <option value="long_bow">08. Long Bow (Tarik Panah Jarak Jauh)</option>
-                            <option value="crossbow">09. Crossbow (Tembakan Beruntun 1-3x)</option>
-                            <option value="dagger">10. Dagger (Teleport Belakang & Sabetan Cepat)</option>
+            <div class="card-body" style="display:flex; flex-direction:column; gap:14px;">
+                <!-- 1. SKILL DASAR SAAT ATTACK -->
+                <div class="form-group" style="margin-bottom:0;">
+                    <label title="Skill yang otomatis dijalankan saat karakter memilih perintah Attack memakai senjata ini">1. Skill Dasar Saat Memilih &ldquo;Attack&rdquo;</label>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                        <select class="form-control" style="flex:1; min-width:220px;" onchange="onWeaponAttackSkillChange(this.value)">
+                            <option value="0" ${!customAttackSkillId ? 'selected' : ''}>(Default: Skill #1 - Attack standar)</option>
+                            <optgroup label="Preset Basic Attack per Tipe Senjata (#431 - #440)">
+                                ${[1,2,3,4,5,6,7,8,9,10].map(tid => {
+                                    const sid = 430 + tid;
+                                    const s = State.skills[sid];
+                                    if (!s) return '';
+                                    return `<option value="${sid}" ${customAttackSkillId === sid ? 'selected' : ''}>#${sid} ${escapeHtml(s.name)}</option>`;
+                                }).join('')}
+                            </optgroup>
+                            <optgroup label="Skill Lainnya">
+                                ${State.skills.filter(s => s && s.id !== 1 && (s.id < 431 || s.id > 440)).map(s => `
+                                    <option value="${s.id}" ${customAttackSkillId === s.id ? 'selected' : ''}>#${s.id} ${escapeHtml(s.name)}</option>
+                                `).join('')}
+                            </optgroup>
                         </select>
-                        <button type="button" class="btn btn-xs" onclick="applyWeaponActionSequencePreset(document.getElementById('wepPresetSelect').value || 'sword')" style="background:#8b5cf633; border:1px solid #8b5cf6; color:#e0e7ff; padding:2px 10px; font-size:0.7rem; font-weight:600;">
-                            ${pai('check')} Terapkan
+                        ${customAttackSkillId !== (430 + Math.min(10, Math.max(1, weapon.wtypeId || 1))) ? `
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="linkDefaultWeaponAttackSkill()" title="Hubungkan otomatis ke skill bawaan tipe ${escapeHtml(wtName || 'Senjata')}">
+                                ${pai('target')} Ikut Tipe (${escapeHtml(wtName || 'Senjata')})
+                            </button>
+                        ` : ''}
+                        <button type="button" class="btn btn-primary btn-sm" onclick="openVisualEditorForWeaponAttack()" title="Buka dan atur animasi gerakan skill ini secara visual di Action Sequence Editor">
+                            ${pai('video')} Edit Animasi Visual
                         </button>
                     </div>
-
-                    ${hasCustomSeq ? `
-                        <div style="font-size:0.72rem; color:#c084fc; font-weight:700; margin-bottom:4px;">
-                            ${pai('video')} Action Sequence Khusus Aktif pada Senjata Ini (Override):
-                        </div>
-                        <textarea class="form-control" rows="5" style="font-family:monospace; font-size:0.75rem; color:#f8fafc; background:#04060c; line-height:1.4;" onchange="onWeaponSeqChange(this.value)">${escapeHtml(rawSeqText)}</textarea>
-                    ` : `
-                        <div style="background:rgba(0,0,0,0.3); border:1px dashed rgba(192,132,252,0.3); border-radius:6px; padding:8px 12px; font-size:0.75rem; color:#cbd5e1; margin-bottom:8px;">
-                            <div style="color:#38bdf8; font-weight:700; margin-bottom:2px; display:flex; justify-content:space-between; align-items:center;">
-                                <span>${pai('zap')} Koreografi Tempur Aktif:</span>
-                                <span class="list-badge" style="background:#0284c722; color:#38bdf8; border-color:#38bdf8; font-size:0.68rem; padding:1px 6px;">
-                                    ${customAttackSkillId > 0 ? `Skill #${customAttackSkillId} [${(State.skills[customAttackSkillId]||{}).name||''}]` : (weapon.wtypeId > 0 && weapon.wtypeId <= 10 ? `Otomatis Tipe Senjata (Skill #${430 + weapon.wtypeId}: ${wtName})` : 'Skill #1 (Attack Standar)')}
-                                </span>
-                            </div>
-                            <div style="font-size:0.7rem; color:var(--text-muted); line-height:1.4;">
-                                Senjata ini secara otomatis menggunakan aksi sequence dari skill di atas saat memilih perintah <strong>Attack</strong>. Klik <strong>"Edit Visual di Action Sequence Editor"</strong> untuk menyusun command-nya, atau gunakan tombol preset di atas / ketik di bawah untuk menimpa (override) koreografi khusus hanya untuk senjata ini.
-                            </div>
-                        </div>
-                        <textarea class="form-control" rows="3" style="font-family:monospace; font-size:0.75rem; color:#f8fafc; background:#04060c; line-height:1.4;" onchange="onWeaponSeqChange(this.value)" placeholder="Tempelkan atau ketik action sequence Yanfly (<target action>...) di sini jika ingin override khusus..."></textarea>
-                    `}
+                    <div class="helper-text">
+                        Animasi gerak &amp; kamera otomatis mengikuti skill di atas. Klik <strong>Edit Animasi Visual</strong> jika ingin mengubah gerakannya tanpa menulis kode.
+                    </div>
                 </div>
+
+                <!-- 2. EFEK VISUAL (VFX) & GERAKAN KARAKTER -->
+                <div class="grid-2">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label title="Efek visual percikan/tebasan (Animation) yang muncul di tubuh musuh saat serangan mengenai target (VFX)">2. Efek Pukulan</label>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <select class="form-control" onchange="weapon.animationId=parseInt(this.value,10); setUnsaved(true); renderEditor();">
+                                <option value="0">(Ikut Pengaturan Skill)</option>
+                                ${State.animations.filter(a => a).map(a => `<option value="${a.id}" ${weapon.animationId === a.id ? 'selected' : ''}>#${a.id} ${escapeHtml(a.name)}</option>`).join('')}
+                            </select>
+                            ${weapon.animationId > 0 ? `
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimationInEditor(${weapon.animationId})" title="Buka efek animasi ini di Animation Studio">${pai('video')}</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label title="Pose gerakan tangan karakter saat mengayunkan senjata di layar battle (Motion)">3. Gaya Ayunan Karakter</label>
+                        <select class="form-control" onchange="onWeaponMotionChange(this.value)">
+                            <option value="auto" ${weaponMotion === 'auto' ? 'selected' : ''}>Otomatis (Sesuai Tipe Senjata)</option>
+                            <option value="swing" ${weaponMotion === 'swing' ? 'selected' : ''}>Tebasan (Swing)</option>
+                            <option value="thrust" ${weaponMotion === 'thrust' ? 'selected' : ''}>Tusukan (Thrust)</option>
+                            <option value="missile" ${weaponMotion === 'missile' ? 'selected' : ''}>Tembakan / Jarak Jauh (Missile)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 3. OPSIONAL / LANJUTAN: OVERRIDE KOREOGRAFI KHUSUS SENJATA -->
+                <details ${hasCustomSeq ? 'open' : ''} style="background:#0f1218; border:1px solid ${hasCustomSeq ? 'rgba(168,85,247,0.4)' : 'var(--border-color)'}; border-radius:var(--radius-sm); padding:10px 12px;">
+                    <summary style="cursor:pointer; font-size:0.78rem; font-weight:600; color:${hasCustomSeq ? '#c084fc' : 'var(--text-muted)'}; user-select:none; display:flex; align-items:center; justify-content:space-between;">
+                        <span>${pai('sliders')} Pengaturan Lanjutan: Timpa Koreografi Khusus Senjata Ini ${hasCustomSeq ? '(Aktif)' : '(Opsional)'}</span>
+                    </summary>
+                    <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+                        <div class="helper-text" style="margin-top:0;">
+                            Isi bagian ini <strong>hanya jika</strong> senjata ini butuh gerakan/kamera berbeda dari skill dasarnya. Jika dikosongkan, senjata otomatis memakai animasi skill di atas.
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                            <select id="wepPresetSelect" class="form-control" style="flex:1; min-width:200px;" onchange="if(this.value) applyWeaponActionSequencePreset(this.value)">
+                                <option value="">-- Terapkan Preset Gerakan Cepat --</option>
+                                <optgroup label="Preset Umum">
+                                    <option value="melee_dash">Melee Dash (Maju &amp; Tebas)</option>
+                                    <option value="thrust_pierce">Thrust / Pierce (Maju &amp; Tusuk)</option>
+                                    <option value="ranged_bow">Ranged / Bow (Tembak Jarak Jauh)</option>
+                                    <option value="multi_strike">2x Multi-Strike (Tebas 2x)</option>
+                                </optgroup>
+                                <optgroup label="Preset 10 Tipe Senjata">
+                                    <option value="long_sword">01. Long Sword (Tebas Berat &amp; Knockback)</option>
+                                    <option value="sword">02. Sword (Maju Lincah &amp; Sabetan Cepat)</option>
+                                    <option value="gloves">03. Gloves (Tinjuan 1-2x Dual Wield)</option>
+                                    <option value="spear">04. Spear (Melompat &amp; Tusukan Tombak)</option>
+                                    <option value="axe">05. Axe (Melompat Tinggi &amp; Hantaman Kapak)</option>
+                                    <option value="staff">06. Staff (Maju Selangkah &amp; Proyektil Mana)</option>
+                                    <option value="rune">07. Rune (Proyektil Mana 1-2x)</option>
+                                    <option value="long_bow">08. Long Bow (Tarik Panah Jarak Jauh)</option>
+                                    <option value="crossbow">09. Crossbow (Tembakan Beruntun 1-3x)</option>
+                                    <option value="dagger">10. Dagger (Teleport Belakang &amp; Sabetan)</option>
+                                </optgroup>
+                            </select>
+                            ${hasCustomSeq ? `
+                                <button type="button" class="btn btn-danger btn-sm" onclick="clearWeaponActionSequence()" title="Hapus kode override dan kembali ikuti skill dasar">
+                                    ${pai('trash')} Hapus Override
+                                </button>
+                            ` : ''}
+                        </div>
+                        <textarea class="form-control" rows="4" style="font-size:0.75rem;" onchange="onWeaponSeqChange(this.value)" placeholder="Kosongkan agar mengikuti skill dasar. Jika ingin override manual, tempelkan kode Action Sequence (<target action>...) di sini.">${escapeHtml(rawSeqText)}</textarea>
+                    </div>
+                </details>
             </div>
         </div>
 
@@ -10202,24 +10372,15 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                 <div style="font-size:0.82rem; font-weight:700; color:#fb923c; margin-bottom:8px;" title="Daya serang fisik dan sihir murni dari senjata">${pai('sword')} Weapon Direct Power:</div>
                 <div class="grid-3" style="margin-bottom:16px;">
                     <div class="stat-card-input" style="border-left: 3px solid #fb923c;">
-                        <label style="color:#fb923c;">
-                            <span>${pai('sword')} Weapon ATK</span>
-                            <span style="font-size:0.75rem; color:var(--text-muted);" title="Daya serang fisik murni dari senjata (params[2])">Weapon Physical ATK</span>
-                        </label>
+                        <label style="color:#fb923c;" title="Daya serang fisik murni dari senjata (params[2])"><span>${pai('sword')} Weapon ATK</span> <span style="font-size:0.75rem; color:var(--text-muted);">Weapon Physical ATK</span></label>
                         <input type="number" class="form-control" value="${weapon.params[2] || 0}" onchange="weapon.params[2]=parseInt(this.value,10)||0; setUnsaved(true);">
                     </div>
                     <div class="stat-card-input" style="border-left: 3px solid #a78bfa;">
-                        <label style="color:#a78bfa;">
-                            <span>${pai('wand')} Weapon MAT</span>
-                            <span style="font-size:0.75rem; color:var(--text-muted);" title="Daya serang magis murni dari senjata (params[4])">Weapon Magical ATK</span>
-                        </label>
+                        <label style="color:#a78bfa;" title="Daya serang magis murni dari senjata (params[4])"><span>${pai('wand')} Weapon MAT</span> <span style="font-size:0.75rem; color:var(--text-muted);">Weapon Magical ATK</span></label>
                         <input type="number" class="form-control" value="${weapon.params[4] || 0}" onchange="weapon.params[4]=parseInt(this.value,10)||0; setUnsaved(true);">
                     </div>
                     <div class="stat-card-input" style="border-left: 3px solid #facc15;">
-                        <label style="color:#facc15;">
-                            <span>${pai('speed-fast')} Action Speed (AGI)</span>
-                            <span style="font-size:0.75rem; color:var(--text-muted);" title="Bonus kecepatan inisiatif giliran saat mengayunkan senjata ini (params[6])">Attack Speed / Delay</span>
-                        </label>
+                        <label style="color:#facc15;" title="Bonus kecepatan inisiatif giliran saat mengayunkan senjata ini (AGI, params[6])"><span>${pai('speed-fast')} Action Speed</span> <span style="font-size:0.75rem; color:var(--text-muted);">Attack Speed / Delay</span></label>
                         <input type="number" class="form-control" value="${weapon.params[6] || 0}" onchange="weapon.params[6]=parseInt(this.value,10)||0; setUnsaved(true);">
                     </div>
                 </div>
@@ -10229,11 +10390,8 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                 <div class="stat-grid-6" style="margin-bottom:16px;">
                     ${CORE_ATTRIBUTES.map(attr => `
                         <div class="stat-card-input">
-                            <label style="color:${attr.color};">
-                                <span>${attr.icon} ${attr.code}</span>
-                                <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span>
-                            </label>
-                            <input type="text" class="form-control" placeholder="+0" value="${coreBonuses[attr.code]}" onchange="setTagVal(weapon, '${attr.code}', this.value);">
+                            <label style="color:${attr.color};"><span>${attr.icon} ${attr.code}</span> <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span></label>
+                            <input type="text" class="form-control" placeholder="" value="${coreBonuses[attr.code]}" onchange="setTagVal(weapon, '${attr.code}', this.value);">
                         </div>
                     `).join('')}
                 </div>
@@ -10286,12 +10444,10 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                         </div>
                     `).join('')}
                     <div class="stat-card-input">
-                        <label style="color:#f59e0b;">
-                            <span>${pai('fire')} Amplifikasi Elemen</span>
-                        </label>
+                        <label style="color:#f59e0b;"><span>${pai('fire')} Amplifikasi Elemen</span></label>
                         <div style="display:flex; gap:6px;">
                             <input type="text" class="form-control" placeholder="Elemen (Fire/Holy...)" value="${escapeHtml(eleName)}" id="wepEleName" onchange="onWeaponElementAmplifyChange()">
-                            <input type="text" class="form-control" placeholder="+15%" value="${escapeHtml(eleVal)}" id="wepEleVal" style="width:90px;" onchange="onWeaponElementAmplifyChange()">
+                            <input type="text" class="form-control" placeholder="" value="${escapeHtml(eleVal)}" id="wepEleVal" style="width:90px;" onchange="onWeaponElementAmplifyChange()">
                         </div>
                     </div>
                 </div>
@@ -10304,18 +10460,18 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
             <div class="card-body">
                 <div class="grid-2">
                     <div class="form-group">
-                        <label>Jumlah Soket Permata (&lt;Sockets: X&gt;)</label>
-                        <input type="number" min="0" max="8" class="form-control" placeholder="0" value="${sockets}" onchange="setTagVal(weapon, 'Sockets', this.value);">
+                        <label title="&lt;Sockets: X&gt;">Jumlah Soket Permata</label>
+                        <input type="number" min="0" max="8" class="form-control" placeholder="" value="${sockets}" onchange="setTagVal(weapon, 'Sockets', this.value);">
                     </div>
                     <div class="form-group">
-                        <label>Maksimal Tempa (+X)</label>
-                        <input type="number" min="0" max="20" class="form-control" placeholder="10" value="${upMax}" onchange="setTagVal(weapon, 'Upgrade Max', this.value);">
+                        <label title="+X">Maksimal Tempa</label>
+                        <input type="number" min="0" max="20" class="form-control" placeholder="" value="${upMax}" onchange="setTagVal(weapon, 'Upgrade Max', this.value);">
                     </div>
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
                         <label>% Sukses Tempa</label>
-                        <input type="text" class="form-control" placeholder="90%" value="${upRate}" onchange="setTagVal(weapon, 'Upgrade Success', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${upRate}" onchange="setTagVal(weapon, 'Upgrade Success', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Biaya emas yang dibutuhkan">Gold Cost</label>
@@ -10323,7 +10479,7 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                     </div>
                     <div class="form-group">
                         <label>Bonus ATK/Tempa</label>
-                        <input type="text" class="form-control" placeholder="+3" value="${upAtk}" onchange="setTagVal(weapon, 'Upgrade ATK', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${upAtk}" onchange="setTagVal(weapon, 'Upgrade ATK', this.value);">
                     </div>
                 </div>
             </div>
@@ -10867,7 +11023,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                                 <span>${attr.icon} ${attr.code}</span>
                                 <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="+0" value="${coreBonuses[attr.code]}" onchange="setTagVal(armor, '${attr.code}', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${coreBonuses[attr.code]}" onchange="setTagVal(armor, '${attr.code}', this.value);">
                         </div>
                     `).join('')}
                 </div>
@@ -10925,7 +11081,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                         </label>
                         <div style="display:flex; gap:6px;">
                             <input type="text" class="form-control" placeholder="Elemen (Fire/Holy...)" value="${escapeHtml(eleName)}" id="armEleName" onchange="onArmorElementAmplifyChange()">
-                            <input type="text" class="form-control" placeholder="+15%" value="${escapeHtml(eleVal)}" id="armEleVal" style="width:90px;" onchange="onArmorElementAmplifyChange()">
+                            <input type="text" class="form-control" placeholder="" value="${escapeHtml(eleVal)}" id="armEleVal" style="width:90px;" onchange="onArmorElementAmplifyChange()">
                         </div>
                     </div>
                 </div>
@@ -10939,25 +11095,25 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                 <div class="grid-2">
                     <div class="form-group">
                         <label>Jumlah Soket Permata (&lt;Sockets: X&gt;)</label>
-                        <input type="number" min="0" max="8" class="form-control" placeholder="0" value="${sockets}" onchange="setTagVal(armor, 'Sockets', this.value);">
+                        <input type="number" min="0" max="8" class="form-control" placeholder="" value="${sockets}" onchange="setTagVal(armor, 'Sockets', this.value);">
                     </div>
                     <div class="form-group">
                         <label>Maksimal Tempa (+X)</label>
-                        <input type="number" min="0" max="20" class="form-control" placeholder="10" value="${upMax}" onchange="setTagVal(armor, 'Upgrade Max', this.value);">
+                        <input type="number" min="0" max="20" class="form-control" placeholder="" value="${upMax}" onchange="setTagVal(armor, 'Upgrade Max', this.value);">
                     </div>
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
                         <label>% Sukses Tempa</label>
-                        <input type="text" class="form-control" placeholder="90%" value="${upSuccess}" onchange="setTagVal(armor, 'Upgrade Success', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${upSuccess}" onchange="setTagVal(armor, 'Upgrade Success', this.value);">
                     </div>
                     <div class="form-group">
                         <label>Bonus DEF/Tempa</label>
-                        <input type="text" class="form-control" placeholder="+2" value="${upDef}" onchange="setTagVal(armor, 'Upgrade DEF', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${upDef}" onchange="setTagVal(armor, 'Upgrade DEF', this.value);">
                     </div>
                     <div class="form-group">
                         <label>Bonus MDF/Tempa</label>
-                        <input type="text" class="form-control" placeholder="+2" value="${upMdf}" onchange="setTagVal(armor, 'Upgrade MDF', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${upMdf}" onchange="setTagVal(armor, 'Upgrade MDF', this.value);">
                     </div>
                 </div>
             </div>
@@ -16079,7 +16235,7 @@ function renderSkillStatPreview(container, skill) {
                     <span class="badge" style="background:#a78bfa22; color:#a78bfa; border:1px solid #a78bfa55; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:9999px;">
                         ${hitTypes[skill.hitType] || 'Action'}
                     </span>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" style="padding:4px 10px; font-size:0.72rem; background:linear-gradient(135deg, #ec4899, #8b5cf6); border:none; font-weight:700; display:inline-flex; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(236,72,153,0.35); border-radius:6px;" title="Uji skill ini langsung di battle engine RPG Maker MV asli 100% akurat">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" title="Uji skill ini langsung di battle engine RPG Maker MV asli 100% akurat">
                         ${pai('sword')} Preview Battle
                     </button>
                 </div>
@@ -16190,14 +16346,14 @@ function renderSkillEditor(container, skill) {
 
     container.innerHTML = `
         <!-- NUSVANIR SKILL MASTERY & SCROLL SYSTEM CARD -->
-        <div class="card" style="border:1px solid #8b5cf655; background:linear-gradient(180deg, rgba(30,27,75,0.45) 0%, rgba(15,23,42,0.6) 100%); margin-bottom:16px;">
-            <div class="card-header" style="border-bottom:1px solid #8b5cf633; display:flex; justify-content:space-between; align-items:center;">
-                <h2 style="color:#c4b5fd; font-size:1.05rem; display:flex; align-items:center; gap:8px;">
+        <div class="card" style="border-color: rgba(168, 85, 247, 0.35);">
+            <div class="card-header" style="border-bottom-color: rgba(168, 85, 247, 0.2);">
+                <h2 style="color:#c4b5fd;">
                     <span>${pai('sparkles')}</span> Pembelajaran Jurus &amp; Scroll Pusaka (TM)
                 </h2>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" style="padding:4px 12px; font-size:0.75rem; background:linear-gradient(135deg, #ec4899, #8b5cf6); border:none; font-weight:700; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 10px rgba(236,72,153,0.35); border-radius:6px;" title="Buka pratinjau engine battle RPG Maker MV asli 100% akurat">
-                        ${pai('sword')} Pratinjau Battle (100% Real Engine)
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="openBattlePreviewModal(${skill.id})" title="Buka pratinjau engine battle RPG Maker MV asli 100% akurat">
+                        ${pai('sword')} Pratinjau Battle
                     </button>
                     ${isOutOfBattle ? `<span class="badge" style="background:#10b98122; color:#34d399; border:1px solid #10b98155; font-size:0.75rem; font-weight:700; padding:3px 8px;">${pai('book')} Grimoire / Luar Battle</span>` : ''}
                     <span class="badge" style="background:#8b5cf622; color:#c4b5fd; border:1px solid #8b5cf655; font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:9999px;">
@@ -16258,7 +16414,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
 
                         <div class="grid-3">
                             <div class="form-group">
-                                <label title="Kategori tipe skill (misal Magic, Special, Martial Arts)">Skill Type (stypeId)</label>
+                                <label title="Kategori tipe skill (misal Magic, Special, Martial Arts) (stypeId)">Skill Type</label>
                                 <select class="form-control" onchange="skill.stypeId=parseInt(this.value,10); setUnsaved(true);">
                                     ${stypes.map((st, idx) => idx === 0 ? '' : `<option value="${idx}" ${skill.stypeId === idx ? 'selected' : ''}>${escapeHtml(st || `Tipe ${idx}`)}</option>`).join('')}
                                 </select>
@@ -16268,7 +16424,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                                 <input type="number" min="0" class="form-control" value="${skill.mpCost || 0}" onchange="skill.mpCost=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                             <div class="form-group">
-                                <label title="Jumlah Stamina Points (SP) yang dibutuhkan untuk menggunakan skill">SP Cost (Stamina)</label>
+                                <label title="Jumlah Stamina Points (SP) yang dibutuhkan untuk menggunakan skill">SP Cost</label>
                                 <input type="number" min="0" class="form-control" value="${skill.tpCost || 0}" onchange="skill.tpCost=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                         </div>
@@ -16290,7 +16446,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
 
                         <div class="form-group">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                <label style="margin:0;" title="Animasi visual yang dimainkan pada target saat skill dilancarkan">Skill Animation (VFX)</label>
+                                <label style="margin:0;" title="Animasi visual yang dimainkan pada target saat skill dilancarkan (VFX)">Skill Animation</label>
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="openAnimationInEditor(getActiveItem() ? getActiveItem().animationId : 0)" style="padding:2px 8px; font-size:0.72rem; color:#f472b6; font-weight:600;" title="Buka dan modifikasi frame/sel animasi ini di Animation Studio (Tab Animations)">
                                     ${pai('video')} Buka di Animation Studio
                                 </button>
@@ -16310,7 +16466,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
 
                         <div class="grid-2">
                             <div class="form-group">
-                                <label title="Skill langsung dieksekusi seketika tanpa menghabiskan giliran tempur">Instant Cast (&lt;Instant Cast&gt;)</label>
+                                <label title="Skill langsung dieksekusi seketika tanpa menghabiskan giliran tempur (&lt;Instant Cast&gt;)">Instant Cast</label>
                                 <select class="form-control" onchange="onSkillInstantChange(this.value)">
                                     <option value="None" ${(!isInstant && instantVal === 'None') ? 'selected' : ''} title="Mengkonsumsi giliran normal seperti biasa">Normal (Consumes Turn)</option>
                                     <option value="Free" ${(isInstant && (instantVal === 'Free' || instantVal === '')) ? 'selected' : ''}>Free Action (Tanpa Turn)</option>
@@ -16318,7 +16474,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label title="Pembatasan target berdasarkan baris formasi (Baris Depan, Baris Belakang)">Target Row Formation (&lt;Target&gt;)</label>
+                                <label title="Pembatasan target berdasarkan baris formasi (Baris Depan, Baris Belakang) (&lt;Target&gt;)">Target Row Formation</label>
                                 <select class="form-control" onchange="setTagVal(skill, 'Target', this.value !== 'Default' ? this.value : '');">
                                     <option value="Default" ${targetTag === '' ? 'selected' : ''}>Default Scope</option>
                                     <option value="Ally Row" ${targetTag === 'Ally Row' ? 'selected' : ''}>Baris Teman</option>
@@ -16336,7 +16492,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                                 <input type="number" class="form-control" value="${skill.speed || 0}" onchange="skill.speed=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                             <div class="form-group">
-                                <label title="Persentase peluang keberhasilan aktivasi skill (default 100%)">Success Rate (%)</label>
+                                <label title="Persentase peluang keberhasilan aktivasi skill (default 100%)">Success Rate</label>
                                 <input type="number" min="0" max="100" class="form-control" value="${skill.successRate !== undefined ? skill.successRate : 100}" onchange="skill.successRate=parseInt(this.value,10); setUnsaved(true);">
                             </div>
                             <div class="form-group">
@@ -16373,7 +16529,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                         </select>
                     </div>
                     <div class="form-group">
-                        <label title="Persentase fluktuasi acak hasil akhir damage (misal 20% berarti damage +/- 20%)">Damage Variance (%)</label>
+                        <label title="Persentase fluktuasi acak hasil akhir damage (misal 20% berarti damage +/- 20%)">Damage Variance</label>
                         <input type="number" min="0" max="100" class="form-control" value="${skill.damage.variance || 20}" onchange="skill.damage.variance=parseInt(this.value,10); setUnsaved(true);">
                     </div>
                     <div class="form-group" style="display:flex; align-items:center;">
@@ -16385,7 +16541,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                 </div>
 
                 <div class="form-group" style="margin-top:10px;">
-                    <label title="Rumus formula perhitungan damage (a = penyerang, b = target, misal: a.atk * 4 - b.def * 2)">Damage Formula (e.g. <code>a.atk * 4 - b.def * 2</code>)</label>
+                    <label title="Rumus formula perhitungan damage (a = penyerang, b = target, misal: a.atk * 4 - b.def * 2) (e.g. a.atk * 4 - b.def * 2)">Damage Formula</label>
                     <input type="text" class="form-control" style="font-family:monospace; font-size:0.9rem; color:#60a5fa;" value="${escapeHtml(skill.damage.formula || '0')}" onchange="skill.damage.formula=this.value; setUnsaved(true);">
                 </div>
             </div>
@@ -16422,8 +16578,8 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                             </select>
                         </div>
                         <div class="form-group">
-                            <label title="Jumlah JP yang didapatkan saat skill ini digunakan dalam pertempuran">JP Gain on Use (&lt;JP Gain&gt;)</label>
-                            <input type="text" class="form-control" placeholder="+10" value="${jpGain}" onchange="setTagVal(skill, 'JP Gain', this.value);">
+                            <label title="Jumlah JP yang didapatkan saat skill ini digunakan dalam pertempuran (&lt;JP Gain&gt;)">JP Gain on Use</label>
+                            <input type="text" class="form-control" placeholder="" value="${jpGain}" onchange="setTagVal(skill, 'JP Gain', this.value);">
                         </div>
                     </div>
                 </div>
@@ -16435,21 +16591,21 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                     <div class="grid-3">
                         <div class="form-group">
                             <label>Bonus Crit Dmg</label>
-                            <input type="text" class="form-control" placeholder="+25%" value="${critDmg}" onchange="setTagVal(skill, 'Critical Damage', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${critDmg}" onchange="setTagVal(skill, 'Critical Damage', this.value);">
                         </div>
                         <div class="form-group">
                             <label title="Modifikasi pengabaian persen pertahanan fisik target (<Armor Penetration: +X%>)">Armor Penetration Modifier</label>
-                            <input type="text" class="form-control" placeholder="20%" value="${armPen}" onchange="setTagVal(skill, 'Armor Penetration', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${armPen}" onchange="setTagVal(skill, 'Armor Penetration', this.value);">
                         </div>
                         <div class="form-group">
                             <label title="Modifikasi pengabaian persen pertahanan sihir target (<Magic Penetration: +X%>)">Magic Penetration Modifier</label>
-                            <input type="text" class="form-control" placeholder="20%" value="${magPen}" onchange="setTagVal(skill, 'Magic Penetration', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${magPen}" onchange="setTagVal(skill, 'Magic Penetration', this.value);">
                         </div>
                     </div>
                     <div class="grid-2">
                         <div class="form-group">
                             <label>Batas Cap Damage</label>
-                            <input type="number" class="form-control" placeholder="99999" value="${dmgCap}" onchange="setTagVal(skill, 'Damage Cap', this.value);">
+                            <input type="number" class="form-control" placeholder="" value="${dmgCap}" onchange="setTagVal(skill, 'Damage Cap', this.value);">
                         </div>
                         <div class="form-group" style="display:flex; align-items:center;">
                             <label class="checkbox-label" style="margin-top:16px;">
@@ -16725,27 +16881,27 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
                     <div class="stat-grid-6" style="margin-top:10px;">
                         <div class="stat-card-input">
                             <label style="color:#fb923c;">${pai('sword')} ATK</label>
-                            <input type="text" class="form-control" placeholder="+5" value="${sockAtk}" onchange="setTagVal(item, 'Socket ATK', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockAtk}" onchange="setTagVal(item, 'Socket ATK', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #34d399;">
                             <label style="color:#34d399;">${pai('shield')} DEF</label>
-                            <input type="text" class="form-control" placeholder="+5" value="${sockDef}" onchange="setTagVal(item, 'Socket DEF', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockDef}" onchange="setTagVal(item, 'Socket DEF', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #a78bfa;">
                             <label style="color:#a78bfa;">${pai('wand')} MAT</label>
-                            <input type="text" class="form-control" placeholder="+5" value="${sockMat}" onchange="setTagVal(item, 'Socket MAT', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockMat}" onchange="setTagVal(item, 'Socket MAT', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #38bdf8;">
                             <label style="color:#38bdf8;">${pai('shield')} MDF</label>
-                            <input type="text" class="form-control" placeholder="+5" value="${sockMdf}" onchange="setTagVal(item, 'Socket MDF', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockMdf}" onchange="setTagVal(item, 'Socket MDF', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #f87171;">
                             <label style="color:#f87171;">${pai('heart')} HP</label>
-                            <input type="text" class="form-control" placeholder="+50" value="${sockMhp}" onchange="setTagVal(item, 'Socket MHP', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockMhp}" onchange="setTagVal(item, 'Socket MHP', this.value);">
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #60a5fa;">
                             <label style="color:#60a5fa;">${pai('drop')} MP</label>
-                            <input type="text" class="form-control" placeholder="+20" value="${sockMmp}" onchange="setTagVal(item, 'Socket MMP', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${sockMmp}" onchange="setTagVal(item, 'Socket MMP', this.value);">
                         </div>
                     </div>
                 </div>
@@ -16760,7 +16916,7 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
                     </div>
                     <div class="form-group">
                         <label>Jumlah Hasil Buatan (&lt;Synthesis Amount: X&gt;)</label>
-                        <input type="number" min="1" class="form-control" placeholder="1" value="${synAmt}" onchange="setTagVal(item, 'Synthesis Amount', this.value);">
+                        <input type="number" min="1" class="form-control" placeholder="" value="${synAmt}" onchange="setTagVal(item, 'Synthesis Amount', this.value);">
                     </div>
                 </div>
             </div>
@@ -17324,11 +17480,11 @@ function renderEnemyEditor(container, enemy) {
                     <div class="grid-2">
                         <div class="form-group">
                             <label title="EXP kelas khusus yang diberikan musuh ini">Class EXP Reward</label>
-                            <input type="number" class="form-control" placeholder="25" value="${classExp}" onchange="setTagVal(enemy, 'Class EXP', this.value);">
+                            <input type="number" class="form-control" placeholder="" value="${classExp}" onchange="setTagVal(enemy, 'Class EXP', this.value);">
                         </div>
                         <div class="form-group">
                             <label title="Poin keahlian (JP) yang didapatkan party">Job Points (JP) Reward</label>
-                            <input type="number" class="form-control" placeholder="20" value="${jp}" onchange="setTagVal(enemy, 'JP', this.value);">
+                            <input type="number" class="form-control" placeholder="" value="${jp}" onchange="setTagVal(enemy, 'JP', this.value);">
                         </div>
                     </div>
                 </div>
@@ -18007,13 +18163,13 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
                                 <span>${attr.icon} ${attr.code}</span>
                                 <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="+0" value="${coreBonuses[attr.code]}" onchange="setTagVal(state, '${attr.code}', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${coreBonuses[attr.code]}" onchange="setTagVal(state, '${attr.code}', this.value);">
                         </div>
                     `).join('')}
                 </div>
                 <div class="form-group" style="margin-top:12px; max-width:240px;">
                     <label title="Modifikasi nilai kapasitas stamina maksimal (<Max SP: +X>)">Max SP Modifier (&lt;Max SP&gt;)</label>
-                    <input type="text" class="form-control" placeholder="+0" value="${maxSpBonus}" onchange="setTagVal(state, 'Max SP', this.value);">
+                    <input type="text" class="form-control" placeholder="" value="${maxSpBonus}" onchange="setTagVal(state, 'Max SP', this.value);">
                 </div>
             </div>
         </div>
@@ -18025,34 +18181,34 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
                 <div class="grid-3">
                     <div class="form-group">
                         <label title="Modifikasi pengali kerusakan saat menghasilkan kritikal (<Critical Damage: +X%>)">Critical Damage Modifier</label>
-                        <input type="text" class="form-control" placeholder="+25%" value="${critDmg}" onchange="setTagVal(state, 'Critical Damage', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${critDmg}" onchange="setTagVal(state, 'Critical Damage', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi pengabaian persen pertahanan fisik target (<Armor Penetration: +X%>)">Armor Penetration Modifier</label>
-                        <input type="text" class="form-control" placeholder="15%" value="${armPen}" onchange="setTagVal(state, 'Armor Penetration', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${armPen}" onchange="setTagVal(state, 'Armor Penetration', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi pengabaian persen pertahanan sihir target (<Magic Penetration: +X%>)">Magic Penetration Modifier</label>
-                        <input type="text" class="form-control" placeholder="15%" value="${magPen}" onchange="setTagVal(state, 'Magic Penetration', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${magPen}" onchange="setTagVal(state, 'Magic Penetration', this.value);">
                     </div>
                 </div>
 
                 <div class="grid-4" style="margin-top:10px;">
                     <div class="form-group">
                         <label title="Modifikasi pengurangan persen kerusakan fisik yang diterima (<PDR Plus: +X%>)">Physical Damage Reduction Modifier</label>
-                        <input type="text" class="form-control" placeholder="-15%" value="${pdr}" onchange="setTagVal(state, 'PDR Plus', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${pdr}" onchange="setTagVal(state, 'PDR Plus', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi pengurangan persen kerusakan sihir yang diterima (<MDR Plus: +X%>)">Magical Damage Reduction Modifier</label>
-                        <input type="text" class="form-control" placeholder="-15%" value="${mdr}" onchange="setTagVal(state, 'MDR Plus', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${mdr}" onchange="setTagVal(state, 'MDR Plus', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi akurasi serangan fisik (<HIT Plus: +X%>)">Hit Rate Modifier</label>
-                        <input type="text" class="form-control" placeholder="+10%" value="${hit}" onchange="setTagVal(state, 'HIT Plus', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${hit}" onchange="setTagVal(state, 'HIT Plus', this.value);">
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi peluang menghindari serangan fisik (<EVA Plus: +X%>)">Evasion Rate Modifier</label>
-                        <input type="text" class="form-control" placeholder="+10%" value="${eva}" onchange="setTagVal(state, 'EVA Plus', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${eva}" onchange="setTagVal(state, 'EVA Plus', this.value);">
                     </div>
                 </div>
             </div>
@@ -18245,6 +18401,13 @@ function isAnyModalOpen() {
 
 // Global Keyboard Navigation & Shortcuts
 window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        if (typeof saveActiveDataset === 'function') {
+            saveActiveDataset();
+        }
+        return;
+    }
     if (e.key === 'Escape') {
         if (closeActiveModals()) {
             e.preventDefault();

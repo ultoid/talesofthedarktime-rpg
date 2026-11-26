@@ -605,7 +605,7 @@ function renderActorEditor(container, actor) {
 
                         <div class="grid-2">
                             <div class="form-group">
-                                <label title="Ras atau spesies karakter untuk interaksi afinitas cerita, pengali Nature stat (▲ +10%, ▼ -10%), dan Racial Ability bawaan">Ras Karakter (&lt;Race: ...&gt;)</label>
+                                <label title="Ras atau spesies karakter (&lt;Race: ...&gt;) untuk interaksi afinitas cerita, pengali Nature stat (▲ +10%, ▼ -10%), dan Racial Ability bawaan">Ras Karakter</label>
                                 <select class="form-control" onchange="setTagVal(actor, 'Race', this.value); updateActorSimulationLive();">
                                     <option value="Pribumi" ${race.toLowerCase() === 'pribumi' || !race ? 'selected' : ''}>Pribumi (True Neutral / All =)</option>
                                     ${(State.races || []).map(r => {
@@ -624,7 +624,7 @@ function renderActorEditor(container, actor) {
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label title="Posisi baris tempur awal: 1 (Baris Depan / Melee), 2 (Tengah), 3 (Belakang / Support)">Default Row (&lt;Default Row: 1-3&gt;)</label>
+                                <label title="Posisi baris tempur awal (&lt;Default Row: 1-3&gt;): 1 (Baris Depan / Melee), 2 (Tengah), 3 (Belakang / Support)">Default Row</label>
                                 <select class="form-control" onchange="setTagVal(actor, 'Default Row', this.value);">
                                     <option value="1" ${defaultRow === '1' ? 'selected' : ''}>Baris Depan (Front Row)</option>
                                     <option value="2" ${defaultRow === '2' ? 'selected' : ''}>Baris Tengah (Middle Row)</option>
@@ -641,22 +641,22 @@ function renderActorEditor(container, actor) {
                                     ${State.states.filter(s => s).map(s => `<option value="${s.id}" ${passiveState === String(s.id) ? 'selected' : ''}>#${s.id} ${escapeHtml(s.name)}</option>`).join('')}
                                 </select>
                             </div>
-                            <div class="form-group" style="display:flex; align-items:center;">
-                                <label class="checkbox-label" style="margin-top:16px;">
+                            <div class="form-group" style="display:flex; align-items:center; align-self:end; height:34px;">
+                                <label class="checkbox-label" style="margin:0;">
                                     <input type="checkbox" ${isLocked ? 'checked' : ''} onchange="setBoolTag(actor, 'LockActor', this.checked);">
-                                    <span title="Mencegah karakter ini dikeluarkan atau ditukar dari susunan party aktif">${pai('lock')} Lock in Party (&lt;LockActor&gt;)</span>
+                                    <span title="Mencegah karakter ini dikeluarkan atau ditukar dari susunan party aktif (<LockActor>)">${pai('lock')} Lock in Party</span>
                                 </label>
                             </div>
                         </div>
                     </div>
 
                     <div>
-                        <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:6px;" title="Pratinjau gambar potret besar karakter untuk menu status Nusvanir">Portrait Preview (&lt;Portrait: ...&gt;)</label>
+                        <label style="font-size:0.76rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px;" title="Pratinjau gambar potret besar karakter (<Portrait: ...>) untuk menu status Nusvanir">Portrait Preview</label>
                         <div class="portrait-preview-box">
-                            ${portrait ? `<img src="img/pictures/${portrait}.png" class="portrait-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'portrait-empty\\'>${pai('warning-diamond')} File tidak ditemukan: img/pictures/${portrait}.png</div>';">` : `<div class="portrait-empty">No portrait selected.<br>Choose from the list below.</div>`}
+                            ${portrait ? `<img src="img/pictures/${escapeHtml(portrait)}.png" class="portrait-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;portrait-empty&quot;><i class=&quot;pai-warning-diamond&quot;></i> File tidak ditemukan: img/pictures/${escapeHtml(portrait)}.png</div>';">` : `<div class="portrait-empty">No portrait selected.<br>Choose from the list below.</div>`}
                         </div>
                         <div class="form-group" style="margin-top:10px;">
-                            <label title="Pilih file ilustrasi potret karakter dari folder img/pictures/">Select Portrait Image (img/pictures/)</label>
+                            <label title="Pilih file ilustrasi potret karakter dari folder img/pictures/">Select Portrait Image</label>
                             <select class="form-control" onchange="setTagVal(actor, 'Portrait', this.value); renderEditor();">
                                 <option value="">(Gunakan Face Graphic Standar)</option>
                                 ${State.pictures.map(p => {
@@ -767,7 +767,7 @@ function renderActorEditor(container, actor) {
                 </div>
 
                 <div class="form-group" style="margin-top:16px;">
-                    <label title="Latar belakang kisah dan catatan narasi karakter yang tampil di menu profil">Character Lore &amp; Profile (&lt;Profile&gt;)</label>
+                    <label title="Latar belakang kisah dan catatan narasi karakter yang tampil di menu profil (&lt;Profile&gt;)">Character Lore &amp; Profile</label>
                     <textarea class="form-control" rows="3" onchange="actor.profile=this.value; setBlockTag(actor, 'Profile', this.value);">${escapeHtml(profile)}</textarea>
                 </div>
             </div>
@@ -781,9 +781,7 @@ function renderActorEditor(container, actor) {
             </div>
             <div class="card-body">
                 <div class="form-group" style="margin-bottom:14px;">
-                    <label title="Pertumbuhan stat alami karakter setiap kali Base Level naik (+Stat per Base Level)">
-                        ${pai('chart-line')} Innate Actor Growth per Base Level (&lt;Actor Stat Growth: +X STR, +Y INT, ...&gt;)
-                    </label>
+                    <label title="Pertumbuhan stat alami karakter setiap kali Base Level naik (+Stat per Base Level) (&lt;Actor Stat Growth: +X STR, +Y INT, ...&gt;)">${pai('chart-line')} Innate Actor Growth per Base Level</label>
                     <input type="text" class="form-control" placeholder="Contoh: +1 STR, +1 VIT, +0.5 AGI" 
                            value="${escapeHtml(getTagVal(note, 'Actor Stat Growth', ''))}" 
                            oninput="setTagVal(actor, 'Actor Stat Growth', this.value); updateActorSimulationLive();"
@@ -795,14 +793,11 @@ function renderActorEditor(container, actor) {
                         const ivInfo = getIVGradeInfo(rawClsIV);
                         return `
                             <div class="stat-card-input">
-                                <label style="color:${attr.color};">
-                                    <span>${attr.icon} ${attr.code}</span>
-                                    <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span>
-                                </label>
+                                <label style="color:${attr.color};"><span>${attr.icon} ${attr.code}</span> <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span></label>
                                 <input type="number" min="0" max="999" class="form-control" 
                                        id="actor-base-input-${attr.code}"
                                        value="${actorCoreStats[attr.code]}" 
-                                       placeholder="10"
+                                       placeholder=""
                                        oninput="onActorBaseStatInput('${attr.code}', this.value)"
                                        onchange="onActorBaseStatInput('${attr.code}', this.value)">
                                 <div style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;" title="Scaling bakat dari profesi ${escapeHtml(actorClass.name)} (IV Rating: ${rawClsIV}/10)">
@@ -871,8 +866,8 @@ function renderActorEditor(container, actor) {
                         </select>
                     </div>
 
-                    <div class="equip-slot-item" style="border-color:var(--accent); background:rgba(59,130,246,0.1);">
-                        <div class="slot-title" style="color:#60a5fa;">${pai('diamond-gem')} 6. Accessory 2 (&lt;Second Accessory&gt;)</div>
+                    <div class="equip-slot-item">
+                        <div class="slot-title" title="Slot aksesoris kedua (<Second Accessory>)">${pai('diamond-gem')} 6. Accessory 2</div>
                         <select class="form-control" onchange="setTagVal(actor, 'Second Accessory', this.value); updateActorSimulationLive();">
                             <option value="">(Kosong)</option>
                             ${accessories.map(a => {
@@ -930,7 +925,7 @@ function renderActorStatPreview(container, actor) {
                 <!-- Base Level Slider -->
                 <div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;">${pai('user')} Base Level (1 - 99):</label>
+                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;" title="Base Level (1 - 99)">${pai('user')} Base Level:</label>
                     </div>
                     <div style="display:flex; gap:8px; align-items:center;">
                         <input type="range" min="1" max="99" value="${simBaseLevel}" class="form-control" style="flex:1; cursor:pointer;" 
@@ -943,7 +938,7 @@ function renderActorStatPreview(container, actor) {
                 <!-- Class Level Slider -->
                 <div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;">${pai('shield')} Class Level (1 - ${classMaxLvl}):</label>
+                        <label style="font-weight:700; font-size:0.78rem; margin:0; color:#94a3b8;" title="Class Level (1 - ${classMaxLvl})">${pai('shield')} Class Level:</label>
                         <span class="badge-sub" style="font-size:0.72rem; color:#a78bfa; padding:1px 6px;">${escapeHtml(actorClass.name)}</span>
                     </div>
                     <div style="display:flex; gap:8px; align-items:center;">

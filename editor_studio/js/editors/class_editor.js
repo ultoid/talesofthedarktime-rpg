@@ -509,7 +509,7 @@ function renderClassEditor(container, cls) {
                         </div>
 
                         <div class="form-group">
-                            <label title="ID kelas prasyarat yang harus dikuasai sebelum dapat berganti ke kelas ini">Prerequisite Class (&lt;Class Change From: ID&gt;)</label>
+                            <label title="ID kelas prasyarat yang harus dikuasai sebelum dapat berganti ke kelas ini (&lt;Class Change From: ID&gt;)">Prerequisite Class</label>
                             <select class="form-control" onchange="setTagVal(cls, 'Class Change From', this.value !== '0' ? this.value : '');">
                                 ${classFromOptions.join('')}
                             </select>
@@ -517,35 +517,35 @@ function renderClassEditor(container, cls) {
 
                         <div class="grid-3">
                             <div class="form-group">
-                                <label title="Level minimal yang harus dicapai pada kelas sebelumnya sebelum promosi">Required Level for Promotion</label>
+                                <label title="Level minimal yang harus dicapai pada kelas sebelumnya sebelum promosi">Required Level</label>
                                 <input type="number" class="form-control" placeholder="Lv" value="${currentChangeLvl}" onchange="setTagVal(cls, 'Class Change Level', this.value);">
                             </div>
                             <div class="form-group">
-                                <label title="Nama atau ID item promosi khusus yang dibutuhkan untuk membuka kelas ini">Required Promotion Item</label>
+                                <label title="Nama atau ID item promosi khusus yang dibutuhkan untuk membuka kelas ini">Promotion Item ID</label>
                                 <input type="number" class="form-control" placeholder="Item ID" value="${currentChangeItem}" onchange="setTagVal(cls, 'Class Change Item', this.value);">
                             </div>
                             <div class="form-group">
-                                <label title="ID sakelar cerita yang harus aktif agar kelas ini terbuka">Required Story Switch ID</label>
+                                <label title="ID sakelar cerita yang harus aktif agar kelas ini terbuka">Story Switch ID</label>
                                 <input type="number" class="form-control" placeholder="Switch" value="${currentChangeSwitch}" onchange="setTagVal(cls, 'Class Change Switch', this.value);">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label title="Batas maksimal level khusus untuk kelas ini jika berbeda dari normal">Custom Max Level (&lt;Class Max Level: X&gt;)</label>
+                            <label title="Batas maksimal level khusus untuk kelas ini jika berbeda dari normal (&lt;Class Max Level: X&gt;)">Custom Max Level</label>
                             <input type="number" class="form-control" placeholder="Default sesuai Tier" value="${currentMaxLvl}" onchange="setTagVal(cls, 'Class Max Level', this.value);">
                         </div>
                     </div>
 
                     <div>
                         <div class="form-group">
-                            <label title="Indeks ikon visual kelas untuk menu tampilan antarmuka">Class Icon Index (&lt;Class Icon: ID&gt;)</label>
+                            <label title="Indeks ikon visual kelas untuk menu tampilan antarmuka (&lt;Class Icon: ID&gt;)">Class Icon Index</label>
                             <input type="number" class="form-control" value="${currentIcon}" onchange="setTagVal(cls, 'Class Icon', this.value);">
                         </div>
 
                         
 
                         <div class="form-group">
-                            <label title="Deskripsi kisah latar belakang dan gaya bertarung kelas ini">Class Lore &amp; Description (&lt;Class Description&gt;)</label>
+                            <label title="Deskripsi kisah latar belakang dan gaya bertarung kelas ini (&lt;Class Description&gt;)">Class Lore &amp; Description</label>
                             <textarea class="form-control" rows="4" onchange="setBlockTag(cls, 'Class Description', this.value);">${escapeHtml(currentDesc)}</textarea>
                         </div>
                     </div>
@@ -567,18 +567,14 @@ function renderClassEditor(container, cls) {
                     Kemampuan pasif bertarung bawaan profesi. Saat karakter promosi ke Tier berikutnya, pasif kelas sebelumnya akan berevolusi menjadi pasif kelas baru yang lebih kuat.
                 </p>
                 <div class="form-group" style="margin-bottom:12px;">
-                    <label title="Nama kemampuan pasif kelas dalam bahasa Inggris (contoh: Battle Spirit, Heavy Impact, Elemental Overload)">
-                        Passive Ability Name (&lt;Class Ability: Name&gt;)
-                    </label>
+                    <label title="Nama kemampuan pasif kelas dalam bahasa Inggris (contoh: Battle Spirit, Heavy Impact, Elemental Overload) (&lt;Class Ability: Name&gt;)">Passive Ability Name</label>
                     <input type="text" class="form-control" style="font-weight:700; color:#fbbf24;" placeholder="Contoh: Battle Spirit" 
                            value="${escapeHtml(currentAbility)}" 
                            oninput="setTagVal(cls, 'Class Ability', this.value); renderSidebar(); updateClassSimulationLive();" 
                            onchange="setTagVal(cls, 'Class Ability', this.value); renderSidebar(); updateClassSimulationLive();">
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
-                    <label title="Deskripsi mekanik efek tempur pasif dalam bahasa Indonesia">
-                        Passive Ability Description (&lt;Class Ability Description&gt;)
-                    </label>
+                    <label title="Deskripsi mekanik efek tempur pasif dalam bahasa Indonesia (&lt;Class Ability Description&gt;)">Passive Ability Description</label>
                     <textarea class="form-control" rows="3" placeholder="Contoh: Meningkatkan P.ATK sebesar +8%. Saat HP di bawah 50%, memulihkan +2 SP ekstra setiap giliran." 
                               oninput="setTagVal(cls, 'Class Ability Desc', ''); setBlockTag(cls, 'Class Ability Description', this.value); updateClassSimulationLive();" 
                               onchange="setTagVal(cls, 'Class Ability Desc', ''); setBlockTag(cls, 'Class Ability Description', this.value); updateClassSimulationLive();">${escapeHtml(currentAbilityDesc)}</textarea>
@@ -634,9 +630,7 @@ function renderClassEditor(container, cls) {
 
                 <div class="form-group" style="margin-top:16px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <label title="Override manual jika ingin pertumbuhan stat berbeda dari formula IV bawaan">
-                            ${pai('sliders')} Override Manual Stat Growth per Level (&lt;Class Stat Growth&gt;)
-                        </label>
+                        <label title="Override manual jika ingin pertumbuhan stat berbeda dari formula IV bawaan (&lt;Class Stat Growth&gt;)">${pai('sliders')} Override Manual Stat Growth per Level</label>
                         <span style="font-size:0.75rem; color:var(--text-muted);">(Opsional)</span>
                     </div>
                     <input type="text" class="form-control" placeholder="Biarkan kosong untuk auto-calculate dari IV (+IV/5 per level), atau isi misal: STR +1.5, VIT +1.0" 

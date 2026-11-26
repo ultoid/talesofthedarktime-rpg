@@ -199,7 +199,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                                 <span>${attr.icon} ${attr.code}</span>
                                 <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="+0" value="${coreBonuses[attr.code]}" onchange="setTagVal(armor, '${attr.code}', this.value);">
+                            <input type="text" class="form-control" placeholder="" value="${coreBonuses[attr.code]}" onchange="setTagVal(armor, '${attr.code}', this.value);">
                         </div>
                     `).join('')}
                 </div>
@@ -257,7 +257,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                         </label>
                         <div style="display:flex; gap:6px;">
                             <input type="text" class="form-control" placeholder="Elemen (Fire/Holy...)" value="${escapeHtml(eleName)}" id="armEleName" onchange="onArmorElementAmplifyChange()">
-                            <input type="text" class="form-control" placeholder="+15%" value="${escapeHtml(eleVal)}" id="armEleVal" style="width:90px;" onchange="onArmorElementAmplifyChange()">
+                            <input type="text" class="form-control" placeholder="" value="${escapeHtml(eleVal)}" id="armEleVal" style="width:90px;" onchange="onArmorElementAmplifyChange()">
                         </div>
                     </div>
                 </div>
@@ -271,25 +271,25 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                 <div class="grid-2">
                     <div class="form-group">
                         <label>Jumlah Soket Permata (&lt;Sockets: X&gt;)</label>
-                        <input type="number" min="0" max="8" class="form-control" placeholder="0" value="${sockets}" onchange="setTagVal(armor, 'Sockets', this.value);">
+                        <input type="number" min="0" max="8" class="form-control" placeholder="" value="${sockets}" onchange="setTagVal(armor, 'Sockets', this.value);">
                     </div>
                     <div class="form-group">
                         <label>Maksimal Tempa (+X)</label>
-                        <input type="number" min="0" max="20" class="form-control" placeholder="10" value="${upMax}" onchange="setTagVal(armor, 'Upgrade Max', this.value);">
+                        <input type="number" min="0" max="20" class="form-control" placeholder="" value="${upMax}" onchange="setTagVal(armor, 'Upgrade Max', this.value);">
                     </div>
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
                         <label>% Sukses Tempa</label>
-                        <input type="text" class="form-control" placeholder="90%" value="${upSuccess}" onchange="setTagVal(armor, 'Upgrade Success', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${upSuccess}" onchange="setTagVal(armor, 'Upgrade Success', this.value);">
                     </div>
                     <div class="form-group">
                         <label>Bonus DEF/Tempa</label>
-                        <input type="text" class="form-control" placeholder="+2" value="${upDef}" onchange="setTagVal(armor, 'Upgrade DEF', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${upDef}" onchange="setTagVal(armor, 'Upgrade DEF', this.value);">
                     </div>
                     <div class="form-group">
                         <label>Bonus MDF/Tempa</label>
-                        <input type="text" class="form-control" placeholder="+2" value="${upMdf}" onchange="setTagVal(armor, 'Upgrade MDF', this.value);">
+                        <input type="text" class="form-control" placeholder="" value="${upMdf}" onchange="setTagVal(armor, 'Upgrade MDF', this.value);">
                     </div>
                 </div>
             </div>
