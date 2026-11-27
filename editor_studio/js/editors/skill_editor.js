@@ -376,7 +376,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                         </div>
                         <div class="form-group">
                             <label title="Jumlah JP yang didapatkan saat skill ini digunakan dalam pertempuran (&lt;JP Gain&gt;)">JP Gain on Use</label>
-                            <input type="text" class="form-control" placeholder="" value="${jpGain}" onchange="setTagVal(skill, 'JP Gain', this.value);">
+                            ${statValueInput(jpGain, false, `setTagVal(skill, 'JP Gain', this.value);`)}
                         </div>
                     </div>
                 </div>
@@ -388,15 +388,15 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                     <div class="grid-3">
                         <div class="form-group">
                             <label>Bonus Crit Dmg</label>
-                            <input type="text" class="form-control" placeholder="" value="${critDmg}" onchange="setTagVal(skill, 'Critical Damage', this.value);">
+                            ${statValueInput(critDmg, true, `setTagVal(skill, 'Critical Damage', this.value);`)}
                         </div>
                         <div class="form-group">
                             <label title="Modifikasi pengabaian persen pertahanan fisik target (<Armor Penetration: +X%>)">Armor Penetration Modifier</label>
-                            <input type="text" class="form-control" placeholder="" value="${armPen}" onchange="setTagVal(skill, 'Armor Penetration', this.value);">
+                            ${statValueInput(armPen, true, `setTagVal(skill, 'Armor Penetration', this.value);`)}
                         </div>
                         <div class="form-group">
                             <label title="Modifikasi pengabaian persen pertahanan sihir target (<Magic Penetration: +X%>)">Magic Penetration Modifier</label>
-                            <input type="text" class="form-control" placeholder="" value="${magPen}" onchange="setTagVal(skill, 'Magic Penetration', this.value);">
+                            ${statValueInput(magPen, true, `setTagVal(skill, 'Magic Penetration', this.value);`)}
                         </div>
                     </div>
                     <div class="grid-2">

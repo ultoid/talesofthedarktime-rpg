@@ -1703,7 +1703,7 @@ main {
 
 .sidebar-action-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 5px;
 }
 
@@ -3966,6 +3966,107 @@ function hasTag(note, tag) {
 }
 
 
+
+function normalizeStatInput(input, percent) {
+    const start = input.selectionStart;
+    const oldValue = input.value;
+    let value = oldValue.replace(/[^0-9.+-]/g, '');
+    const sign = value.startsWith('-') ? '-' : value.startsWith('+') ? '+' : '';
+    value = value.replace(/[+-]/g, '');
+    const parts = value.split('.');
+    value = sign + parts.shift() + (parts.length ? '.' + parts.join('') : '');
+    const addSign = !sign && /\d/.test(value);
+    if (addSign) value = '+' + value;
+    input.value = value + (percent && /\d/.test(value) ? '%' : '');
+    const cursor = Math.min(start + (addSign ? 1 : 0), value.length);
+    input.setSelectionRange(cursor, cursor);
+}
+
+function stepStatValue(button, step) {
+    const input = button.parentElement.parentElement.querySelector('input');
+    const current = parseFloat(input.value) || 0;
+    const decimals = (String(current).split('.')[1] || '').length;
+    const value = Number((current + step).toFixed(decimals));
+    input.value = (value >= 0 ? '+' : '') + value;
+    normalizeStatInput(input, input.dataset.percent === 'true');
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function statValueInput(value, percent, change, extra = '') {
+    return `<div style="display:flex; gap:4px; min-width:0;">
+        <input type="text" inputmode="decimal" data-percent="${percent}" class="form-control" style="min-width:0;" value="${escapeHtml(String(value || ''))}" oninput="normalizeStatInput(this, ${percent})" onchange="normalizeStatInput(this, ${percent}); ${change}" ${extra}>
+        <span style="display:flex; flex-direction:column;">
+            <button type="button" title="Naikkan nilai" aria-label="Naikkan nilai" onclick="stepStatValue(this, 1)" style="flex:1; line-height:1; cursor:pointer;">&#9650;</button>
+            <button type="button" title="Turunkan nilai" aria-label="Turunkan nilai" onclick="stepStatValue(this, -1)" style="flex:1; line-height:1; cursor:pointer;">&#9660;</button>
+        </span>
+    </div>`;
+}
+
+function stepRefiningValue(button, step) {
+    const input = button.parentElement.parentElement.querySelector('input');
+    const current = parseFloat(input.value) || 0;
+    let value = current + step;
+    if (input.hasAttribute('min')) value = Math.max(Number(input.min), value);
+    if (input.hasAttribute('max')) value = Math.min(Number(input.max), value);
+    const decimals = (String(current).split('.')[1] || '').length;
+    value = Number(value.toFixed(decimals));
+    const suffix = input.value.trim().endsWith('%') ? '%' : '';
+    input.value = value + suffix;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function refiningValueInput(input) {
+    return `<div class="numeric-step-control" style="display:flex; gap:4px; min-width:0;">${input}
+        <span style="display:flex; flex-direction:column;">
+            <button type="button" title="Naikkan nilai" aria-label="Naikkan nilai" onclick="stepRefiningValue(this, 1)" style="flex:1; line-height:1; cursor:pointer;">&#9650;</button>
+            <button type="button" title="Turunkan nilai" aria-label="Turunkan nilai" onclick="stepRefiningValue(this, -1)" style="flex:1; line-height:1; cursor:pointer;">&#9660;</button>
+        </span>
+    </div>`;
+}
+
+function addNumberSteppers(root) {
+    const inputs = [];
+    if (root.nodeType === 1 && root.matches('input[type="number"]')) inputs.push(root);
+    if (root.querySelectorAll) inputs.push(...root.querySelectorAll('input[type="number"]'));
+    inputs.forEach(input => {
+        if (!input.isConnected || input.closest('.numeric-step-control')) return;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'numeric-step-control';
+        wrapper.style.cssText = 'display:inline-flex; gap:4px; min-width:0; max-width:100%; vertical-align:middle;';
+        if (!input.style.width) wrapper.style.width = '100%';
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+        input.style.minWidth = '0';
+        const buttons = document.createElement('span');
+        buttons.style.cssText = 'display:flex; flex-direction:column;';
+        [1, -1].forEach(direction => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.title = button.ariaLabel = direction > 0 ? 'Naikkan nilai' : 'Turunkan nilai';
+            button.textContent = direction > 0 ? '\u25b2' : '\u25bc';
+            button.style.cssText = 'flex:1; line-height:1; cursor:pointer;';
+            button.addEventListener('click', () => {
+                if (input.disabled || input.readOnly) return;
+                const step = input.step && input.step !== 'any' ? Number(input.step) : 1;
+                const current = Number(input.value || 0);
+                let value = current + direction * step;
+                if (input.hasAttribute('min')) value = Math.max(Number(input.min), value);
+                if (input.hasAttribute('max')) value = Math.min(Number(input.max), value);
+                input.value = String(Number(value.toFixed(10)));
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                if (input.isConnected) input.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+            buttons.appendChild(button);
+        });
+        wrapper.appendChild(buttons);
+    });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    addNumberSteppers(document);
+    new MutationObserver(records => records.forEach(record => record.addedNodes.forEach(addNumberSteppers)))
+        .observe(document.body, { childList: true, subtree: true });
+});
 
 function setTagVal(itemOrTag, tagOrVal, maybeVal) {
     let item, tag, val;
@@ -6635,14 +6736,30 @@ function renderCharPreviewHtml(charName, charIndex) {
 
 
 
+function drawSvPreview(image) {
+    const canvas = image.previousElementSibling;
+    const ctx = canvas.getContext('2d');
+    const width = image.naturalWidth;
+    const height = image.naturalHeight;
+    const isSheet = width % 9 === 0 && height % 6 === 0 && width / 9 === height / 6;
+    const frameWidth = isSheet ? width / 9 : width;
+    const frameHeight = isSheet ? height / 6 : height;
+    const scale = Math.min(canvas.width / frameWidth, canvas.height / frameHeight);
+    const drawWidth = frameWidth * scale;
+    const drawHeight = frameHeight * scale;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(image, 0, 0, frameWidth, frameHeight,
+        (canvas.width - drawWidth) / 2, (canvas.height - drawHeight) / 2, drawWidth, drawHeight);
+}
+
 function renderSvPreviewHtml(svName) {
     if (!svName) {
         return '<div class="empty-preview" title="Belum ada battler tempur yang dipilih">No Battler Graphic<br><span style="font-size:0.7rem; color:var(--text-muted);">Choose below</span></div>';
     }
     const url = `img/sv_actors/${encodeURIComponent(svName)}.png`;
-    return `<div class="pixel-sprite sv-frame" style="background-image: url('${url}'); background-size: 900% 600%; background-position: 0% 0%;" title="[SV] Idle Battler Pose"></div>`;
+    return `<canvas width="180" height="110" style="max-width:100%; max-height:100%; object-fit:contain; image-rendering:pixelated;" title="Preview SV Battler"></canvas><img src="${url}" alt="" style="display:none;" onload="drawSvPreview(this)">`;
 }
-
 
 
 function onActorFaceChange(val) {
@@ -6724,6 +6841,8 @@ function updateActorGraphicsLive() {
     // Update SV Box
     const svBox = document.getElementById('svPreviewBox');
     if (svBox) svBox.innerHTML = renderSvPreviewHtml(actor.battlerName);
+    const svSelect = document.getElementById('actorSvSelect');
+    if (svSelect) svSelect.value = actor.battlerName || '';
 }
 
 
@@ -6737,7 +6856,21 @@ function openGraphicSheetModal(type) {
     const bodyEl = document.getElementById('graphicModalBody');
     if (!modal || !titleEl || !bodyEl) return;
 
-    if (type === 'face') {
+    if (type === 'sv') {
+        titleEl.innerText = 'Pilih SV Battler';
+        const options = (State.svActors || []).map(file => {
+            const name = file.replace(/\.png$/i, '');
+            const selected = actor.battlerName === name;
+            return `<button type="button" data-battler="${escapeHtml(name)}" onclick="onActorSvChange(this.dataset.battler); closeGraphicModal();" aria-pressed="${selected}" style="cursor:pointer; padding:8px; min-width:0; border:1px solid ${selected ? 'var(--accent)' : 'var(--border-color)'}; border-radius:6px; background:var(--bg-secondary); color:var(--text-primary);">
+                <div class="sprite-preview-box" style="height:120px; margin-bottom:6px; pointer-events:none;">${renderSvPreviewHtml(name)}</div>
+                <span style="display:block; overflow-wrap:anywhere;">${escapeHtml(name)}</span>
+            </button>`;
+        }).join('');
+        bodyEl.innerHTML = `<div style="color:var(--text-muted); margin-bottom:12px;">Pilih gambar battler untuk karakter ini.</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px; max-height:60vh; overflow-y:auto;">${options || '<span>Tidak ada gambar SV Battler.</span>'}</div>
+            <button type="button" class="btn btn-secondary" style="margin-top:12px;" onclick="onActorSvChange(''); closeGraphicModal();">Hapus gambar</button>`;
+        modal.style.display = 'flex';
+    } else if (type === 'face') {
         if (!actor.faceName) {
             showToast('Pilih file Face Graphic terlebih dahulu di dropdown!', 'info');
             return;
@@ -7119,23 +7252,17 @@ BattlePreviewModal.updateHudUi = function() {
 
 BattlePreviewModal.onActorChange = function(newActorId) {
     this.actorId = parseInt(newActorId, 10) || 1;
-    const iframe = document.getElementById('battlePreviewIframe');
-    if (iframe && iframe.contentWindow && iframe.contentWindow.NUSV_BattlePreview) {
-        iframe.contentWindow.NUSV_BattlePreview.switchActor(this.actorId);
-    } else {
-        this.loadIframe();
-    }
+    this.isReady = false;
+    this.updateStatus('Memuat ulang battle preview...', 'loading');
+    this.loadIframe();
 };
 
 BattlePreviewModal.onEnemyChange = function(newEnemyId) {
     this.enemyId = parseInt(newEnemyId, 10) || 2;
     this.troopId = this.enemyId;
-    const iframe = document.getElementById('battlePreviewIframe');
-    if (iframe && iframe.contentWindow && iframe.contentWindow.NUSV_BattlePreview) {
-        iframe.contentWindow.NUSV_BattlePreview.switchEnemy(this.enemyId);
-    } else {
-        this.loadIframe();
-    }
+    this.isReady = false;
+    this.updateStatus('Memuat ulang battle preview...', 'loading');
+    this.loadIframe();
 };
 
 BattlePreviewModal.onTroopChange = function(newTroopId) {
@@ -7278,7 +7405,7 @@ function calculateActorSimulation(actor, baseLevel = 1, classLevel = 1) {
         eqMcr += parsePercent(getTagVal(inote, 'MCR Plus'));
         eqTgr += parsePercent(getTagVal(inote, 'TGR Plus'));
 
-        const eMatch = inote.match(/<Element Amplify ([a-zA-Z]+):[ ]*(.+?)>/i);
+        const eMatch = inote.match(/<Element Amplify ([^:>]+):[ ]*(.+?)>/i);
         if (eMatch) {
             amplifiedElements.push(`${eMatch[1]} ${eMatch[2]}`);
         }
@@ -7933,7 +8060,7 @@ function renderActorEditor(container, actor) {
                                 <span class="badge-sub">Idle Pose</span>
                             </div>
 
-                            <div class="sprite-preview-box" id="svPreviewBox" title="Pratinjau pose idle battler tempur">
+                            <div class="sprite-preview-box" id="svPreviewBox" title="Klik untuk memilih gambar SV Battler" onclick="openGraphicSheetModal('sv')">
                                 ${renderSvPreviewHtml(actor.battlerName)}
                             </div>
 
@@ -10133,7 +10260,7 @@ function renderWeaponEditor(container, weapon) {
         derivedValues[d.key] = getTagVal(note, d.key, '');
     });
 
-    const eleMatch = note.match(/<Element Amplify ([a-zA-Z]+):[ ]*(.+?)>/i);
+    const eleMatch = note.match(/<Element Amplify ([^:>]+):[ ]*(.+?)>/i);
     const eleName = eleMatch ? eleMatch[1] : '';
     const eleVal = eleMatch ? eleMatch[2] : '';
 
@@ -10391,7 +10518,7 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                     ${CORE_ATTRIBUTES.map(attr => `
                         <div class="stat-card-input">
                             <label style="color:${attr.color};"><span>${attr.icon} ${attr.code}</span> <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span></label>
-                            <input type="text" class="form-control" placeholder="" value="${coreBonuses[attr.code]}" onchange="setTagVal(weapon, '${attr.code}', this.value);">
+                            ${statValueInput(coreBonuses[attr.code], false, `setTagVal(weapon, '${attr.code}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -10404,7 +10531,7 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(weapon, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(weapon, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -10416,7 +10543,7 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(weapon, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(weapon, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -10428,7 +10555,7 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(weapon, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(weapon, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -10440,14 +10567,18 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(weapon, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(weapon, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                     <div class="stat-card-input">
                         <label style="color:#f59e0b;"><span>${pai('fire')} Amplifikasi Elemen</span></label>
                         <div style="display:flex; gap:6px;">
-                            <input type="text" class="form-control" placeholder="Elemen (Fire/Holy...)" value="${escapeHtml(eleName)}" id="wepEleName" onchange="onWeaponElementAmplifyChange()">
-                            <input type="text" class="form-control" placeholder="" value="${escapeHtml(eleVal)}" id="wepEleVal" style="width:90px;" onchange="onWeaponElementAmplifyChange()">
+                            <select class="form-control" id="wepEleName" onchange="onWeaponElementAmplifyChange()" style="min-width:0;">
+                                <option value="">Pilih elemen</option>
+                                ${eleName && !(State.system.elements || []).some(el => el && el.toLowerCase() === eleName.toLowerCase()) ? `<option value="${escapeHtml(eleName)}" selected>${escapeHtml(eleName)}</option>` : ''}
+                                ${(State.system.elements || []).map((el, i) => i && el ? `<option value="${escapeHtml(el)}" ${el.toLowerCase() === eleName.toLowerCase() ? 'selected' : ''}>${escapeHtml(el)}</option>` : '').join('')}
+                            </select>
+                            <div style="width:120px; flex-shrink:0;">${statValueInput(eleVal, true, 'onWeaponElementAmplifyChange()', 'id="wepEleVal"')}</div>
                         </div>
                     </div>
                 </div>
@@ -10461,25 +10592,25 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
                 <div class="grid-2">
                     <div class="form-group">
                         <label title="&lt;Sockets: X&gt;">Jumlah Soket Permata</label>
-                        <input type="number" min="0" max="8" class="form-control" placeholder="" value="${sockets}" onchange="setTagVal(weapon, 'Sockets', this.value);">
+                        ${refiningValueInput(`<input type="number" min="0" max="8" class="form-control" placeholder="" value="${sockets}" onchange="setTagVal(weapon, 'Sockets', this.value);">`)}
                     </div>
                     <div class="form-group">
                         <label title="+X">Maksimal Tempa</label>
-                        <input type="number" min="0" max="20" class="form-control" placeholder="" value="${upMax}" onchange="setTagVal(weapon, 'Upgrade Max', this.value);">
+                        ${refiningValueInput(`<input type="number" min="0" max="20" class="form-control" placeholder="" value="${upMax}" onchange="setTagVal(weapon, 'Upgrade Max', this.value);">`)}
                     </div>
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
                         <label>% Sukses Tempa</label>
-                        <input type="text" class="form-control" placeholder="" value="${upRate}" onchange="setTagVal(weapon, 'Upgrade Success', this.value);">
+                        ${refiningValueInput(`<input type="text" class="form-control" placeholder="" value="${upRate}" onchange="setTagVal(weapon, 'Upgrade Success', this.value);">`)}
                     </div>
                     <div class="form-group">
                         <label title="Biaya emas yang dibutuhkan">Gold Cost</label>
-                        <input type="number" class="form-control" placeholder="Gold" value="${upGold}" onchange="setTagVal(weapon, 'Upgrade Gold', this.value);">
+                        ${refiningValueInput(`<input type="number" class="form-control" placeholder="Gold" value="${upGold}" onchange="setTagVal(weapon, 'Upgrade Gold', this.value);">`)}
                     </div>
                     <div class="form-group">
                         <label>Bonus ATK/Tempa</label>
-                        <input type="text" class="form-control" placeholder="" value="${upAtk}" onchange="setTagVal(weapon, 'Upgrade ATK', this.value);">
+                        ${refiningValueInput(`<input type="text" class="form-control" placeholder="" value="${upAtk}" onchange="setTagVal(weapon, 'Upgrade ATK', this.value);">`)}
                     </div>
                 </div>
             </div>
@@ -10502,7 +10633,7 @@ ${renderIconPickerField('Icon Index', weapon.iconIndex, "function(v){ weapon.ico
 function onWeaponElementAmplifyChange() {
     const weapon = State.weapons[State.selectedIndex];
     let note = weapon.note || '';
-    note = note.replace(/<Element Amplify [a-zA-Z]+:[ ]*.+?>\n?/gi, '').trim();
+    note = note.replace(/<Element Amplify [^:>]+:[ ]*.+?>\n?/gi, '').trim();
     const name = document.getElementById('wepEleName').value.trim();
     const val = document.getElementById('wepEleVal').value.trim();
     if (name && val) {
@@ -10855,7 +10986,7 @@ function renderArmorEditor(container, armor) {
         derivedValues[d.key] = getTagVal(note, d.key, '');
     });
 
-    const eleMatch = note.match(/<Element Amplify ([a-zA-Z]+):[ ]*(.+?)>/i);
+    const eleMatch = note.match(/<Element Amplify ([^:>]+):[ ]*(.+?)>/i);
     const eleName = eleMatch ? eleMatch[1] : '';
     const eleVal = eleMatch ? eleMatch[2] : '';
 
@@ -11023,7 +11154,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                                 <span>${attr.icon} ${attr.code}</span>
                                 <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="" value="${coreBonuses[attr.code]}" onchange="setTagVal(armor, '${attr.code}', this.value);">
+                            ${statValueInput(coreBonuses[attr.code], false, `setTagVal(armor, '${attr.code}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -11036,7 +11167,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(armor, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(armor, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -11048,7 +11179,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(armor, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(armor, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -11060,7 +11191,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(armor, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(armor, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -11072,7 +11203,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(armor, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(armor, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                     <div class="stat-card-input">
@@ -11080,8 +11211,12 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                             <span>${pai('fire')} Amplifikasi Elemen</span>
                         </label>
                         <div style="display:flex; gap:6px;">
-                            <input type="text" class="form-control" placeholder="Elemen (Fire/Holy...)" value="${escapeHtml(eleName)}" id="armEleName" onchange="onArmorElementAmplifyChange()">
-                            <input type="text" class="form-control" placeholder="" value="${escapeHtml(eleVal)}" id="armEleVal" style="width:90px;" onchange="onArmorElementAmplifyChange()">
+                            <select class="form-control" id="armEleName" onchange="onArmorElementAmplifyChange()" style="min-width:0;">
+                                <option value="">Pilih elemen</option>
+                                ${eleName && !(State.system.elements || []).some(el => el && el.toLowerCase() === eleName.toLowerCase()) ? `<option value="${escapeHtml(eleName)}" selected>${escapeHtml(eleName)}</option>` : ''}
+                                ${(State.system.elements || []).map((el, i) => i && el ? `<option value="${escapeHtml(el)}" ${el.toLowerCase() === eleName.toLowerCase() ? 'selected' : ''}>${escapeHtml(el)}</option>` : '').join('')}
+                            </select>
+                            <div style="width:120px; flex-shrink:0;">${statValueInput(eleVal, true, 'onArmorElementAmplifyChange()', 'id="armEleVal"')}</div>
                         </div>
                     </div>
                 </div>
@@ -11095,25 +11230,25 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                 <div class="grid-2">
                     <div class="form-group">
                         <label>Jumlah Soket Permata (&lt;Sockets: X&gt;)</label>
-                        <input type="number" min="0" max="8" class="form-control" placeholder="" value="${sockets}" onchange="setTagVal(armor, 'Sockets', this.value);">
+                        ${refiningValueInput(`<input type="number" min="0" max="8" class="form-control" placeholder="" value="${sockets}" onchange="setTagVal(armor, 'Sockets', this.value);">`)}
                     </div>
                     <div class="form-group">
                         <label>Maksimal Tempa (+X)</label>
-                        <input type="number" min="0" max="20" class="form-control" placeholder="" value="${upMax}" onchange="setTagVal(armor, 'Upgrade Max', this.value);">
+                        ${refiningValueInput(`<input type="number" min="0" max="20" class="form-control" placeholder="" value="${upMax}" onchange="setTagVal(armor, 'Upgrade Max', this.value);">`)}
                     </div>
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
                         <label>% Sukses Tempa</label>
-                        <input type="text" class="form-control" placeholder="" value="${upSuccess}" onchange="setTagVal(armor, 'Upgrade Success', this.value);">
+                        ${refiningValueInput(`<input type="text" class="form-control" placeholder="" value="${upSuccess}" onchange="setTagVal(armor, 'Upgrade Success', this.value);">`)}
                     </div>
                     <div class="form-group">
                         <label>Bonus DEF/Tempa</label>
-                        <input type="text" class="form-control" placeholder="" value="${upDef}" onchange="setTagVal(armor, 'Upgrade DEF', this.value);">
+                        ${refiningValueInput(`<input type="text" class="form-control" placeholder="" value="${upDef}" onchange="setTagVal(armor, 'Upgrade DEF', this.value);">`)}
                     </div>
                     <div class="form-group">
                         <label>Bonus MDF/Tempa</label>
-                        <input type="text" class="form-control" placeholder="" value="${upMdf}" onchange="setTagVal(armor, 'Upgrade MDF', this.value);">
+                        ${refiningValueInput(`<input type="text" class="form-control" placeholder="" value="${upMdf}" onchange="setTagVal(armor, 'Upgrade MDF', this.value);">`)}
                     </div>
                 </div>
             </div>
@@ -11136,7 +11271,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
 function onArmorElementAmplifyChange() {
     const armor = State.armors[State.selectedIndex];
     let note = armor.note || '';
-    note = note.replace(/<Element Amplify [a-zA-Z]+:[ ]*.+?>\n?/gi, '').trim();
+    note = note.replace(/<Element Amplify [^:>]+:[ ]*.+?>\n?/gi, '').trim();
     const name = document.getElementById('armEleName').value.trim();
     const val = document.getElementById('armEleVal').value.trim();
     if (name && val) {
@@ -11309,6 +11444,7 @@ const AnimEditor = {
     getImage: function(src) {
         if (!this.imageCache[src]) {
             const img = new Image();
+            img.onload = () => { if (this.ctx) this.render(); };
             img.src = src;
             this.imageCache[src] = img;
         }
@@ -11642,7 +11778,7 @@ AnimEditor.getPreviewOrigin = function() {
     const battler = this.ensurePreviewBattler();
     const targetImage = battler ? this.getImage(battler.imagePath) : null;
     const targetHeight = targetImage && targetImage.complete && targetImage.naturalHeight > 0
-        ? Math.min(targetImage.naturalHeight / battler.rows, 180)
+        ? targetImage.naturalHeight / this.getPreviewLayout(battler, targetImage).rows
         : (this.targetSilhouette === 'enemy' ? 180 : 64);
 
     const targetBaseY = centerY + 20;
@@ -11668,21 +11804,43 @@ AnimEditor.getPreviewBattlers = function() {
     }
     if (this.targetSilhouette === 'enemy') {
         return (State.enemies || []).filter(enemy => enemy && enemy.id > 0).map(enemy => {
-            const imageName = getTagVal(enemy.note, 'Sideview Battler', '').split(/[|,]/)[0].trim();
+            const imageName = getTagVal(enemy.note, 'Sideview Battler', '').split(/[|,]/)[0].trim() || enemy.battlerName;
             if (!imageName) return null;
-            const folder = getTagVal(enemy.note, 'Sideview Folder', 'sv_actors') || 'sv_actors';
+            const folder = getTagVal(enemy.note, 'Sideview Folder', 'sv_enemies') || 'sv_enemies';
             const frameCount = parseInt(getTagVal(enemy.note, 'Sideview Frames', '0'), 10) || 0;
-            const rows = frameCount > 0 ? (parseInt(getTagVal(enemy.note, 'Sideview Rows', '1'), 10) || 1) : 6;
             return {
                 id: enemy.id,
                 name: enemy.name || `Enemy ${enemy.id}`,
                 imagePath: `img/${folder}/${imageName}.png`,
-                columns: frameCount > 0 ? frameCount : 9,
-                rows: rows
+                columns: frameCount,
+                rows: parseInt(getTagVal(enemy.note, 'Sideview Rows', '1'), 10) || 1,
+                autoLayout: !frameCount,
+                mirrored: !hasTag(enemy.note, 'Sideview No Mirror') && !hasTag(enemy.note, 'Sideview Facing Right')
             };
         }).filter(Boolean);
     }
     return [];
+};
+
+AnimEditor.getPreviewLayout = function(battler, image) {
+    if (!battler.autoLayout) return { columns: battler.columns, rows: battler.rows };
+    const w = image.naturalWidth, h = image.naturalHeight;
+    if (w % 9 === 0 && h % 6 === 0 && w / 9 === h / 6) return { columns: 9, rows: 6 };
+    return { columns: h > 0 && w >= h * 2 && w % h === 0 ? w / h : 1, rows: 1 };
+};
+
+AnimEditor.changePreviewTarget = function(type) {
+    this.targetSilhouette = type;
+    if (type === 'enemy') this.setCombatDirection('user_to_enemy');
+    const selected = this.ensurePreviewBattler();
+    const select = document.getElementById('animPreviewBattlerSelect');
+    if (select) {
+        select.innerHTML = this.getPreviewBattlers().map(battler =>
+            `<option value="${battler.id}" ${selected && selected.id === battler.id ? 'selected' : ''}>${escapeHtml(battler.name)}</option>`
+        ).join('');
+        select.disabled = !selected;
+    }
+    this.render();
 };
 
 AnimEditor.ensurePreviewBattler = function() {
@@ -11912,8 +12070,9 @@ AnimEditor.drawTargetSilhouette = function(ctx, ox, oy) {
     const targetImage = this.getImage(battler.imagePath);
     if (!targetImage || !targetImage.complete || targetImage.naturalWidth === 0) return;
 
-    const frameWidth = targetImage.naturalWidth / battler.columns;
-    const frameHeight = targetImage.naturalHeight / battler.rows;
+    const layout = this.getPreviewLayout(battler, targetImage);
+    const frameWidth = targetImage.naturalWidth / layout.columns;
+    const frameHeight = targetImage.naturalHeight / layout.rows;
     const baseY = oy + 20;
 
     ctx.save();
@@ -11923,7 +12082,7 @@ AnimEditor.drawTargetSilhouette = function(ctx, ox, oy) {
     // In Sideview combat:
     // - Actor stands on right side facing LEFT towards oncoming attacks (facing = 1)
     // - Enemy stands on left side facing RIGHT towards oncoming attacks (facing = -1)
-    const battlerFacing = (this.targetSilhouette === 'enemy') ? -1 : 1;
+    const battlerFacing = (this.targetSilhouette === 'enemy' && battler.mirrored) ? -1 : 1;
     ctx.scale(battlerFacing, 1);
     ctx.drawImage(targetImage, 0, 0, frameWidth, frameHeight, -frameWidth / 2, -frameHeight, frameWidth, frameHeight);
 
@@ -12176,12 +12335,12 @@ function renderAnimationEditor(container, anim) {
                     <!-- Target Silhouette & Battler -->
                     <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:0.7rem; color:var(--text-muted); white-space:nowrap;">Target:</span>
-                        <select class="form-control" style="width:auto; padding:3px 8px; font-size:0.72rem; height:auto; background:#0b0e14;" onchange="AnimEditor.targetSilhouette=this.value; if(this.value==='enemy'){AnimEditor.setCombatDirection('user_to_enemy');} AnimEditor.render();">
+                        <select class="form-control" style="width:auto; padding:3px 8px; font-size:0.72rem; height:auto; background:#0b0e14;" onchange="AnimEditor.changePreviewTarget(this.value);">
                             <option value="actor" ${AnimEditor.targetSilhouette === 'actor' ? 'selected' : ''}>Hero (Actor)</option>
                             <option value="enemy" ${AnimEditor.targetSilhouette === 'enemy' ? 'selected' : ''}>Musuh (Enemy)</option>
                             <option value="none" ${AnimEditor.targetSilhouette === 'none' ? 'selected' : ''}>Tanpa Siluet</option>
                         </select>
-                        <select class="form-control" style="width:auto; max-width:140px; padding:3px 8px; font-size:0.72rem; height:auto; background:#0b0e14;" onchange="AnimEditor.previewBattlerId=parseInt(this.value,10); AnimEditor.render();" title="Pilih battler dari database untuk preview siluet">
+                        <select id="animPreviewBattlerSelect" class="form-control" style="width:auto; max-width:140px; padding:3px 8px; font-size:0.72rem; height:auto; background:#0b0e14;" onchange="AnimEditor.previewBattlerId=parseInt(this.value,10); AnimEditor.render();" title="Pilih battler dari database untuk preview siluet">
                             ${AnimEditor.getPreviewBattlers().map(battler => `<option value="${battler.id}" ${Number(AnimEditor.previewBattlerId) === battler.id ? 'selected' : ''}>${escapeHtml(battler.name)}</option>`).join('')}
                         </select>
                     </div>
@@ -16579,7 +16738,7 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                         </div>
                         <div class="form-group">
                             <label title="Jumlah JP yang didapatkan saat skill ini digunakan dalam pertempuran (&lt;JP Gain&gt;)">JP Gain on Use</label>
-                            <input type="text" class="form-control" placeholder="" value="${jpGain}" onchange="setTagVal(skill, 'JP Gain', this.value);">
+                            ${statValueInput(jpGain, false, `setTagVal(skill, 'JP Gain', this.value);`)}
                         </div>
                     </div>
                 </div>
@@ -16591,15 +16750,15 @@ ${renderIconPickerField('Icon Index', skill.iconIndex, "function(v){ skill.iconI
                     <div class="grid-3">
                         <div class="form-group">
                             <label>Bonus Crit Dmg</label>
-                            <input type="text" class="form-control" placeholder="" value="${critDmg}" onchange="setTagVal(skill, 'Critical Damage', this.value);">
+                            ${statValueInput(critDmg, true, `setTagVal(skill, 'Critical Damage', this.value);`)}
                         </div>
                         <div class="form-group">
                             <label title="Modifikasi pengabaian persen pertahanan fisik target (<Armor Penetration: +X%>)">Armor Penetration Modifier</label>
-                            <input type="text" class="form-control" placeholder="" value="${armPen}" onchange="setTagVal(skill, 'Armor Penetration', this.value);">
+                            ${statValueInput(armPen, true, `setTagVal(skill, 'Armor Penetration', this.value);`)}
                         </div>
                         <div class="form-group">
                             <label title="Modifikasi pengabaian persen pertahanan sihir target (<Magic Penetration: +X%>)">Magic Penetration Modifier</label>
-                            <input type="text" class="form-control" placeholder="" value="${magPen}" onchange="setTagVal(skill, 'Magic Penetration', this.value);">
+                            ${statValueInput(magPen, true, `setTagVal(skill, 'Magic Penetration', this.value);`)}
                         </div>
                     </div>
                     <div class="grid-2">
@@ -16881,27 +17040,27 @@ ${renderIconPickerField('Icon Index', item.iconIndex, "function(v){ item.iconInd
                     <div class="stat-grid-6" style="margin-top:10px;">
                         <div class="stat-card-input">
                             <label style="color:#fb923c;">${pai('sword')} ATK</label>
-                            <input type="text" class="form-control" placeholder="" value="${sockAtk}" onchange="setTagVal(item, 'Socket ATK', this.value);">
+                            ${statValueInput(sockAtk, false, `setTagVal(item, 'Socket ATK', this.value);`)}
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #34d399;">
                             <label style="color:#34d399;">${pai('shield')} DEF</label>
-                            <input type="text" class="form-control" placeholder="" value="${sockDef}" onchange="setTagVal(item, 'Socket DEF', this.value);">
+                            ${statValueInput(sockDef, false, `setTagVal(item, 'Socket DEF', this.value);`)}
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #a78bfa;">
                             <label style="color:#a78bfa;">${pai('wand')} MAT</label>
-                            <input type="text" class="form-control" placeholder="" value="${sockMat}" onchange="setTagVal(item, 'Socket MAT', this.value);">
+                            ${statValueInput(sockMat, false, `setTagVal(item, 'Socket MAT', this.value);`)}
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #38bdf8;">
                             <label style="color:#38bdf8;">${pai('shield')} MDF</label>
-                            <input type="text" class="form-control" placeholder="" value="${sockMdf}" onchange="setTagVal(item, 'Socket MDF', this.value);">
+                            ${statValueInput(sockMdf, false, `setTagVal(item, 'Socket MDF', this.value);`)}
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #f87171;">
                             <label style="color:#f87171;">${pai('heart')} HP</label>
-                            <input type="text" class="form-control" placeholder="" value="${sockMhp}" onchange="setTagVal(item, 'Socket MHP', this.value);">
+                            ${statValueInput(sockMhp, false, `setTagVal(item, 'Socket MHP', this.value);`)}
                         </div>
                         <div class="stat-card-input" style="border-left: 2px solid #60a5fa;">
                             <label style="color:#60a5fa;">${pai('drop')} MP</label>
-                            <input type="text" class="form-control" placeholder="" value="${sockMmp}" onchange="setTagVal(item, 'Socket MMP', this.value);">
+                            ${statValueInput(sockMmp, false, `setTagVal(item, 'Socket MMP', this.value);`)}
                         </div>
                     </div>
                 </div>
@@ -17646,9 +17805,9 @@ function initEnemyBattlerAnimation(enemy) {
             currentEnemyAnim.type = 'mv_sv_actor';
             currentEnemyAnim.frames = 3;
             currentEnemyAnim.rows = 6;
-        } else if (w / h >= 1.8) {
+        } else if (h > 0 && w >= h * 2 && w % h === 0) {
             // Single-row horizontal sprite strip
-            const autoFrames = Math.max(1, Math.round(w / h));
+            const autoFrames = w / h;
             currentEnemyAnim.type = 'custom_strip';
             currentEnemyAnim.frames = autoFrames;
             currentEnemyAnim.rows = 1;
@@ -17750,6 +17909,13 @@ function startEnemyAnimLoop() {
 function renderEnemyBattlerFrame() {
     const canvas = document.getElementById('enemyBattlerCanvas');
     if (!canvas || !currentEnemyAnim.img) return;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    if (!width || !height) return;
+    if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+    }
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -18163,13 +18329,13 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
                                 <span>${attr.icon} ${attr.code}</span>
                                 <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="" value="${coreBonuses[attr.code]}" onchange="setTagVal(state, '${attr.code}', this.value);">
+                            ${statValueInput(coreBonuses[attr.code], false, `setTagVal(state, '${attr.code}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
                 <div class="form-group" style="margin-top:12px; max-width:240px;">
                     <label title="Modifikasi nilai kapasitas stamina maksimal (<Max SP: +X>)">Max SP Modifier (&lt;Max SP&gt;)</label>
-                    <input type="text" class="form-control" placeholder="" value="${maxSpBonus}" onchange="setTagVal(state, 'Max SP', this.value);">
+                    ${statValueInput(maxSpBonus, false, `setTagVal(state, 'Max SP', this.value);`)}
                 </div>
             </div>
         </div>
@@ -18181,34 +18347,34 @@ ${renderIconPickerField('Icon Index', state.iconIndex, "function(v){ state.iconI
                 <div class="grid-3">
                     <div class="form-group">
                         <label title="Modifikasi pengali kerusakan saat menghasilkan kritikal (<Critical Damage: +X%>)">Critical Damage Modifier</label>
-                        <input type="text" class="form-control" placeholder="" value="${critDmg}" onchange="setTagVal(state, 'Critical Damage', this.value);">
+                        ${statValueInput(critDmg, true, `setTagVal(state, 'Critical Damage', this.value);`)}
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi pengabaian persen pertahanan fisik target (<Armor Penetration: +X%>)">Armor Penetration Modifier</label>
-                        <input type="text" class="form-control" placeholder="" value="${armPen}" onchange="setTagVal(state, 'Armor Penetration', this.value);">
+                        ${statValueInput(armPen, true, `setTagVal(state, 'Armor Penetration', this.value);`)}
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi pengabaian persen pertahanan sihir target (<Magic Penetration: +X%>)">Magic Penetration Modifier</label>
-                        <input type="text" class="form-control" placeholder="" value="${magPen}" onchange="setTagVal(state, 'Magic Penetration', this.value);">
+                        ${statValueInput(magPen, true, `setTagVal(state, 'Magic Penetration', this.value);`)}
                     </div>
                 </div>
 
                 <div class="grid-4" style="margin-top:10px;">
                     <div class="form-group">
                         <label title="Modifikasi pengurangan persen kerusakan fisik yang diterima (<PDR Plus: +X%>)">Physical Damage Reduction Modifier</label>
-                        <input type="text" class="form-control" placeholder="" value="${pdr}" onchange="setTagVal(state, 'PDR Plus', this.value);">
+                        ${statValueInput(pdr, true, `setTagVal(state, 'PDR Plus', this.value);`)}
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi pengurangan persen kerusakan sihir yang diterima (<MDR Plus: +X%>)">Magical Damage Reduction Modifier</label>
-                        <input type="text" class="form-control" placeholder="" value="${mdr}" onchange="setTagVal(state, 'MDR Plus', this.value);">
+                        ${statValueInput(mdr, true, `setTagVal(state, 'MDR Plus', this.value);`)}
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi akurasi serangan fisik (<HIT Plus: +X%>)">Hit Rate Modifier</label>
-                        <input type="text" class="form-control" placeholder="" value="${hit}" onchange="setTagVal(state, 'HIT Plus', this.value);">
+                        ${statValueInput(hit, true, `setTagVal(state, 'HIT Plus', this.value);`)}
                     </div>
                     <div class="form-group">
                         <label title="Modifikasi peluang menghindari serangan fisik (<EVA Plus: +X%>)">Evasion Rate Modifier</label>
-                        <input type="text" class="form-control" placeholder="" value="${eva}" onchange="setTagVal(state, 'EVA Plus', this.value);">
+                        ${statValueInput(eva, true, `setTagVal(state, 'EVA Plus', this.value);`)}
                     </div>
                 </div>
             </div>

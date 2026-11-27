@@ -214,23 +214,17 @@ BattlePreviewModal.updateHudUi = function() {
 
 BattlePreviewModal.onActorChange = function(newActorId) {
     this.actorId = parseInt(newActorId, 10) || 1;
-    const iframe = document.getElementById('battlePreviewIframe');
-    if (iframe && iframe.contentWindow && iframe.contentWindow.NUSV_BattlePreview) {
-        iframe.contentWindow.NUSV_BattlePreview.switchActor(this.actorId);
-    } else {
-        this.loadIframe();
-    }
+    this.isReady = false;
+    this.updateStatus('Memuat ulang battle preview...', 'loading');
+    this.loadIframe();
 };
 
 BattlePreviewModal.onEnemyChange = function(newEnemyId) {
     this.enemyId = parseInt(newEnemyId, 10) || 2;
     this.troopId = this.enemyId;
-    const iframe = document.getElementById('battlePreviewIframe');
-    if (iframe && iframe.contentWindow && iframe.contentWindow.NUSV_BattlePreview) {
-        iframe.contentWindow.NUSV_BattlePreview.switchEnemy(this.enemyId);
-    } else {
-        this.loadIframe();
-    }
+    this.isReady = false;
+    this.updateStatus('Memuat ulang battle preview...', 'loading');
+    this.loadIframe();
 };
 
 BattlePreviewModal.onTroopChange = function(newTroopId) {

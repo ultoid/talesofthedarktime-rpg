@@ -31,7 +31,7 @@ function renderArmorEditor(container, armor) {
         derivedValues[d.key] = getTagVal(note, d.key, '');
     });
 
-    const eleMatch = note.match(/<Element Amplify ([a-zA-Z]+):[ ]*(.+?)>/i);
+    const eleMatch = note.match(/<Element Amplify ([^:>]+):[ ]*(.+?)>/i);
     const eleName = eleMatch ? eleMatch[1] : '';
     const eleVal = eleMatch ? eleMatch[2] : '';
 
@@ -199,7 +199,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                                 <span>${attr.icon} ${attr.code}</span>
                                 <span style="font-size:0.75rem; color:var(--text-muted);">${attr.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="" value="${coreBonuses[attr.code]}" onchange="setTagVal(armor, '${attr.code}', this.value);">
+                            ${statValueInput(coreBonuses[attr.code], false, `setTagVal(armor, '${attr.code}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -212,7 +212,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(armor, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(armor, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -224,7 +224,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(armor, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(armor, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -236,7 +236,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(armor, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(armor, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                 </div>
@@ -248,7 +248,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                             <label style="color:${d.color};">
                                 <span>${d.icon} ${d.name}</span>
                             </label>
-                            <input type="text" class="form-control" placeholder="${d.placeholder}" value="${derivedValues[d.key]}" onchange="setTagVal(armor, '${d.key}', this.value);">
+                            ${statValueInput(derivedValues[d.key], d.key !== 'Max SP', `setTagVal(armor, '${d.key}', this.value);`)}
                         </div>
                     `).join('')}
                     <div class="stat-card-input">
@@ -256,8 +256,12 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                             <span>${pai('fire')} Amplifikasi Elemen</span>
                         </label>
                         <div style="display:flex; gap:6px;">
-                            <input type="text" class="form-control" placeholder="Elemen (Fire/Holy...)" value="${escapeHtml(eleName)}" id="armEleName" onchange="onArmorElementAmplifyChange()">
-                            <input type="text" class="form-control" placeholder="" value="${escapeHtml(eleVal)}" id="armEleVal" style="width:90px;" onchange="onArmorElementAmplifyChange()">
+                            <select class="form-control" id="armEleName" onchange="onArmorElementAmplifyChange()" style="min-width:0;">
+                                <option value="">Pilih elemen</option>
+                                ${eleName && !(State.system.elements || []).some(el => el && el.toLowerCase() === eleName.toLowerCase()) ? `<option value="${escapeHtml(eleName)}" selected>${escapeHtml(eleName)}</option>` : ''}
+                                ${(State.system.elements || []).map((el, i) => i && el ? `<option value="${escapeHtml(el)}" ${el.toLowerCase() === eleName.toLowerCase() ? 'selected' : ''}>${escapeHtml(el)}</option>` : '').join('')}
+                            </select>
+                            <div style="width:120px; flex-shrink:0;">${statValueInput(eleVal, true, 'onArmorElementAmplifyChange()', 'id="armEleVal"')}</div>
                         </div>
                     </div>
                 </div>
@@ -271,25 +275,25 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
                 <div class="grid-2">
                     <div class="form-group">
                         <label>Jumlah Soket Permata (&lt;Sockets: X&gt;)</label>
-                        <input type="number" min="0" max="8" class="form-control" placeholder="" value="${sockets}" onchange="setTagVal(armor, 'Sockets', this.value);">
+                        ${refiningValueInput(`<input type="number" min="0" max="8" class="form-control" placeholder="" value="${sockets}" onchange="setTagVal(armor, 'Sockets', this.value);">`)}
                     </div>
                     <div class="form-group">
                         <label>Maksimal Tempa (+X)</label>
-                        <input type="number" min="0" max="20" class="form-control" placeholder="" value="${upMax}" onchange="setTagVal(armor, 'Upgrade Max', this.value);">
+                        ${refiningValueInput(`<input type="number" min="0" max="20" class="form-control" placeholder="" value="${upMax}" onchange="setTagVal(armor, 'Upgrade Max', this.value);">`)}
                     </div>
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
                         <label>% Sukses Tempa</label>
-                        <input type="text" class="form-control" placeholder="" value="${upSuccess}" onchange="setTagVal(armor, 'Upgrade Success', this.value);">
+                        ${refiningValueInput(`<input type="text" class="form-control" placeholder="" value="${upSuccess}" onchange="setTagVal(armor, 'Upgrade Success', this.value);">`)}
                     </div>
                     <div class="form-group">
                         <label>Bonus DEF/Tempa</label>
-                        <input type="text" class="form-control" placeholder="" value="${upDef}" onchange="setTagVal(armor, 'Upgrade DEF', this.value);">
+                        ${refiningValueInput(`<input type="text" class="form-control" placeholder="" value="${upDef}" onchange="setTagVal(armor, 'Upgrade DEF', this.value);">`)}
                     </div>
                     <div class="form-group">
                         <label>Bonus MDF/Tempa</label>
-                        <input type="text" class="form-control" placeholder="" value="${upMdf}" onchange="setTagVal(armor, 'Upgrade MDF', this.value);">
+                        ${refiningValueInput(`<input type="text" class="form-control" placeholder="" value="${upMdf}" onchange="setTagVal(armor, 'Upgrade MDF', this.value);">`)}
                     </div>
                 </div>
             </div>
@@ -312,7 +316,7 @@ ${renderIconPickerField('Icon Index', armor.iconIndex, "function(v){ armor.iconI
 function onArmorElementAmplifyChange() {
     const armor = State.armors[State.selectedIndex];
     let note = armor.note || '';
-    note = note.replace(/<Element Amplify [a-zA-Z]+:[ ]*.+?>\n?/gi, '').trim();
+    note = note.replace(/<Element Amplify [^:>]+:[ ]*.+?>\n?/gi, '').trim();
     const name = document.getElementById('armEleName').value.trim();
     const val = document.getElementById('armEleVal').value.trim();
     if (name && val) {

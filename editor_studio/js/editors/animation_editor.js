@@ -154,6 +154,7 @@ const AnimEditor = {
     getImage: function(src) {
         if (!this.imageCache[src]) {
             const img = new Image();
+            img.onload = () => { if (this.ctx) this.render(); };
             img.src = src;
             this.imageCache[src] = img;
         }
@@ -487,7 +488,7 @@ AnimEditor.getPreviewOrigin = function() {
     const battler = this.ensurePreviewBattler();
     const targetImage = battler ? this.getImage(battler.imagePath) : null;
     const targetHeight = targetImage && targetImage.complete && targetImage.naturalHeight > 0
-        ? Math.min(targetImage.naturalHeight / battler.rows, 180)
+        ? targetImage.naturalHeight / this.getPreviewLayout(battler, targetImage).rows
         : (this.targetSilhouette === 'enemy' ? 180 : 64);
 
     const targetBaseY = centerY + 20;
@@ -513,21 +514,43 @@ AnimEditor.getPreviewBattlers = function() {
     }
     if (this.targetSilhouette === 'enemy') {
         return (State.enemies || []).filter(enemy => enemy && enemy.id > 0).map(enemy => {
-            const imageName = getTagVal(enemy.note, 'Sideview Battler', '').split(/[|,]/)[0].trim();
+            const imageName = getTagVal(enemy.note, 'Sideview Battler', '').split(/[|,]/)[0].trim() || enemy.battlerName;
             if (!imageName) return null;
-            const folder = getTagVal(enemy.note, 'Sideview Folder', 'sv_actors') || 'sv_actors';
+            const folder = getTagVal(enemy.note, 'Sideview Folder', 'sv_enemies') || 'sv_enemies';
             const frameCount = parseInt(getTagVal(enemy.note, 'Sideview Frames', '0'), 10) || 0;
-            const rows = frameCount > 0 ? (parseInt(getTagVal(enemy.note, 'Sideview Rows', '1'), 10) || 1) : 6;
             return {
                 id: enemy.id,
                 name: enemy.name || `Enemy ${enemy.id}`,
                 imagePath: `img/${folder}/${imageName}.png`,
-                columns: frameCount > 0 ? frameCount : 9,
-                rows: rows
+                columns: frameCount,
+                rows: parseInt(getTagVal(enemy.note, 'Sideview Rows', '1'), 10) || 1,
+                autoLayout: !frameCount,
+                mirrored: !hasTag(enemy.note, 'Sideview No Mirror') && !hasTag(enemy.note, 'Sideview Facing Right')
             };
         }).filter(Boolean);
     }
     return [];
+};
+
+AnimEditor.getPreviewLayout = function(battler, image) {
+    if (!battler.autoLayout) return { columns: battler.columns, rows: battler.rows };
+    const w = image.naturalWidth, h = image.naturalHeight;
+    if (w % 9 === 0 && h % 6 === 0 && w / 9 === h / 6) return { columns: 9, rows: 6 };
+    return { columns: h > 0 && w >= h * 2 && w % h === 0 ? w / h : 1, rows: 1 };
+};
+
+AnimEditor.changePreviewTarget = function(type) {
+    this.targetSilhouette = type;
+    if (type === 'enemy') this.setCombatDirection('user_to_enemy');
+    const selected = this.ensurePreviewBattler();
+    const select = document.getElementById('animPreviewBattlerSelect');
+    if (select) {
+        select.innerHTML = this.getPreviewBattlers().map(battler =>
+            `<option value="${battler.id}" ${selected && selected.id === battler.id ? 'selected' : ''}>${escapeHtml(battler.name)}</option>`
+        ).join('');
+        select.disabled = !selected;
+    }
+    this.render();
 };
 
 AnimEditor.ensurePreviewBattler = function() {
@@ -757,8 +780,9 @@ AnimEditor.drawTargetSilhouette = function(ctx, ox, oy) {
     const targetImage = this.getImage(battler.imagePath);
     if (!targetImage || !targetImage.complete || targetImage.naturalWidth === 0) return;
 
-    const frameWidth = targetImage.naturalWidth / battler.columns;
-    const frameHeight = targetImage.naturalHeight / battler.rows;
+    const layout = this.getPreviewLayout(battler, targetImage);
+    const frameWidth = targetImage.naturalWidth / layout.columns;
+    const frameHeight = targetImage.naturalHeight / layout.rows;
     const baseY = oy + 20;
 
     ctx.save();
@@ -768,7 +792,7 @@ AnimEditor.drawTargetSilhouette = function(ctx, ox, oy) {
     // In Sideview combat:
     // - Actor stands on right side facing LEFT towards oncoming attacks (facing = 1)
     // - Enemy stands on left side facing RIGHT towards oncoming attacks (facing = -1)
-    const battlerFacing = (this.targetSilhouette === 'enemy') ? -1 : 1;
+    const battlerFacing = (this.targetSilhouette === 'enemy' && battler.mirrored) ? -1 : 1;
     ctx.scale(battlerFacing, 1);
     ctx.drawImage(targetImage, 0, 0, frameWidth, frameHeight, -frameWidth / 2, -frameHeight, frameWidth, frameHeight);
 
@@ -1021,12 +1045,12 @@ function renderAnimationEditor(container, anim) {
                     <!-- Target Silhouette & Battler -->
                     <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:0.7rem; color:var(--text-muted); white-space:nowrap;">Target:</span>
-                        <select class="form-control" style="width:auto; padding:3px 8px; font-size:0.72rem; height:auto; background:#0b0e14;" onchange="AnimEditor.targetSilhouette=this.value; if(this.value==='enemy'){AnimEditor.setCombatDirection('user_to_enemy');} AnimEditor.render();">
+                        <select class="form-control" style="width:auto; padding:3px 8px; font-size:0.72rem; height:auto; background:#0b0e14;" onchange="AnimEditor.changePreviewTarget(this.value);">
                             <option value="actor" ${AnimEditor.targetSilhouette === 'actor' ? 'selected' : ''}>Hero (Actor)</option>
                             <option value="enemy" ${AnimEditor.targetSilhouette === 'enemy' ? 'selected' : ''}>Musuh (Enemy)</option>
                             <option value="none" ${AnimEditor.targetSilhouette === 'none' ? 'selected' : ''}>Tanpa Siluet</option>
                         </select>
-                        <select class="form-control" style="width:auto; max-width:140px; padding:3px 8px; font-size:0.72rem; height:auto; background:#0b0e14;" onchange="AnimEditor.previewBattlerId=parseInt(this.value,10); AnimEditor.render();" title="Pilih battler dari database untuk preview siluet">
+                        <select id="animPreviewBattlerSelect" class="form-control" style="width:auto; max-width:140px; padding:3px 8px; font-size:0.72rem; height:auto; background:#0b0e14;" onchange="AnimEditor.previewBattlerId=parseInt(this.value,10); AnimEditor.render();" title="Pilih battler dari database untuk preview siluet">
                             ${AnimEditor.getPreviewBattlers().map(battler => `<option value="${battler.id}" ${Number(AnimEditor.previewBattlerId) === battler.id ? 'selected' : ''}>${escapeHtml(battler.name)}</option>`).join('')}
                         </select>
                     </div>

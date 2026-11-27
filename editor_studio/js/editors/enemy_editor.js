@@ -607,9 +607,9 @@ function initEnemyBattlerAnimation(enemy) {
             currentEnemyAnim.type = 'mv_sv_actor';
             currentEnemyAnim.frames = 3;
             currentEnemyAnim.rows = 6;
-        } else if (w / h >= 1.8) {
+        } else if (h > 0 && w >= h * 2 && w % h === 0) {
             // Single-row horizontal sprite strip
-            const autoFrames = Math.max(1, Math.round(w / h));
+            const autoFrames = w / h;
             currentEnemyAnim.type = 'custom_strip';
             currentEnemyAnim.frames = autoFrames;
             currentEnemyAnim.rows = 1;
@@ -711,6 +711,13 @@ function startEnemyAnimLoop() {
 function renderEnemyBattlerFrame() {
     const canvas = document.getElementById('enemyBattlerCanvas');
     if (!canvas || !currentEnemyAnim.img) return;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    if (!width || !height) return;
+    if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+    }
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 

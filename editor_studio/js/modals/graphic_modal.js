@@ -38,14 +38,30 @@ function renderCharPreviewHtml(charName, charIndex) {
 
 
 
+function drawSvPreview(image) {
+    const canvas = image.previousElementSibling;
+    const ctx = canvas.getContext('2d');
+    const width = image.naturalWidth;
+    const height = image.naturalHeight;
+    const isSheet = width % 9 === 0 && height % 6 === 0 && width / 9 === height / 6;
+    const frameWidth = isSheet ? width / 9 : width;
+    const frameHeight = isSheet ? height / 6 : height;
+    const scale = Math.min(canvas.width / frameWidth, canvas.height / frameHeight);
+    const drawWidth = frameWidth * scale;
+    const drawHeight = frameHeight * scale;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(image, 0, 0, frameWidth, frameHeight,
+        (canvas.width - drawWidth) / 2, (canvas.height - drawHeight) / 2, drawWidth, drawHeight);
+}
+
 function renderSvPreviewHtml(svName) {
     if (!svName) {
         return '<div class="empty-preview" title="Belum ada battler tempur yang dipilih">No Battler Graphic<br><span style="font-size:0.7rem; color:var(--text-muted);">Choose below</span></div>';
     }
     const url = `img/sv_actors/${encodeURIComponent(svName)}.png`;
-    return `<div class="pixel-sprite sv-frame" style="background-image: url('${url}'); background-size: 900% 600%; background-position: 0% 0%;" title="[SV] Idle Battler Pose"></div>`;
+    return `<canvas width="180" height="110" style="max-width:100%; max-height:100%; object-fit:contain; image-rendering:pixelated;" title="Preview SV Battler"></canvas><img src="${url}" alt="" style="display:none;" onload="drawSvPreview(this)">`;
 }
-
 
 
 function onActorFaceChange(val) {
@@ -127,6 +143,8 @@ function updateActorGraphicsLive() {
     // Update SV Box
     const svBox = document.getElementById('svPreviewBox');
     if (svBox) svBox.innerHTML = renderSvPreviewHtml(actor.battlerName);
+    const svSelect = document.getElementById('actorSvSelect');
+    if (svSelect) svSelect.value = actor.battlerName || '';
 }
 
 
@@ -140,7 +158,21 @@ function openGraphicSheetModal(type) {
     const bodyEl = document.getElementById('graphicModalBody');
     if (!modal || !titleEl || !bodyEl) return;
 
-    if (type === 'face') {
+    if (type === 'sv') {
+        titleEl.innerText = 'Pilih SV Battler';
+        const options = (State.svActors || []).map(file => {
+            const name = file.replace(/\.png$/i, '');
+            const selected = actor.battlerName === name;
+            return `<button type="button" data-battler="${escapeHtml(name)}" onclick="onActorSvChange(this.dataset.battler); closeGraphicModal();" aria-pressed="${selected}" style="cursor:pointer; padding:8px; min-width:0; border:1px solid ${selected ? 'var(--accent)' : 'var(--border-color)'}; border-radius:6px; background:var(--bg-secondary); color:var(--text-primary);">
+                <div class="sprite-preview-box" style="height:120px; margin-bottom:6px; pointer-events:none;">${renderSvPreviewHtml(name)}</div>
+                <span style="display:block; overflow-wrap:anywhere;">${escapeHtml(name)}</span>
+            </button>`;
+        }).join('');
+        bodyEl.innerHTML = `<div style="color:var(--text-muted); margin-bottom:12px;">Pilih gambar battler untuk karakter ini.</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px; max-height:60vh; overflow-y:auto;">${options || '<span>Tidak ada gambar SV Battler.</span>'}</div>
+            <button type="button" class="btn btn-secondary" style="margin-top:12px;" onclick="onActorSvChange(''); closeGraphicModal();">Hapus gambar</button>`;
+        modal.style.display = 'flex';
+    } else if (type === 'face') {
         if (!actor.faceName) {
             showToast('Pilih file Face Graphic terlebih dahulu di dropdown!', 'info');
             return;

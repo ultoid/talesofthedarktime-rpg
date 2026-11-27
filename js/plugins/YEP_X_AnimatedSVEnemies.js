@@ -2599,14 +2599,30 @@ Sprite_Enemy.prototype.updateFrame = function() {
     Yanfly.SVE.Sprite_Enemy_updateFrame.call(this);
 };
 
+// Explicit frame tags take priority; otherwise detect MV sheets and square-frame strips.
+Sprite_Enemy.prototype.sideviewBitmapLayout = function(bitmap) {
+    var frames = this._enemy ? this._enemy.sideviewFrames() : 0;
+    if (frames > 0) return { columns: frames, rows: this._enemy.sideviewRows() || 1, strip: true };
+    var width = bitmap.width;
+    var height = bitmap.height;
+    if (width > 0 && height > 0 && width % 9 === 0 && height % 6 === 0 && width / 9 === height / 6) {
+      return { columns: 9, rows: 6, strip: false };
+    }
+    if (height > 0 && width >= height * 2 && width % height === 0) {
+      return { columns: width / height, rows: 1, strip: true };
+    }
+    return { columns: 1, rows: 1, strip: true };
+};
+
 Sprite_Enemy.prototype.updateSVFrame = function() {
     Sprite_Battler.prototype.updateFrame.call(this);
     var bitmap = this._mainSprite.bitmap;
     if (bitmap.width <= 0) return;
     this._effectTarget = this._mainSprite;
-    if (this._enemy && this._enemy.sideviewFrames() > 0) {
-      var maxFrames = this._enemy.sideviewFrames();
-      var rows = this._enemy.sideviewRows() || 1;
+    var layout = this.sideviewBitmapLayout(bitmap);
+    if (layout.strip) {
+      var maxFrames = layout.columns;
+      var rows = layout.rows;
       var cw = bitmap.width / maxFrames;
       var ch = bitmap.height / rows;
       var cx = (this._pattern % maxFrames) * cw;
@@ -2641,8 +2657,9 @@ Sprite_Enemy.prototype.adjustMainBitmapSettings = function(bitmap) {
     this._adjustMainBitmapSettings = true;
     var svw = this._enemy.sideviewWidth();
     var svh = this._enemy.sideviewHeight();
-    var cols = (this._enemy && this._enemy.sideviewFrames() > 0) ? this._enemy.sideviewFrames() : 9;
-    var rows = (this._enemy && this._enemy.sideviewFrames() > 0) ? (this._enemy.sideviewRows() || 1) : 6;
+    var layout = this.sideviewBitmapLayout(bitmap);
+    var cols = layout.columns;
+    var rows = layout.rows;
     if (svw === 'auto') svw = bitmap.width / cols;
     if (svh === 'auto') svh = bitmap.height / rows;
     svw = Math.floor(Math.abs(svw * this._enemy.spriteScaleX()));
@@ -2654,7 +2671,7 @@ Sprite_Enemy.prototype.adjustSVShadowSettings = function() {
     if (this._enemy.showSideviewShadow()) this._shadowSprite.opacity = 255;
     var scaleX = this._enemy.sideviewShadowScaleX();
     var scaleY = this._enemy.sideviewShadowScaleY();
-    var cols = (this._enemy && this._enemy.sideviewFrames() > 0) ? this._enemy.sideviewFrames() : 9;
+    var cols = this.sideviewBitmapLayout(this._mainSprite.bitmap).columns;
     if (scaleX === 'auto') scaleX = this._mainSprite.bitmap.width / cols / 64;
     if (scaleY === 'auto') scaleY = this._mainSprite.bitmap.width / cols / 64;
     this._shadowSprite.scale.x = scaleX;
@@ -2697,9 +2714,11 @@ Sprite_Enemy.prototype.setupWeaponAnimation = function() {
 
 Sprite_Enemy.prototype.updateMotionCount = function() {
     if (!this._svBattlerEnabled) return;
-    if (this._enemy && this._enemy.sideviewFrames() > 0) {
+    var bitmap = this._mainSprite && this._mainSprite.bitmap;
+    var layout = bitmap && bitmap.width > 0 ? this.sideviewBitmapLayout(bitmap) : null;
+    if (layout && layout.strip) {
       if (++this._motionCount >= this.motionSpeed()) {
-        var maxFrames = this._enemy.sideviewFrames();
+        var maxFrames = layout.columns;
         this._pattern = (this._pattern + 1) % maxFrames;
         this._motionCount = 0;
       }

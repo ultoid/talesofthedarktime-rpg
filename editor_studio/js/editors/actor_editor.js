@@ -91,7 +91,7 @@ function calculateActorSimulation(actor, baseLevel = 1, classLevel = 1) {
         eqMcr += parsePercent(getTagVal(inote, 'MCR Plus'));
         eqTgr += parsePercent(getTagVal(inote, 'TGR Plus'));
 
-        const eMatch = inote.match(/<Element Amplify ([a-zA-Z]+):[ ]*(.+?)>/i);
+        const eMatch = inote.match(/<Element Amplify ([^:>]+):[ ]*(.+?)>/i);
         if (eMatch) {
             amplifiedElements.push(`${eMatch[1]} ${eMatch[2]}`);
         }
@@ -746,7 +746,7 @@ function renderActorEditor(container, actor) {
                                 <span class="badge-sub">Idle Pose</span>
                             </div>
 
-                            <div class="sprite-preview-box" id="svPreviewBox" title="Pratinjau pose idle battler tempur">
+                            <div class="sprite-preview-box" id="svPreviewBox" title="Klik untuk memilih gambar SV Battler" onclick="openGraphicSheetModal('sv')">
                                 ${renderSvPreviewHtml(actor.battlerName)}
                             </div>
 

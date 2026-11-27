@@ -125,6 +125,7 @@ def launch_standalone_window():
             text_select=True,
             confirm_close=True
         )
+        window.events.shown += window.maximize
         webview.start(private_mode=False)
         return
     except ImportError:
@@ -145,8 +146,7 @@ def launch_standalone_window():
             cmd = [
                 browser_bin,
                 f"--app={TARGET_URL}",
-                "--window-size=1440,900",
-                "--window-position=center",
+                "--start-maximized",
                 f"--user-data-dir={profile_dir}",
                 "--no-first-run",
                 "--no-default-browser-check",

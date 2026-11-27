@@ -211,6 +211,107 @@ function hasTag(note, tag) {
 
 
 
+function normalizeStatInput(input, percent) {
+    const start = input.selectionStart;
+    const oldValue = input.value;
+    let value = oldValue.replace(/[^0-9.+-]/g, '');
+    const sign = value.startsWith('-') ? '-' : value.startsWith('+') ? '+' : '';
+    value = value.replace(/[+-]/g, '');
+    const parts = value.split('.');
+    value = sign + parts.shift() + (parts.length ? '.' + parts.join('') : '');
+    const addSign = !sign && /\d/.test(value);
+    if (addSign) value = '+' + value;
+    input.value = value + (percent && /\d/.test(value) ? '%' : '');
+    const cursor = Math.min(start + (addSign ? 1 : 0), value.length);
+    input.setSelectionRange(cursor, cursor);
+}
+
+function stepStatValue(button, step) {
+    const input = button.parentElement.parentElement.querySelector('input');
+    const current = parseFloat(input.value) || 0;
+    const decimals = (String(current).split('.')[1] || '').length;
+    const value = Number((current + step).toFixed(decimals));
+    input.value = (value >= 0 ? '+' : '') + value;
+    normalizeStatInput(input, input.dataset.percent === 'true');
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function statValueInput(value, percent, change, extra = '') {
+    return `<div style="display:flex; gap:4px; min-width:0;">
+        <input type="text" inputmode="decimal" data-percent="${percent}" class="form-control" style="min-width:0;" value="${escapeHtml(String(value || ''))}" oninput="normalizeStatInput(this, ${percent})" onchange="normalizeStatInput(this, ${percent}); ${change}" ${extra}>
+        <span style="display:flex; flex-direction:column;">
+            <button type="button" title="Naikkan nilai" aria-label="Naikkan nilai" onclick="stepStatValue(this, 1)" style="flex:1; line-height:1; cursor:pointer;">&#9650;</button>
+            <button type="button" title="Turunkan nilai" aria-label="Turunkan nilai" onclick="stepStatValue(this, -1)" style="flex:1; line-height:1; cursor:pointer;">&#9660;</button>
+        </span>
+    </div>`;
+}
+
+function stepRefiningValue(button, step) {
+    const input = button.parentElement.parentElement.querySelector('input');
+    const current = parseFloat(input.value) || 0;
+    let value = current + step;
+    if (input.hasAttribute('min')) value = Math.max(Number(input.min), value);
+    if (input.hasAttribute('max')) value = Math.min(Number(input.max), value);
+    const decimals = (String(current).split('.')[1] || '').length;
+    value = Number(value.toFixed(decimals));
+    const suffix = input.value.trim().endsWith('%') ? '%' : '';
+    input.value = value + suffix;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function refiningValueInput(input) {
+    return `<div class="numeric-step-control" style="display:flex; gap:4px; min-width:0;">${input}
+        <span style="display:flex; flex-direction:column;">
+            <button type="button" title="Naikkan nilai" aria-label="Naikkan nilai" onclick="stepRefiningValue(this, 1)" style="flex:1; line-height:1; cursor:pointer;">&#9650;</button>
+            <button type="button" title="Turunkan nilai" aria-label="Turunkan nilai" onclick="stepRefiningValue(this, -1)" style="flex:1; line-height:1; cursor:pointer;">&#9660;</button>
+        </span>
+    </div>`;
+}
+
+function addNumberSteppers(root) {
+    const inputs = [];
+    if (root.nodeType === 1 && root.matches('input[type="number"]')) inputs.push(root);
+    if (root.querySelectorAll) inputs.push(...root.querySelectorAll('input[type="number"]'));
+    inputs.forEach(input => {
+        if (!input.isConnected || input.closest('.numeric-step-control')) return;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'numeric-step-control';
+        wrapper.style.cssText = 'display:inline-flex; gap:4px; min-width:0; max-width:100%; vertical-align:middle;';
+        if (!input.style.width) wrapper.style.width = '100%';
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+        input.style.minWidth = '0';
+        const buttons = document.createElement('span');
+        buttons.style.cssText = 'display:flex; flex-direction:column;';
+        [1, -1].forEach(direction => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.title = button.ariaLabel = direction > 0 ? 'Naikkan nilai' : 'Turunkan nilai';
+            button.textContent = direction > 0 ? '\u25b2' : '\u25bc';
+            button.style.cssText = 'flex:1; line-height:1; cursor:pointer;';
+            button.addEventListener('click', () => {
+                if (input.disabled || input.readOnly) return;
+                const step = input.step && input.step !== 'any' ? Number(input.step) : 1;
+                const current = Number(input.value || 0);
+                let value = current + direction * step;
+                if (input.hasAttribute('min')) value = Math.max(Number(input.min), value);
+                if (input.hasAttribute('max')) value = Math.min(Number(input.max), value);
+                input.value = String(Number(value.toFixed(10)));
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                if (input.isConnected) input.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+            buttons.appendChild(button);
+        });
+        wrapper.appendChild(buttons);
+    });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    addNumberSteppers(document);
+    new MutationObserver(records => records.forEach(record => record.addedNodes.forEach(addNumberSteppers)))
+        .observe(document.body, { childList: true, subtree: true });
+});
+
 function setTagVal(itemOrTag, tagOrVal, maybeVal) {
     let item, tag, val;
     if (maybeVal !== undefined) {
