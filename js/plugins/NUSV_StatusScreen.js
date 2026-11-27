@@ -133,10 +133,14 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     // Layout constants (computed at runtime so screen size changes are honored)
     // -------------------------------------------------------------------------
 
-    function partyWidth() { return Math.floor(Graphics.boxWidth * 0.10); }
-    function rightWidth() { return Math.floor(Graphics.boxWidth * 0.32); }
+    // Tata letak ulang menurut permintaan:
+    //   [ KIRI  ] Potret karakter + profil (lebih luas untuk visual karakter)
+    //   [ TENGAH] Tab navigasi + semua konten detail (status, alokasi, equipment, class, skills)
+    //   [ KANAN ] Pemilih anggota party (rail kecil)
+    function partyWidth() { return Math.floor(Graphics.boxWidth * 0.16); }   // rail pemilih party (kanan)
+    function leftWidth()  { return Math.floor(Graphics.boxWidth * 0.30); }   // kolom potret + profil (kiri)
     function centerWidth() {
-        return Graphics.boxWidth - partyWidth() - rightWidth();
+        return Graphics.boxWidth - partyWidth() - leftWidth();               // kolom detail (tengah)
     }
 
     // -------------------------------------------------------------------------
@@ -681,45 +685,102 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var lh = this.lineHeight();
         var y = 0;
 
-        this.contents.fontSize = 34;
+        // --- Title & Level Badge ---
         this.changeTextColor(this.normalColor());
-        this.drawText(this._actor.name(), pad, y, width, 'center');
-        y += lh + 8;
-        this.contents.fontSize = this.standardFontSize();
+        this.contents.fontSize = 24;
+        this.drawText(this._actor.name(), pad, y, width - 45);
+        
+        var lvlCircleX = width - 36;
+        var lvlCircleY = y + 2;
+        var lvlRadius = 16;
+        var ctx = this.contents._context;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(pad + lvlCircleX + lvlRadius, lvlCircleY + lvlRadius, lvlRadius, 0, Math.PI * 2, false);
+        ctx.fillStyle = 'rgba(28, 24, 20, 0.95)';
+        ctx.fill();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = '#c4ae88';
+        ctx.stroke();
+        ctx.restore();
+        this.contents._setDirty();
 
-        this.changeTextColor(this.systemColor());
-        var clsName = this._actor.currentClass().name;
-        if (typeof this._actor.classMaxLevel === 'function') {
-            var tier = (this._actor.currentClass().meta && this._actor.currentClass().meta['Class Tier']) || 1;
-            clsName += ' (Tier ' + tier + ')';
-        }
-        this.drawText(clsName, pad, y, width, 'center');
-        y += lh;
+        this.contents.fontSize = 16;
+        this.changeTextColor('#f0e8d9');
+        this.drawText(String(this._actor.level), pad + lvlCircleX, lvlCircleY + 2, lvlRadius * 2, 'center');
+        this.resetFontSettings();
 
-        this.resetTextColor();
-        var lvlText = TextManager.levelA + ' ' + this._actor.level;
+        y += lh + 2;
+
+        // --- Class & Class Level ---
+        var cls = this._actor.currentClass();
+        var clsName = cls ? cls.name : '';
+        var tier = (cls && cls.meta && cls.meta['Class Tier']) ? parseInt(cls.meta['Class Tier']) : 1;
+        
+        var classColor = '#f0e8d9';
+        if (tier === 1) classColor = '#c4ae88';
+        else if (tier === 2) classColor = '#5dade2';
+        else if (tier === 3) classColor = '#bb8fce';
+        else if (tier >= 4) classColor = '#f39c12';
+
+        var classLvlText = clsName;
         if (typeof this._actor.currentClassLevel === 'function') {
-            lvlText = 'Base Lv.' + this._actor._level + '  |  Class Lv.' + this._actor.currentClassLevel() + '/' + this._actor.classMaxLevel();
+            classLvlText += ' Lv. ' + this._actor.currentClassLevel() + '/' + this._actor.classMaxLevel();
         }
-        this.drawText(lvlText, pad, y, width, 'center');
-        y += lh;
+
+        this.contents.fontSize = 15;
+        this.changeTextColor(classColor);
+        this.drawText(classLvlText, pad, y, width);
+        this.resetFontSettings();
+        y += lh - 4;
 
         if (SHOW_NICKNAME && this._actor.nickname()) {
-            this.changeTextColor(this.systemColor());
-            this.drawText('"' + this._actor.nickname() + '"', pad, y, width, 'center');
-            y += lh;
+            this.changeTextColor(this.textColor(8));
+            this.contents.fontSize = 13;
+            this.drawText('"' + this._actor.nickname() + '"', pad, y, width);
+            this.resetFontSettings();
+            y += lh - 4;
         }
 
-        var imageTop = y + pad;
-        var imageHeight = this.contents.height - imageTop - pad - 28;
+        y += 4;
+
+        // --- Character Portrait ---
+        var imageTop = y;
+        var profileH = 88;
+        var imageHeight = this.contents.height - imageTop - profileH - 14;
         this.drawPortrait(pad, imageTop, width, imageHeight);
 
-        var legendY = this.contents.height - 26;
-        this.contents.fillRect(pad, legendY - 6, width, 1, 'rgba(255, 255, 255, 0.12)');
-        this.contents.fontSize = 12;
-        this.changeTextColor(this.textColor(7));
-        this.drawText(this._helpText || 'Left/Right: Tab   Enter: Select   Esc: Back   Q/W: Character', pad, legendY, width, 'center');
-        this.resetFontSettings();
+        // --- Profile Box ---
+        var profile = profileText(this._actor);
+        if (profile) {
+            var profileY = this.contents.height - profileH - 6;
+            
+            // Dark elegant backdrop with subtle border for RPG card feel
+            ctx.save();
+            ctx.fillStyle = 'rgba(12, 10, 8, 0.88)';
+            ctx.strokeStyle = 'rgba(196, 174, 136, 0.35)';
+            ctx.lineWidth = 1;
+            ctx.fillRect(pad, profileY, width, profileH);
+            ctx.strokeRect(pad, profileY, width, profileH);
+            ctx.restore();
+            this.contents._setDirty();
+
+            var py = profileY + 4;
+            this.contents.fontSize = 13;
+            this.changeTextColor('#c4ae88');
+            this.drawText('PROFILE', pad + 4, py, width - 8, 'center');
+            py += 18;
+
+            this.resetTextColor();
+            this.contents.fontSize = 11;
+            var descLines = wrapText(profile, width - 12, this.textWidth.bind(this));
+            if (descLines.length > 3) descLines = descLines.slice(0, 3);
+            for (var i = 0; i < descLines.length; i++) {
+                this.drawText(descLines[i], pad + 6, py, width - 12, 'center');
+                py += 15;
+            }
+            this.resetFontSettings();
+        }
     };
 
     Window_StatusPortrait.prototype.drawPortrait = function(x, y, width, height) {
@@ -855,7 +916,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             if (typeof this._actor.nusvBaseStat === 'function') {
                 var pts = typeof this._actor.nusvStatPoints === 'function' ? this._actor.nusvStatPoints() : 0;
                 this.changeTextColor(this.systemColor());
-                this.drawText('Base Stats' + (pts > 0 ? ' (+' + pts + ' Pts)' : ''), pad, y, width);
+                this.drawText('Base Stats' + (pts > 0 ? ' (+' + pts + ' Pts)' : ''), pad, y, halfW - 4);
+                this.drawText('Combat Attributes', pad + halfW, y, halfW - 4);
                 this.resetTextColor();
                 y += lh;
 
@@ -868,52 +930,48 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
                     { name: 'VIT', val: this._actor.vit }
                 ];
 
-                for (var b = 0; b < baseStats.length; b += 2) {
-                    var s1 = baseStats[b];
-                    var s2 = baseStats[b + 1];
-                    this.changeTextColor(this.systemColor());
-                    this.drawText(s1.name, pad + 4, y, halfW - 35);
-                    this.resetTextColor();
-                    this.drawText(s1.val, pad, y, halfW - 8, 'right');
-
-                    if (s2) {
-                        this.changeTextColor(this.systemColor());
-                        this.drawText(s2.name, pad + halfW + 4, y, halfW - 35);
-                        this.resetTextColor();
-                        this.drawText(s2.val, pad + halfW, y, halfW - 8, 'right');
-                    }
-                    y += lh;
-                }
-
-                y += 4;
-                this.changeTextColor(this.systemColor());
-                this.drawText('Combat Attributes', pad, y, width);
-                this.resetTextColor();
-                y += lh;
-
                 var combatStats = [
                     { name: TextManager.param(2), val: this._actor.param(2) }, // ATK
                     { name: TextManager.param(3), val: this._actor.param(3) }, // DEF
                     { name: TextManager.param(4), val: this._actor.param(4) }, // MAT
                     { name: TextManager.param(5), val: this._actor.param(5) }, // MDF
                     { name: 'Crit', val: Math.round(this._actor.cri * 100) + '%' },
-                    { name: 'Eva', val: Math.round(this._actor.eva * 100) + '%' }
+                    { name: 'Eva', val: Math.round(this._actor.eva * 100) + '%' },
+                    { name: 'HIT', val: Math.round(this._actor.hit * 100) + '%' },
+                    { name: 'M.ATK', val: this._actor.param(4) }, // Extra or other combat attributes if needed, let's include all requested combat attributes
+                    { name: 'M.Def', val: this._actor.param(5) }
                 ];
 
-                for (var c = 0; c < combatStats.length; c += 2) {
-                    if (y + lh > this.contents.height - 30) break;
-                    var c1 = combatStats[c];
-                    var c2 = combatStats[c + 1];
-                    this.changeTextColor(this.systemColor());
-                    this.drawText(c1.name, pad + 4, y, halfW - 35);
-                    this.resetTextColor();
-                    this.drawText(c1.val, pad, y, halfW - 8, 'right');
+                // Let's ensure all combat attributes from database/system are included properly in the right column
+                var allCombatAttrs = [
+                    { name: 'Atk', val: this._actor.param(2) },
+                    { name: 'Def', val: this._actor.param(3) },
+                    { name: 'M.Atk', val: this._actor.param(4) },
+                    { name: 'M.Def', val: this._actor.param(5) },
+                    { name: 'Crit', val: Math.round(this._actor.cri * 100) + '%' },
+                    { name: 'Eva', val: Math.round(this._actor.eva * 100) + '%' },
+                    { name: 'Hit', val: Math.round(this._actor.hit * 100) + '%' },
+                    { name: 'C.Dmg', val: Math.round(this._actor.criticalMultiplier() * 100) + '%' }
+                ];
 
-                    if (c2) {
+                var maxRows = Math.max(baseStats.length, allCombatAttrs.length);
+                for (var b = 0; b < maxRows; b++) {
+                    if (y + lh > this.contents.height - 20) break;
+                    var s1 = baseStats[b];
+                    var c1 = allCombatAttrs[b];
+
+                    if (s1) {
                         this.changeTextColor(this.systemColor());
-                        this.drawText(c2.name, pad + halfW + 4, y, halfW - 35);
+                        this.drawText(s1.name, pad + 4, y, halfW - 40);
                         this.resetTextColor();
-                        this.drawText(c2.val, pad + halfW, y, halfW - 8, 'right');
+                        this.drawText(s1.val, pad, y, halfW - 8, 'right');
+                    }
+
+                    if (c1) {
+                        this.changeTextColor(this.systemColor());
+                        this.drawText(c1.name, pad + halfW + 4, y, halfW - 40);
+                        this.resetTextColor();
+                        this.drawText(c1.val, pad + halfW, y, halfW - 8, 'right');
                     }
                     y += lh;
                 }
@@ -933,9 +991,6 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             }
             y += 6;
         }
-
-        // --- Profile: half-size font, sized to fit the remaining space ---
-        this.drawProfileBlock(pad, y, width);
     };
 
     // The states currently applied to the actor (status effects).
@@ -1276,7 +1331,6 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this._actor = null;
         this._tempAllocated = { str: 0, int: 0, dex: 0, luk: 0, agi: 0, vit: 0 };
         this._tempPoints = 0;
-        this._showAllStats = false;
         this.backOpacity = 235;
         this.select(0);
         this.deactivate();
@@ -1310,7 +1364,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     Window_StatusAllocate.prototype.maxItems = function() {
-        return 9; // 6 stats, Confirm, Reset, and the stat detail toggle
+        return 8; // 6 stats, Confirm, Reset
     };
 
     Window_StatusAllocate.prototype.statKeys = function() {
@@ -1345,9 +1399,9 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         rect.y += lh * 2 + 10;
         if (index >= 6) {
             rect.y = lh * 8 + 20;
-            var buttonWidth = Math.floor(rect.width / 3);
+            var buttonWidth = Math.floor(rect.width / 2);
             rect.x = (index - 6) * buttonWidth;
-            rect.width = index === 8 ? rect.width - buttonWidth * 2 : buttonWidth;
+            rect.width = buttonWidth;
         }
         rect.height = lh;
         return rect;
@@ -1360,9 +1414,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         if (index >= 6) {
             var total = this.totalPending();
             var hasPending = total > 0;
-            var btnText = index === 6 ? (hasPending ? 'Confirm +' + total : 'Confirm') :
-                (index === 7 ? 'Reset' : (this._showAllStats ? 'Less' : 'All stats'));
-            var enabled = index === 8 || hasPending;
+            var btnText = index === 6 ? (hasPending ? 'Confirm +' + total : 'Confirm') : 'Reset';
+            var enabled = index === 7 || hasPending;
             var selected = this.active && this.index() === index;
             var ctx = this.contents._context;
             var left = rect.x + 8;
@@ -1440,21 +1493,29 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             this.contents.blt(iconSet, iconIndex % 16 * 32, Math.floor(iconIndex / 16) * 32,
                 32, 32, x + 3, iconY, iconSize, iconSize);
 
-            // The top portions of the standard buff/debuff icons are up/down arrows.
+            // Tombol (-) kiri, nilai tengah, tombol (+) kanan — simetris dan disejajarkan sebaris.
+            // Semua elemen pakai fontSize 20 agar tepat sejajar vertikal.
+            var btnY = rect.y + Math.floor((rect.height - 20) / 2);
+
+            this.contents.fontSize = 20;
             this.changePaintOpacity(pending > 0);
-            this.contents.blt(iconSet, 6, 3 * 32 + 4, 20, 9,
-                x + w - 93, rect.y + Math.floor((rect.height - 10) / 2), 18, 10);
+            this.changeTextColor(this.normalColor());
+            this.drawText('-', x + w - 118, btnY, 18, 'center');
+
             this.changePaintOpacity(this._tempPoints > 0);
-            this.contents.blt(iconSet, 6, 2 * 32 + 4, 20, 9,
-                x + w - 21, rect.y + Math.floor((rect.height - 10) / 2), 18, 10);
+            this.drawText('+', x + w - 22, btnY, 18, 'center');
             this.changePaintOpacity(true);
+
+            // Nilai di tengah, disejajarkan vertikal dengan tombol (font size sama = 20).
+            this.changeTextColor(pending > 0 ? '#d5bd8e' : this.normalColor());
+            this.drawText(String(currentTotal), x + w - 80, btnY, 40, 'center');
+
+            this.contents.fontSize = this.standardFontSize();
         }
 
         this.contents.fontSize = Math.max(14, Math.min(20, this.standardFontSize() - 3));
         this.changeTextColor('#e8dfd0');
         this.drawText(name, x + 29, rect.y, Math.max(0, w - 139));
-        this.changeTextColor(pending > 0 ? '#d5bd8e' : this.normalColor());
-        this.drawText(String(currentTotal), x + w - 72, rect.y, 48, 'center');
         this.resetFontSettings();
     };
 
@@ -1511,16 +1572,18 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
                 ['LUK', a.luk], ['AGI', a.agi], ['VIT', a.vit]
             ];
         };
-        var combatValues = function(a) {
+        var combatAttributeValues = function(a) {
             return [
                 ['P.ATK', a.atk], ['P.DEF', a.def],
                 ['M.ATK', a.mat], ['M.DEF', a.mdf],
-                ['Speed', a.param(6)], ['Luck', a.param(7)],
-                ['HIT', pct(a.hit)], ['EVA', pct(a.eva)],
-                ['CRI', pct(a.cri)], ['CDMG', pct(a.criticalMultiplier())],
-                ['CEV', pct(a.cev)], ['GRD', pct(a.grd)],
-                ['PDR', pct(1 - a.pdr)], ['MDR', pct(1 - a.mdr)],
-                ['HRG', pct(a.hrg)], ['MRG', pct(a.mrg)],
+                ['Speed', a.param(6)], ['Luck', a.param(7)], ['HIT', pct(a.hit)]
+            ];
+        };
+        var statMitigationValues = function(a) {
+            return [
+                ['EVA', pct(a.eva)], ['CRI', pct(a.cri)], ['CDMG', pct(a.criticalMultiplier())],
+                ['CEV', pct(a.cev)], ['GRD', pct(a.grd)], ['PDR', pct(1 - a.pdr)],
+                ['MDR', pct(1 - a.mdr)], ['HRG', pct(a.hrg)], ['MRG', pct(a.mrg)],
                 ['TRG', pct(a.trg)], ['ArPen', penetration('Armor Penetration')],
                 ['MgPen', penetration('Magic Penetration')]
             ];
@@ -1528,44 +1591,40 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var formatPreview = function(base, preview) {
             var isPercent = typeof base === 'string' && base.indexOf('%') >= 0;
             var diff = Number((parseFloat(preview) - parseFloat(base)).toFixed(isPercent ? 1 : 0));
-            if (!diff) return String(base);
-            return String(base) + (diff > 0 ? '+' : '') + diff + (isPercent ? '%' : '');
+            if (!diff) return { text: String(base), changed: false };
+            return { text: String(preview), changed: true };
         };
         var withPreview = function(base, preview) {
             return base.map(function(entry, index) {
-                return [entry[0], formatPreview(entry[1], preview[index][1])];
+                var res = formatPreview(entry[1], preview[index][1]);
+                return [entry[0], res.text, res.changed];
             });
         };
         var core = withPreview(coreValues(this._actor), coreValues(actor));
-        var combat = withPreview(combatValues(this._actor), combatValues(actor));
-        if (!this._showAllStats) {
-            combat = combat.filter(function(entry, index) {
-                return index < 6 || /[+]/.test(entry[1]) || /\d-\d/.test(entry[1]);
-            });
-        }
+        var combatAttr = withPreview(combatAttributeValues(this._actor), combatAttributeValues(actor));
+        var statMit = withPreview(statMitigationValues(this._actor), statMitigationValues(actor));
+
+        // Design tokens (SKILL.md): distinctive palette, not templated defaults.
+        // Deep warm charcoal base, gold accent, warm off-white text, muted secondary text.
+        var COLOR_BASE    = '#0f0d0b';
+        var COLOR_PANEL   = '#161310';
+        var COLOR_ROW_ALT = 'rgba(196, 174, 136, 0.08)';
+        var COLOR_HEADER  = '#c4ae88';
+        var COLOR_LABEL   = '#d8d0c0';
+        var COLOR_VALUE   = '#f0e8d9';
+        var COLOR_CHANGED = '#e8c987';
+
         var available = this.contents.height - 4 - y;
-        var rows = 3 + Math.ceil(core.length / 2) + Math.ceil(combat.length / 2) + 2;
-        var rowHeight = Math.max(10, Math.min(28, Math.floor(available / rows)));
-        var fontSize = Math.max(9, Math.min(19, rowHeight - 3));
-        var half = Math.floor(width / 2);
+        var maxEntries = Math.max(core.length, combatAttr.length, statMit.length);
+        // Give each row generous vertical breathing room (SKILL.md: restraint, quiet discipline).
+        var rowHeight = Math.max(20, Math.min(30, Math.floor(available / (3 + 3 + maxEntries + 2))));
+        var fontSize = Math.max(15, Math.min(20, rowHeight - 6));
+        var third = Math.floor(width / 3);
+        var pad = 10; // horizontal padding inside each cell
         var bitmap = this.contents;
         bitmap.fontSize = fontSize;
-        var drawGroup = function(title, entries) {
-            bitmap.fillRect(x, y, width, rowHeight - 1, 'rgba(12, 11, 10, 0.88)');
-            bitmap.textColor = '#c4ae88';
-            bitmap.drawText(title, x + 5, y, width - 10, rowHeight, 'left');
-            y += rowHeight;
-            for (var n = 0; n < entries.length; n++) {
-                var col = n % 2;
-                var dx = x + col * half;
-                if (col === 0) bitmap.fillRect(x, y, width, rowHeight - 1, 'rgba(12, 11, 10, 0.55)');
-                bitmap.textColor = '#c4b8a7';
-                bitmap.drawText(entries[n][0], dx + 4, y, half * 0.52, rowHeight, 'left');
-                bitmap.textColor = /[+]/.test(String(entries[n][1])) || /\d-\d/.test(String(entries[n][1])) ? '#e8c987' : '#f0e8d9';
-                bitmap.drawText(String(entries[n][1]), dx + half * 0.48, y, half * 0.48 - 4, rowHeight, 'right');
-                if (col === 1 || n === entries.length - 1) y += rowHeight;
-            }
-        };
+
+        // Resource bars (HP, MP, SP) spanning full width
         var resources = [
             ['HP', actor.hp, actor.mhp, '#d98440', '#e4b34e', this._actor.mhp],
             ['MP', actor.mp, actor.mmp, '#397bb8', '#40b4db', this._actor.mmp],
@@ -1575,21 +1634,54 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             var resource = resources[r];
             var maximum = Math.max(0, resource[2]);
             var current = Math.min(resource[1], maximum);
-            var barY = y + rowHeight - 5;
-            bitmap.fillRect(x, barY, width, 4, '#302a25');
+            var barY = y + rowHeight - 6;
+            bitmap.fillRect(x, barY, width, 4, COLOR_BASE);
             if (maximum > 0) {
                 bitmap.gradientFillRect(x, barY, Math.floor(width * current / maximum), 4,
                     resource[3], resource[4]);
             }
-            bitmap.textColor = '#c4ae88';
-            bitmap.drawText(resource[0], x + 4, y, width / 3, rowHeight - 3, 'left');
-            bitmap.textColor = '#f0e8d9';
-            bitmap.drawText(current + ' / ' + formatPreview(resource[5], maximum),
-                x, y, width - 4, rowHeight - 3, 'right');
+            bitmap.textColor = COLOR_HEADER;
+            bitmap.drawText(resource[0], x + pad, y, width / 3 - pad, rowHeight, 'left');
+            
+            var resPreview = formatPreview(resource[5], maximum);
+            var resValueStr = current + ' / ' + resPreview.text;
+            
+            bitmap.textColor = resPreview.changed ? COLOR_CHANGED : COLOR_VALUE;
+            bitmap.drawText(resValueStr, x, y, width - pad * 2, rowHeight, 'right');
             y += rowHeight;
         }
-        drawGroup('Core Stat', core);
-        drawGroup(this._showAllStats ? 'Combat Stat' : 'Combat Stat - changes', combat);
+
+        // Three columns: Core Stat | Combat Attribute | Stat Mitigation
+        var colX = [x, x + third, x + third * 2];
+        var colWidth = third - pad * 2;
+        var colY = [y, y, y];
+        var groups = [
+            { title: 'Core Stat', entries: core },
+            { title: 'Combat Attribute', entries: combatAttr },
+            { title: 'Stat Mitigation', entries: statMit }
+        ];
+
+        for (var c = 0; c < 3; c++) {
+            var cx = colX[c] + pad;
+            var cy = colY[c];
+            var cw = colWidth;
+            var group = groups[c];
+            bitmap.fillRect(colX[c] - pad, cy, third, rowHeight, COLOR_PANEL);
+            bitmap.textColor = COLOR_HEADER;
+            bitmap.drawText(group.title, cx, cy, cw, rowHeight, 'left');
+            colY[c] += rowHeight;
+            for (var n = 0; n < group.entries.length; n++) {
+                var entry = group.entries[n];
+                // entry: [label, text, changed]
+                if (n % 2 === 0) bitmap.fillRect(colX[c] - pad, colY[c], third, rowHeight, COLOR_ROW_ALT);
+                bitmap.textColor = COLOR_LABEL;
+                bitmap.drawText(entry[0], cx, colY[c], Math.floor(cw * 0.55), rowHeight, 'left');
+
+                bitmap.textColor = entry[2] ? COLOR_CHANGED : COLOR_VALUE;
+                bitmap.drawText(String(entry[1]), cx + Math.floor(cw * 0.55), colY[c], Math.floor(cw * 0.45) - pad, rowHeight, 'right');
+                colY[c] += rowHeight;
+            }
+        }
         this.resetFontSettings();
     };
 
@@ -1600,8 +1692,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Window_StatusAllocate.prototype.cursorRight = function(wrap) {
         var index = this.index();
-        if (index >= 6 && index < 8) {
-            this.select(index + 1);
+        if (index === 6) {
+            this.select(7);
             SoundManager.playCursor();
         } else if (index >= 0 && index < 6) {
             var key = this.statKeys()[index];
@@ -1618,8 +1710,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Window_StatusAllocate.prototype.cursorLeft = function(wrap) {
         var index = this.index();
-        if (index > 6 && index <= 8) {
-            this.select(index - 1);
+        if (index === 7) {
+            this.select(6);
             SoundManager.playCursor();
         } else if (index >= 0 && index < 6) {
             var key = this.statKeys()[index];
@@ -1653,11 +1745,6 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
                 SoundManager.playBuzzer();
                 this.activate();
             }
-        } else if (index === 8) {
-            this._showAllStats = !this._showAllStats;
-            SoundManager.playOk();
-            this.refresh();
-            this.activate();
         } else if (index >= 0 && index < 6) {
             if (this._tempPoints > 0) {
                 this.cursorRight();
@@ -4241,19 +4328,22 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.createPartyWindow();
         this.createTabsWindow();
 
+        // Kolom kiri: potret + profil (tinggi penuh)
         this._portraitWindow = new Window_StatusPortrait(
-            partyWidth(), this._tabsWindow.height, centerWidth(),
-            Graphics.boxHeight - this._tabsWindow.height
+            0, 0, leftWidth(), Graphics.boxHeight
         );
         this.addWindow(this._portraitWindow);
 
+        // Tengah (di bawah tab): detail status
         this._infoWindow = new Window_StatusInfo(
-            partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
+            leftWidth(), this._tabsWindow.height, centerWidth(),
+            Graphics.boxHeight - this._tabsWindow.height
         );
         this.addWindow(this._infoWindow);
 
         this._allocateWindow = new Window_StatusAllocate(
-            partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
+            leftWidth(), this._tabsWindow.height, centerWidth(),
+            Graphics.boxHeight - this._tabsWindow.height
         );
         this._allocateWindow.setHandler('cancel', this.onAllocateCancel.bind(this));
         this._allocateWindow.setHandler('ok',     this.onAllocateOk.bind(this));
@@ -4261,7 +4351,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.addWindow(this._allocateWindow);
 
         this._equipPreviewWindow = new Window_StatusEquipPreview(
-            partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
+            leftWidth(), this._tabsWindow.height, centerWidth(),
+            Graphics.boxHeight - this._tabsWindow.height
         );
         this._equipPreviewWindow.setHandler('ok',     this.onEquipSlotOk.bind(this));
         this._equipPreviewWindow.setHandler('cancel', this.onEquipPreviewCancel.bind(this));
@@ -4269,7 +4360,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.addWindow(this._equipPreviewWindow);
 
         this._equipItemWindow = new Window_StatusEquipItem(
-            partyWidth() + centerWidth(), 270, rightWidth(), Graphics.boxHeight - 270
+            leftWidth(), this._tabsWindow.height, centerWidth(),
+            Graphics.boxHeight - this._tabsWindow.height
         );
         this._equipItemWindow.setHandler('ok',     this.onEquipItemOk.bind(this));
         this._equipItemWindow.setHandler('cancel', this.onEquipItemCancel.bind(this));
@@ -4277,7 +4369,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.addWindow(this._equipItemWindow);
 
         this._classTreeWindow = new Window_StatusClassTree(
-            partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
+            leftWidth(), this._tabsWindow.height, centerWidth(),
+            Graphics.boxHeight - this._tabsWindow.height
         );
         this._classTreeWindow.setHandler('cancel', this.onClassTreeCancel.bind(this));
         this._classTreeWindow.setHandler('ok',     this.onClassTreeOk.bind(this));
@@ -4285,7 +4378,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.addWindow(this._classTreeWindow);
 
         this._skillListWindow = new Window_StatusSkillList(
-            partyWidth() + centerWidth(), 0, rightWidth(), Graphics.boxHeight
+            leftWidth(), this._tabsWindow.height, centerWidth(),
+            Graphics.boxHeight - this._tabsWindow.height
         );
         this._skillListWindow._parentScene = this;
         this._skillListWindow.setHandler('cancel', this.onSkillListCancel.bind(this));
@@ -4318,15 +4412,16 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     Scene_Status.prototype.createPartyWindow = function() {
+        // Kolom kanan: rail pemilih anggota party
         this._partyWindow = new Window_StatusParty(
-            0, 0, partyWidth(), Graphics.boxHeight
+            Graphics.boxWidth - partyWidth(), 0, partyWidth(), Graphics.boxHeight
         );
         this._partyWindow.setHandler('actorChange', this.onPartyActorChange.bind(this));
         this.addWindow(this._partyWindow);
     };
 
     Scene_Status.prototype.createTabsWindow = function() {
-        this._tabsWindow = new Window_StatusTabs(partyWidth(), 0);
+        this._tabsWindow = new Window_StatusTabs(leftWidth(), 0);
         this._tabsWindow._onSelectHandler = this.onTabChange.bind(this);
         this._tabsWindow.setHandler('status',   this.onTabStatus.bind(this));
         this._tabsWindow.setHandler('allocate', this.onTabAllocate.bind(this));

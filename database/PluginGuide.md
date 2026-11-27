@@ -1468,9 +1468,9 @@ Parameter:
 ## NUSV_StatusScreen
 
 Fungsi: Merombak total layar Status (`Scene_Status`) menjadi tata letak tiga kolom bergaya *Genshin-style character page*:
-- **Kolom Kiri**: Pemilih anggota party (*party actor selector*).
-- **Kolom Tengah**: Tab navigasi horizontal (`Status`, `Equipment`, `Class`, `Skills`) dan potret ilustrasi utuh karakter (*full body portrait*).
-- **Kolom Kanan**: Bar indikator HP / MP / SP / EXP, daftar ikon status effect aktif dengan tooltip detail interaktif, daftar atribut lengkap, dan profil biografi karakter di bagian bawah.
+- **Kolom Kiri**: Potret illustrasi utuh karakter (*full body portrait*) beserta profil biografi karakter di bawahnya.
+- **Kolom Tengah**: Tab navigasi horizontal (`Status`, `Allocate`, `Equipment`, `Class`, `Skills`) dan semua konten detail: bar HP / MP / SP / EXP, daftar ikon status effect aktif dengan tooltip detail interaktif, dan daftar atribut lengkap. Kolom ini dibuat lebih luas untuk menampilkan status dan hal-hal penting.
+- **Kolom Kanan**: Pemilih anggota party (*party actor selector*).
 
 Resolusi Gambar Potret Karakter (dicari di `img/pictures/`):
 1. Actor Notetag: `<Portrait: NamaFile>` atau `<Status Image: NamaFile>`
