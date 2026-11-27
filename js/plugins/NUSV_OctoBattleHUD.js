@@ -359,14 +359,14 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
         // 1. Obsidian Glass Card Background
         var bgGradient = ctx.createLinearGradient(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
         if (isActive) {
-            bgGradient.addColorStop(0, 'rgba(24, 38, 62, 0.96)');
-            bgGradient.addColorStop(1, 'rgba(14, 22, 38, 0.92)');
+            bgGradient.addColorStop(0, 'rgba(35, 30, 26, 0.96)');
+            bgGradient.addColorStop(1, 'rgba(18, 16, 15, 0.92)');
         } else if (isSelected) {
-            bgGradient.addColorStop(0, 'rgba(30, 42, 64, 0.90)');
-            bgGradient.addColorStop(1, 'rgba(16, 24, 38, 0.84)');
+            bgGradient.addColorStop(0, 'rgba(40, 34, 29, 0.90)');
+            bgGradient.addColorStop(1, 'rgba(18, 16, 15, 0.84)');
         } else {
-            bgGradient.addColorStop(0, 'rgba(12, 16, 26, 0.80)');
-            bgGradient.addColorStop(1, 'rgba(8, 12, 20, 0.74)');
+            bgGradient.addColorStop(0, 'rgba(18, 16, 15, 0.80)');
+            bgGradient.addColorStop(1, 'rgba(12, 11, 11, 0.74)');
         }
 
         var cardRadius = isActive ? 10 : 8;
@@ -377,7 +377,7 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
         // Card Border
         ctx.lineWidth = isActive ? 2 : 1;
         if (isActive) {
-            ctx.strokeStyle = '#38BDF8'; // Bright Cyan glow for active turn
+            ctx.strokeStyle = '#C4AE88'; // Warm highlight for active turn
         } else if (isSelected) {
             ctx.strokeStyle = 'rgba(251, 191, 36, 0.80)'; // Amber glow for selection target
         } else {
@@ -391,7 +391,7 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
             ctx.moveTo(rect.x + 3, rect.y + 8);
             ctx.lineTo(rect.x + 3, rect.y + rect.height - 8);
             ctx.lineWidth = 4;
-            ctx.strokeStyle = '#38BDF8';
+            ctx.strokeStyle = '#C4AE88';
             ctx.stroke();
         }
 
@@ -487,7 +487,7 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
         drawRoundedRect(ctx, x - 1, y - 1, size + 2, size + 2, 3);
         ctx.fillStyle = 'rgba(15, 23, 42, 0.70)';
         ctx.fill();
-        ctx.strokeStyle = 'rgba(148, 163, 184, 0.30)';
+        ctx.strokeStyle = 'rgba(162, 139, 104, 0.50)';
         ctx.lineWidth = 1;
         ctx.stroke();
         ctx.restore();
@@ -520,7 +520,7 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
 
         // 2. Avatar Border
         ctx.lineWidth = 1.5;
-        ctx.strokeStyle = isActive ? '#38BDF8' : (isSelected ? '#FBBF24' : 'rgba(255, 255, 255, 0.22)');
+        ctx.strokeStyle = isActive ? '#C4AE88' : (isSelected ? '#FBBF24' : 'rgba(255, 255, 255, 0.22)');
         ctx.stroke();
 
         // 3. Clip and Draw Face Texture
@@ -745,7 +745,7 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
             // 1. Current Turn: Radiant light flare behind diamond
             if (isCurrent) {
                 var flareGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, 35);
-                flareGrad.addColorStop(0, 'rgba(56, 189, 248, 0.35)');
+                flareGrad.addColorStop(0, 'rgba(196, 174, 136, 0.35)');
                 flareGrad.addColorStop(1, 'rgba(56, 189, 248, 0.00)');
                 ctx.fillStyle = flareGrad;
                 ctx.beginPath();
@@ -819,13 +819,13 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
                 // Outer Diamond (Bright White/Cyan Glow)
                 ctx.strokeStyle = '#FFFFFF';
                 ctx.lineWidth = 1.6;
-                ctx.shadowColor = '#38BDF8';
+                ctx.shadowColor = '#C4AE88';
                 ctx.shadowBlur = 8;
                 drawDiamondPath(ctx, cx, cy, r);
                 ctx.stroke();
 
                 // Inner Diamond Ring
-                ctx.strokeStyle = '#38BDF8';
+                ctx.strokeStyle = '#C4AE88';
                 ctx.lineWidth = 1.2;
                 ctx.shadowBlur = 0;
                 drawDiamondPath(ctx, cx, cy, r - 4);
@@ -838,7 +838,7 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
                 drawDiamondPath(ctx, cx, cy, r);
                 ctx.stroke();
             } else {
-                ctx.strokeStyle = '#38BDF8';
+                ctx.strokeStyle = '#C4AE88';
                 ctx.lineWidth = 1.5;
                 ctx.shadowColor = 'rgba(56, 189, 248, 0.6)';
                 ctx.shadowBlur = 4;
@@ -1147,14 +1147,14 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
         ctx.save();
         // Background Glass Box
         var bg = ctx.createLinearGradient(0, 0, this.contents.width, this.contents.height);
-        bg.addColorStop(0, 'rgba(15, 23, 42, 0.94)');
-        bg.addColorStop(1, 'rgba(10, 15, 28, 0.90)');
+        bg.addColorStop(0, 'rgba(18, 16, 15, 0.94)');
+        bg.addColorStop(1, 'rgba(12, 11, 11, 0.90)');
         drawRoundedRect(ctx, 0, 0, this.contents.width, this.contents.height, 8);
         ctx.fillStyle = bg;
         ctx.fill();
 
         // Elegant Border
-        ctx.strokeStyle = 'rgba(148, 163, 184, 0.30)';
+        ctx.strokeStyle = 'rgba(162, 139, 104, 0.50)';
         ctx.lineWidth = 1;
         ctx.stroke();
 
@@ -1179,25 +1179,25 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
         if (isCur && isActive) {
             // Active Selection: Glowing cyan background pill & left vertical accent bar
             var glow = ctx.createLinearGradient(rect.x, rect.y, rect.x + rect.width, rect.y);
-            glow.addColorStop(0, 'rgba(56, 189, 248, 0.30)');
-            glow.addColorStop(1, 'rgba(56, 189, 248, 0.08)');
+            glow.addColorStop(0, 'rgba(196, 174, 136, 0.30)');
+            glow.addColorStop(1, 'rgba(196, 174, 136, 0.08)');
             drawRoundedRect(ctx, rect.x - 2, rect.y + 1, rect.width + 4, rect.height - 2, 4);
             ctx.fillStyle = glow;
             ctx.fill();
 
             // Left indicator bar
-            ctx.fillStyle = '#38BDF8';
+            ctx.fillStyle = '#C4AE88';
             ctx.fillRect(rect.x - 2, rect.y + 3, 3, rect.height - 6);
         } else if (isCur && !isActive) {
             // Parent command when deactivated
             var soft = ctx.createLinearGradient(rect.x, rect.y, rect.x + rect.width, rect.y);
-            soft.addColorStop(0, 'rgba(56, 189, 248, 0.15)');
-            soft.addColorStop(1, 'rgba(56, 189, 248, 0.04)');
+            soft.addColorStop(0, 'rgba(196, 174, 136, 0.15)');
+            soft.addColorStop(1, 'rgba(196, 174, 136, 0.04)');
             drawRoundedRect(ctx, rect.x - 2, rect.y + 1, rect.width + 4, rect.height - 2, 4);
             ctx.fillStyle = soft;
             ctx.fill();
 
-            ctx.strokeStyle = 'rgba(56, 189, 248, 0.50)';
+            ctx.strokeStyle = 'rgba(196, 174, 136, 0.50)';
             ctx.lineWidth = 1;
             ctx.stroke();
         }
@@ -1430,14 +1430,14 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
         ctx.save();
         // Background Glass Box
         var bg = ctx.createLinearGradient(0, 0, this.contents.width, this.contents.height);
-        bg.addColorStop(0, 'rgba(15, 23, 42, 0.94)');
-        bg.addColorStop(1, 'rgba(10, 15, 28, 0.90)');
+        bg.addColorStop(0, 'rgba(18, 16, 15, 0.94)');
+        bg.addColorStop(1, 'rgba(12, 11, 11, 0.90)');
         drawRoundedRect(ctx, 0, 0, this.contents.width, this.contents.height, 8);
         ctx.fillStyle = bg;
         ctx.fill();
 
         // Elegant Border
-        ctx.strokeStyle = 'rgba(148, 163, 184, 0.30)';
+        ctx.strokeStyle = 'rgba(162, 139, 104, 0.50)';
         ctx.lineWidth = 1;
         ctx.stroke();
 
@@ -1463,25 +1463,25 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
         if (isCur && isActive) {
             // Active Selection: Glowing cyan background pill & left vertical accent bar
             var glow = ctx.createLinearGradient(rect.x, rect.y, rect.x + rect.width, rect.y);
-            glow.addColorStop(0, 'rgba(56, 189, 248, 0.30)');
-            glow.addColorStop(1, 'rgba(56, 189, 248, 0.08)');
+            glow.addColorStop(0, 'rgba(196, 174, 136, 0.30)');
+            glow.addColorStop(1, 'rgba(196, 174, 136, 0.08)');
             drawRoundedRect(ctx, rect.x - 2, rect.y + 1, rect.width + 4, rect.height - 2, 4);
             ctx.fillStyle = glow;
             ctx.fill();
 
             // Left indicator bar
-            ctx.fillStyle = '#38BDF8';
+            ctx.fillStyle = '#C4AE88';
             ctx.fillRect(rect.x - 2, rect.y + 3, 3, rect.height - 6);
         } else if (isCur && !isActive) {
             // Parent chosen command while in sub-menu (e.g. Skill window is open)
             var soft = ctx.createLinearGradient(rect.x, rect.y, rect.x + rect.width, rect.y);
-            soft.addColorStop(0, 'rgba(56, 189, 248, 0.15)');
-            soft.addColorStop(1, 'rgba(56, 189, 248, 0.04)');
+            soft.addColorStop(0, 'rgba(196, 174, 136, 0.15)');
+            soft.addColorStop(1, 'rgba(196, 174, 136, 0.04)');
             drawRoundedRect(ctx, rect.x - 2, rect.y + 1, rect.width + 4, rect.height - 2, 4);
             ctx.fillStyle = soft;
             ctx.fill();
 
-            ctx.strokeStyle = 'rgba(56, 189, 248, 0.50)';
+            ctx.strokeStyle = 'rgba(196, 174, 136, 0.50)';
             ctx.lineWidth = 1;
             ctx.stroke();
         }
@@ -1599,13 +1599,13 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
             var ctx = this.contents.context;
             ctx.save();
             var bg = ctx.createLinearGradient(0, 0, this.contents.width, this.contents.height);
-            bg.addColorStop(0, 'rgba(15, 23, 42, 0.94)');
-            bg.addColorStop(1, 'rgba(10, 15, 28, 0.90)');
+            bg.addColorStop(0, 'rgba(18, 16, 15, 0.94)');
+            bg.addColorStop(1, 'rgba(12, 11, 11, 0.90)');
             drawRoundedRect(ctx, 0, 0, this.contents.width, this.contents.height, 8);
             ctx.fillStyle = bg;
             ctx.fill();
 
-            ctx.strokeStyle = 'rgba(148, 163, 184, 0.30)';
+            ctx.strokeStyle = 'rgba(162, 139, 104, 0.50)';
             ctx.lineWidth = 1;
             ctx.stroke();
             ctx.restore();
@@ -1649,13 +1649,13 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
             ctx.save();
             if (isCur) {
                 var glow = ctx.createLinearGradient(rect.x, rect.y, rect.x + rect.width, rect.y);
-                glow.addColorStop(0, 'rgba(56, 189, 248, 0.28)');
-                glow.addColorStop(1, 'rgba(56, 189, 248, 0.06)');
+                glow.addColorStop(0, 'rgba(196, 174, 136, 0.28)');
+                glow.addColorStop(1, 'rgba(196, 174, 136, 0.06)');
                 drawRoundedRect(ctx, rect.x - 2, rect.y + 1, rect.width + 4, rect.height - 2, 4);
                 ctx.fillStyle = glow;
                 ctx.fill();
 
-                ctx.fillStyle = '#38BDF8';
+                ctx.fillStyle = '#C4AE88';
                 ctx.fillRect(rect.x - 2, rect.y + 3, 3, rect.height - 6);
             }
             ctx.restore();
@@ -1885,25 +1885,25 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
                 ctx.save();
                 if (isActive) {
                     var tabGrad = ctx.createLinearGradient(tabX, tabY, tabX, tabY + tabH);
-                    tabGrad.addColorStop(0, 'rgba(56, 189, 248, 0.35)');
-                    tabGrad.addColorStop(1, 'rgba(14, 165, 233, 0.18)');
+                    tabGrad.addColorStop(0, 'rgba(196, 174, 136, 0.35)');
+                    tabGrad.addColorStop(1, 'rgba(143, 122, 94, 0.18)');
                     drawRoundedRect(ctx, tabX, tabY, tabW, tabH, 4);
                     ctx.fillStyle = tabGrad;
                     ctx.fill();
 
-                    ctx.strokeStyle = '#38BDF8';
+                    ctx.strokeStyle = '#C4AE88';
                     ctx.lineWidth = 1;
                     ctx.stroke();
 
                     // Glowing bottom accent indicator
-                    ctx.fillStyle = '#38BDF8';
+                    ctx.fillStyle = '#C4AE88';
                     ctx.fillRect(tabX + Math.floor(tabW / 2) - 8, tabY + tabH - 2, 16, 2);
                 } else {
                     drawRoundedRect(ctx, tabX, tabY, tabW, tabH, 4);
-                    ctx.fillStyle = 'rgba(30, 41, 59, 0.45)';
+                    ctx.fillStyle = 'rgba(30, 26, 23, 0.45)';
                     ctx.fill();
 
-                    ctx.strokeStyle = 'rgba(148, 163, 184, 0.18)';
+                    ctx.strokeStyle = 'rgba(162, 139, 104, 0.25)';
                     ctx.lineWidth = 1;
                     ctx.stroke();
                 }
@@ -1917,7 +1917,7 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
 
             // Subtle divider line separating tab header from item rows
             ctx.save();
-            ctx.strokeStyle = 'rgba(148, 163, 184, 0.20)';
+            ctx.strokeStyle = 'rgba(162, 139, 104, 0.30)';
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(4, this.headerHeight() - 1);
@@ -1938,13 +1938,13 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
             var ctx = this.contents.context;
             ctx.save();
             var bg = ctx.createLinearGradient(0, 0, this.contents.width, this.contents.height);
-            bg.addColorStop(0, 'rgba(15, 23, 42, 0.94)');
-            bg.addColorStop(1, 'rgba(10, 15, 28, 0.90)');
+            bg.addColorStop(0, 'rgba(18, 16, 15, 0.94)');
+            bg.addColorStop(1, 'rgba(12, 11, 11, 0.90)');
             drawRoundedRect(ctx, 0, 0, this.contents.width, this.contents.height, 8);
             ctx.fillStyle = bg;
             ctx.fill();
 
-            ctx.strokeStyle = 'rgba(148, 163, 184, 0.30)';
+            ctx.strokeStyle = 'rgba(162, 139, 104, 0.50)';
             ctx.lineWidth = 1;
             ctx.stroke();
             ctx.restore();
@@ -1991,13 +1991,13 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
             ctx.save();
             if (isCur) {
                 var glow = ctx.createLinearGradient(rect.x, rect.y, rect.x + rect.width, rect.y);
-                glow.addColorStop(0, 'rgba(56, 189, 248, 0.28)');
-                glow.addColorStop(1, 'rgba(56, 189, 248, 0.06)');
+                glow.addColorStop(0, 'rgba(196, 174, 136, 0.28)');
+                glow.addColorStop(1, 'rgba(196, 174, 136, 0.06)');
                 drawRoundedRect(ctx, rect.x - 2, rect.y + 1, rect.width + 4, rect.height - 2, 4);
                 ctx.fillStyle = glow;
                 ctx.fill();
 
-                ctx.fillStyle = '#38BDF8';
+                ctx.fillStyle = '#C4AE88';
                 ctx.fillRect(rect.x - 2, rect.y + 3, 3, rect.height - 6);
             }
             ctx.restore();
@@ -2220,13 +2220,13 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
             var ctx = this.contents.context;
             ctx.save();
             var bg = ctx.createLinearGradient(0, 0, this.contents.width, this.contents.height);
-            bg.addColorStop(0, 'rgba(15, 23, 42, 0.94)');
-            bg.addColorStop(1, 'rgba(10, 15, 28, 0.90)');
+            bg.addColorStop(0, 'rgba(18, 16, 15, 0.94)');
+            bg.addColorStop(1, 'rgba(12, 11, 11, 0.90)');
             drawRoundedRect(ctx, 0, 0, this.contents.width, this.contents.height, 8);
             ctx.fillStyle = bg;
             ctx.fill();
 
-            ctx.strokeStyle = 'rgba(148, 163, 184, 0.30)';
+            ctx.strokeStyle = 'rgba(162, 139, 104, 0.50)';
             ctx.lineWidth = 1;
             ctx.stroke();
             ctx.restore();
@@ -2280,12 +2280,12 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
                     var ctx = this.contents.context;
                     ctx.save();
                     var bg = ctx.createLinearGradient(0, 0, this.contents.width, this.contents.height);
-                    bg.addColorStop(0, 'rgba(15, 23, 42, 0.94)');
-                    bg.addColorStop(1, 'rgba(10, 15, 28, 0.90)');
+                    bg.addColorStop(0, 'rgba(18, 16, 15, 0.94)');
+                    bg.addColorStop(1, 'rgba(12, 11, 11, 0.90)');
                     drawRoundedRect(ctx, 0, 0, this.contents.width, this.contents.height, 8);
                     ctx.fillStyle = bg;
                     ctx.fill();
-                    ctx.strokeStyle = 'rgba(148, 163, 184, 0.30)';
+                    ctx.strokeStyle = 'rgba(162, 139, 104, 0.50)';
                     ctx.lineWidth = 1;
                     ctx.stroke();
                     ctx.restore();
@@ -2502,7 +2502,7 @@ NUSV.OctoBattleHUD = NUSV.OctoBattleHUD || {};
                 ctx.save();
                 // Rounded Obsidian Glass Slot
                 drawRoundedRect(ctx, bx, stateY, boxSize, boxSize, 3);
-                ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+                ctx.fillStyle = 'rgba(18, 16, 15, 0.92)';
                 ctx.fill();
 
                 ctx.lineWidth = 1;

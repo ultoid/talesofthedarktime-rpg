@@ -437,8 +437,15 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
     };
 
     Scene_Menu.prototype.nusvBridgeOpenPartyMenu = function() {
-        partyMenuIndex = 0;
-        SceneManager.push(Scene_NUSVPartyMenu);
+        this._swapIndex = -1;
+        this._memberWindow = this._statusWindow;
+        this._memberWindow._pendingSwapIndex = -1;
+        this._memberWindow.setFormationMode(false);
+        this._memberWindow.setHandler('ok', this.nusvPartyMemberOk.bind(this));
+        this._memberWindow.setHandler('cancel', this.nusvPartyMemberCancel.bind(this));
+        this._memberWindow.show();
+        this._memberWindow.activate();
+        this._memberWindow.select(Math.min(partyMenuIndex, this._memberWindow.maxItems() - 1));
     };
 
     // -------------------------------------------------------------------------
@@ -602,7 +609,19 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
     };
 
     Window_NUSVPartyAction.prototype.windowWidth = function() {
-        return 240;
+        return 200;
+    };
+
+    Window_NUSVPartyAction.prototype.standardPadding = function() {
+        return 12;
+    };
+
+    Window_NUSVPartyAction.prototype.lineHeight = function() {
+        return 28;
+    };
+
+    Window_NUSVPartyAction.prototype.standardFontSize = function() {
+        return 20;
     };
 
     Window_NUSVPartyAction.prototype.numVisibleRows = function() {
@@ -650,6 +669,7 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
      * the plugin closure, to stay on the member chosen before opening Status.
      */
     var partyMenuIndex = 0;
+    var returnToPartySelection = false;
 
     /*
      * Shown by the Party command. It fills the screen with the same actor
@@ -803,6 +823,59 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
         this._memberWindow.activate();
     };
 
+    // Reuse the party actions directly on the main menu's status panel.
+    var _Scene_Menu_createPartyAction = Scene_Menu.prototype.create;
+    Scene_Menu.prototype.create = function() {
+        _Scene_Menu_createPartyAction.call(this);
+        this._actionWindow = new Window_NUSVPartyAction();
+        this._actionWindow.setHandler('detail', this.nusvPartyActionDetail.bind(this));
+        this._actionWindow.setHandler('changePosition', this.nusvPartyActionChangePosition.bind(this));
+        this._actionWindow.setHandler('item', this.nusvPartyActionItem.bind(this));
+        this._actionWindow.setHandler('cancel', this.nusvPartyActionCancel.bind(this));
+        this.addWindow(this._actionWindow);
+    };
+
+    Scene_Menu.prototype.nusvPartyMemberOk = function() {
+        Scene_NUSVPartyMenu.prototype.onMemberOk.call(this);
+        if (this._actionWindow.visible) {
+            var rect = this._memberWindow.itemRect(this._memberWindow.index());
+            var bottom = this._memberWindow.y + this._memberWindow.padding + rect.y + rect.height;
+            this._actionWindow.x = Math.max(0, Graphics.boxWidth - this._actionWindow.width - 8);
+            this._actionWindow.y = Math.min(bottom, Graphics.boxHeight - this._actionWindow.height - 8);
+        }
+    };
+
+    Scene_Menu.prototype.nusvPartyMemberCancel = function() {
+        if (this._swapIndex >= 0) {
+            this._swapIndex = -1;
+            this._memberWindow._pendingSwapIndex = -1;
+            this._memberWindow.refresh();
+            this._memberWindow.activate();
+            return;
+        }
+        this._memberWindow.deselect();
+        this._memberWindow.deactivate();
+        this._commandWindow.activate();
+    };
+
+    Scene_Menu.prototype.nusvPartyActionDetail = function() {
+        returnToPartySelection = true;
+        Scene_NUSVPartyMenu.prototype.onActionDetail.call(this);
+    };
+
+    Scene_Menu.prototype.nusvPartyActionChangePosition = function() {
+        Scene_NUSVPartyMenu.prototype.onActionChangePosition.call(this);
+    };
+
+    Scene_Menu.prototype.nusvPartyActionItem = function() {
+        returnToPartySelection = true;
+        Scene_NUSVPartyMenu.prototype.onActionItem.call(this);
+    };
+
+    Scene_Menu.prototype.nusvPartyActionCancel = function() {
+        Scene_NUSVPartyMenu.prototype.onActionCancel.call(this);
+    };
+
     // -------------------------------------------------------------------------
     // Main Menu Layout
     // -------------------------------------------------------------------------
@@ -856,31 +929,114 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
         if (_Scene_Menu_repositionWindows) {
             _Scene_Menu_repositionWindows.call(this);
         }
+        if (!SHOW_MAIN_STATUS || !this._statusWindow || !this._commandWindow) return;
 
-        if (SHOW_MAIN_STATUS) {
-            if (this._goldWindow && this._commandWindow) {
-                this._goldWindow.x = 0;
-                this._goldWindow.width = this._commandWindow.width;
-                this._goldWindow.y = Graphics.boxHeight - this._goldWindow.height;
-                this._goldWindow.createContents();
-                this._goldWindow.refresh();
-            }
-            if (this._statusWindow && this._commandWindow) {
-                var sx = this._commandWindow.width;
-                var sw = Graphics.boxWidth - sx;
-                this._statusWindow.move(sx, 0, sw, Graphics.boxHeight);
-                this._statusWindow.createContents();
-                this._statusWindow.refresh();
-                this._statusWindow.show();
-                this._statusWindow.deactivate();
-                this._statusWindow.deselect();
-            }
-        } else {
-            if (this._goldWindow) {
-                this._goldWindow.x = Graphics.boxWidth - this._goldWindow.width;
-                this._goldWindow.y = 0;
+        var w = Graphics.boxWidth;
+        var h = Graphics.boxHeight;
+        var partyWidth = Math.floor(w * 0.29);
+        var headerHeight = Math.max(58, Math.floor(h * 0.11));
+        var footerHeight = Math.max(30, Math.floor(h * 0.065));
+        var status = this._statusWindow;
+        var command = this._commandWindow;
+
+        if (!this._nusvMenuBackdrop) {
+            var backdrop = new Sprite(new Bitmap(w, h));
+            var b = backdrop.bitmap;
+            b.fillRect(0, 0, w, h, 'rgba(19, 16, 14, 0.28)');
+            b.fillRect(0, 0, w, headerHeight, 'rgba(18, 16, 15, 0.82)');
+            b.fillRect(w - partyWidth, 0, partyWidth, h - footerHeight, 'rgba(18, 17, 17, 0.82)');
+            b.fillRect(0, h - footerHeight, w, footerHeight, 'rgba(12, 11, 11, 0.92)');
+            b.fillRect(0, headerHeight - 2, w, 2, '#a28b68');
+            b.fillRect(w - partyWidth, 0, 2, h - footerHeight, '#8f7a5e');
+            b.fillRect(0, h - footerHeight, w, 2, '#8f7a5e');
+            b.fontSize = Math.max(22, Math.floor(h * 0.045));
+            b.textColor = '#f0e8d9';
+            b.drawText('Menu', 24, 0, command.width, headerHeight, 'left');
+            b.fontSize = Math.max(14, Math.floor(h * 0.024));
+            b.textColor = '#d3c8b7';
+            b.drawText('Select a category', 24, h - footerHeight, w / 2, footerHeight, 'left');
+            this.addChildAt(backdrop, this.children.indexOf(this._windowLayer));
+            this._nusvMenuBackdrop = backdrop;
+            if (typeof PIXI !== 'undefined' && PIXI.filters && PIXI.filters.BlurFilter &&
+                Graphics.isWebGL && Graphics.isWebGL()) {
+                var blur = new PIXI.filters.BlurFilter();
+                blur.blur = 4;
+                this._backgroundSprite.filters = [blur];
             }
         }
+
+        command.x = 0;
+        command.y = headerHeight + 12;
+        command.opacity = 0;
+        command.drawItem = function(index) {
+            var rect = this.itemRectForText(index);
+            this.contents.fillRect(0, rect.y + 3, this.contentsWidth(), rect.height - 6,
+                'rgba(15, 14, 13, 0.72)');
+            this.resetTextColor();
+            this.changePaintOpacity(this.isCommandEnabled(index));
+            this.drawText(this.commandName(index), rect.x + 8, rect.y, rect.width - 8, 'left');
+        };
+        command.refresh();
+
+        this._goldWindow.move(w - partyWidth + 8, 0, partyWidth - 16, headerHeight);
+        this._goldWindow.opacity = 0;
+        this._goldWindow.createContents();
+        this._goldWindow.refresh();
+
+        status.move(w - partyWidth + 4, headerHeight, partyWidth - 8, h - headerHeight - footerHeight);
+        status.opacity = 0;
+        status.drawItemBackground = function(index) {
+            if (this._pendingSwapIndex === index) {
+                var rect = this.itemRect(index);
+                this.contents.fillRect(rect.x, rect.y, rect.width, rect.height,
+                    'rgba(162, 139, 104, 0.25)');
+                this.contents.fillRect(rect.x, rect.y, 2, rect.height, '#c4ae88');
+            }
+        };
+        status.drawItemImage = function(index) {
+            var actor = $gameParty.members()[index];
+            if (!actor) return;
+            var rect = this.itemRect(index);
+            var name = actor.battlerName();
+            if (!name) return;
+            var bitmap = ImageManager.loadSvActor(name);
+            if (!bitmap.isReady()) {
+                bitmap.addLoadListener(this.refresh.bind(this));
+                return;
+            }
+            var frameWidth = bitmap.width / 9;
+            var frameHeight = bitmap.height / 6;
+            var scale = Math.min(56 / frameWidth, (rect.height - 8) / frameHeight);
+            var width = Math.floor(frameWidth * scale);
+            var height = Math.floor(frameHeight * scale);
+            this.changePaintOpacity(actor.isBattleMember());
+            this.contents.blt(bitmap, frameWidth, frameHeight, frameWidth, frameHeight,
+                rect.x + Math.floor((60 - width) / 2),
+                rect.y + Math.max(0, Math.floor((Math.min(rect.height, 100) - height) / 2)),
+                width, height);
+            this.changePaintOpacity(true);
+        };
+        status.drawItemStatus = function(index) {
+            var actor = $gameParty.members()[index];
+            if (!actor) return;
+            var rect = this.itemRect(index);
+            var x = rect.x + 62;
+            var width = Math.max(40, rect.width - 66);
+            var line = Math.min(28, Math.floor((rect.height - 8) / 4));
+            this.contents.fontSize = Math.max(14, Math.min(21, line - 3));
+            this.resetTextColor();
+            this.drawActorName(actor, x, rect.y, width);
+            this.contents.fillRect(x, rect.y + line, width, 1, '#8f7a5e');
+            this.drawText('Lv. ' + actorBaseLevel(actor), x, rect.y + line, width);
+            this.drawActorHp(actor, x, rect.y + line * 2, width);
+            this.drawActorMp(actor, x, rect.y + line * 3, width);
+            this.resetFontSettings();
+        };
+        status.createContents();
+        status.refresh();
+        status.show();
+        status.deactivate();
+        status.deselect();
     };
 
     var _Scene_Menu_start = Scene_Menu.prototype.start;
@@ -889,6 +1045,12 @@ NUSV.MainMenuBridge = NUSV.MainMenuBridge || {};
         if (SHOW_MAIN_STATUS && this._statusWindow) {
             this._statusWindow.deselect();
             this._statusWindow.deactivate();
+        }
+        if (returnToPartySelection) {
+            returnToPartySelection = false;
+            this._commandWindow.selectSymbol('status');
+            this._commandWindow.deactivate();
+            this.nusvBridgeOpenPartyMenu();
         }
     };
 

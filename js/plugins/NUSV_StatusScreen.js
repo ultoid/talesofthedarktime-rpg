@@ -681,7 +681,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var lh = this.lineHeight();
         var y = 0;
 
-        this.contents.fontSize = 40;
+        this.contents.fontSize = 34;
         this.changeTextColor(this.normalColor());
         this.drawText(this._actor.name(), pad, y, width, 'center');
         y += lh + 8;
@@ -718,7 +718,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.contents.fillRect(pad, legendY - 6, width, 1, 'rgba(255, 255, 255, 0.12)');
         this.contents.fontSize = 12;
         this.changeTextColor(this.textColor(7));
-        this.drawText('[Z / Enter] Pilih   [X / Esc] Kembali   [Q / W] Ganti Karakter', pad, legendY, width, 'center');
+        this.drawText(this._helpText || 'Left/Right: Tab   Enter: Select   Esc: Back   Q/W: Character', pad, legendY, width, 'center');
         this.resetFontSettings();
     };
 
@@ -1276,6 +1276,8 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this._actor = null;
         this._tempAllocated = { str: 0, int: 0, dex: 0, luk: 0, agi: 0, vit: 0 };
         this._tempPoints = 0;
+        this._showAllStats = false;
+        this.backOpacity = 235;
         this.select(0);
         this.deactivate();
         this.refresh();
@@ -1308,7 +1310,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     Window_StatusAllocate.prototype.maxItems = function() {
-        return 7; // 6 stats + 1 Confirm row
+        return 9; // 6 stats, Confirm, Reset, and the stat detail toggle
     };
 
     Window_StatusAllocate.prototype.statKeys = function() {
@@ -1341,12 +1343,13 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var rect = Window_Selectable.prototype.itemRect.call(this, index);
         var lh = this.lineHeight();
         rect.y += lh * 2 + 10;
-        if (index === 6) {
-            rect.y += 10;
-            rect.height = lh;
-        } else {
-            rect.height = lh;
+        if (index >= 6) {
+            rect.y = lh * 8 + 20;
+            var buttonWidth = Math.floor(rect.width / 3);
+            rect.x = (index - 6) * buttonWidth;
+            rect.width = index === 8 ? rect.width - buttonWidth * 2 : buttonWidth;
         }
+        rect.height = lh;
         return rect;
     };
 
@@ -1354,23 +1357,40 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         if (!this._actor) return;
         var rect = this.itemRectForText(index);
 
-        if (index === 6) {
+        if (index >= 6) {
             var total = this.totalPending();
             var hasPending = total > 0;
-            var btnText = hasPending ? 'CONFIRM ALLOCATION (+' + total + ')' : 'CONFIRM';
-
-            var bg = hasPending ? 'rgba(30, 90, 55, 0.75)' : 'rgba(25, 35, 50, 0.45)';
-            this.contents.fillRect(rect.x, rect.y, rect.width, rect.height, bg);
-
+            var btnText = index === 6 ? (hasPending ? 'Confirm +' + total : 'Confirm') :
+                (index === 7 ? 'Reset' : (this._showAllStats ? 'Less' : 'All stats'));
+            var enabled = index === 8 || hasPending;
+            var selected = this.active && this.index() === index;
             var ctx = this.contents._context;
+            var left = rect.x + 8;
+            var right = rect.x + rect.width - 8;
+            var top = rect.y + 3;
+            var bottom = rect.y + rect.height - 3;
+            var point = Math.min(12, Math.floor((bottom - top) / 2));
             ctx.save();
-            ctx.strokeStyle = hasPending ? 'rgba(80, 220, 120, 0.85)' : 'rgba(70, 90, 120, 0.5)';
-            ctx.strokeRect(rect.x + 0.5, rect.y + 0.5, rect.width - 1, rect.height - 1);
+            ctx.beginPath();
+            ctx.moveTo(left + point, top);
+            ctx.lineTo(right - point, top);
+            ctx.lineTo(right, (top + bottom) / 2);
+            ctx.lineTo(right - point, bottom);
+            ctx.lineTo(left + point, bottom);
+            ctx.lineTo(left, (top + bottom) / 2);
+            ctx.closePath();
+            ctx.fillStyle = selected ? 'rgba(135, 126, 113, 0.88)' : 'rgba(12, 11, 10, 0.90)';
+            ctx.strokeStyle = enabled ? '#c4ae88' : 'rgba(143, 122, 94, 0.45)';
+            ctx.lineWidth = 1;
+            ctx.fill();
+            ctx.stroke();
             ctx.restore();
+            this.contents._setDirty();
 
-            this.changeTextColor(hasPending ? this.powerUpColor() : this.textColor(7));
-            this.drawText(btnText, rect.x, rect.y, rect.width, 'center');
-            this.resetTextColor();
+            this.contents.fontSize = Math.max(11, Math.min(16, this.standardFontSize() - 6));
+            this.changeTextColor(enabled ? '#f0e8d9' : '#8e867b');
+            this.drawText(btnText, left + point, rect.y, right - left - point * 2, 'center');
+            this.resetFontSettings();
             return;
         }
 
@@ -1379,31 +1399,63 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var baseVal = typeof this._actor.nusvBaseStat === 'function' ? this._actor.nusvBaseStat(key) : 10;
         var pending = this._tempAllocated ? (this._tempAllocated[key] || 0) : 0;
         var currentTotal = baseVal + pending;
+        var ctx = this.contents._context;
+        var radius = Math.min(10, Math.floor((rect.height - 6) / 2));
+        var x = rect.x;
+        var y = rect.y + 3;
+        var w = rect.width;
+        var h = rect.height - 6;
 
-        // Stat Name
-        this.changeTextColor(this.systemColor());
-        this.drawText(name, rect.x, rect.y, rect.width - 110);
-        this.resetTextColor();
+        // Dark inset rows keep the value and allocation controls easy to scan.
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + w - radius, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+        ctx.lineTo(x + w, y + h - radius);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+        ctx.lineTo(x + radius, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.fillStyle = this.active && this.index() === index ?
+            'rgba(80, 72, 62, 0.92)' : 'rgba(10, 10, 10, 0.78)';
+        ctx.fill();
+        ctx.restore();
+        this.contents._setDirty();
 
-        // Left button [-]
-        var canSub = pending > 0;
-        this.changeTextColor(canSub ? this.textColor(14) : this.textColor(7));
-        this.drawText('[-]', rect.x + rect.width - 96, rect.y, 24, 'center');
-
-        // Value
-        if (pending > 0) {
-            this.changeTextColor(this.powerUpColor());
-            this.drawText(String(currentTotal), rect.x + rect.width - 72, rect.y, 48, 'center');
+        var iconSet = ImageManager.loadSystem('IconSet');
+        if (!iconSet.isReady()) {
+            if (!this._allocateIconsLoading) {
+                this._allocateIconsLoading = true;
+                iconSet.addLoadListener(function() {
+                    this._allocateIconsLoading = false;
+                    this.refresh();
+                }.bind(this));
+            }
         } else {
-            this.resetTextColor();
-            this.drawText(String(currentTotal), rect.x + rect.width - 72, rect.y, 48, 'center');
+            var iconIndex = [711, 778, 70, 780, 777, 84][index];
+            var iconSize = 24;
+            var iconY = rect.y + Math.floor((rect.height - iconSize) / 2);
+            this.contents.blt(iconSet, iconIndex % 16 * 32, Math.floor(iconIndex / 16) * 32,
+                32, 32, x + 3, iconY, iconSize, iconSize);
+
+            // The top portions of the standard buff/debuff icons are up/down arrows.
+            this.changePaintOpacity(pending > 0);
+            this.contents.blt(iconSet, 6, 3 * 32 + 4, 20, 9,
+                x + w - 93, rect.y + Math.floor((rect.height - 10) / 2), 18, 10);
+            this.changePaintOpacity(this._tempPoints > 0);
+            this.contents.blt(iconSet, 6, 2 * 32 + 4, 20, 9,
+                x + w - 21, rect.y + Math.floor((rect.height - 10) / 2), 18, 10);
+            this.changePaintOpacity(true);
         }
 
-        // Right button [+]
-        var canAdd = this._tempPoints > 0;
-        this.changeTextColor(canAdd ? this.textColor(14) : this.textColor(7));
-        this.drawText('[+]', rect.x + rect.width - 24, rect.y, 24, 'center');
-        this.resetTextColor();
+        this.contents.fontSize = Math.max(14, Math.min(20, this.standardFontSize() - 3));
+        this.changeTextColor('#e8dfd0');
+        this.drawText(name, x + 29, rect.y, Math.max(0, w - 139));
+        this.changeTextColor(pending > 0 ? '#d5bd8e' : this.normalColor());
+        this.drawText(String(currentTotal), x + w - 72, rect.y, 48, 'center');
+        this.resetFontSettings();
     };
 
     Window_StatusAllocate.prototype.refresh = function() {
@@ -1427,22 +1479,117 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             ptsText += ' (-' + total + ')';
         }
         this.drawText(ptsText, pad, y, width, 'center');
+        this.contents.fillRect(pad, lh * 2 + 4, width, 1, 'rgba(162, 139, 104, 0.65)');
 
         this.drawAllItems();
 
-        var descY = lh * 2 + 10 + (lh * 6) + 10 + lh + 14;
-        var curIdx = this.index();
-        var desc = (curIdx >= 0 && curIdx < 6) ? (this.statDescriptions()[curIdx] || '') : 'Save all allocated stat points permanently.';
-        this.changeTextColor(this.systemColor());
-        this.drawText('Effect:', pad, descY, width);
-        descY += lh;
-        this.resetTextColor();
-        this.drawText(desc, pad + 4, descY, width - 8);
+        this.drawStatTotals(pad, lh * 2 + 10 + (lh * 6) + 10 + lh + 8, width);
 
-        var footY = this.contents.height - lh - 4;
-        this.changeTextColor(this.systemColor());
-        this.contents.fontSize = Math.max(13, this.standardFontSize() - 7);
-        this.drawText('◄ Left: -1  |  ► Right: +1  |  OK: Confirm', pad, footY, width, 'center');
+
+    };
+
+    Window_StatusAllocate.prototype.drawStatTotals = function(x, y, width) {
+        // A shallow actor copy previews pending allocations without changing the party.
+        var actor = Object.create(this._actor);
+        var allocated = this._actor._nusvAllocatedStats || {};
+        actor._nusvAllocatedStats = {};
+        var keys = this.statKeys();
+        for (var i = 0; i < keys.length; i++) {
+            actor._nusvAllocatedStats[keys[i]] = (allocated[keys[i]] || 0) +
+                (this._tempAllocated[keys[i]] || 0);
+        }
+        var pct = function(value) { return (value * 100).toFixed(1) + '%'; };
+        var penetration = function(tag) {
+            return actor.equips().reduce(function(sum, item) {
+                if (!item || !item.meta || !item.meta[tag]) return sum;
+                return sum + (parseFloat(item.meta[tag]) || 0);
+            }, 0).toFixed(1) + '%';
+        };
+        var coreValues = function(a) {
+            return [
+                ['STR', a.str], ['INT', a.int], ['DEX', a.dex],
+                ['LUK', a.luk], ['AGI', a.agi], ['VIT', a.vit]
+            ];
+        };
+        var combatValues = function(a) {
+            return [
+                ['P.ATK', a.atk], ['P.DEF', a.def],
+                ['M.ATK', a.mat], ['M.DEF', a.mdf],
+                ['Speed', a.param(6)], ['Luck', a.param(7)],
+                ['HIT', pct(a.hit)], ['EVA', pct(a.eva)],
+                ['CRI', pct(a.cri)], ['CDMG', pct(a.criticalMultiplier())],
+                ['CEV', pct(a.cev)], ['GRD', pct(a.grd)],
+                ['PDR', pct(1 - a.pdr)], ['MDR', pct(1 - a.mdr)],
+                ['HRG', pct(a.hrg)], ['MRG', pct(a.mrg)],
+                ['TRG', pct(a.trg)], ['ArPen', penetration('Armor Penetration')],
+                ['MgPen', penetration('Magic Penetration')]
+            ];
+        };
+        var formatPreview = function(base, preview) {
+            var isPercent = typeof base === 'string' && base.indexOf('%') >= 0;
+            var diff = Number((parseFloat(preview) - parseFloat(base)).toFixed(isPercent ? 1 : 0));
+            if (!diff) return String(base);
+            return String(base) + (diff > 0 ? '+' : '') + diff + (isPercent ? '%' : '');
+        };
+        var withPreview = function(base, preview) {
+            return base.map(function(entry, index) {
+                return [entry[0], formatPreview(entry[1], preview[index][1])];
+            });
+        };
+        var core = withPreview(coreValues(this._actor), coreValues(actor));
+        var combat = withPreview(combatValues(this._actor), combatValues(actor));
+        if (!this._showAllStats) {
+            combat = combat.filter(function(entry, index) {
+                return index < 6 || /[+]/.test(entry[1]) || /\d-\d/.test(entry[1]);
+            });
+        }
+        var available = this.contents.height - 4 - y;
+        var rows = 3 + Math.ceil(core.length / 2) + Math.ceil(combat.length / 2) + 2;
+        var rowHeight = Math.max(10, Math.min(28, Math.floor(available / rows)));
+        var fontSize = Math.max(9, Math.min(19, rowHeight - 3));
+        var half = Math.floor(width / 2);
+        var bitmap = this.contents;
+        bitmap.fontSize = fontSize;
+        var drawGroup = function(title, entries) {
+            bitmap.fillRect(x, y, width, rowHeight - 1, 'rgba(12, 11, 10, 0.88)');
+            bitmap.textColor = '#c4ae88';
+            bitmap.drawText(title, x + 5, y, width - 10, rowHeight, 'left');
+            y += rowHeight;
+            for (var n = 0; n < entries.length; n++) {
+                var col = n % 2;
+                var dx = x + col * half;
+                if (col === 0) bitmap.fillRect(x, y, width, rowHeight - 1, 'rgba(12, 11, 10, 0.55)');
+                bitmap.textColor = '#c4b8a7';
+                bitmap.drawText(entries[n][0], dx + 4, y, half * 0.52, rowHeight, 'left');
+                bitmap.textColor = /[+]/.test(String(entries[n][1])) || /\d-\d/.test(String(entries[n][1])) ? '#e8c987' : '#f0e8d9';
+                bitmap.drawText(String(entries[n][1]), dx + half * 0.48, y, half * 0.48 - 4, rowHeight, 'right');
+                if (col === 1 || n === entries.length - 1) y += rowHeight;
+            }
+        };
+        var resources = [
+            ['HP', actor.hp, actor.mhp, '#d98440', '#e4b34e', this._actor.mhp],
+            ['MP', actor.mp, actor.mmp, '#397bb8', '#40b4db', this._actor.mmp],
+            ['SP', actor.tp, actor.maxSp(), '#379b6b', '#62c782', this._actor.maxSp()]
+        ];
+        for (var r = 0; r < resources.length; r++) {
+            var resource = resources[r];
+            var maximum = Math.max(0, resource[2]);
+            var current = Math.min(resource[1], maximum);
+            var barY = y + rowHeight - 5;
+            bitmap.fillRect(x, barY, width, 4, '#302a25');
+            if (maximum > 0) {
+                bitmap.gradientFillRect(x, barY, Math.floor(width * current / maximum), 4,
+                    resource[3], resource[4]);
+            }
+            bitmap.textColor = '#c4ae88';
+            bitmap.drawText(resource[0], x + 4, y, width / 3, rowHeight - 3, 'left');
+            bitmap.textColor = '#f0e8d9';
+            bitmap.drawText(current + ' / ' + formatPreview(resource[5], maximum),
+                x, y, width - 4, rowHeight - 3, 'right');
+            y += rowHeight;
+        }
+        drawGroup('Core Stat', core);
+        drawGroup(this._showAllStats ? 'Combat Stat' : 'Combat Stat - changes', combat);
         this.resetFontSettings();
     };
 
@@ -1453,7 +1600,10 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Window_StatusAllocate.prototype.cursorRight = function(wrap) {
         var index = this.index();
-        if (index >= 0 && index < 6) {
+        if (index >= 6 && index < 8) {
+            this.select(index + 1);
+            SoundManager.playCursor();
+        } else if (index >= 0 && index < 6) {
             var key = this.statKeys()[index];
             if (this._tempPoints > 0) {
                 this._tempAllocated[key] = (this._tempAllocated[key] || 0) + 1;
@@ -1468,7 +1618,10 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
 
     Window_StatusAllocate.prototype.cursorLeft = function(wrap) {
         var index = this.index();
-        if (index >= 0 && index < 6) {
+        if (index > 6 && index <= 8) {
+            this.select(index - 1);
+            SoundManager.playCursor();
+        } else if (index >= 0 && index < 6) {
             var key = this.statKeys()[index];
             if (this._tempAllocated[key] > 0) {
                 this._tempAllocated[key]--;
@@ -1490,6 +1643,21 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
                 SoundManager.playBuzzer();
                 this.activate();
             }
+        } else if (index === 7) {
+            if (this.totalPending() > 0) {
+                this.resetTemp();
+                SoundManager.playOk();
+                this.refresh();
+                this.activate();
+            } else {
+                SoundManager.playBuzzer();
+                this.activate();
+            }
+        } else if (index === 8) {
+            this._showAllStats = !this._showAllStats;
+            SoundManager.playOk();
+            this.refresh();
+            this.activate();
         } else if (index >= 0 && index < 6) {
             if (this._tempPoints > 0) {
                 this.cursorRight();
@@ -1501,7 +1669,6 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     Window_StatusAllocate.prototype.processCancel = function() {
-        this.resetTemp();
         Window_Selectable.prototype.processCancel.call(this);
     };
 
@@ -1512,7 +1679,7 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         if (hitIndex >= 0) {
             if (hitIndex === this.index()) {
                 if (triggered) {
-                    if (hitIndex === 6) {
+                    if (hitIndex >= 6) {
                         this.processOk();
                     } else if (hitIndex >= 0 && hitIndex < 6) {
                         var rect = this.itemRect(hitIndex);
@@ -1528,6 +1695,37 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
                 this.select(hitIndex);
             }
         }
+    };
+
+    function Window_AllocationDiscard() {
+        this.initialize.apply(this, arguments);
+    }
+
+    Window_AllocationDiscard.prototype = Object.create(Window_Command.prototype);
+    Window_AllocationDiscard.prototype.constructor = Window_AllocationDiscard;
+    Window_AllocationDiscard.prototype.initialize = function() {
+        Window_Command.prototype.initialize.call(this,
+            Math.floor((Graphics.boxWidth - 360) / 2),
+            Math.floor((Graphics.boxHeight - 180) / 2));
+        this.hide();
+        this.deactivate();
+    };
+    Window_AllocationDiscard.prototype.windowWidth = function() { return 360; };
+    Window_AllocationDiscard.prototype.numVisibleRows = function() { return 3; };
+    Window_AllocationDiscard.prototype.makeCommandList = function() {
+        this.addCommand('Keep editing', 'keep');
+        this.addCommand('Discard changes', 'discard');
+    };
+    Window_AllocationDiscard.prototype.itemRect = function(index) {
+        var rect = Window_Command.prototype.itemRect.call(this, index);
+        rect.y += this.lineHeight();
+        return rect;
+    };
+    Window_AllocationDiscard.prototype.refresh = function() {
+        Window_Command.prototype.refresh.call(this);
+        this.changeTextColor(this.systemColor());
+        this.drawText('Discard unconfirmed points?', 0, 0, this.contentsWidth(), 'center');
+        this.resetTextColor();
     };
 
     // -------------------------------------------------------------------------
@@ -1744,13 +1942,13 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             var isSealed = (def.key === 'secondary' && this._actor && this._actor.isEquipTypeSealed(this._actor.equipSlots()[1]));
 
             // Box Background
-            var bgColor = isSealed ? 'rgba(40, 15, 20, 0.65)' : (isSelected ? 'rgba(50, 110, 200, 0.45)' : 'rgba(10, 20, 42, 0.6)');
+            var bgColor = isSealed ? 'rgba(40, 15, 20, 0.65)' : (isSelected ? 'rgba(162, 139, 104, 0.45)' : 'rgba(18, 16, 15, 0.6)');
             this.contents.fillRect(def.x, def.y, boxW, boxH, bgColor);
 
             // Border
             var ctx = this.contents._context;
             ctx.save();
-            ctx.strokeStyle = isSelected ? 'rgba(255, 255, 255, 0.95)' : 'rgba(80, 140, 220, 0.4)';
+            ctx.strokeStyle = isSelected ? 'rgba(255, 255, 255, 0.95)' : 'rgba(162, 139, 104, 0.4)';
             ctx.lineWidth = isSelected ? 2 : 1;
             ctx.strokeRect(def.x + 0.5, def.y + 0.5, boxW - 1, boxH - 1);
             ctx.restore();
@@ -1800,10 +1998,10 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
             this.resetFontSettings();
 
             // Empty icon box
-            this.contents.fillRect(x, dy, 40, 40, 'rgba(10, 20, 40, 0.4)');
+            this.contents.fillRect(x, dy, 40, 40, 'rgba(18, 16, 15, 0.4)');
             var ctx = this.contents._context;
             ctx.save();
-            ctx.strokeStyle = 'rgba(80, 140, 220, 0.4)';
+            ctx.strokeStyle = 'rgba(162, 139, 104, 0.4)';
             ctx.strokeRect(x + 0.5, dy + 0.5, 39, 39);
             ctx.restore();
             this.contents.paintOpacity = 60;
@@ -1862,10 +2060,10 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.resetFontSettings();
 
         // Large icon box & Type info
-        this.contents.fillRect(x, dy, 40, 40, 'rgba(10, 20, 40, 0.4)');
+        this.contents.fillRect(x, dy, 40, 40, 'rgba(18, 16, 15, 0.4)');
         var ctx2 = this.contents._context;
         ctx2.save();
-        ctx2.strokeStyle = 'rgba(80, 140, 220, 0.4)';
+        ctx2.strokeStyle = 'rgba(162, 139, 104, 0.4)';
         ctx2.strokeRect(x + 0.5, dy + 0.5, 39, 39);
         ctx2.restore();
 
@@ -2280,10 +2478,10 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.resetFontSettings();
         this.contents.fontSize = 15;
 
-        this.contents.fillRect(0, 0, this.contents.width, this.contents.height, 'rgba(12, 24, 52, 0.92)');
+        this.contents.fillRect(0, 0, this.contents.width, this.contents.height, 'rgba(18, 16, 15, 0.92)');
         var ctx = this.contents._context;
         ctx.save();
-        ctx.strokeStyle = '#4ea1ff';
+        ctx.strokeStyle = '#a28b68';
         ctx.lineWidth = 2;
         ctx.strokeRect(1, 1, this.contents.width - 2, this.contents.height - 2);
         ctx.restore();
@@ -2927,10 +3125,10 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var cardH = this.contents.height - cardY - 6;
 
         // Container background & border
-        this.contents.fillRect(cardX, cardY, cardW, cardH, 'rgba(10, 20, 42, 0.88)');
+        this.contents.fillRect(cardX, cardY, cardW, cardH, 'rgba(18, 16, 15, 0.88)');
         var ctx = this.contents._context;
         ctx.save();
-        ctx.strokeStyle = 'rgba(70, 130, 210, 0.45)';
+        ctx.strokeStyle = 'rgba(162, 139, 104, 0.45)';
         ctx.strokeRect(cardX + 0.5, cardY + 0.5, cardW - 1, cardH - 1);
         ctx.restore();
 
@@ -3802,9 +4000,9 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         var ctx = this.contents._context;
 
         // 1. Card Background
-        var fillStyle = isLearned ? 'rgba(15, 25, 45, 0.88)' : 'rgba(20, 22, 28, 0.85)';
+        var fillStyle = isLearned ? 'rgba(18, 16, 15, 0.88)' : 'rgba(20, 22, 28, 0.85)';
         if (isSelected && this.active) {
-            fillStyle = isLearned ? 'rgba(24, 48, 86, 0.96)' : 'rgba(34, 36, 48, 0.94)';
+            fillStyle = isLearned ? 'rgba(54, 46, 36, 0.96)' : 'rgba(34, 36, 48, 0.94)';
         }
         this.contents.fillRect(cardX, cardY, cardW, cardH, fillStyle);
 
@@ -4107,6 +4305,12 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
         this.addWindow(this._confirmWindow);
         this._pendingClassNode = null;
 
+        this._allocationDiscard = new Window_AllocationDiscard();
+        this._allocationDiscard.setHandler('keep', this.onAllocationKeep.bind(this));
+        this._allocationDiscard.setHandler('cancel', this.onAllocationKeep.bind(this));
+        this._allocationDiscard.setHandler('discard', this.onAllocationDiscard.bind(this));
+        this.addWindow(this._allocationDiscard);
+
         this._toastWindow = new Window_StatusToast();
         this.addWindow(this._toastWindow);
 
@@ -4232,14 +4436,42 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     Scene_Status.prototype.onTabAllocate = function() {
+        this._allocationEditing = true;
         this._tabsWindow.deactivate();
         this._allocateWindow.setActor(this.actor());
         this._allocateWindow.activate();
         this._allocateWindow.select(0);
+        this._portraitWindow._helpText = 'Left/Right: Adjust   Enter: Select   Esc: Back';
+        this._portraitWindow.refresh();
     };
 
     Scene_Status.prototype.onAllocateCancel = function() {
+        if (this._allocateWindow.totalPending() > 0) {
+            this._allocationDiscard.show();
+            this._allocationDiscard.select(0);
+            this._allocationDiscard.activate();
+            return;
+        }
+        this.finishAllocateCancel();
+    };
+
+    Scene_Status.prototype.onAllocationKeep = function() {
+        this._allocationDiscard.hide();
+        this._allocationDiscard.deactivate();
+        this._allocateWindow.activate();
+    };
+
+    Scene_Status.prototype.onAllocationDiscard = function() {
+        this._allocationDiscard.hide();
+        this._allocationDiscard.deactivate();
         this._allocateWindow.resetTemp();
+        this.finishAllocateCancel();
+    };
+
+    Scene_Status.prototype.finishAllocateCancel = function() {
+        this._allocationEditing = false;
+        this._portraitWindow._helpText = null;
+        this._portraitWindow.refresh();
         this._allocateWindow.deactivate();
         this._tabsWindow.activate();
         this._allocateWindow.refresh();
@@ -4621,6 +4853,11 @@ NUSV.StatusScreen = NUSV.StatusScreen || {};
     };
 
     Scene_Status.prototype.onPartyActorChange = function() {
+        if (this._allocationEditing) {
+            this._partyWindow.select(Math.max(0, $gameParty.members().indexOf(this.actor())));
+            this._partyWindow.refresh();
+            return;
+        }
         if (this._pendingSkill) return;
         if (this._allocateWindow && this._allocateWindow.active) return;
         if (this._equipItemWindow && this._equipItemWindow.active) return;

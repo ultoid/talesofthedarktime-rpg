@@ -265,7 +265,7 @@ Imported.NUSV_InventoryUI = true;
         ctx.save();
         ctx.beginPath();
         ctx.arc(cx, cy, radius - 1, 0, Math.PI * 2, false);
-        ctx.fillStyle = 'rgba(10, 20, 36, 0.95)';
+        ctx.fillStyle = 'rgba(18, 16, 15, 0.95)';
         ctx.fill();
 
         // 2. Circular clip for portrait graphic
@@ -282,7 +282,7 @@ Imported.NUSV_InventoryUI = true;
         ctx.save();
         ctx.beginPath();
         ctx.arc(cx, cy, radius - 1, 0, Math.PI * 2, false);
-        ctx.strokeStyle = borderColor || 'rgba(135, 205, 255, 0.95)';
+        ctx.strokeStyle = borderColor || 'rgba(196, 174, 136, 0.95)';
         ctx.lineWidth = 2;
         ctx.stroke();
         ctx.restore();
@@ -682,8 +682,8 @@ Imported.NUSV_InventoryUI = true;
         var actors = equippedBy(item);
         var footerH = this.lineHeight() + 8;
         var footerY = this.contents.height - footerH - 4;
-        this.contents.fillRect(0, footerY - 4, width, footerH, 'rgba(18, 38, 74, 0.95)');
-        this.contents.fillRect(0, footerY - 4, width, 1, 'rgba(135, 205, 255, 0.4)');
+        this.contents.fillRect(0, footerY - 4, width, footerH, 'rgba(18, 16, 15, 0.95)');
+        this.contents.fillRect(0, footerY - 4, width, 1, 'rgba(162, 139, 104, 0.4)');
         this.changeTextColor(this.systemColor());
         this.drawText('Equipped', x, footerY, 100);
         this.resetTextColor();
@@ -691,7 +691,7 @@ Imported.NUSV_InventoryUI = true;
             var portraitSize = 34;
             var portraitY = footerY - 4 + Math.floor((footerH - portraitSize) / 2);
             var portraitX = x + 104;
-            drawCirclePortrait(this, actors[0], portraitX, portraitY, portraitSize, 'rgba(135, 205, 255, 0.95)');
+            drawCirclePortrait(this, actors[0], portraitX, portraitY, portraitSize, 'rgba(196, 174, 136, 0.95)');
             if (actors.length > 1) {
                 var badgeX = portraitX + portraitSize - 12;
                 var badgeY = portraitY + portraitSize - 12;
@@ -903,7 +903,7 @@ Imported.NUSV_InventoryUI = true;
     Window_NUSVInventoryList.prototype.drawTitle = function() {
         var x = this.textPadding();
         var width = this.contents.width;
-        this.contents.fillRect(0, 0, width, this.headerHeight() - 6, 'rgba(18, 38, 74, 0.9)');
+        this.contents.fillRect(0, 0, width, this.headerHeight() - 6, 'rgba(18, 16, 15, 0.9)');
         this.changeTextColor(this.systemColor());
         this.drawText(this._title, x, 0, width - x * 2);
         this.resetTextColor();
@@ -914,7 +914,7 @@ Imported.NUSV_InventoryUI = true;
         if (!entry) return;
         var rect = this.itemRect(index);
         if (entry.actor) {
-            drawCirclePortrait(this, entry.actor, rect.x + 6, rect.y + 5, 38, 'rgba(135, 205, 255, 0.95)');
+            drawCirclePortrait(this, entry.actor, rect.x + 6, rect.y + 5, 38, 'rgba(196, 174, 136, 0.95)');
             this.contents.fontSize = 20;
             this.drawText(entry.label, rect.x + 52, rect.y, rect.width - 56);
             this.contents.fontSize = 16;
